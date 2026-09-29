@@ -81,38 +81,16 @@ The dog is the clock. There is no bar creeping down a corner: a dog comes up
 the string and eats whatever you have not got off it yet. You can see exactly
 how long you have, because it is a dog and it is right there.
 
-Each round counts you in - three, two, one - and then lets it off the leash
-from far enough out that it has to run at you first. The run-up is measured in
-the dog's own seconds rather than in pixels, so the Great Dane starts further
-away than the dachshund and you get the same breath either way: about a second
-and a bit, which is one cut if you are quick and none if you are admiring the
-string.
+Each day counts you in - three, two, one - and then lets it off the leash from
+far enough out that it has to run at you first. The run-up is measured in the
+dog's own seconds rather than in pixels, so the Great Dane starts further away
+than the dachshund and you get the same breath either way: about a second and a
+bit, which is one cut if you are quick and none if you are admiring the string.
 
 It eats one sausage at a time, off the end of whatever piece it reaches - so
 leaving four joined together is not four times as safe, it is four separate
 mouthfuls in a row. Getting one takes it the best part of a second, which is
 the mercy built into its being greedy, and every one it gets it gets keener.
-
-### The breeds
-
-A round number is an abstraction; a bigger dog is not. So the ladder is run by
-the animal, and each one has a name, because a butcher's dog would.
-
-| From | Dog | Breed |
-| --- | --- | --- |
-| 1 | Alfie | Dachshund - a dog shaped like the thing it is stealing |
-| 3 | Nipper | Jack Russell |
-| 5 | Winston | Bulldog |
-| 8 | Duke | Boxer |
-| 11 | Bruno | Dobermann |
-| 14 | Goliath | Great Dane |
-
-They are dogs' names, not butcher's puns. The joke is the dachshund; naming
-it after a sausage as well is the same joke twice.
-
-Every one of them is the same drawing with different numbers - a skull, a jaw,
-a muzzle, a pair of ears and a coat - because six hand-drawn dogs would have
-been six chances to get one wrong.
 
 Getting one is the only thing a dog ever does here, so it is worth the frames.
 It gapes on the way up, snaps a third of the way through the bite - which is
@@ -120,25 +98,58 @@ when the sausage actually arrives in its mouth and the screen jolts - and then
 works it down with three quick chews on the way back to the string. The whole
 animation is one number: how far through the bite it is.
 
-## The till, and your three chances
+## The week
 
-There is no pass mark. Sausages are worth money and you have three lives.
+Six days, Monday to Saturday, one delivery a day. The string gets longer and
+the dog gets bigger every morning, and Wednesday is a half day, because it
+always was.
+
+| Day | Sausages | Dog |
+| --- | --- | --- |
+| Monday | 4 | smallest |
+| Tuesday | 5 | |
+| Wednesday | 3 | half day |
+| Thursday | 7 | |
+| Friday | 9 | |
+| Saturday | 11 | biggest |
+
+A day of the week is an abstraction; a bigger dog is not, so the ladder is run
+by the animal - one to a day, each bigger and quicker than the one before it.
+There are two of everything at every size and a bag of names to go with them,
+so no two weeks bring the same six dogs round: a dachshund or a corgi on
+Monday, a Great Dane or a mastiff on Saturday. Every one of them is the same
+drawing with different numbers - a skull, a jaw, a muzzle, a pair of ears and a
+coat - because twelve hand-drawn dogs would have been twelve chances to get one
+wrong.
+
+The man behind the counter is dealt with them, and so is the knife on the
+block: Reg or Sid or Pearl or Doreen or Wally or Mo, in a boater or a flat cap
+or a white peaked hat, with a butcher's knife or a cleaver or a boning knife or
+a pair of shears. They all cut exactly the same - a randomised advantage would
+not be a joke, it would be a cheat - so the difference is what it looks and
+sounds like in your hand. The whole cast is lined up on the shopfront before
+you open up, the dogs in the order they will turn up, which is the difficulty
+curve said without a word.
+
+## The till
+
+There is no pass mark, and nothing to lose but money.
 
 A sausage sells for what it looks like it is worth: a clean cut through the
 middle of a twist leaves two tidy ends and it goes in the window at £1.65; a
 scrappy one still sells, to somebody, for 95p. So the score is the till, and
 the reason to cut well is that it pays.
 
-Every chomp the dog manages costs you one of three chances, and when they are
-gone the shop is shut. That is the only thing that ends a run, so a round is
-never lost - only more or less expensive.
+There are no lives and there is no losing. The week always runs Monday to
+Saturday, and what the dog gets is simply money you did not take - which is the
+worst thing that can happen to a shop. A fixed-length run needs an unbounded
+score or everybody finishes level, and money is one: two people can both get to
+Saturday and take wildly different amounts.
 
-The end of the day takes the whole window. Everything else is cleared away and
-the man whose shop it is stands there with the takings: boater, moustache,
-blue-striped apron, and either a fistful of notes held up where everyone can
-see it or his hands empty and his shoulders down. Which one you get is whether
-the day beat the best day, and it says more about how it went than the number
-does.
+Saturday night takes the whole window. The week is counted up day by day in
+front of the man whose shop it is, and whether he is holding the takings over
+his head or standing there with his hands empty is whether it beat the best
+week.
 
 ## The noise
 

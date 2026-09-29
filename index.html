@@ -107,12 +107,23 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     font-family: var(--font-display); font-size: 17px; color: var(--gold);
     text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
-#lives { gap: 4px; }
-#lives .ico { opacity: 1; }
-#lives .ico.spent { fill: rgba(220,171,62,.18); }
+#whodog { font-family: var(--font); font-weight: 900; font-size: .62em;
+          letter-spacing: .1em; text-transform: uppercase; }
 #roundplate.hurt { animation: hurt .5s ease-out both; }
 @keyframes hurt { 0%, 100% { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
                   30% { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 20px rgba(216,70,47,.9); } }
+#shopfront { width: min(84vw, 330px); height: auto; margin-bottom: 4px;
+             animation: butcherIn .6s cubic-bezier(.2, 1.5, .4, 1) both; }
+/* the week's takings, day by day */
+#ledger { width: 100%; border-collapse: collapse; margin: 4px 0 10px;
+          font-size: 13px; font-weight: 700; }
+#ledger td { padding: 3px 0; border-bottom: 1px solid rgba(42,33,24,.14); }
+#ledger td.d { text-align: left; letter-spacing: .1em; text-transform: uppercase;
+               font-size: 11px; opacity: .7; }
+#ledger td.w { text-align: left; font-weight: 400; opacity: .5; font-size: 11px; }
+#ledger td.m { text-align: right; font-family: var(--font-display); font-size: 15px; }
+#ledger tr.shut td { opacity: .35; }
+#ledger tr.best td.m { color: #1f7a3f; }
 #mute {
     pointer-events: auto; cursor: pointer; padding: 7px 8px 4px; line-height: 0;
     background: linear-gradient(180deg, #1a4636, #123327);
@@ -176,25 +187,25 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #intro {
     position: absolute; inset: 0; z-index: 12;
     display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    padding: 0 22px 9%; text-align: center;
-    background: linear-gradient(transparent 26%, rgba(18,51,39,.85) 46%, #123327 62%);
+    padding: 0 22px 6%; text-align: center;
+    background: linear-gradient(transparent 4%, rgba(18,51,39,.85) 46%, #123327 62%);
     animation: introIn .5s ease-out both;
 }
 @keyframes introIn { from { opacity: 0; } to { opacity: 1; } }
 #intro[hidden] { display: none; }
 body.waiting #hud { display: none; }
 #intro h1 {
-    margin: 0; font-family: var(--font-display); font-weight: 400; color: var(--gold);
+    margin: 0 0 6px; font-family: var(--font-display); font-weight: 400; color: var(--gold);
     font-size: clamp(38px, 13.5vw, 60px); line-height: .98; letter-spacing: .01em;
     text-shadow: 0 4px 0 rgba(0,0,0,.45);
 }
 #intro .rule {
-    width: 132px; height: 2px; margin: 13px 0 12px;
+    width: 132px; height: 2px; margin: 10px 0 10px;
     background: linear-gradient(90deg, transparent, var(--gold-d), transparent);
 }
 #intro p { margin: 0; max-width: 330px; font-size: 13px; font-weight: 700;
            line-height: 1.6; letter-spacing: .04em; opacity: .74; }
-#intro .btn { margin-top: 22px; width: 100%; max-width: 236px; }
+#intro .btn { margin-top: 16px; width: 100%; max-width: 236px; }
 
 /* ============================================================
    THE TICKET
@@ -205,7 +216,7 @@ body.waiting #hud { display: none; }
 #card {
     position: absolute; inset: 0; z-index: 10;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 2px; padding: 20px 18px; pointer-events: auto;
+    gap: 2px; padding: 20px 18px; pointer-events: auto; overflow-y: auto;
     background:
         radial-gradient(120% 80% at 50% 34%, rgba(255,255,255,.07) 0%, transparent 60%),
         radial-gradient(120% 100% at 50% 50%, transparent 40%, rgba(0,0,0,.55) 100%),
@@ -216,7 +227,7 @@ body.waiting #hud { display: none; }
 }
 #card[hidden] { display: none; }
 #butcher {
-    width: min(58vw, 236px); height: auto; flex: none;
+    width: min(52vw, 214px); height: auto; flex: none;
     filter: drop-shadow(0 10px 14px rgba(0,0,0,.45));
     animation: butcherIn .55s cubic-bezier(.2, 1.5, .4, 1) both;
 }
@@ -247,12 +258,14 @@ body.waiting #hud { display: none; }
                       to   { transform: translateX(-50%) scale(1); opacity: 1; } }
 #card.record #ribbon { background: var(--gold); color: #2a2118; }
 #card #score {
-    display: block; font-family: var(--font-display); font-size: 52px; line-height: 1;
-    color: #b03a25; margin: 10px 0 0;
+    display: block; font-family: var(--font-display); font-size: 48px; line-height: 1;
+    color: #b03a25; margin: 8px 0 0;
 }
 #card.record #score { color: #a8791e; }
-#score .pc { font-size: .28em; letter-spacing: .12em; text-transform: uppercase;
-             opacity: .7; margin-left: 7px; }
+/* the caption sits under the number rather than beside it - "for the week"
+   alongside a five-figure total wraps, and wraps badly */
+#score .pc { display: block; font-size: .24em; letter-spacing: .16em;
+             text-transform: uppercase; opacity: .6; margin-top: 4px; }
 #rating { margin: 6px 0 0; font-family: var(--font); font-weight: 900; font-size: 17px;
           text-transform: uppercase; letter-spacing: .06em; }
 #pass { margin: 7px 0 0; font-size: 11px; font-weight: 700; letter-spacing: .12em;
@@ -278,6 +291,11 @@ body.waiting #hud { display: none; }
            font-size: 9px; font-weight: 700; letter-spacing: .14em;
            text-transform: uppercase; color: var(--cream); opacity: .22; }
 
+@media (max-height: 700px) {
+    #butcher { width: min(40vw, 160px); }
+    #card #score { font-size: 40px; }
+    #ledger { font-size: 12px; margin: 2px 0 6px; }
+}
 @media (max-width: 400px) {
     #hud { padding: 9px 9px; gap: 6px; }
     .plate { font-size: 14px; padding: 5px 8px 4px; }
@@ -313,8 +331,8 @@ body.waiting #hud { display: none; }
     <canvas id="pad"></canvas>
 
     <div id="hud">
-        <div class="plate sign" id="roundplate">Round&nbsp;<span id="round-val">1</span><span
-            class="of" id="lives"></span></div>
+        <div class="plate sign" id="roundplate"><span id="round-val">MON</span><span
+            class="of" id="whodog">Alfie</span></div>
         <div id="till" class="sign"><span id="money">&pound;0.00</span><span
             class="of"><svg class="ico"><use href="#i-cup"/></svg><span id="best-val">&pound;0.00</span></span></div>
         <button id="mute" aria-label="Sound on or off">
@@ -333,18 +351,19 @@ body.waiting #hud { display: none; }
 
     <div id="intro">
         <h1>Butcher's<br>Dog</h1>
+        <canvas id="shopfront" width="340" height="250"></canvas>
         <div class="rule"></div>
-        <p>Cut the sausages off the string before the dog gets to them</p>
+        <p id="cast-line">Six days. One string a day. A bigger dog every morning.</p>
         <button class="btn" id="play">Open up shop</button>
     </div>
 
     <div id="card" hidden>
         <canvas id="butcher" width="260" height="300"></canvas>
         <div class="inner">
-            <div id="ribbon">SHOP SHUT</div>
-            <span id="score">0<span class="pc">taken</span></span>
+            <div id="ribbon">SATURDAY NIGHT</div>
+            <table id="ledger"></table>
+            <span id="score">0<span class="pc">for the week</span></span>
             <p id="rating">Butchered</p>
-            <p id="pass"></p>
             <button class="btn" id="again">Back to the meat!</button>
         </div>
     </div>
@@ -353,7 +372,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v6';
+const APP_VERSION = 'v7';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -456,9 +475,10 @@ const snick = q => safely(t => {
     sweep(t, { from: 7800 * k, to: 1500, q: 2, dur: .105, vol: .34 });
     sweep(t, { from: 2700 * k, to: 820, q: 7, dur: .07, vol: .18, at: .012 });
     tone(t, { freq: 1500 * k, to: 3000 * k, dur: .05, type: 'triangle', vol: .075, at: .006 });
-    if (q > 72) {
-        tone(t, { freq: 3200 * k, dur: .3, type: 'sine', vol: .05, at: .04 });
-        tone(t, { freq: 4700 * k, dur: .22, type: 'sine', vol: .028, at: .055 });
+    const ring = cast ? cast.knife.ring : 1;     // a cleaver does not sing
+    if (q > 72 && ring) {
+        tone(t, { freq: 3200 * k * ring, dur: .3, type: 'sine', vol: .05 * ring, at: .04 });
+        tone(t, { freq: 4700 * k * ring, dur: .22, type: 'sine', vol: .028 * ring, at: .055 });
     }
 });
 // a cut through the middle of a sausage, which is not a cut, it is a mess
@@ -646,9 +666,10 @@ function layout() {
     const { n, wiggle, phase } = string;
     Object.assign(string, makePath(n, wiggle, phase));
 }
-function makeString(round) {
-    const n = Math.min(9, 4 + Math.floor((round - 1) / 2));
-    const wiggle = Math.min(2.3, .55 + (round - 1) * .2);
+// the day decides how much is on the string and how much sway is in it
+function makeString(day) {
+    const D = DAYS[Math.min(DAYS.length, Math.max(1, day)) - 1];
+    const n = D.n, wiggle = D.wiggle;
     string = { n, wiggle, phase: Math.random() * Math.PI * 2 };
     layout();
     // one piece holding the lot, and the twists evenly spaced down it
@@ -862,10 +883,9 @@ function dogStep(dt) {
         else pieces.splice(i, 1, { from: p.from, to: k - 1 });
         snarl();
         lost++; dog.keen++; dog.chomp = CHOMP;
-        lives--; showHud();
+        showHud();
         const rp = document.getElementById('roundplate');
         rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
-        if (lives <= 0) { gameOver(); return; }
         if (pieces.length === 0) endRound();
     }
 }
@@ -877,37 +897,35 @@ function dogStep(dt) {
    middle of a twist leaves a sausage with two tidy ends and it goes in the
    window; a scrappy one still sells, to somebody, for rather less. So the
    score is the till, and the reason to cut well is that it pays. */
-const LIVES = 3;
+/* A sausage is worth what it looks like it is worth. A clean cut through the
+   middle of a twist leaves a sausage with two tidy ends and it goes in the
+   window; a scrappy one still sells, to somebody, for rather less. So the
+   score is the till, and the reason to cut well is that it pays.
+
+   There is nothing else to lose. No lives, no pass mark, no losing: the week
+   always runs Monday to Saturday, and what the dog gets is simply money you
+   did not take. Which is the worst thing that can happen to a shop. */
 const priceOf = q => Math.round((55 + 1.12 * q) / 5) * 5;      // pence, 95p to £1.67
-const money2 = p => '\u00a3' + (p / 100).toFixed(2);
-/* It does not amble up the string any more, it is let off a countdown. So the
-   speed is what a dog does when it has seen something: the whole round is a
-   few seconds, and the only thing slowing it down is that eating one takes it
-   most of a second, which is the mercy built into being greedy. */
-const speedFor = r => (128 + (r - 1) * 6) * breedFor(r).speed;
+const money2 = p => '£' + (p / 100).toFixed(2);
 
 let round = 0, live = false, armed = false, tallying = false, roundT0 = 0;
-let money = 0, roundMoney = 0, lives = LIVES;
+let money = 0, roundMoney = 0, ledger = [];
 let cutFx = [], mess = [], shouts = [], chewing = null, swipe = null, blade = null, raf = 0, lastMs = 0;
 let tallyT = 0, settleT = 0, showingIntro = true;
 
-const bestKey = 'bd-till';
+const bestKey = 'bd-week';
 let best = 0;
 try { best = parseInt(localStorage.getItem(bestKey) || '0', 10) || 0; } catch (e) { /* private mode */ }
-document.getElementById('best-val').textContent = money2(best);
 
 const bannerEl = document.getElementById('banner');
 const promptEl = document.getElementById('prompt');
 const tallyEl = document.getElementById('tally');
 const card = document.getElementById('card');
-const livesEl = document.getElementById('lives');
 const moneyEl = document.getElementById('money');
 
 function showHud() {
-    let h = '';
-    for (let i = 0; i < LIVES; i++)
-        h += `<svg class="ico ${i < lives ? '' : 'spent'}"><use href="#i-paw"/></svg>`;
-    livesEl.innerHTML = h;
+    document.getElementById('round-val').textContent = DAYS[Math.min(5, round - 1)].short;
+    document.getElementById('whodog').textContent = breedFor(round).dog;
     moneyEl.textContent = money2(money);
     document.getElementById('best-val').textContent = money2(Math.max(best, money));
 }
@@ -917,9 +935,9 @@ function startRound(n) {
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
     cutFx = []; mess = []; shouts = []; chewing = null; swipe = null; blade = null;
-    const count = makeString(n);
+    const D = DAYS[n - 1], count = makeString(n);
     roundMoney = 0;
-    dog.speed = speedFor(n);
+    dog.speed = D.speed * breedFor(n).speed;
     /* Far enough off the end that it has to run at you first. Measured in its
        own seconds rather than pixels, so the Great Dane starts further out
        than the dachshund and you get the same breath either way - about a
@@ -929,21 +947,20 @@ function startRound(n) {
     dog.chomp = 0; dog.keen = 0;
     roundT0 = now();
     armed = false;
-    document.getElementById('round-val').textContent = n;
     showHud();
-    promptEl.textContent = n === 1 ? 'Swipe through the twists'
-                         : `${count} on the string`;
-    promptEl.classList.remove('gone');
+    // only the first morning of the first week needs telling how to do it
+    promptEl.textContent = n === 1 ? 'Swipe through the twists' : '';
+    promptEl.classList.toggle('gone', n !== 1);
     countdown(n);
     tick();
 }
 /* Three, two, one, and the dog is off the leash. The count is the only part of
-   a round that is not a scramble, so it is where the round says what it is and
+   a day that is not a scramble, so it is where the day says what it is and
    who is coming for it. */
 let countT = [];
 function countdown(n) {
     countT.forEach(clearTimeout); countT = [];
-    const B = breedFor(n), fresh = n === B.from;
+    const D = DAYS[n - 1], B = breedFor(n);
     const say = (big, small, cls) => {
         bannerEl.innerHTML = (small ? `<span class="who">${small}</span>` : '') +
                              `<span class="r ${cls || ''}">${big}</span>`;
@@ -951,8 +968,8 @@ function countdown(n) {
         void bannerEl.offsetWidth;
         bannerEl.classList.add('go');
     };
-    const head = `Round ${n} &middot; ${B.dog}`;
-    say('3', fresh ? `${head} &mdash; a ${B.name}!` : head);
+    const head = `${D.name}${D.half ? ' &middot; half day' : ''}`;
+    say('3', `${head} &mdash; ${B.dog} the ${B.name}`);
     beep(0);
     countT.push(setTimeout(() => { if (round === n && live) { say('2', head); beep(1); } }, 620));
     countT.push(setTimeout(() => { if (round === n && live) { say('1', head); beep(2); } }, 1240));
@@ -969,35 +986,41 @@ const beep = i => safely(t => {
     tone(t, { freq: 440 + i * 70, dur: .09, type: 'square', vol: .13 });
     tone(t, { freq: 880 + i * 140, dur: .06, type: 'triangle', vol: .06, at: .01 });
 });
-/* The string is finished - cut up, eaten, or the dog has run out of it. There
-   is no pass mark any more: you take what you took, and the run carries on
-   until the dog has had you three times. */
+// the string is finished - cut up, or eaten, or the dog has run out of it
 function endRound() {
     if (!live) return;
     live = false; armed = false; dog.going = false;
     countT.forEach(clearTimeout); countT = [];
+    ledger.push({ day: DAYS[round - 1], dog: breedFor(round), took: roundMoney, sold: saved, lost });
     tallying = true;
     tallyEl.innerHTML = `<span class="n">${money2(roundMoney)}</span>` +
         `<span class="l">${pick(lost === 0 ? CLEAN : saved ? THROUGH : MISSED)}</span>` +
-        `<span class="b">${saved} sold · ${breedFor(round).dog} got ${lost}</span>`;
+        `<span class="b">${saved} sold &middot; ${breedFor(round).dog} got ${lost}</span>`;
     tallyEl.classList.add('on');
     jingleUp();
-    tallyT = setTimeout(nextRound, 1400);
+    tallyT = setTimeout(round >= DAYS.length ? endWeek : nextRound, 1500);
 }
-function gameOver() {
-    live = false; armed = false; dog.going = false; tallying = false;
+/* Saturday night. The week is counted up in front of the man whose shop it
+   is, and whether he is holding the takings over his head or standing there
+   with his hands empty is whether it beat the best week. */
+function endWeek() {
+    live = false; armed = false; tallying = false; dog.going = false;
     countT.forEach(clearTimeout); countT = [];
     clearTimeout(tallyT); tallyEl.classList.remove('on');
     const record = money > best;
     if (record) { best = money; try { localStorage.setItem(bestKey, String(best)); } catch (e) { /* private */ } }
-    document.getElementById('ribbon').textContent = record ? 'BEST TAKINGS' : 'SHOP SHUT';
+    const top = Math.max(...ledger.map(r => r.took));
+    document.getElementById('ribbon').textContent = record ? 'BEST WEEK' : 'SATURDAY NIGHT';
+    document.getElementById('ledger').innerHTML = ledger.map(r =>
+        `<tr class="${r.took === top && top > 0 ? 'best' : ''}">` +
+        `<td class="d">${r.day.short}</td><td class="w">${r.dog.dog}</td>` +
+        `<td class="m">${money2(r.took)}</td></tr>`).join('');
     document.getElementById('score').innerHTML =
-        `${money2(money)}<span class="pc">taken</span>`;
-    document.getElementById('rating').textContent = record ? pick(RECORD_LINES) : pick(SHUT);
-    document.getElementById('pass').textContent =
-        `${breedFor(round).dog} saw you off on round ${round}`;
+        `${money2(money)}<span class="pc">for the week</span>`;
+    document.getElementById('rating').textContent =
+        record ? pick(RECORD_LINES) : pick(money >= best * .8 ? SHUT : MISSED_WEEK);
     card.className = record ? 'record' : '';
-    drawButcher(document.getElementById('butcher').getContext('2d'), record);
+    drawButcher(document.getElementById('butcher').getContext('2d'), record, { cx: 130, cy: 196 });
     settleT = setTimeout(() => { card.hidden = false; record ? jingleWin() : jingleLose(); }, 520);
 }
 function nextRound() { tallying = false; startRound(round + 1); }
@@ -1011,11 +1034,16 @@ const THROUGH = ['Through', 'That will do', 'Enough for the window', 'Good enoug
                  'The dog ate the difference', 'Counter-ready'];
 const MISSED = ['The dog ate well', 'Nothing for the window', 'All of that was dog food',
                 'Not a thing sold', 'A complete loss', 'The dog is delighted'];
-const SHUT = ['Closed for the day', 'That dog wants paying', 'Beaten by a dog',
-              'The window is empty', 'You will hear about this', 'Try a quieter trade',
-              'Out of sausages, out of luck', 'The dog is not sorry'];
-const RECORD_LINES = ['Your best takings', 'A record day', 'Never done better',
-                      'The window has never looked fuller', 'Nobody has taken more. Including you.'];
+// close to the best week you have had
+const SHUT = ['A respectable week', 'That will keep the lights on', 'Not far off your best',
+              'A fair week of it', 'Nearly a good one', 'The rent is paid'];
+// and nowhere near it
+const MISSED_WEEK = ['A thin week', 'The dogs ate the profit', 'Those dogs want paying',
+                     'Six days for that', 'The window was never full', 'Barely worth opening',
+                     'The dogs are not sorry', 'You will hear about this'];
+const RECORD_LINES = ['Your best week yet', 'A record week', 'Never done better',
+                      'The window has never looked fuller', 'Nobody has taken more. Including you.',
+                      'One for the books'];
 
 /* ============================================================
    INPUT
@@ -1191,43 +1219,126 @@ function drawHook(x, yTop, k = 1) {
     ctx.restore();
 }
 /* ---- the dogs -----------------------------------------------------------
-   The round number is an abstraction; a bigger dog is not. So the ladder is
-   run by the animal: it starts as a dachshund, which is a dog shaped like the
-   thing it is stealing, and ends as a Great Dane that covers the string in
-   about the time it takes to think about it. Every breed is the same drawing
-   with different numbers - a skull, a jaw, a muzzle, a pair of ears and a
-   coat - because six hand-drawn dogs would be six chances to get one wrong. */
-const BREEDS = [
-    { from: 1,  name: 'Dachshund',   dog: 'Alfie',   k: .74, speed: .80,
+   A day of the week is an abstraction; a bigger dog is not. So the week is
+   run by the animal, one to a day, each one bigger and quicker than the one
+   before it. There are two of everything at every size and a bag of names to
+   go with them, so no two weeks bring the same six dogs round.
+
+   Every one of them is the same drawing with different numbers - a skull, a
+   jaw, a muzzle, a pair of ears and a coat - because twelve hand-drawn dogs
+   would have been twelve chances to get one wrong. */
+const TIERS = [
+[
+    { name: 'Dachshund',  k: .74, speed: .80,
       coat: '#a55c28', lit: '#c47a3c', shade: '#743c15', muzzle: '#c8863f',
       ear: 'drop', earCol: '#77401a', skullW: 30, skullH: 40, jawW: 36, jawY: 16,
       chin: 40, snout: [27, 17, 21], eyes: [16, -16, 4.8], brow: .3, tongue: .8 },
-    { from: 3,  name: 'Jack Russell', dog: 'Nipper', k: .86, speed: .95,
+    { name: 'Corgi',      k: .78, speed: .84,
+      coat: '#c98436', lit: '#e0a153', shade: '#94591c', muzzle: '#f3e6cf',
+      ear: 'prick', earCol: '#9a6222', skullW: 32, skullH: 38, jawW: 38, jawY: 16,
+      chin: 40, snout: [25, 17, 19], eyes: [17, -15, 4.8], brow: .3, tongue: 1 },
+],[
+    { name: 'Jack Russell', k: .86, speed: .95,
       coat: '#f2e8d4', lit: '#fdf7e8', shade: '#cdbfa2', muzzle: '#fdf7e8',
       ear: 'fold', earCol: '#a8703a', skullW: 34, skullH: 40, jawW: 42, jawY: 18,
       chin: 42, snout: [27, 20, 15], eyes: [18, -14, 5], brow: .5, tongue: 1,
       patch: '#a8703a' },
-    { from: 5,  name: 'Bulldog',     dog: 'Winston',     k: 1, speed: 1,
+    { name: 'Fox Terrier', k: .90, speed: 1.0,
+      coat: '#e8e0cc', lit: '#f8f2e2', shade: '#bdb096', muzzle: '#f8f2e2',
+      ear: 'fold', earCol: '#4a3a2a', skullW: 32, skullH: 42, jawW: 40, jawY: 16,
+      chin: 44, snout: [26, 18, 18], eyes: [17, -16, 4.8], brow: .4, tongue: 1,
+      patch: '#4a3a2a' },
+],[
+    { name: 'Bulldog',    k: 1, speed: 1,
       coat: '#efe3ca', lit: '#fdf7e8', shade: '#d5c6a6', muzzle: '#fdf7e8',
       ear: 'fold', earCol: '#b9a98c', skullW: 38, skullH: 40, jawW: 56, jawY: 20,
       chin: 45, snout: [31, 20, 12], eyes: [21, -13, 5.4], brow: 1, tongue: 1 },
-    { from: 8,  name: 'Boxer',       dog: 'Duke',       k: 1.12, speed: 1.14,
+    { name: 'Staffie',    k: 1.04, speed: 1.06,
+      coat: '#6b5340', lit: '#85694f', shade: '#4a3728', muzzle: '#8d7157',
+      ear: 'fold', earCol: '#513d2d', skullW: 36, skullH: 40, jawW: 50, jawY: 20,
+      chin: 44, snout: [29, 19, 14], eyes: [20, -14, 5.2], brow: .9, tongue: 1,
+      patch: '#f0e6d2' },
+],[
+    { name: 'Boxer',      k: 1.12, speed: 1.14,
       coat: '#c08240', lit: '#d79c58', shade: '#8c5a24', muzzle: '#3a2a22',
       ear: 'fold', earCol: '#8c5a24', skullW: 36, skullH: 42, jawW: 50, jawY: 20,
       chin: 46, snout: [30, 21, 14], eyes: [20, -14, 5.2], brow: .8, tongue: 1,
       mask: '#3a2a22' },
-    { from: 11, name: 'Dobermann',   dog: 'Bruno',   k: 1.2, speed: 1.3,
+    { name: 'Labrador',   k: 1.16, speed: 1.18,
+      coat: '#d8b46e', lit: '#eccd8c', shade: '#a8853f', muzzle: '#e8c98a',
+      ear: 'drop', earCol: '#b08c46', skullW: 34, skullH: 42, jawW: 44, jawY: 18,
+      chin: 48, snout: [28, 20, 19], eyes: [18, -16, 5], brow: .4, tongue: 1 },
+],[
+    { name: 'Dobermann',  k: 1.2, speed: 1.3,
       coat: '#2f2622', lit: '#453832', shade: '#1d1715', muzzle: '#4a3c35',
       ear: 'prick', earCol: '#241d1a', skullW: 32, skullH: 44, jawW: 40, jawY: 18,
       chin: 48, snout: [25, 20, 20], eyes: [17, -16, 4.8], brow: .4, tongue: 1,
       points: '#9a5a26' },
-    { from: 14, name: 'Great Dane',  dog: 'Goliath',  k: 1.38, speed: 1.46,
+    { name: 'Alsatian',   k: 1.24, speed: 1.34,
+      coat: '#8a6231', lit: '#a67a42', shade: '#5c3f1c', muzzle: '#2b211b',
+      ear: 'prick', earCol: '#3b2c1d', skullW: 32, skullH: 44, jawW: 42, jawY: 18,
+      chin: 50, snout: [26, 19, 21], eyes: [17, -17, 4.8], brow: .5, tongue: 1,
+      mask: '#2b211b' },
+],[
+    { name: 'Great Dane', k: 1.38, speed: 1.46,
       coat: '#6e6a63', lit: '#8a857c', shade: '#4b4842', muzzle: '#8a857c',
       ear: 'drop', earCol: '#4b4842', skullW: 34, skullH: 46, jawW: 46, jawY: 20,
       chin: 50, snout: [28, 22, 18], eyes: [18, -16, 5], brow: .6, tongue: 1,
       mask: '#3b3833' },
+    { name: 'Mastiff',    k: 1.42, speed: 1.5,
+      coat: '#c49a5c', lit: '#dcb376', shade: '#906d36', muzzle: '#2e2520',
+      ear: 'drop', earCol: '#7c5c2c', skullW: 36, skullH: 44, jawW: 56, jawY: 22,
+      chin: 50, snout: [32, 22, 16], eyes: [21, -15, 5.2], brow: .9, tongue: 1,
+      mask: '#2e2520' },
+]];
+const DOG_NAMES = ['Alfie', 'Nipper', 'Winston', 'Duke', 'Bruno', 'Goliath', 'Bess',
+                   'Tyke', 'Rex', 'Pip', 'Nell', 'Rolo', 'Hector', 'Barney', 'Dot',
+                   'Milo', 'Sable', 'Gyp', 'Ruby', 'Bronson'];
+
+/* ---- the week -----------------------------------------------------------
+   Six days, one delivery a day, and the string longer and the dog bigger
+   every morning. Wednesday is a half day, because it always was. */
+const DAYS = [
+    { name: 'Monday',    short: 'MON', n: 4,  wiggle: .55, speed: 118 },
+    { name: 'Tuesday',   short: 'TUE', n: 5,  wiggle: .85, speed: 132 },
+    { name: 'Wednesday', short: 'WED', n: 3,  wiggle: 1.15, speed: 128, half: true },
+    { name: 'Thursday',  short: 'THU', n: 7,  wiggle: 1.5, speed: 158 },
+    { name: 'Friday',    short: 'FRI', n: 9,  wiggle: 1.85, speed: 176 },
+    { name: 'Saturday',  short: 'SAT', n: 11, wiggle: 2.2, speed: 196 },
 ];
-const breedFor = r => BREEDS.filter(b => b.from <= r).pop();
+
+/* ---- whose shop it is ---------------------------------------------------
+   One of these a week, and the dogs and the knife are dealt with them, so a
+   run has a cast rather than a set of settings. */
+const BUTCHERS = [
+    { name: 'Reg',    skin: '#e5ab7e', skinD: '#c98a5e', hair: '#4a3428', hat: 'boater', apron: '#4a79b8', face: 'tash' },
+    { name: 'Sid',    skin: '#c98552', skinD: '#a86a3c', hair: '#2e241d', hat: 'cap',    apron: '#b8434a', face: 'beard' },
+    { name: 'Pearl',  skin: '#8a5a3a', skinD: '#6e442a', hair: '#1f1712', hat: 'trilby', apron: '#3f8f6a', face: 'none' },
+    { name: 'Wally',  skin: '#efc19b', skinD: '#d09b72', hair: '#a8622a', hat: 'boater', apron: '#4a79b8', face: 'tash' },
+    { name: 'Doreen', skin: '#e0b48d', skinD: '#c08f65', hair: '#7a4a2a', hat: 'cap',    apron: '#7a5aa8', face: 'none' },
+    { name: 'Mo',     skin: '#7a4e30', skinD: '#5e3a22', hair: '#171210', hat: 'trilby', apron: '#b8434a', face: 'beard' },
+];
+// what is on the block this week. Cosmetic to a fault: they all cut the same.
+const KNIVES = [
+    { name: 'butcher’s knife', kind: 'chef',    ring: 1 },
+    { name: 'cleaver',              kind: 'cleaver', ring: .5 },
+    { name: 'boning knife',         kind: 'boning',  ring: 1.3 },
+    { name: 'pair of shears',       kind: 'shears',  ring: .8 },
+];
+
+const shuffle = a => { const c = a.slice();
+    for (let i = c.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0;
+        [c[i], c[j]] = [c[j], c[i]]; } return c; };
+let cast = null;
+function deal() {
+    const names = shuffle(DOG_NAMES).slice(0, 6);
+    cast = {
+        butcher: pick(BUTCHERS),
+        knife: pick(KNIVES),
+        dogs: TIERS.map((tier, i) => ({ ...pick(tier), dog: names[i] })),
+    };
+}
+const breedFor = n => cast.dogs[Math.min(cast.dogs.length, Math.max(1, n)) - 1];
 
 /* Drawn on the same terms as the meat: no outline, just shapes with the light
    on one side. `pose` is where it is in a bite - how far the jaw is open, how
@@ -1430,7 +1541,13 @@ function knifeStep(dt) {
     knife.ang += d * (1 - Math.pow(.000004, dt));
     knife.at += (held - knife.at) * (1 - Math.pow(.0005, dt));
 }
-function drawKnife(ctx, x, y, ang, k) {
+/* Four things to cut with, one dealt to the week. They all cut exactly the
+   same - a randomised advantage would not be a joke, it would be a cheat -
+   so the difference is what it looks and sounds like in your hand. Each is
+   drawn tip at the origin with the body trailing back along -x, so whatever
+   is on the block this week hangs off the finger the same way. */
+function drawKnife(ctx, x, y, ang, k, K) {
+    K = K || (cast ? cast.knife : KNIVES[0]);
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(ang);
@@ -1438,71 +1555,139 @@ function drawKnife(ctx, x, y, ang, k) {
     ctx.lineJoin = 'round';
     ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 9; ctx.shadowOffsetY = 5;
     const shape = fill => { ctx.fillStyle = fill; ctx.fill(); };
-    // the blade: a straight spine, an edge curving back to the heel, a point
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.quadraticCurveTo(-34, 9, -76, 10);
-    ctx.lineTo(-76, -16);
-    ctx.quadraticCurveTo(-40, -15, 0, 0);
-    ctx.closePath();
-    shape('#b9bfc7');
-    ctx.shadowColor = 'transparent';
-    ctx.save();
-    ctx.clip();
-    ctx.beginPath();                                   // the light down the spine
-    ctx.moveTo(-76, -16); ctx.quadraticCurveTo(-40, -15, 0, 0);
-    ctx.lineTo(-24, -1); ctx.quadraticCurveTo(-46, -8, -76, -8);
-    ctx.closePath(); shape('#e9edf1');
-    ctx.beginPath();                                   // and the edge, ground bright
-    ctx.moveTo(0, 0); ctx.quadraticCurveTo(-34, 9, -76, 10);
-    ctx.lineTo(-76, 5); ctx.quadraticCurveTo(-34, 4, 0, -2);
-    ctx.closePath(); shape('#fbfdff');
-    ctx.restore();
-    // the bolster, and the handle it is holding on to
-    ctx.beginPath();
-    ctx.moveTo(-74, -17); ctx.lineTo(-88, -16); ctx.lineTo(-88, 12); ctx.lineTo(-74, 11);
-    ctx.closePath(); shape('#8f959d');
-    ctx.beginPath();
-    ctx.moveTo(-88, -15);
-    ctx.lineTo(-128, -13); ctx.quadraticCurveTo(-140, -12, -139, -2);
-    ctx.quadraticCurveTo(-138, 9, -127, 10); ctx.lineTo(-88, 11);
-    ctx.closePath(); shape('#5d3a21');
-    ctx.beginPath();
-    ctx.moveTo(-88, -15); ctx.lineTo(-128, -13);
-    ctx.quadraticCurveTo(-138, -12, -137, -6);
-    ctx.lineTo(-88, -8);
-    ctx.closePath(); shape('#7a4d2c');
-    for (const rx of [-101, -120]) {
-        ctx.beginPath(); ctx.arc(rx, -2, 4, 0, Math.PI * 2); shape('#c59430');
-        ctx.beginPath(); ctx.arc(rx - 1, -3, 1.7, 0, Math.PI * 2); shape('#f0d484');
+    const rivets = (x1, x2) => {
+        for (const rx of [x1, x2]) {
+            ctx.beginPath(); ctx.arc(rx, -2, 4, 0, Math.PI * 2); shape('#c59430');
+            ctx.beginPath(); ctx.arc(rx - 1, -3, 1.7, 0, Math.PI * 2); shape('#f0d484');
+        }
+    };
+    const handle = (from, to, wood) => {
+        ctx.beginPath();
+        ctx.moveTo(from, -15);
+        ctx.lineTo(to + 11, -13); ctx.quadraticCurveTo(to, -12, to + 1, -2);
+        ctx.quadraticCurveTo(to + 2, 9, to + 12, 10); ctx.lineTo(from, 11);
+        ctx.closePath(); shape(wood);
+        ctx.beginPath();
+        ctx.moveTo(from, -15); ctx.lineTo(to + 11, -13);
+        ctx.quadraticCurveTo(to + 1, -12, to + 2, -6);
+        ctx.lineTo(from, -8);
+        ctx.closePath(); shape('#7a4d2c');
+    };
+
+    if (K.kind === 'cleaver') {
+        ctx.beginPath();                                   // a slab with a corner off it
+        ctx.moveTo(4, -20); ctx.lineTo(4, 26);
+        ctx.quadraticCurveTo(-30, 30, -62, 26);
+        ctx.lineTo(-62, -20); ctx.quadraticCurveTo(-30, -24, 4, -20);
+        ctx.closePath(); shape('#b9bfc7');
+        ctx.shadowColor = 'transparent';
+        ctx.save(); ctx.clip();
+        ctx.beginPath(); ctx.moveTo(4, -20); ctx.lineTo(-62, -20);
+        ctx.lineTo(-62, -6); ctx.lineTo(4, -8); ctx.closePath(); shape('#e9edf1');
+        ctx.beginPath(); ctx.moveTo(4, 26); ctx.quadraticCurveTo(-30, 30, -62, 26);
+        ctx.lineTo(-62, 19); ctx.quadraticCurveTo(-30, 23, 4, 19); ctx.closePath(); shape('#fbfdff');
+        ctx.restore();
+        ctx.beginPath(); ctx.arc(-50, -8, 5.5, 0, Math.PI * 2); shape('#3a4048');
+        ctx.beginPath();
+        ctx.moveTo(-62, -18); ctx.lineTo(-74, -16); ctx.lineTo(-74, 22); ctx.lineTo(-62, 24);
+        ctx.closePath(); shape('#8f959d');
+        handle(-74, -124, '#5d3a21');
+        rivets(-88, -108);
+    } else if (K.kind === 'boning') {
+        ctx.beginPath();                                   // narrow, and curved with use
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(-30, 13, -70, 12);
+        ctx.lineTo(-70, -2);
+        ctx.quadraticCurveTo(-36, -7, 0, 0);
+        ctx.closePath(); shape('#b9bfc7');
+        ctx.shadowColor = 'transparent';
+        ctx.save(); ctx.clip();
+        ctx.beginPath(); ctx.moveTo(-70, -2); ctx.quadraticCurveTo(-36, -7, 0, 0);
+        ctx.lineTo(-20, 1); ctx.quadraticCurveTo(-42, -2, -70, 2); ctx.closePath(); shape('#e9edf1');
+        ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(-30, 13, -70, 12);
+        ctx.lineTo(-70, 8); ctx.quadraticCurveTo(-30, 9, -2, -2); ctx.closePath(); shape('#fbfdff');
+        ctx.restore();
+        ctx.beginPath();
+        ctx.moveTo(-68, -6); ctx.lineTo(-80, -5); ctx.lineTo(-80, 15); ctx.lineTo(-68, 14);
+        ctx.closePath(); shape('#8f959d');
+        handle(-80, -128, '#43301f');
+        rivets(-94, -114);
+    } else if (K.kind === 'shears') {
+        for (const sy of [-1, 1]) {                        // two blades, crossed
+            ctx.save();
+            ctx.translate(-44, 0);
+            ctx.rotate(sy * .10);
+            ctx.beginPath();
+            ctx.moveTo(46, sy * 2);
+            ctx.quadraticCurveTo(16, sy * 9, -22, sy * 8);
+            ctx.lineTo(-22, sy * -1);
+            ctx.quadraticCurveTo(14, sy * 1, 46, sy * 2);
+            ctx.closePath(); shape(sy < 0 ? '#c3c9d1' : '#aab1b9');
+            ctx.beginPath();
+            ctx.moveTo(-22, sy * 9); ctx.lineTo(-52, sy * 8);
+            ctx.quadraticCurveTo(-70, sy * 8, -70, sy * 22);
+            ctx.quadraticCurveTo(-70, sy * 38, -50, sy * 38);
+            ctx.quadraticCurveTo(-30, sy * 38, -32, sy * 22);
+            ctx.lineTo(-30, sy * 2); ctx.lineTo(-22, sy * -1);
+            ctx.closePath(); shape('#3b3a44');
+            ctx.beginPath(); ctx.ellipse(-51, sy * 23, 11, 8, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#123327'; ctx.fill();
+            ctx.restore();
+        }
+        ctx.shadowColor = 'transparent';
+        ctx.beginPath(); ctx.arc(-44, 0, 5, 0, Math.PI * 2); shape('#c59430');
+    } else {
+        ctx.beginPath();                                   // the butcher's own knife
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(-34, 9, -76, 10);
+        ctx.lineTo(-76, -16);
+        ctx.quadraticCurveTo(-40, -15, 0, 0);
+        ctx.closePath(); shape('#b9bfc7');
+        ctx.shadowColor = 'transparent';
+        ctx.save(); ctx.clip();
+        ctx.beginPath();
+        ctx.moveTo(-76, -16); ctx.quadraticCurveTo(-40, -15, 0, 0);
+        ctx.lineTo(-24, -1); ctx.quadraticCurveTo(-46, -8, -76, -8);
+        ctx.closePath(); shape('#e9edf1');
+        ctx.beginPath();
+        ctx.moveTo(0, 0); ctx.quadraticCurveTo(-34, 9, -76, 10);
+        ctx.lineTo(-76, 5); ctx.quadraticCurveTo(-34, 4, 0, -2);
+        ctx.closePath(); shape('#fbfdff');
+        ctx.restore();
+        ctx.beginPath();
+        ctx.moveTo(-74, -17); ctx.lineTo(-88, -16); ctx.lineTo(-88, 12); ctx.lineTo(-74, 11);
+        ctx.closePath(); shape('#8f959d');
+        handle(-88, -139, '#5d3a21');
+        rivets(-101, -120);
     }
     ctx.restore();
 }
 
 /* ---- the man whose shop it is -------------------------------------------
-   White coat, blue stripes, a straw boater and a moustache you could hang a
-   coat on. There are two of him: the one holding a fistful of notes up where
-   everyone can see it, and the one with his hands empty and his shoulders
-   down. Which one you get is whether the day beat the best day.
+   White coat, striped apron, a hat of some sort and, more often than not, a
+   moustache. There are two of him: the one holding a fistful of notes up
+   where everyone can see it, and the one with his hands empty and his
+   shoulders down. Which one you get is whether the week beat the best week.
 
-   The head sits high enough to leave room under the moustache for a mouth,
-   which is the whole difference between the two of him. */
-function drawButcher(ctx, happy) {
-    const W2 = 260, H2 = 300;
-    ctx.clearRect(0, 0, W2, H2);
+   The head sits high enough to leave room under whatever is on his lip for a
+   mouth, which is the whole difference between the two of him. The neck is
+   drawn before the coat, or it paints over its own collar. */
+function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null } = {}) {
+    B = B || (cast ? cast.butcher : BUTCHERS[0]);
     ctx.save();
-    ctx.translate(W2 / 2, 186);
+    ctx.translate(cx, cy);
+    ctx.scale(k, k);
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
-    const SKIN = '#e5ab7e', SKIN_D = '#c98a5e', COAT = '#f7f3ea', COAT_D = '#e3dccc';
+    const SKIN = B.skin, SKIN_D = B.skinD, COAT = '#f7f3ea', COAT_D = '#e3dccc';
     const droop = happy ? 0 : 1;
+    const up = happy || holds === 'knife';
 
-    // arms, behind the coat but hung wide enough to show past it
     for (const sx of [-1, 1]) {
-        const up = happy && sx > 0;
+        const raised = up && sx > 0;
         blob(COAT_D, () => {
             ctx.moveTo(sx * 40, -44);
-            if (up) {
+            if (raised) {
                 ctx.quadraticCurveTo(sx * 88, -58, sx * 76, -116);
                 ctx.lineTo(sx * 50, -120);
                 ctx.quadraticCurveTo(sx * 60, -66, sx * 22, -38);
@@ -1512,9 +1697,16 @@ function drawButcher(ctx, happy) {
                 ctx.quadraticCurveTo(sx * 38, -8, sx * 22, -38);
             }
         });
-        const hx = up ? sx * 63 : sx * 53, hy = up ? -122 : 52;
+        const hx = raised ? sx * 63 : sx * 53, hy = raised ? -122 : 52;
+        if (raised && holds === 'knife') {                 // the tools of the trade
+            ctx.save();
+            ctx.translate(hx - 2, hy - 2);
+            ctx.rotate(-1.45);
+            drawKnife(ctx, 0, 0, 0, .80, cast ? cast.knife : KNIVES[0]);
+            ctx.restore();
+        }
         blob(SKIN, () => ctx.ellipse(hx, hy, 13, 11, 0, 0, Math.PI * 2));
-        if (up) for (let i = 0; i < 4; i++) {          // a fistful of notes
+        if (raised && holds === 'notes') for (let i = 0; i < 4; i++) {
             ctx.save();
             ctx.translate(hx + 2, hy - 8);
             ctx.rotate(-.5 + i * .27);
@@ -1525,7 +1717,6 @@ function drawButcher(ctx, happy) {
         }
     }
     blob(SKIN_D, () => { ctx.rect(-13, -76, 26, 30); });   // the neck, under the collar
-    // the coat
     blob(COAT, () => {
         ctx.moveTo(-40, -56);
         ctx.quadraticCurveTo(-52, -48, -54, 20);
@@ -1533,8 +1724,7 @@ function drawButcher(ctx, happy) {
         ctx.quadraticCurveTo(54, 20, 52, -48);
         ctx.quadraticCurveTo(40, -56, 0, -54);
     });
-    // the apron over it, blue and white the way they all are
-    ctx.save();
+    ctx.save();                                            // the apron over it
     ctx.beginPath();
     ctx.moveTo(-28, -50); ctx.lineTo(28, -50);
     ctx.quadraticCurveTo(34, 10, 40, 96); ctx.lineTo(-40, 96);
@@ -1542,7 +1732,7 @@ function drawButcher(ctx, happy) {
     ctx.closePath();
     ctx.fillStyle = '#f7f3ea'; ctx.fill();
     ctx.clip();
-    ctx.fillStyle = '#4a79b8';
+    ctx.fillStyle = B.apron;
     for (let x = -46; x < 46; x += 15) ctx.fillRect(x, -60, 7, 170);
     ctx.restore();
     blob('rgba(0,0,0,.10)', () => { ctx.rect(-40, 88, 80, 8); });
@@ -1550,25 +1740,27 @@ function drawButcher(ctx, happy) {
     // the head
     blob(SKIN, () => ctx.ellipse(0, -106, 41, 48, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1]) blob(SKIN_D, () => ctx.ellipse(sx * 40, -104, 7, 10, 0, 0, Math.PI * 2));
+    if (B.face === 'none') for (const sx of [-1, 1])        // hair, where the hat leaves room
+        blob(B.hair, () => ctx.ellipse(sx * 36, -116, 11, 20, sx * .3, 0, Math.PI * 2));
     for (const sx of [-1, 1])                               // ruddy from the cold room
         blob('rgba(211,109,78,.42)', () => ctx.ellipse(sx * 27, -96, 13, 9, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1]) {
         blob('#2a201a', () => ctx.ellipse(sx * 15, -114, 4.4, happy ? 3.4 : 4.8, 0, 0, Math.PI * 2));
-        blob('#4a3428', () => {
+        blob(B.hair, () => {
             /* Wide apart either way. Brows that nearly meet read as one V
                across the middle of his face, which is a scowl whichever way
                up the two halves of it are. */
-            if (happy) {     // level and high, which is a man pleased with himself
+            if (happy) {
                 ctx.moveTo(sx * 12, -129); ctx.quadraticCurveTo(sx * 22, -137, sx * 32, -131);
                 ctx.quadraticCurveTo(sx * 22, -132, sx * 12, -125);
-            } else {         // up at the inside, which is a man who has been robbed
+            } else {
                 ctx.moveTo(sx * 12, -133); ctx.quadraticCurveTo(sx * 22, -126, sx * 32, -118);
                 ctx.quadraticCurveTo(sx * 22, -122, sx * 12, -128);
             }
         });
     }
     blob(SKIN_D, () => ctx.ellipse(0, -100, 8, 7, 0, 0, Math.PI * 2));
-    // the mouth first, because the moustache sits over the top of it
+    // the mouth first, because whatever is on his lip sits over the top of it
     if (happy) {
         blob('#7a3628', () => ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2));
         ctx.save();
@@ -1582,24 +1774,51 @@ function drawButcher(ctx, happy) {
             ctx.quadraticCurveTo(0, -74, -15, -68);
         });
     }
-    // the moustache
-    blob('#4a3428', () => {
+    if (B.face === 'beard') blob(B.hair, () => {
+        ctx.moveTo(-24, -86); ctx.quadraticCurveTo(-20, -52, 0, -50);
+        ctx.quadraticCurveTo(20, -52, 24, -86);
+        ctx.quadraticCurveTo(0, -74, -24, -86);
+    });
+    if (B.face !== 'none') blob(B.hair, () => {
         ctx.moveTo(0, -94);
         ctx.quadraticCurveTo(-17, -100, -32, -88 + droop * 7);
         ctx.quadraticCurveTo(-21, -78 + droop * 8, 0, -84);
         ctx.quadraticCurveTo(21, -78 + droop * 8, 32, -88 + droop * 7);
         ctx.quadraticCurveTo(17, -100, 0, -94);
     });
-    // the boater
-    blob('#e0c47f', () => { ctx.ellipse(0, -146, 62, 12, 0, 0, Math.PI * 2); });
-    blob('#f0dca6', () => {
-        ctx.moveTo(-37, -148); ctx.quadraticCurveTo(-38, -178, 0, -178);
-        ctx.quadraticCurveTo(38, -178, 37, -148);
-    });
-    blob('#3f5f96', () => {
-        ctx.moveTo(-37.5, -149); ctx.quadraticCurveTo(0, -142, 37.5, -149);
-        ctx.lineTo(37.5, -160); ctx.quadraticCurveTo(0, -153, -37.5, -160);
-    });
+    // and a hat, which is most of who he is
+    if (B.hat === 'boater') {
+        blob('#e0c47f', () => { ctx.ellipse(0, -146, 62, 12, 0, 0, Math.PI * 2); });
+        blob('#f0dca6', () => {
+            ctx.moveTo(-37, -148); ctx.quadraticCurveTo(-38, -178, 0, -178);
+            ctx.quadraticCurveTo(38, -178, 37, -148);
+        });
+        blob(B.apron, () => {
+            ctx.moveTo(-37.5, -149); ctx.quadraticCurveTo(0, -142, 37.5, -149);
+            ctx.lineTo(37.5, -160); ctx.quadraticCurveTo(0, -153, -37.5, -160);
+        });
+    } else if (B.hat === 'cap') {
+        blob('#6e6656', () => {
+            ctx.moveTo(-46, -142); ctx.quadraticCurveTo(-48, -176, 2, -174);
+            ctx.quadraticCurveTo(44, -172, 42, -144);
+            ctx.quadraticCurveTo(0, -136, -46, -142);
+        });
+        blob('#5a5344', () => {
+            ctx.moveTo(-46, -142); ctx.quadraticCurveTo(-8, -134, 34, -140);
+            ctx.quadraticCurveTo(48, -140, 52, -148);
+            ctx.quadraticCurveTo(8, -152, -44, -147);
+        });
+    } else {
+        blob('#fdfaf2', () => {
+            ctx.moveTo(-40, -144); ctx.quadraticCurveTo(-42, -182, 0, -180);
+            ctx.quadraticCurveTo(42, -178, 40, -144);
+            ctx.quadraticCurveTo(0, -138, -40, -144);
+        });
+        blob('#e6e0d2', () => {
+            ctx.moveTo(-44, -145); ctx.quadraticCurveTo(0, -136, 44, -145);
+            ctx.lineTo(44, -152); ctx.quadraticCurveTo(0, -144, -44, -152);
+        });
+    }
     ctx.restore();
 }
 
@@ -1609,7 +1828,9 @@ function draw() {
     if (!string) return;
 
     drawRail();
-    // the string is on the rail until its top sausage is cut off or eaten
+    // nothing hangs off it on the title page: the shopfront is the picture
+    // there, and a string of sausages through the middle of the title is not
+    if (!showingIntro) {
     const head = pieces.find(p => p.from === 0);
     if (head) drawHook(at(0)[0] - 7, at(0)[1]);
 
@@ -1720,7 +1941,9 @@ function draw() {
                 pose, ms, breedFor(round));
     }
 
-    if (!showingIntro) drawKnife(ctx, knife.x, knife.y, knife.ang, .86 + knife.at * .16);
+    }
+
+    if (!showingIntro) drawKnife(ctx, knife.x, knife.y, knife.ang, .86 + knife.at * .16, cast.knife);
 }
 function tick() {
     cancelAnimationFrame(raf);
@@ -1744,9 +1967,13 @@ function jolt() {
     app.classList.add('shake');
 }
 
+/* A new week: a new man behind the counter, a new knife on the block and six
+   new dogs to get past. */
 function newRun() {
-    money = 0; lives = LIVES; showHud();
-    startRound(1);
+    money = 0; ledger = [];
+    deal();
+    drawShopfront();
+    startRound(1);            // which sets the HUD, once there is a day to put in it
 }
 document.getElementById('again').addEventListener('click', e => {
     e.stopPropagation();
@@ -1762,6 +1989,22 @@ document.getElementById('play').addEventListener('click', e => {
     newRun();
 });
 
+/* Who you are this week, what you are cutting with, and the six of them
+   lined up in the order they will turn up. The dogs getting bigger left to
+   right is the whole difficulty curve, said without a word. */
+function drawShopfront() {
+    const c = document.getElementById('shopfront'), g = c.getContext('2d');
+    g.clearRect(0, 0, 340, 250);
+    drawButcher(g, true, { cx: 170, cy: 158, k: .68, holds: 'knife' });
+    cast.dogs.forEach((B, i) => {
+        const k = (.30 + i * .035) / B.k;
+        drawDog(g, 32 + i * 55, 220 - i * 3, k, { open: 0 }, i * 700, B);
+    });
+    document.getElementById('cast-line').innerHTML =
+        `${cast.butcher.name}’s shop, a ${cast.knife.name}, and six dogs to get past`;
+}
+deal();
+drawShopfront();
 fit();
 makeString(1);
 dog.s = string.len + 64;          // waiting at the bottom of the title page
