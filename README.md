@@ -188,9 +188,12 @@ outcome - but a falling steak has moved on by the time you let go, and the
 swipe was being checked against where it used to be, which made catching one
 very nearly impossible. The dog is checked the same way, for the same reason.
 
-Let it past and it does not reach the floor: the dog has it, and a dog that has
-had a steak off you is a dog that comes back quicker for the rest of the week.
-So the steak is not a free bonus you can decline - ignoring it costs you twice.
+Let it past and it does not reach the floor. It does not have to land on the
+dog's head either: a steak is worth leaving the string for, so the dog jumps
+for wherever the thing is coming down, right across the window if it has to,
+and takes it out of the air. A dog that has had a steak off you is a dog that
+comes back quicker for the rest of the week, so the steak is not a free bonus
+you can decline - ignoring it costs you twice.
 
 It is the only thing in the game that asks you to look away from the string,
 which is the whole reason it is there.
@@ -209,10 +212,11 @@ thirds of the head it is drawn as, so a near miss is a near miss; but it sits
 squarely in front of the last twist on the string, which is exactly where the
 tempting cut is.
 
-Saturday night takes the whole window. The week is counted up day by day in
-front of the man whose shop it is, and whether he is holding the takings over
-his head or standing there with his hands empty is whether it beat the best
-week.
+Saturday night takes the whole window. The week is counted up day by day -
+what sold, what steaks were caught, what each day took, with the best day of
+the six marked - in front of the man whose shop it is, and whether he is
+holding the takings over his head or standing there with his hands empty is
+whether it beat the best week.
 
 ## The noise
 

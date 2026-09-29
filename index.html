@@ -124,7 +124,9 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger tr.shut td { opacity: .35; }
 #ledger tr.best td.m { color: #1f7a3f; }
 /* the week that ended with a stone in it has no ledger worth printing */
-#card.grave #ledger, #card.grave #rating { display: none; }
+#card.grave #ledger { display: none; }
+/* the ribbon says whether it was a good week; nothing else needs to */
+#rating { display: none; }
 #card.grave #score { color: #5a564e; }
 #card.grave #ribbon { background: #4b4842; color: #efe7d4; }
 #mute {
@@ -752,12 +754,22 @@ const sausageAt = s => {
    the string. Spoil a sausage in the same swipe and it pays nothing, because
    then it was not a good line, it was a lucky one. */
 const CHEER = [, , 'DOUBLE', 'TREBLE', 'FOUR AT ONCE', 'FIVE AT ONCE', 'SIX AT ONCE'];
-// where its head is on the page, and how big, so two things can ask
+/* Where its head is on the page, and how big, so everything that needs to
+   know can ask - the blade, the steak, and the drawing. The lunge is in here
+   too: a steak coming down anywhere in the window is a steak it will leave
+   the string for, and it goes out and comes back over the length of the
+   bite, which is what makes it look like a jump rather than a teleport. */
 function dogAt() {
     const sc = clamp(dog.s, 0, string.len);
     const [x, y] = at(sc);
     const below = dog.s > string.len;
-    return [x, below ? at(string.len)[1] + (dog.s - string.len) : y,
+    let lx = 0;
+    if (dog.grabX !== null && dog.chomp > 0) {
+        const e = 1 - dog.chomp / CHOMP;
+        const out = e < .42 ? e / .42 : Math.max(0, 1 - (e - .42) / .58);
+        lx = (dog.grabX - x) * (out * out * (3 - 2 * out));
+    }
+    return [x + lx, below ? at(string.len)[1] + (dog.s - string.len) : y,
             46 * 1.02 * cast.dog.k];
 }
 /* Did that stroke go through the dog. The circle is two thirds of the head it
@@ -807,12 +819,16 @@ function steakStep(dt) {
     steak.vy += 400 * dt;
     steak.y += steak.vy * dt;
     steak.ang += steak.spin * dt;
-    // if it gets past you it does not get past the dog, and a dog that has had
-    // a steak off you is a dog that comes back quicker
+    /* If it gets past you it does not get past the dog. It does not have to
+       land on its head either - a steak is worth leaving the string for, so
+       it jumps for wherever the thing is coming down. A dog that has had a
+       steak off you is a dog that comes back quicker for the rest of the
+       week, so this is not a free miss. */
     if (dog.going && dog.chomp <= 0) {
-        const [dx, dy, dr] = dogAt();
-        if (Math.hypot(steak.x - dx, steak.y - dy) < dr * .95) {
+        const [, dy, dr] = dogAt();
+        if (steak.y > dy - dr * .5) {
             chewing = { x: steak.x, y: steak.y, ang: steak.ang, len: 30, kind: 'steak', t0: now() };
+            dog.grabX = steak.x;
             steak = null;
             fed++; dog.keen++; dog.chomp = CHOMP;
             snarl(); jolt();
@@ -834,7 +850,7 @@ function hitSteak(sw) {
     return false;
 }
 function sliceSteak() {
-    money += STEAK_PAY; roundMoney += STEAK_PAY;
+    money += STEAK_PAY; roundMoney += STEAK_PAY; steaks++;
     showHud();
     shouts.push({ text: 'PRIME CUT', x: steak.x, y: steak.y - 26, t0: now() });
     shouts.push({ text: money2(STEAK_PAY), x: steak.x, y: steak.y + 10, t0: now(), small: true });
@@ -1000,7 +1016,7 @@ function ruin(p, k, x, y) {
    dog comes up the string and eats what you have not got off it yet, and
    it gets keener every time it manages it.
    ============================================================ */
-const dog = { s: 1e5, speed: 0, going: false, chomp: 0, keen: 0 };
+const dog = { s: 1e5, speed: 0, going: false, chomp: 0, keen: 0, grabX: null };
 let fed = 0;                        // how many it has had off you this week
 /* Getting one is the only thing the dog ever does, so it is worth the frames.
    It gapes on the way up, snaps at a third of the way through - which is when
@@ -1048,7 +1064,7 @@ function dogStep(dt) {
         if (k === p.from) pieces.splice(i, 1);
         else pieces.splice(i, 1, { from: p.from, to: k - 1 });
         snarl();
-        lost++; fed++; dog.keen++; dog.chomp = CHOMP;
+        lost++; fed++; dog.keen++; dog.chomp = CHOMP; dog.grabX = null;
         showHud();
         const rp = document.getElementById('roundplate');
         rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
@@ -1075,7 +1091,7 @@ const priceOf = q => Math.round((55 + 1.12 * q) / 5) * 5;      // pence, 95p to 
 const money2 = p => '£' + (p / 100).toFixed(2);
 
 let round = 0, live = false, armed = false, tallying = false, roundT0 = 0;
-let money = 0, roundMoney = 0, ledger = [];
+let money = 0, roundMoney = 0, ledger = [], steaks = 0;
 let cutFx = [], mess = [], shouts = [], chewing = null, swipe = null, blade = null, raf = 0, lastMs = 0;
 let tallyT = 0, settleT = 0, showingIntro = true;
 
@@ -1102,7 +1118,7 @@ function startRound(n) {
     cutFx = []; mess = []; shouts = []; chewing = null; steak = null; ghost = null;
     swipe = null; blade = null;
     const D = DAYS[n - 1], count = makeString(n);
-    roundMoney = 0;
+    roundMoney = 0; steaks = 0;
     // a dog that has been fed comes back keener, all week, up to a point
     dog.speed = D.speed * breedFor().speed * (1 + Math.min(.20, fed * .022));
     /* Far enough off the end that it has to run at you first. Measured in its
@@ -1111,7 +1127,7 @@ function startRound(n) {
        second and a bit, which is one cut if you are quick and none if you
        are admiring the string. */
     dog.s = string.len + dog.speed * 1.25; dog.going = false;
-    dog.chomp = 0; dog.keen = 0;
+    dog.chomp = 0; dog.keen = 0; dog.grabX = null;
     roundT0 = now();
     armed = false;
     showHud();
@@ -1161,7 +1177,7 @@ function endRound() {
     if (!live) return;
     live = false; armed = false; dog.going = false;
     countT.forEach(clearTimeout); countT = [];
-    ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost });
+    ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, steaks });
     tallying = true;
     tallyEl.innerHTML = `<span class="n">${money2(roundMoney)}</span>` +
         `<span class="l">${pick(lost === 0 ? CLEAN : saved ? THROUGH : MISSED)}</span>` +
@@ -1184,12 +1200,11 @@ function endWeek() {
     document.getElementById('ledger').innerHTML = ledger.map(r =>
         `<tr class="${r.took === top && top > 0 ? 'best' : ''}">` +
         `<td class="d">${r.day.short}</td>` +
-        `<td class="w">${r.sold} sold</td>` +
+        `<td class="w">${r.sold} sold` +
+        `${r.steaks ? ` &middot; ${r.steaks} steak${r.steaks > 1 ? 's' : ''}` : ''}</td>` +
         `<td class="m">${money2(r.took)}</td></tr>`).join('');
     document.getElementById('score').innerHTML =
         `${money2(money)}<span class="pc">for the week</span>`;
-    document.getElementById('rating').textContent =
-        record ? pick(RECORD_LINES) : pick(money >= best * .8 ? SHUT : MISSED_WEEK);
     card.className = record ? 'record' : '';
     // the canvas is drawn on more than once a session, and a butcher who was
     // holding the takings up last week leaves the arm behind if it is not
@@ -1322,17 +1337,6 @@ const THROUGH = ['Through', 'That will do', 'Enough for the window', 'Good enoug
                  'The dog ate the difference', 'Counter-ready'];
 const MISSED = ['The dog ate well', 'Nothing for the window', 'All of that was dog food',
                 'Not a thing sold', 'A complete loss', 'The dog is delighted'];
-// close to the best week you have had
-const SHUT = ['A respectable week', 'That will keep the lights on', 'Not far off your best',
-              'A fair week of it', 'Nearly a good one', 'The rent is paid'];
-// and nowhere near it
-const MISSED_WEEK = ['A thin week', 'That dog ate the profit', 'That dog wants paying',
-                     'Six days for that', 'The window was never full',
-                     'The dog is not sorry', 'You will hear about this',
-                     'Should have got a cat'];
-const RECORD_LINES = ['Your best week yet', 'A record week', 'Never done better',
-                      'The window has never looked fuller', 'Nobody has taken more. Including you.',
-                      'One for the books'];
 
 /* ============================================================
    INPUT
@@ -2286,7 +2290,7 @@ function draw() {
         if (e >= .34) chewing = null;
         else if (e > .05) {
             const f = clamp((e - .05) / .29, 0, 1), ease = f * f;
-            const [dx, dy] = at(clamp(dog.s, 0, string.len));
+            const [dx, dy] = dogAt();
             const x = chewing.x + (dx - chewing.x) * ease;
             const y = chewing.y + (dy + 14 - chewing.y) * ease;
             ctx.save();
@@ -2383,13 +2387,10 @@ function draw() {
             }
         }
     } else if (dog.going || dog.s <= string.len + 80) {
-        const s = clamp(dog.s, 0, string.len);
-        const [x, y] = at(s);
-        const below = dog.s > string.len;
+        const [x, y] = dogAt();
         const pose = dog.chomp > 0 ? chompPose(1 - dog.chomp / CHOMP)
                                    : { open: 0, reach: 0, tilt: 0, squash: 0 };
-        drawDog(ctx, x, below ? at(string.len)[1] + (dog.s - string.len) : y, 1.02,
-                pose, ms, breedFor());
+        drawDog(ctx, x, y, 1.02, pose, ms, breedFor());
     }
 
     }
