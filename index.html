@@ -139,14 +139,6 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #mute.muted .on { display: none; }
 #mute.muted .off { display: inline; }
 
-#prompt {
-    position: absolute; left: 0; right: 0; bottom: 6%; z-index: 2;
-    text-align: center; pointer-events: none; padding: 0 22px;
-    font-family: var(--font); font-weight: 900; text-transform: uppercase;
-    font-size: clamp(12px, 3.4vw, 15px); letter-spacing: .18em;
-    color: var(--cream); opacity: .5; transition: opacity .25s;
-}
-#prompt.gone { opacity: 0; }
 
 /* The count is the only thing on the screen that is about to matter, so it
    gets the middle of it. What day it is is a caption, and captions go at the
@@ -320,7 +312,7 @@ body.waiting #hud { display: none; }
 }
 @media (max-width: 400px) {
     #hud { padding: 9px 9px; gap: 6px; }
-    .plate { font-size: 14px; padding: 5px 8px 4px; }
+    .plate { font-size: 13px; padding: 5px 7px 4px; }
     .plate .ico { width: 12px; height: 12px; }
     #quota { padding: 5px 7px; }
     #mute { padding: 6px 7px 3px; }
@@ -362,7 +354,7 @@ body.waiting #hud { display: none; }
 
     <div id="hud">
         <div class="plate sign" id="roundplate"><svg class="ico"><use href="#i-cal"/></svg><span
-            id="round-val">MON</span></div>
+            id="round-val">Monday</span></div>
         <div id="till" class="sign"><span id="money">&pound;0.00</span><span
             class="of"><svg class="ico"><use href="#i-cup"/></svg><span id="best-val">&pound;0.00</span></span></div>
         <button id="mute" aria-label="Sound on or off">
@@ -377,7 +369,6 @@ body.waiting #hud { display: none; }
 
     <div id="banner"></div>
     <div id="tally"></div>
-    <div id="prompt">Swipe through the twists</div>
 
     <div id="intro">
         <h1>Butcher's<br>Dog</h1>
@@ -1108,13 +1099,12 @@ let best = 0;
 try { best = parseInt(localStorage.getItem(bestKey) || '0', 10) || 0; } catch (e) { /* private mode */ }
 
 const bannerEl = document.getElementById('banner');
-const promptEl = document.getElementById('prompt');
 const tallyEl = document.getElementById('tally');
 const card = document.getElementById('card');
 const moneyEl = document.getElementById('money');
 
 function showHud() {
-    document.getElementById('round-val').textContent = DAYS[Math.min(5, round - 1)].short;
+    document.getElementById('round-val').textContent = DAYS[Math.min(5, round - 1)].name;
     moneyEl.textContent = money2(money);
     document.getElementById('best-val').textContent = money2(Math.max(best, money));
 }
@@ -1156,9 +1146,6 @@ function countdown(n) {
         void bannerEl.offsetWidth;
         bannerEl.classList.add('go');
     };
-    promptEl.innerHTML = `${D.name}${D.half ? ' &middot; half day' : ''}` +
-                         (n === 1 ? ` &mdash; ${B.dog} the ${B.name}` : '');
-    promptEl.classList.remove('gone');
     say('3');
     beep(0);
     countT.push(setTimeout(() => { if (round === n && live) { say('2'); beep(1); } }, 620));
@@ -1169,7 +1156,6 @@ function countdown(n) {
         armed = true;
         dog.going = true;
         woof();
-        promptEl.classList.add('gone');
         if (n >= 2) countT.push(setTimeout(() => {
             if (round === n && live) dropSteak();
         }, 700 + Math.random() * 1500));
@@ -1360,7 +1346,6 @@ function down(x, y) {
     if (tallying) return nextRound();
     if (!card.hidden || !live || !armed || showingIntro) return;
     swipe = [[x, y]];
-    promptEl.classList.add('gone');
 }
 /* The steak and the dog are tested as the blade goes through them rather than
    when the finger comes off the glass. The whole path gets tested either way,
