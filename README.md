@@ -168,14 +168,25 @@ Saturday and take wildly different amounts.
 
 Nobody reads an instruction, so on Monday - while the count is running and
 there is nothing else to do with the screen - a ghost knife walks the cut you
-are meant to make: square across the middle twist, in one stroke, over and over
-until the dog is let off. It stops the moment the round is live, because by
-then you either have it or you have not.
+are meant to make: square across the bottom twist, in one stroke, over and over
+until the dog is let off, with SWIPE TO CUT written next to it rather than down
+at the bottom of the window where it may as well not be. The bottom twist
+because that frees the sausage nearest the dog, which is the one you actually
+want off first; demonstrating a cut in the middle taught the gesture and
+nothing about the game. It stops the moment the round is live, because by then
+you either have it or you have not.
 
 ## The one that falls
 
-From Tuesday on, once a day, a steak comes off the top of the window. Catch it
+From Tuesday on, once a day, a steak comes off the top of the window with a
+whistle to tell you to look up. It takes about two seconds to fall. Catch it
 with the blade on the way down and it is worth about two sausages.
+
+It is cut the moment the blade passes through it rather than when your finger
+comes off the glass. The whole path gets tested either way, so it changes no
+outcome - but a falling steak has moved on by the time you let go, and the
+swipe was being checked against where it used to be, which made catching one
+very nearly impossible. The dog is checked the same way, for the same reason.
 
 Let it past and it does not reach the floor: the dog has it, and a dog that has
 had a steak off you is a dog that comes back quicker for the rest of the week.

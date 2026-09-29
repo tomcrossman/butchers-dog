@@ -207,12 +207,12 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #intro[hidden] { display: none; }
 body.waiting #hud { display: none; }
 #intro h1 {
-    margin: 0 0 6px; font-family: var(--font-display); font-weight: 400; color: var(--gold);
+    margin: 0 0 20px; font-family: var(--font-display); font-weight: 400; color: var(--gold);
     font-size: clamp(38px, 13.5vw, 60px); line-height: .98; letter-spacing: .01em;
     text-shadow: 0 4px 0 rgba(0,0,0,.45);
 }
 #intro .rule {
-    width: 132px; height: 2px; margin: 10px 0 10px;
+    width: 132px; height: 2px; margin: 16px 0 12px;
     background: linear-gradient(90deg, transparent, var(--gold-d), transparent);
 }
 #intro p { margin: 0; max-width: 330px; font-size: 13px; font-weight: 700;
@@ -371,7 +371,7 @@ body.waiting #hud { display: none; }
 
     <div id="intro">
         <h1>Butcher's<br>Dog</h1>
-        <canvas id="shopfront" width="340" height="286"></canvas>
+        <canvas id="shopfront" width="340" height="312"></canvas>
         <div class="rule"></div>
         <p id="cast-line">Six days. One string a day. A bigger dog every morning.</p>
         <button class="btn" id="play">Open up shop</button>
@@ -785,21 +785,26 @@ function hitDog(sw) {
    from the string, which is the whole reason it is there. */
 const STEAK_PAY = 330;
 let steak = null, steakT = 0;
+const incoming = () => safely(t => {
+    tone(t, { freq: 1500, to: 620, dur: .45, type: 'triangle', vol: .09 });
+    tone(t, { freq: 2250, to: 930, dur: .45, type: 'sine', vol: .04, at: .02 });
+});
 function dropSteak() {
-    steak = { x: 56 + Math.random() * Math.max(40, W - 112), y: -54, vy: 60,
-              ang: Math.random() * 6.28, spin: (Math.random() - .5) * 2.6, bits: null, t0: now() };
+    steak = { x: 56 + Math.random() * Math.max(40, W - 112), y: -54, vy: 24,
+              ang: Math.random() * 6.28, spin: (Math.random() - .5) * 1.6, bits: null, t0: now() };
+    incoming();                    // so you know to look up
 }
 function steakStep(dt) {
     if (!steak) return;
     if (steak.bits) {
         for (const b of steak.bits) {
-            b.vy += 1500 * dt;
+            b.vy += 900 * dt;
             b.x += b.vx * dt; b.y += b.vy * dt; b.ang += b.spin * dt;
         }
         if (now() - steak.t0 > 900) steak = null;
         return;
     }
-    steak.vy += 1250 * dt;
+    steak.vy += 400 * dt;
     steak.y += steak.vy * dt;
     steak.ang += steak.spin * dt;
     // if it gets past you it does not get past the dog, and a dog that has had
@@ -818,7 +823,7 @@ function steakStep(dt) {
 }
 function hitSteak(sw) {
     if (!steak || steak.bits) return false;
-    const r = 46;
+    const r = 50;
     for (let i = 1; i < sw.length; i++) {
         const [ax, ay] = sw[i - 1], [bx, by] = sw[i];
         const dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
@@ -1110,9 +1115,9 @@ function startRound(n) {
     roundT0 = now();
     armed = false;
     showHud();
-    // only the first morning of the first week needs telling how to do it
-    promptEl.textContent = n === 1 ? 'Swipe through the twists' : '';
-    promptEl.classList.toggle('gone', n !== 1);
+    // the demonstration carries its own label now, next to the cut it is making
+    promptEl.textContent = '';
+    promptEl.classList.add('gone');
     countdown(n);
     tick();
 }
@@ -1343,11 +1348,19 @@ function down(x, y) {
     swipe = [[x, y]];
     promptEl.classList.add('gone');
 }
+/* The steak and the dog are tested as the blade goes through them rather than
+   when the finger comes off the glass. The whole path gets tested either way,
+   so this changes no outcome - but a falling steak has moved on by the time
+   you let go, and the swipe was being checked against where it used to be,
+   which is why catching one was very nearly impossible. */
 function move(x, y) {
     if (!swipe) return;
     const last = swipe[swipe.length - 1];
     if (Math.hypot(x - last[0], y - last[1]) < 3) return;
     swipe.push([x, y]);
+    const seg = [last, [x, y]];
+    if (hitDog(seg)) { swipe = null; blade = null; dogDown(); return; }
+    if (hitSteak(seg)) sliceSteak();
 }
 function up() {
     if (!swipe) return;
@@ -2192,6 +2205,17 @@ function drawDemo(ms) {
         ctx.globalAlpha = .62;
         drawKnife(ctx, hx, hy, Math.atan2(by - ay, bx - ax), .78, cast.knife);
     }
+    // and what it is you are watching, next to the thing it is doing rather
+    // than down at the bottom of the window where it may as well not be
+    ctx.globalAlpha = 1;
+    ctx.font = '900 13px Lato, system-ui, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round';
+    const lx = clamp(cx, 70, W - 70), ly = cy + 56;
+    ctx.strokeStyle = 'rgba(12,32,24,.9)'; ctx.lineWidth = 5;
+    ctx.strokeText('S W I P E   T O   C U T', lx, ly);
+    ctx.fillStyle = 'rgba(243,233,214,.9)';
+    ctx.fillText('S W I P E   T O   C U T', lx, ly);
     ctx.restore();
 }
 
@@ -2495,10 +2519,10 @@ function drawFascia(g, name, apron) {
 }
 function drawShopfront() {
     const c = document.getElementById('shopfront'), g = c.getContext('2d');
-    g.clearRect(0, 0, 340, 286);
+    g.clearRect(0, 0, 340, 312);
     drawFascia(g, cast.shop, cast.butcher.apron);
-    drawButcher(g, true, { cx: 120, cy: 214, k: .64, holds: 'knife' });
-    drawDog(g, 264, 226, .76 / cast.dog.k, { open: 0 }, 0, cast.dog);
+    drawButcher(g, true, { cx: 120, cy: 236, k: .64, holds: 'knife' });
+    drawDog(g, 264, 248, .76 / cast.dog.k, { open: 0 }, 0, cast.dog);
     // the knife is in his hand and the dog is stood next to him, so the line
     // only has to introduce the two of them
     document.getElementById('cast-line').innerHTML =
