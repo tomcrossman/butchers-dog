@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Butcher's Dog</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<meta name="theme-color" content="#F6EFE2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Butcher's Dog">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Butcher's Dog - cut the sausages off the string before the dog gets to them.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700;900&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   TOKENS - the same house as Perfect Circle and Run Boys, Run,
+   on butcher's paper rather than squared
+   ============================================================ */
+:root {
+    --ink:     #241F2E;
+    --paper:   #F6EFE2;
+    --stripe:  rgba(196, 84, 60, .07);
+    --panel:   #fffdf8;
+    --gold:    #f4b32c;
+    --good:    #3fa45b;
+    --danger:  #e8524f;
+    --meat:    #cf5b3e;
+    --meat-hi: #e07a5a;
+    --meat-lo: #ad4429;
+    --pop:     4px 4px 0 var(--ink);
+    --pop-s:   2px 2px 0 var(--ink);
+    --font:         "Comic Neue", "Comic Sans MS", system-ui, sans-serif;
+    --font-display: "Bangers", "Comic Sans MS", Impact, system-ui, sans-serif;
+}
+* { box-sizing: border-box; touch-action: manipulation; -webkit-user-select: none; user-select: none;
+    -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--ink); background: var(--paper); }
+
+/* butcher's paper: a pink pinstripe, and a little grease in the corners */
+#app {
+    position: fixed; inset: 0; overflow: hidden; touch-action: none;
+    background:
+        radial-gradient(120% 90% at 50% 40%, transparent 52%, rgba(120, 96, 52, .10) 100%),
+        repeating-linear-gradient(90deg, var(--stripe) 0 2px, transparent 2px 26px),
+        var(--paper);
+}
+#pad { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* ============================================================
+   HUD
+   ============================================================ */
+#hud {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 3;
+    display: flex; align-items: center; gap: 6px;
+    padding: 12px 10px; pointer-events: none;
+}
+.plate {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--font-display); font-size: 23px; letter-spacing: .02em;
+    padding: 4px 10px 2px;
+    background: var(--panel); border: 3px solid var(--ink); border-radius: 13px;
+    box-shadow: var(--pop-s);
+}
+.plate .ico { width: 17px; height: 17px; fill: var(--gold); flex: none; }
+.plate .of {
+    display: inline-flex; align-items: center; gap: 3px;
+    margin-left: 7px; padding-left: 8px; border-left: 2.5px solid rgba(36,31,46,.18);
+    font-size: .74em; opacity: .62;
+}
+#bestplate.beating { background: var(--gold); animation: beat .5s ease-in-out infinite alternate; }
+#bestplate.beating .of { display: none; }
+@keyframes beat { from { transform: scale(1); } to { transform: scale(1.06); } }
+/* the quota, filling up as you save them */
+#quota {
+    flex: 1; min-width: 70px;
+    display: flex; align-items: center; gap: 7px; padding: 4px 8px;
+    background: var(--panel); border: 3px solid var(--ink); border-radius: 13px;
+    box-shadow: var(--pop-s);
+    font-family: var(--font-display); font-size: 20px; letter-spacing: .02em;
+}
+#quota .pips { display: flex; gap: 3px; flex: 1; flex-wrap: nowrap; }
+#quota .pip {
+    flex: 1; height: 12px; min-width: 4px; border: 2px solid var(--ink); border-radius: 4px;
+    background: transparent;
+}
+#quota .pip.got { background: var(--meat); }
+#quota .pip.need { background: rgba(36,31,46,.13); }
+#mute {
+    pointer-events: auto; cursor: pointer; align-self: center;
+    padding: 6px 7px 3px; line-height: 0;
+    background: var(--panel); border: 3px solid var(--ink); border-radius: 13px;
+    box-shadow: var(--pop-s);
+}
+#mute:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink); }
+#mute .off { display: none; }
+#mute.muted .on { display: none; }
+#mute.muted .off { display: inline; }
+
+#prompt {
+    position: absolute; left: 0; right: 0; bottom: 7%; z-index: 2;
+    text-align: center; pointer-events: none; padding: 0 22px;
+    font-family: var(--font-display); font-size: clamp(18px, 5vw, 25px); letter-spacing: .03em;
+    color: var(--ink); opacity: .6; transition: opacity .2s;
+}
+#prompt.gone { opacity: 0; }
+
+#banner {
+    position: absolute; left: 0; right: 0; top: 30%; z-index: 4;
+    text-align: center; pointer-events: none; opacity: 0;
+    font-family: var(--font-display); letter-spacing: .03em; color: var(--ink);
+}
+#banner .r { display: block; font-size: clamp(38px, 12vw, 60px); line-height: 1; }
+#banner.go { animation: bannerGo 1.2s ease-out both; }
+@keyframes bannerGo {
+    0%   { transform: scale(.7); opacity: 0; }
+    18%  { transform: scale(1); opacity: 1; }
+    70%  { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.08); opacity: 0; }
+}
+
+/* got through: the count, a beat to read it, and straight on */
+#tally {
+    position: absolute; left: 0; right: 0; bottom: 12%; z-index: 9;
+    text-align: center; pointer-events: none; display: none; padding: 0 18px;
+}
+#tally.on { display: block; animation: tallyIn .3s cubic-bezier(.2, 1.4, .4, 1) both; }
+@keyframes tallyIn { from { transform: translateY(14px) scale(.9); opacity: 0; }
+                     to   { transform: none; opacity: 1; } }
+#tally .n {
+    display: block; font-family: var(--font-display); font-size: clamp(44px, 14vw, 62px);
+    line-height: 1; letter-spacing: .02em; color: var(--good);
+}
+#tally .l { display: block; font-family: var(--font-display); font-size: 24px; letter-spacing: .03em; }
+#tally .b {
+    display: block; font-family: var(--font); font-size: 11px; font-weight: 900;
+    letter-spacing: .05em; opacity: .45; margin-top: 4px;
+}
+
+/* ---- the front door --------------------------------------------------
+   A phone browser will not let a freshly loaded page make a sound on the
+   first touch it receives, so the first press has to be spent on something
+   that is not the game. Pressing Play is what opens the audio. */
+#intro {
+    position: absolute; inset: 0; z-index: 12;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    padding: 0 22px 8%; text-align: center;
+    background: linear-gradient(transparent 30%, var(--paper) 54%, var(--paper));
+    animation: introIn .5s ease-out both;
+}
+@keyframes introIn { from { opacity: 0; } to { opacity: 1; } }
+#intro[hidden] { display: none; }
+body.waiting #hud { display: none; }
+#intro h1 {
+    margin: 0; font-family: var(--font-display); font-weight: 400;
+    font-size: clamp(42px, 15vw, 68px); line-height: .92; letter-spacing: .02em;
+    text-shadow: 3px 3px 0 rgba(207, 91, 62, .5); rotate: -1.4deg;
+}
+#intro p { margin: 12px 0 0; max-width: 340px; font-size: 14px; font-weight: 700;
+           line-height: 1.5; opacity: .72; }
+#intro .btn { margin-top: 20px; width: 100%; max-width: 250px; }
+
+/* ============================================================
+   THE VERDICT
+   ============================================================ */
+#card {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    padding: 14px 18px 16px; pointer-events: none;
+    background: linear-gradient(transparent 46%, rgba(24,20,32,.16) 78%, rgba(24,20,32,.34) 100%);
+}
+#card[hidden] { display: none; }
+#card .inner {
+    position: relative; flex: none; pointer-events: auto;
+    animation: sheetIn .34s cubic-bezier(.2, 1.3, .4, 1) both;
+    width: 100%; max-width: 320px; padding: 20px;
+    background: var(--panel); border: 3.5px solid var(--ink); border-radius: 22px;
+    box-shadow: 4px 4px 0 var(--ink); text-align: center;
+}
+@keyframes sheetIn { from { transform: translateY(26px); opacity: 0; }
+                     to   { transform: translateY(0); opacity: 1; } }
+#ribbon {
+    position: absolute; top: -21px; left: 50%;
+    font-family: var(--font-display); font-size: 17px; letter-spacing: .08em; white-space: nowrap;
+    padding: 3px 16px 1px; transform: translateX(-50%) rotate(-3deg);
+    background: var(--danger); color: var(--panel);
+    border: 3px solid var(--ink); border-radius: 9px; box-shadow: var(--pop-s);
+    animation: ribbonIn .5s cubic-bezier(.2, 1.6, .4, 1) both; z-index: 3;
+}
+@keyframes ribbonIn { from { transform: translateX(-50%) rotate(-3deg) scale(0); }
+                      to   { transform: translateX(-50%) rotate(-3deg) scale(1); } }
+#card.record .inner { border-color: var(--gold); }
+#card.record #ribbon { background: var(--gold); color: var(--ink); }
+#card.record #score { color: var(--gold); }
+#card #score {
+    display: block; font-family: var(--font-display); font-size: 62px; line-height: .95;
+    letter-spacing: .02em; color: var(--danger); margin: 6px 0 0;
+}
+#score .pc { font-size: .34em; opacity: .65; margin-left: 5px; }
+#rating { margin: 2px 0 0; font-family: var(--font-display); font-size: 26px; letter-spacing: .03em; }
+#pass { margin: 5px 0 0; font-size: 12px; font-weight: 900; letter-spacing: .04em; opacity: .8; }
+.btn {
+    margin-top: 12px; width: 100%;
+    font-family: var(--font-display); font-size: 24px; font-weight: 400; letter-spacing: .03em;
+    padding: 12px; color: var(--ink);
+    background: var(--gold); border: 3px solid var(--ink); border-radius: 15px;
+    box-shadow: var(--pop-s); cursor: pointer;
+}
+.btn:active { transform: translate(2px,2px); box-shadow: 0 0 0 var(--ink); }
+/* the dog, taking a view on your butchery */
+.cheer {
+    position: absolute; left: -22px; top: -16px;
+    width: 88px; height: 88px; border-radius: 50%; overflow: hidden;
+    background: linear-gradient(#d8d2c6, #efeae0);
+    border: 3.5px solid var(--ink); box-shadow: var(--pop-s); z-index: 2;
+    animation: cheerIn .6s cubic-bezier(.2, 1.7, .4, 1) both;
+}
+.cheer canvas { width: 100%; height: 100%; display: block; }
+@keyframes cheerIn { from { transform: scale(0) rotate(-20deg); } to { transform: scale(1) rotate(-6deg); } }
+
+#app.shake { animation: shake .42s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes shake {
+    10%, 90% { transform: translate3d(-3px, 1px, 0); }
+    20%, 80% { transform: translate3d(7px, -2px, 0); }
+    30%, 50%, 70% { transform: translate3d(-11px, 2px, 0); }
+    40%, 60% { transform: translate3d(11px, -1px, 0); }
+}
+#version { position: absolute; bottom: 8px; right: 10px; z-index: 3;
+           font-size: 9px; font-weight: 800; letter-spacing: .1em; opacity: .3; }
+
+/* ============================================================
+   DRAWN, NOT PRINTED
+   ============================================================ */
+.plate, #mute, #quota, #card .inner, .btn, #ribbon {
+    border-radius: 22px 9px 19px 12px / 11px 20px 10px 23px;
+}
+.plate, #mute, #quota, #card .inner, .btn { position: relative; }
+.plate::before, #mute::before, #quota::before, #card .inner::before, .btn::before,
+.plate::after,  #mute::after,  #quota::after,  #card .inner::after,  .btn::after {
+    content: ''; position: absolute; pointer-events: none; border: 2.4px solid var(--ink);
+}
+.plate::after, #mute::after, #quota::after, #card .inner::after, .btn::after {
+    inset: -4px -1px -2px -3px; opacity: .34;
+    border-radius: 10px 21px 11px 20px / 20px 11px 22px 10px;
+    transform: rotate(1.15deg);
+}
+.plate::before, #mute::before, #quota::before, #card .inner::before, .btn::before {
+    inset: -1px -3px -4px -1px; opacity: .17;
+    border-radius: 19px 13px 23px 9px / 13px 22px 9px 19px;
+    transform: rotate(-.95deg);
+}
+#card .inner::after  { inset: -6px -2px -3px -5px; border-width: 3px; transform: rotate(-.7deg); }
+#card .inner::before { inset: -2px -5px -6px -2px; border-width: 2.6px; transform: rotate(1deg); }
+.plate  { rotate: -1.3deg; }
+#mute   { rotate: 1.9deg; }
+#quota  { rotate: .7deg; }
+.btn    { rotate: -1.1deg; }
+#card .inner { rotate: .6deg; }
+#card .inner, .plate, #quota {
+    background-image: repeating-linear-gradient(48deg,
+        rgba(64, 92, 122, .05) 0 1.5px, transparent 1.5px 7px);
+}
+.cheer { border-radius: 58% 42% 54% 46% / 45% 57% 43% 55%; }
+.cheer::before, .cheer::after {
+    content: ''; position: absolute; pointer-events: none; border: 2.2px solid var(--ink);
+}
+.cheer::after  { inset: 2px; opacity: .3;
+    border-radius: 44% 56% 46% 54% / 56% 44% 55% 45%; transform: rotate(3.2deg); }
+.cheer::before { inset: 5px; opacity: .14;
+    border-radius: 55% 45% 57% 43% / 43% 56% 44% 57%; transform: rotate(-4deg); }
+
+@media (max-width: 400px) {
+    #hud { padding: 10px 8px; gap: 4px; }
+    .plate { font-size: 18px; padding: 3px 7px 1px; }
+    .plate .ico { width: 14px; height: 14px; }
+    #quota { font-size: 17px; padding: 3px 6px; }
+    #mute { padding: 5px 6px 2px; }
+    #mute svg { width: 19px; height: 19px; }
+}
+</style>
+</head>
+
+<body class="waiting">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-cup" viewBox="0 0 14 14">
+        <path d="M 4 1.4 H 10 V 5.2 C 10 7.3, 8.7 8.6, 7 8.6 C 5.3 8.6, 4 7.3, 4 5.2 Z"/>
+        <path d="M 6 8.4 H 8 V 10.4 H 6 Z"/><path d="M 3.4 10.4 H 10.6 V 12.6 H 3.4 Z"/>
+        <path d="M 10.2 2.6 H 12.2 V 4.2 C 12.2 5.5, 11.2 6.2, 10.2 6.2" fill="none"
+              stroke="currentColor" stroke-width="1.3"/>
+        <path d="M 3.8 2.6 H 1.8 V 4.2 C 1.8 5.5, 2.8 6.2, 3.8 6.2" fill="none"
+              stroke="currentColor" stroke-width="1.3"/>
+    </symbol>
+</svg>
+
+<div id="app">
+    <canvas id="pad"></canvas>
+
+    <div id="hud">
+        <div class="plate" id="bestplate">Round&nbsp;<span id="round-val">1</span><span
+            class="of"><svg class="ico"><use href="#i-cup"/></svg><span id="best-val">0</span></span></div>
+        <div id="quota"><span class="pips" id="pips"></span></div>
+        <button id="mute" aria-label="Sound on or off">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#241F2E"
+                 stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M 4 9 H 8 L 13 5 V 19 L 8 15 H 4 Z" fill="#241F2E"/>
+                <g class="on"><path d="M 16.5 9.5 q 2 2.5 0 5"/><path d="M 19.5 7 q 3.6 5 0 10"/></g>
+                <g class="off"><path d="M 17 9.5 L 22 14.5 M 22 9.5 L 17 14.5"/></g>
+            </svg>
+        </button>
+    </div>
+
+    <div id="banner"></div>
+    <div id="tally"></div>
+    <div id="prompt">Swipe through the twists</div>
+
+    <div id="intro">
+        <h1>Butcher's<br>Dog</h1>
+        <p>Cut the sausages off the string before the dog gets to them!</p>
+        <button class="btn" id="play">Play</button>
+    </div>
+
+    <div id="card" hidden>
+        <div class="inner">
+            <div id="ribbon">GAME OVER</div>
+            <div class="cheer"><canvas id="mug" width="88" height="88"></canvas></div>
+            <span id="score">0<span class="pc">rounds</span></span>
+            <p id="rating">Butchered</p>
+            <p id="pass"></p>
+            <button class="btn" id="again">Again!</button>
+        </div>
+    </div>
+
+    <div id="version">v1</div>
+</div>
+
+<script>
+const APP_VERSION = 'v1';
+document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
+
+/* ============================================================
+   SOUND
+   All of it synthesised - there is not a recording in the project. The
+   unlock dance below is the one Perfect Circle paid for in full: a phone
+   browser will not open an audio session on a page's first touch, so the
+   Play button spends it, and everything is scheduled against a clock that
+   has been seen to move rather than one that claims to be running.
+   ============================================================ */
+const AC = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null, master = null, soundOn = true;
+const soundKey = 'bd-sound';
+try { soundOn = localStorage.getItem(soundKey) !== 'off'; } catch (e) { /* private mode */ }
+
+function audioNow() {
+    if (!audioCtx) {
+        audioCtx = new AC();
+        master = audioCtx.createGain();
+        master.gain.value = .7;
+        master.connect(audioCtx.destination);
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+    return audioCtx.currentTime;
+}
+function tone(t0, { freq, to, dur = .18, type = 'triangle', vol = .2, at = 0 }) {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain(), s = t0 + at;
+    o.type = type;
+    o.frequency.setValueAtTime(freq, s);
+    if (to) o.frequency.exponentialRampToValueAtTime(Math.max(1, to), s + dur);
+    g.gain.setValueAtTime(.0001, s);
+    g.gain.exponentialRampToValueAtTime(vol, s + .012);
+    g.gain.exponentialRampToValueAtTime(.0001, s + dur);
+    o.connect(g); g.connect(master);
+    o.start(s); o.stop(s + dur + .02);
+}
+const LEAD = .025;
+let clockGoing = false;
+function whenRunning(fn) {
+    try {
+        audioNow();
+        const go = () => { clockGoing = true; fn(audioCtx.currentTime + LEAD); };
+        if (clockGoing || audioCtx.currentTime > 0) return go();
+        audioCtx.resume().catch(() => {});
+        let tries = 0;
+        const waitForTheClock = () => {
+            if (audioCtx.currentTime > 0) return go();
+            if (tries === 30) startSession();
+            if (++tries > 90) return;
+            requestAnimationFrame(waitForTheClock);
+        };
+        waitForTheClock();
+    } catch (e) { /* no audio here, never mind */ }
+}
+const safely = fn => { if (!soundOn) return; whenRunning(fn); };
+let noiseBuf = null;
+function noise() {
+    if (!noiseBuf) {
+        const len = Math.floor(audioCtx.sampleRate * .6);
+        noiseBuf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+        const d = noiseBuf.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    }
+    return noiseBuf;
+}
+function hiss(t0, { hp = 1200, lp = 16000, dur = .12, vol = .3, at = 0 }) {
+    const n = audioCtx.createBufferSource(), h = audioCtx.createBiquadFilter(),
+          l = audioCtx.createBiquadFilter(), g = audioCtx.createGain(), s = t0 + at;
+    n.buffer = noise();
+    h.type = 'highpass'; h.frequency.value = hp;
+    l.type = 'lowpass';  l.frequency.value = lp;
+    g.gain.setValueAtTime(vol, s);
+    g.gain.exponentialRampToValueAtTime(.0001, s + dur);
+    n.connect(h); h.connect(l); l.connect(g); g.connect(master);
+    n.start(s); n.stop(s + dur + .02);
+}
+/* A clean cut is a snick: a scrape of steel and a short bright ring, pitched
+   up by how good it was, so a dead square cut through the middle of a twist
+   sounds different from one that only just counted. */
+const snick = q => safely(t => {
+    const k = .5 + q / 100;
+    hiss(t, { hp: 3400 * k, lp: 15000, dur: .05, vol: .3 });
+    tone(t, { freq: 900 * k, to: 1800 * k, dur: .07, type: 'square', vol: .1, at: .005 });
+    if (q > 75) tone(t, { freq: 2400 * k, dur: .16, type: 'triangle', vol: .07, at: .03 });
+});
+// a cut through the middle of a sausage, which is not a cut, it is a mess
+const squelch = () => safely(t => {
+    hiss(t, { hp: 180, lp: 900, dur: .17, vol: .34 });
+    tone(t, { freq: 190, to: 70, dur: .2, type: 'sawtooth', vol: .16 });
+});
+// a sausage landing in the tray
+const plop = n => safely(t => {
+    tone(t, { freq: 330 + n * 26, dur: .1, type: 'triangle', vol: .16 });
+    tone(t, { freq: 660 + n * 52, dur: .07, type: 'sine', vol: .08, at: .02 });
+});
+// the dog getting one
+const chomp = () => safely(t => {
+    hiss(t, { hp: 300, lp: 2600, dur: .09, vol: .34 });
+    tone(t, { freq: 150, to: 58, dur: .16, type: 'square', vol: .2, at: .01 });
+    tone(t, { freq: 320, to: 120, dur: .2, type: 'sawtooth', vol: .12, at: .06 });
+});
+const woof = () => safely(t => {
+    tone(t, { freq: 420, to: 150, dur: .13, type: 'sawtooth', vol: .2 });
+    tone(t, { freq: 210, to: 84, dur: .18, type: 'square', vol: .14, at: .02 });
+    hiss(t, { hp: 400, lp: 3000, dur: .1, vol: .14 });
+});
+const jingleWin = () => safely(t => {
+    const M = [[0, 392, .16], [.16, 523, .16], [.32, 659, .16], [.48, 784, .30],
+               [.80, 880, .16], [.96, 784, .16], [1.12, 659, .16], [1.28, 698, .16],
+               [1.44, 880, .16], [1.60, 784, .16], [1.76, 659, .16], [1.92, 1046, .80]];
+    M.forEach(([at, freq, dur]) => tone(t, { freq, dur, type: 'triangle', vol: .17, at }));
+    M.forEach(([at, freq, dur]) => tone(t, { freq: freq / 2, dur, type: 'sine', vol: .07, at }));
+    [[0, 131], [.48, 196], [.96, 175], [1.44, 196]].forEach(([at, freq]) =>
+        tone(t, { freq, dur: .46, type: 'sine', vol: .12, at }));
+    [262, 330, 392, 523].forEach(freq => tone(t, { freq, dur: 1, type: 'triangle', vol: .08, at: 1.92 }));
+    tone(t, { freq: 131, dur: 1.05, type: 'sine', vol: .13, at: 1.92 });
+    hiss(t, { hp: 6000, dur: .5, vol: .1, at: 1.94 });
+});
+const jingleLose = () => safely(t => {
+    const M = [[0, 330, 311, .30], [.34, 294, 277, .30], [.68, 262, 247, .30],
+               [1.02, 247, 233, .34], [1.40, 220, 196, .50]];
+    M.forEach(([at, freq, to, dur]) => {
+        tone(t, { freq, to, dur, type: 'sawtooth', vol: .13, at });
+        tone(t, { freq: freq * 1.007, to: to * 1.007, dur, type: 'sawtooth', vol: .06, at });
+    });
+    [[0, 110], [.68, 98], [1.40, 110]].forEach(([at, freq]) =>
+        tone(t, { freq, dur: .62, type: 'triangle', vol: .11, at }));
+    tone(t, { freq: 208, to: 92, dur: 1.05, type: 'sawtooth', vol: .16, at: 1.96 });
+    hiss(t, { hp: 120, lp: 800, dur: .4, vol: .1, at: 2.55 });
+});
+
+const SILENCE = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
+let wake = null;
+function startSession() {
+    try {
+        if (!wake) {
+            wake = new Audio(SILENCE);
+            wake.loop = true; wake.volume = 1; wake.muted = false;
+            wake.setAttribute('playsinline', '');
+        }
+        const r = wake.play();
+        if (r && r.then) r.then(() => setTimeout(() => {
+            if (audioCtx && audioCtx.state !== 'running' && audioCtx.currentTime === 0) rebuild();
+        }, 260)).catch(() => {});
+    } catch (e) { /* no audio here, never mind */ }
+}
+let rebuilt = false;
+function rebuild() {
+    if (rebuilt) return;
+    rebuilt = true;
+    try {
+        try { audioCtx.close(); } catch (e) { /* never mind */ }
+        audioCtx = null; master = null; keepAwake = null; unlocked = false; clockGoing = false;
+        unlockAudio();
+    } catch (e) { /* no audio here, never mind */ }
+}
+let unlocked = false, keepAwake = null;
+function unlockAudio() {
+    try {
+        startSession();
+        audioNow();
+        if (unlocked) return;
+        unlocked = true;
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        g.gain.value = 0; o.frequency.value = 30;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        keepAwake = o;
+    } catch (e) { /* no audio here, never mind */ }
+}
+for (const ev of ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown'])
+    addEventListener(ev, unlockAudio, { capture: true, passive: true });
+addEventListener('visibilitychange', () => {
+    if (!document.hidden && audioCtx && audioCtx.state === 'suspended')
+        audioCtx.resume().catch(() => {});
+});
+
+const muteBtn = document.getElementById('mute');
+const applySound = () => muteBtn.classList.toggle('muted', !soundOn);
+muteBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    soundOn = !soundOn;
+    try { localStorage.setItem(soundKey, soundOn ? 'on' : 'off'); } catch (e) { /* private mode */ }
+    applySound();
+    if (soundOn) plop(2);
+});
+applySound();
+
+/* ============================================================
+   THE STRING
+
+   A string of sausages is one curve with fat bits on it. So it is held as
+   a path - sampled into a polyline with its arc length alongside - and
+   everything else is a position along that path: where a twist is, where
+   you cut, where the dog has got to. Nothing needs to know the shape.
+   ============================================================ */
+const cv = document.getElementById('pad'), ctx = cv.getContext('2d');
+let W = 0, H = 0;
+function fit() {
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (string) layout();
+    draw();
+}
+addEventListener('resize', fit);
+
+const now = () => performance.now();
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const pick = a => a[(Math.random() * a.length) | 0];
+
+let string = null;          // { pts, cum, len, n, wiggle }
+/* The string hangs down the screen rather than across it, because a phone is
+   tall and a thumb swipes sideways comfortably. Later rounds put more sway
+   in it, which is what makes a square cut something you have to aim. */
+function makePath(n, wiggle, phase) {
+    const top = 158, bot = H - 104, span = bot - top;
+    const pts = [];
+    const SAMPLES = 300;
+    for (let i = 0; i <= SAMPLES; i++) {
+        const t = i / SAMPLES, y = top + span * t;
+        const x = W / 2 + Math.sin(t * Math.PI * 2 * wiggle + phase) * (W * .24);
+        pts.push([x, y]);
+    }
+    const cum = [0];
+    for (let i = 1; i < pts.length; i++)
+        cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+    return { pts, cum, len: cum[cum.length - 1] };
+}
+// where along the path is that, and which way is it going
+function at(s) {
+    const { pts, cum } = string;
+    s = clamp(s, 0, string.len);
+    let lo = 0, hi = cum.length - 1;
+    while (lo < hi - 1) { const mid = (lo + hi) >> 1; if (cum[mid] <= s) lo = mid; else hi = mid; }
+    const seg = cum[hi] - cum[lo] || 1, f = (s - cum[lo]) / seg;
+    const x = pts[lo][0] + (pts[hi][0] - pts[lo][0]) * f;
+    const y = pts[lo][1] + (pts[hi][1] - pts[lo][1]) * f;
+    const tx = (pts[hi][0] - pts[lo][0]) / seg, ty = (pts[hi][1] - pts[lo][1]) / seg;
+    return [x, y, tx, ty];
+}
+
+/* A piece is a run of sausages still joined together. Cutting a twist splits
+   a piece in two; a piece of one sausage is off the string and yours. The
+   dog eats whatever piece it reaches, one sausage at a time. */
+let pieces = [], loose = [], saved = 0, lost = 0;
+const TWIST = 15;               // how much of the string a twist takes up
+
+function layout() {
+    const { n, wiggle, phase } = string;
+    Object.assign(string, makePath(n, wiggle, phase));
+}
+function makeString(round) {
+    const n = Math.min(9, 4 + Math.floor((round - 1) / 2));
+    const wiggle = Math.min(2.3, .55 + (round - 1) * .2);
+    string = { n, wiggle, phase: Math.random() * Math.PI * 2 };
+    layout();
+    // one piece holding the lot, and the twists evenly spaced down it
+    string.twists = [];
+    for (let i = 1; i < n; i++) string.twists.push(string.len * i / n);
+    pieces = [{ from: 0, to: n - 1 }];
+    loose = []; saved = 0; lost = 0;
+    return n;
+}
+// the arc range a run of sausages covers, twists and all
+const spanOf = p => [p.from === 0 ? 0 : string.twists[p.from - 1],
+                     p.to === string.n - 1 ? string.len : string.twists[p.to]];
+
+/* ---- the cut ----------------------------------------------------------
+   A swipe is a polyline, and every place it crosses the string is a cut.
+   Land on a twist and the string parts there; land on a sausage and you
+   have halved something nobody will buy. One swipe can do several of both,
+   which is the whole game: a long diagonal through three twists is worth
+   more than three careful little ones, and costs you everything if it is
+   half a centimetre out. */
+function crossings(swipe) {
+    const out = [];
+    const { pts, cum } = string;
+    for (let i = 1; i < swipe.length; i++) {
+        const [ax, ay] = swipe[i - 1], [bx, by] = swipe[i];
+        const rx = bx - ax, ry = by - ay;
+        for (let j = 1; j < pts.length; j++) {
+            const [cx, cy] = pts[j - 1], [dx, dy] = pts[j];
+            const sx = dx - cx, sy = dy - cy;
+            const den = rx * sy - ry * sx;
+            if (!den) continue;
+            const u = ((cx - ax) * sy - (cy - ay) * sx) / den;   // along the swipe
+            const v = ((cx - ax) * ry - (cy - ay) * rx) / den;   // along the string
+            if (u < 0 || u > 1 || v < 0 || v > 1) continue;
+            const s = cum[j - 1] + (cum[j] - cum[j - 1]) * v;
+            const len = Math.hypot(rx, ry) || 1;
+            out.push({ s, dx: rx / len, dy: ry / len, x: ax + rx * u, y: ay + ry * u });
+        }
+    }
+    out.sort((a, b) => a.s - b.s);
+    // one crossing per place: a wobbly swipe can cross the same twist twice
+    return out.filter((c, i) => i === 0 || c.s - out[i - 1].s > TWIST);
+}
+// which piece covers that point of the string, if any is still there
+function pieceAt(s) {
+    for (const p of pieces) { const [a, b] = spanOf(p); if (s >= a && s <= b) return p; }
+    return null;
+}
+const sausageAt = s => {
+    let i = 0;
+    while (i < string.n - 1 && s > string.twists[i]) i++;
+    return i;
+};
+
+function cut(swipe) {
+    const marks = crossings(swipe);
+    let any = false, best = 0, freedNow = [];
+    for (const m of marks) {
+        const p = pieceAt(m.s);
+        if (!p) continue;                                   // cut thin air
+        any = true;
+        // the nearest twist, and whether the blade was anywhere near it
+        let k = -1, off = 1e9;
+        for (let i = p.from; i < p.to; i++) {          // this piece's own twists
+            const d = Math.abs(m.s - string.twists[i]);
+            if (d < off) { off = d; k = i; }
+        }
+        if (k >= 0 && off <= TWIST * 1.7) {
+            // square across the string counts for as much as dead centre
+            const [, , tx, ty] = at(string.twists[k]);
+            const perp = Math.abs(m.dx * ty - m.dy * tx);
+            const place = 1 - Math.min(1, off / (TWIST * 1.7));
+            const ang = Math.max(0, (perp - .3) / .7);
+            const q = 35 + 35 * place + 30 * ang;
+            best = Math.max(best, q);
+            splitAt(p, k, q);
+            freedNow.push(q);
+        } else {
+            ruin(p, sausageAt(m.s), m.x, m.y);
+        }
+    }
+    return { any, best, marks };
+}
+function splitAt(p, k, q) {
+    const i = pieces.indexOf(p);
+    const left = { from: p.from, to: k }, right = { from: k + 1, to: p.to };
+    pieces.splice(i, 1, left, right);
+    for (const bit of [left, right]) if (bit.from === bit.to) free(bit, q);
+    cutFx.push({ k, t0: now(), q });
+    snick(q);
+}
+function free(bit, q) {
+    pieces.splice(pieces.indexOf(bit), 1);
+    const [a, b] = spanOf(bit);
+    const [x, y] = at((a + b) / 2);
+    saved++; showPips();
+    loose.push({ x, y, from: bit.from, t0: now(), q,
+                 tx: 46 + ((saved - 1) % 6) * ((W - 92) / 5), ty: 103 });
+    plop(saved);
+}
+function ruin(p, k, x, y) {
+    // a halved sausage leaves the string in two, minus the one you spoiled
+    const i = pieces.indexOf(p);
+    const out = [];
+    if (k > p.from) out.push({ from: p.from, to: k - 1 });
+    if (k < p.to) out.push({ from: k + 1, to: p.to });
+    pieces.splice(i, 1, ...out);
+    for (const bit of out) if (bit.from === bit.to) free(bit, 45);
+    lost++; showPips();
+    mess.push({ x, y, t0: now() });
+    squelch();
+    jolt();
+}
+
+/* ============================================================
+   THE DOG
+   It is the clock, and it is the point. No bar creeping down a corner: a
+   dog comes up the string and eats what you have not got off it yet, and
+   it gets keener every time it manages it.
+   ============================================================ */
+const dog = { s: 0, speed: 0, going: false, chomp: 0, keen: 0 };
+function dogStep(dt) {
+    if (!dog.going) return;
+    if (dog.chomp > 0) { dog.chomp -= dt; return; }              // busy eating
+    dog.s -= dog.speed * (1 + dog.keen * .13) * dt;
+    if (dog.s <= 0) { dog.s = 0; endRound(); return; }
+    const p = pieceAt(dog.s);
+    if (p) {
+        // the sausage at this end of the piece is gone
+        const k = p.to;
+        const i = pieces.indexOf(p);
+        if (k === p.from) pieces.splice(i, 1);
+        else pieces.splice(i, 1, { from: p.from, to: k - 1 });
+        lost++; dog.keen++; dog.chomp = .42; showPips();
+        chomp(); jolt();
+        if (pieces.length === 0) endRound();
+    }
+}
+
+/* ============================================================
+   THE ROUND
+   ============================================================ */
+const passFor = n => Math.min(n, Math.max(2, Math.round(n * .58) + Math.floor((round - 1) / 3)));
+const speedFor = r => 46 + (r - 1) * 7;
+
+let round = 0, live = false, tallying = false, quota = 0, roundT0 = 0;
+let cutFx = [], mess = [], swipe = null, blade = null, raf = 0, lastMs = 0;
+let tallyT = 0, settleT = 0, showingIntro = true;
+
+const bestKey = 'bd-rounds';
+let best = 0;
+try { best = parseInt(localStorage.getItem(bestKey) || '0', 10) || 0; } catch (e) { /* private mode */ }
+document.getElementById('best-val').textContent = best;
+
+const bannerEl = document.getElementById('banner');
+const promptEl = document.getElementById('prompt');
+const tallyEl = document.getElementById('tally');
+const card = document.getElementById('card');
+const pipsEl = document.getElementById('pips');
+
+function showPips() {
+    const n = string ? string.n : 0;
+    let h = '';
+    for (let i = 0; i < n; i++)
+        h += `<i class="pip ${i < saved ? 'got' : i < quota ? 'need' : ''}"></i>`;
+    pipsEl.innerHTML = h;
+}
+function startRound(n) {
+    round = n; live = true; tallying = false;
+    clearTimeout(tallyT); clearTimeout(settleT);
+    tallyEl.classList.remove('on');
+    card.hidden = true; card.className = '';
+    cutFx = []; mess = []; swipe = null; blade = null;
+    const count = makeString(n);
+    quota = passFor(count);
+    dog.s = string.len + 70; dog.speed = speedFor(n); dog.going = false;
+    dog.chomp = 0; dog.keen = 0;
+    roundT0 = now();
+    document.getElementById('round-val').textContent = n;
+    document.getElementById('best-val').textContent = best;
+    document.getElementById('bestplate').classList.toggle('beating', n - 1 > best);
+    showPips();
+    promptEl.textContent = n === 1 ? 'Swipe through the twists'
+                         : `Save ${quota} of ${count}`;
+    promptEl.classList.remove('gone');
+    bannerEl.innerHTML = `<span class="r">Round ${n}</span>`;
+    bannerEl.classList.remove('go');
+    void bannerEl.offsetWidth;
+    bannerEl.classList.add('go');
+    // a moment to look at it before the dog is let in
+    setTimeout(() => {
+        if (live && round === n) { dog.going = true; woof(); promptEl.classList.add('gone'); }
+    }, 900);
+    tick();
+}
+function endRound() {
+    if (!live) return;
+    live = false; dog.going = false;
+    const passed = saved >= quota;
+    if (passed) {
+        tallying = true;
+        tallyEl.innerHTML = `<span class="n">${saved}<i></i></span>` +
+            `<span class="l">${pick(passed && lost === 0 ? CLEAN : THROUGH)}</span>` +
+            `<span class="b">needed ${quota}</span>`;
+        tallyEl.classList.add('on');
+        jingleUp();
+        tallyT = setTimeout(nextRound, 1500);
+        return;
+    }
+    const done = round - 1, record = done > best;
+    if (record) { best = done; try { localStorage.setItem(bestKey, String(best)); } catch (e) { /* private */ } }
+    document.getElementById('ribbon').textContent = record ? 'NEW BEST' : 'GAME OVER';
+    document.getElementById('score').innerHTML =
+        `${done}<span class="pc">${done === 1 ? 'round' : 'rounds'}</span>`;
+    document.getElementById('rating').textContent = record ? pick(RECORD_LINES) : pick(MISSED);
+    document.getElementById('pass').textContent = `${saved} saved, needed ${quota}`;
+    card.className = record ? 'record' : '';
+    drawMug(saved < quota);
+    settleT = setTimeout(() => { card.hidden = false; record ? jingleWin() : jingleLose(); }, 460);
+}
+function nextRound() { tallying = false; startRound(round + 1); }
+const jingleUp = () => safely(t => {
+    [523, 659, 784].forEach((f, i) => tone(t, { freq: f, dur: .2, type: 'triangle', vol: .15, at: i * .07 }));
+});
+
+const CLEAN = ['Not one lost', 'The whole string', 'Clean sweep', 'The dog got nothing',
+               'Every last one', 'Immaculate'];
+const THROUGH = ['Through', 'That will do', 'Enough for the window', 'Good enough',
+                 'The dog ate the difference', 'Counter-ready'];
+const MISSED = ['The dog ate well', 'Too slow', 'That is a lot of dog food',
+                'Short of the order', 'The window is half empty', 'Not enough left to sell',
+                'The dog is delighted', 'You will hear about this'];
+const RECORD_LINES = ['Your best yet', 'A new record', 'Further than ever before',
+                      'Nobody has got further. Including you.', 'A personal best'];
+
+/* ============================================================
+   INPUT
+   ============================================================ */
+const xy = e => {
+    const r = cv.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return [t.clientX - r.left, t.clientY - r.top];
+};
+function down(x, y) {
+    if (tallying) return nextRound();
+    if (!card.hidden || !live || showingIntro) return;
+    swipe = [[x, y]];
+    promptEl.classList.add('gone');
+}
+function move(x, y) {
+    if (!swipe) return;
+    const last = swipe[swipe.length - 1];
+    if (Math.hypot(x - last[0], y - last[1]) < 3) return;
+    swipe.push([x, y]);
+}
+function up() {
+    if (!swipe) return;
+    const s = swipe; swipe = null;
+    if (s.length > 1) {
+        blade = { pts: s, t0: now() };
+        cut(s);
+        if (pieces.length === 0) endRound();
+    }
+}
+let penDown = false;
+cv.addEventListener('pointerdown', e => { penDown = true; cv.setPointerCapture(e.pointerId); down(...xy(e)); });
+cv.addEventListener('pointermove', e => { if (penDown) move(...xy(e)); });
+cv.addEventListener('pointerup', () => { penDown = false; up(); });
+cv.addEventListener('pointercancel', () => { penDown = false; up(); });
+
+/* ============================================================
+   DRAWING IT
+   ============================================================ */
+const FAT = 27;                 // how fat a sausage is at its fattest
+
+/* How fat the string is at a point. Three things decide it, in this order:
+   a sausage is fattest in its middle and eases off towards both ends, a twist
+   pinches it down to a thread of skin, and wherever a piece actually stops -
+   the ends of the string, or where you have cut - it rounds off. Get the
+   first one wrong and the whole thing draws as a row of bars. */
+const CAP = 16;
+function widthAt(s, piece) {
+    const [a, b] = spanOf(piece);
+    const i = sausageAt(s);
+    const s0 = i === 0 ? 0 : string.twists[i - 1];
+    const s1 = i === string.n - 1 ? string.len : string.twists[i];
+    const u = clamp((s - s0) / ((s1 - s0) || 1), 0, 1);
+    let w = FAT * (.66 + .34 * Math.pow(Math.sin(Math.PI * u), .45));
+    for (let j = piece.from; j < piece.to; j++) {
+        const d = Math.abs(s - string.twists[j]);
+        if (d < TWIST) w = Math.min(w, FAT * (.15 + .85 * Math.pow(d / TWIST, .85)));
+    }
+    const de = Math.min(s - a, b - s);
+    if (de < CAP) w = Math.min(w, FAT * Math.sqrt(Math.max(0, 1 - Math.pow(1 - de / CAP, 2))));
+    return Math.max(.8, w);
+}
+function ribbon(piece) {
+    const [a, b] = spanOf(piece);
+    const step = 3, up = [], dn = [];
+    for (let s = a; s <= b; s += step) {
+        const [x, y, tx, ty] = at(s), w = widthAt(s, piece);
+        up.push([x - ty * w, y + tx * w]);
+        dn.push([x + ty * w, y - tx * w]);
+    }
+    const [x, y, tx, ty] = at(b), w = widthAt(b, piece);
+    up.push([x - ty * w, y + tx * w]); dn.push([x + ty * w, y - tx * w]);
+    return up.concat(dn.reverse());
+}
+function fillPoly(p) {
+    ctx.beginPath();
+    p.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+    ctx.closePath();
+}
+function drawPiece(piece, alpha = 1) {
+    const poly = ribbon(piece);
+    ctx.globalAlpha = alpha;
+    fillPoly(poly);
+    ctx.fillStyle = '#cf5b3e';
+    ctx.fill();
+    ctx.lineJoin = 'round'; ctx.lineWidth = 3.2;
+    ctx.strokeStyle = '#241F2E';
+    ctx.stroke();
+    // a shine along the top of each sausage, and a crease under it
+    const [a, b] = spanOf(piece);
+    for (let i = piece.from; i <= piece.to; i++) {
+        const s0 = i === 0 ? 0 : string.twists[i - 1], s1 = i === string.n - 1 ? string.len : string.twists[i];
+        const from = Math.max(a, s0) + 12, to = Math.min(b, s1) - 12;
+        if (to - from < 8) continue;
+        for (const [off, col, wid] of [[-.42, '#e07a5a', 4], [.46, '#ad4429', 5]]) {
+            ctx.beginPath();
+            for (let s = from; s <= to; s += 4) {
+                const [x, y, tx, ty] = at(s), w = widthAt(s, piece) * off;
+                const px = x - ty * w, py = y + tx * w;
+                s === from ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+            }
+            ctx.strokeStyle = col; ctx.lineWidth = wid; ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+    }
+    ctx.globalAlpha = 1;
+}
+
+/* The dog. Drawn rather than drawn from life: everything wide and low, the
+   skull small against the jaw, jowls that hang past the mouth, ears folded
+   over rather than up, and a collar carrying more studs than the job calls
+   for. It bobs as it comes and opens up when it gets one. */
+function drawDog(ctx, x, y, k, open, ms) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(k, k);
+    ctx.rotate(Math.sin(ms / 170) * .045);
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    const INK = '#241F2E';
+    const line = w => { ctx.strokeStyle = INK; ctx.lineWidth = w; ctx.stroke(); };
+
+    // the collar first, so the jowls hang over it
+    ctx.beginPath();
+    ctx.moveTo(-52, 30); ctx.quadraticCurveTo(0, 48, 52, 30);
+    ctx.lineTo(52, 48); ctx.quadraticCurveTo(0, 66, -52, 48);
+    ctx.closePath();
+    ctx.fillStyle = '#2f2a3a'; ctx.fill(); line(3.6);
+    for (let i = -2; i <= 2; i++) {
+        const px = i * 20, py = 46 + (2 - Math.abs(i)) * 3.4;
+        ctx.beginPath();
+        ctx.moveTo(px - 6, py + 4); ctx.lineTo(px, py - 7); ctx.lineTo(px + 6, py + 4);
+        ctx.closePath(); ctx.fillStyle = '#d6d1de'; ctx.fill(); line(2.2);
+    }
+    // ears, folded over and set wide
+    for (const sx of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(sx * 34, -30);
+        ctx.quadraticCurveTo(sx * 58, -34, sx * 56, -10);
+        ctx.quadraticCurveTo(sx * 52, 8, sx * 36, 0);
+        ctx.closePath();
+        ctx.fillStyle = '#d8d0c1'; ctx.fill(); line(4);
+    }
+    // the head: a small skull on a very wide jaw
+    ctx.beginPath();
+    ctx.moveTo(-38, -16);
+    ctx.quadraticCurveTo(-36, -40, 0, -40);          // a small flat skull
+    ctx.quadraticCurveTo(36, -40, 38, -16);
+    ctx.quadraticCurveTo(60, -4, 56, 20);            // the jowls, flaring wide
+    ctx.quadraticCurveTo(50, 44, 0, 45);
+    ctx.quadraticCurveTo(-50, 44, -56, 20);
+    ctx.quadraticCurveTo(-60, -4, -38, -16);
+    ctx.closePath();
+    ctx.fillStyle = '#f4efe3'; ctx.fill(); line(4);
+    // the brow, which is where a bulldog keeps its opinion
+    for (const sx of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(sx * 7, -26); ctx.quadraticCurveTo(sx * 22, -32, sx * 33, -19);
+        line(4);
+        ctx.beginPath();
+        ctx.moveTo(sx * 10, -34); ctx.quadraticCurveTo(sx * 21, -38, sx * 29, -31);
+        ctx.strokeStyle = 'rgba(36,31,46,.35)'; ctx.lineWidth = 2.6; ctx.stroke();
+    }
+    ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(0, -18);
+    ctx.strokeStyle = 'rgba(36,31,46,.35)'; ctx.lineWidth = 2.6; ctx.stroke();
+    // eyes, wide apart and low
+    for (const sx of [-1, 1]) {
+        ctx.beginPath(); ctx.arc(sx * 21, -13, 5.2, 0, Math.PI * 2);
+        ctx.fillStyle = INK; ctx.fill();
+        ctx.beginPath(); ctx.arc(sx * 21 - 1.8, -15, 1.7, 0, Math.PI * 2);
+        ctx.fillStyle = '#fffdf8'; ctx.fill();
+    }
+    // the muzzle: wide, flat and pushed in
+    ctx.beginPath();
+    ctx.ellipse(0, 12, 31, 20, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#fffdf8'; ctx.fill(); line(3.6);
+    ctx.beginPath();
+    ctx.moveTo(-13, 0); ctx.quadraticCurveTo(0, -9, 13, 0);
+    ctx.quadraticCurveTo(0, 11, -13, 0);
+    ctx.closePath(); ctx.fillStyle = INK; ctx.fill();
+
+    if (open) {
+        ctx.beginPath();
+        ctx.ellipse(0, 24, 22, 17, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#5b2230'; ctx.fill(); line(3.4);
+        for (const sx of [-1, 1]) {                      // the teeth it is proud of
+            ctx.beginPath();
+            ctx.moveTo(sx * 13, 12); ctx.lineTo(sx * 9, 21); ctx.lineTo(sx * 17, 21);
+            ctx.closePath(); ctx.fillStyle = '#fffdf8'; ctx.fill(); line(2);
+        }
+        ctx.beginPath();
+        ctx.ellipse(0, 31, 12, 9, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#e8748a'; ctx.fill(); line(2.6);
+    } else {
+        ctx.beginPath();
+        ctx.moveTo(-18, 14); ctx.quadraticCurveTo(-9, 24, 0, 16);
+        ctx.quadraticCurveTo(9, 24, 18, 14);
+        line(3.6);
+        for (const sx of [-1, 1]) {                      // an underbite, as supplied
+            ctx.beginPath();
+            ctx.moveTo(sx * 13, 21); ctx.lineTo(sx * 10, 13); ctx.lineTo(sx * 17, 13);
+            ctx.closePath(); ctx.fillStyle = '#fffdf8'; ctx.fill(); line(1.8);
+        }
+        ctx.beginPath();                                  // and the tongue, lolling
+        ctx.moveTo(4, 22);
+        ctx.quadraticCurveTo(20, 26, 18, 40);
+        ctx.quadraticCurveTo(15, 50, 6, 46);
+        ctx.quadraticCurveTo(0, 40, 4, 22);
+        ctx.closePath(); ctx.fillStyle = '#e8748a'; ctx.fill(); line(3);
+    }
+    ctx.restore();
+}
+// the same head in the badge on the card, licking its lips if it did well
+function drawMug(short) {
+    const g = document.getElementById('mug').getContext('2d');
+    g.clearRect(0, 0, 88, 88);
+    drawDog(g, 44, 38, .62, short, 0);
+}
+
+function drawLoose(ms) {
+    for (const l of loose) {
+        const e = Math.min(1, (ms - l.t0) / 520);
+        const ease = 1 - Math.pow(1 - e, 3);
+        const x = l.x + (l.tx - l.x) * ease;
+        const y = l.y + (l.ty - l.y) * ease;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate((1 - ease) * 2.4 + .3);
+        ctx.scale(.72 + .16 * (1 - ease), .72 + .16 * (1 - ease));
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 34, 13, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#cf5b3e'; ctx.fill();
+        ctx.strokeStyle = '#241F2E'; ctx.lineWidth = 4; ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(-4, -4, 20, 4, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#e07a5a'; ctx.fill();
+        ctx.restore();
+    }
+}
+
+function draw() {
+    const ms = now();
+    ctx.clearRect(0, 0, W, H);
+    if (!string) return;
+
+    // the tray, where the saved ones go
+    ctx.save();
+    ctx.globalAlpha = .5;
+    ctx.strokeStyle = '#241F2E'; ctx.lineWidth = 3; ctx.setLineDash([9, 7]);
+    ctx.strokeRect(14, 78, W - 28, 50);
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    for (const p of pieces) drawPiece(p);
+    drawLoose(ms);
+
+    // where you cut, flashing white for a moment
+    for (let i = cutFx.length - 1; i >= 0; i--) {
+        const f = cutFx[i], e = (ms - f.t0) / 340;
+        if (e >= 1) { cutFx.splice(i, 1); continue; }
+        const [x, y, tx, ty] = at(string.twists[f.k]);
+        ctx.save();
+        ctx.globalAlpha = 1 - e;
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+        const L = 26 + e * 26;
+        ctx.beginPath();
+        ctx.moveTo(x - ty * L, y + tx * L); ctx.lineTo(x + ty * L, y - tx * L);
+        ctx.stroke();
+        ctx.restore();
+    }
+    // and where you should not have
+    for (let i = mess.length - 1; i >= 0; i--) {
+        const m = mess[i], e = (ms - m.t0) / 700;
+        if (e >= 1) { mess.splice(i, 1); continue; }
+        ctx.save();
+        ctx.globalAlpha = (1 - e) * .8;
+        ctx.fillStyle = '#ad4429';
+        for (let j = 0; j < 6; j++) {
+            const a = j / 6 * Math.PI * 2 + m.t0;
+            ctx.beginPath();
+            ctx.arc(m.x + Math.cos(a) * e * 30, m.y + Math.sin(a) * e * 30 + e * e * 40,
+                    4 * (1 - e), 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+
+    // the blade you just drew, and the one you are drawing
+    const line = swipe || (blade && (ms - blade.t0 < 220) ? blade.pts : null);
+    if (line && line.length > 1) {
+        ctx.save();
+        ctx.globalAlpha = swipe ? .9 : 1 - (ms - blade.t0) / 220;
+        ctx.strokeStyle = '#241F2E'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+        ctx.beginPath();
+        line.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    if (dog.going || dog.s <= string.len + 80) {
+        const s = clamp(dog.s, 0, string.len);
+        const [x, y] = at(s);
+        const below = dog.s > string.len;
+        drawDog(ctx, x, below ? at(string.len)[1] + (dog.s - string.len) : y, 1.02,
+                dog.chomp > 0, ms);
+    }
+}
+function tick() {
+    cancelAnimationFrame(raf);
+    const step = () => {
+        const ms = now();
+        const dt = Math.min(.05, (ms - (lastMs || ms)) / 1000);
+        lastMs = ms;
+        dogStep(dt);
+        draw();
+        if (live || loose.length || cutFx.length || mess.length) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+}
+function jolt() {
+    const app = document.getElementById('app');
+    app.classList.remove('shake');
+    void app.offsetWidth;
+    app.classList.add('shake');
+}
+
+document.getElementById('again').addEventListener('click', e => {
+    e.stopPropagation();
+    card.hidden = true; card.className = '';
+    startRound(1);
+});
+document.getElementById('play').addEventListener('click', e => {
+    e.stopPropagation();
+    startSession(); audioNow();
+    showingIntro = false;
+    document.getElementById('intro').hidden = true;
+    document.body.classList.remove('waiting');
+    startRound(1);
+});
+
+fit();
+makeString(1);
+draw();
+</script>
+</body>
+</html>

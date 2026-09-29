@@ -1,0 +1,16 @@
+{
+  "name": "Butcher's Dog",
+  "short_name": "Butcher's",
+  "description": "Cut the sausages off the string before the dog gets to them.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6EFE2",
+  "theme_color": "#F6EFE2",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
