@@ -140,6 +140,21 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #card.grave #rating { display: block; margin-top: 8px; }
 #card.grave #score { color: #5a564e; }
 #card.grave #ribbon { background: #4b4842; color: #efe7d4; }
+/* The one thing on the HUD you can press during a day. It is there only if it
+   is bought, switched on and not yet thrown, so a week's charge is a button
+   that exists rather than a button that is greyed out. */
+#toy {
+    margin-left: auto; pointer-events: auto; cursor: pointer;
+    padding: 6px 8px 3px; line-height: 0;
+    background: linear-gradient(180deg, #e8be55, var(--brass));
+    border: 2px solid #2a2118; border-radius: 3px;
+    box-shadow: 0 3px 0 rgba(0,0,0,.35);
+    animation: beat 1.1s ease-in-out infinite alternate;
+}
+#toy[hidden] { display: none; }
+#toy svg { width: 20px; height: 20px; fill: #2a2118; }
+#toy:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.35); }
+#toy:not([hidden]) ~ #mute { margin-left: 6px; }
 #mute {
     margin-left: auto;           /* the row is two plates and a button, not a bar */
     pointer-events: auto; cursor: pointer; padding: 7px 8px 4px; line-height: 0;
@@ -230,7 +245,9 @@ body.waiting #hud { display: none; }
 }
 #intro p { margin: 0; max-width: 330px; font-size: 13px; font-weight: 700;
            line-height: 1.6; letter-spacing: .04em; opacity: .74; }
-#intro .mid, #intro .acts {
+/* The sign, the two of them and the till belong together - they are one thing
+   being shown - and the buttons are the footer. Two blocks, not five. */
+#intro .top, #intro .mid, #intro .acts {
     width: 100%; display: flex; flex-direction: column; align-items: center; flex: none;
 }
 #intro .btn { margin-top: 14px; width: 100%; max-width: 236px; }
@@ -553,6 +570,11 @@ body.waiting #hud { display: none; }
         <path d="M 8.6 6.6 H 10.2 V 8 H 8.6 Z"/><path d="M 3.8 9 H 5.4 V 10.4 H 3.8 Z"/>
         <path d="M 6.2 9 H 7.8 V 10.4 H 6.2 Z"/>
     </symbol>
+    <symbol id="i-bone" viewBox="0 0 14 14">
+        <path d="M 4.4 5.6 H 9.6 V 8.4 H 4.4 Z"/>
+        <circle cx="3.2" cy="5" r="2.1"/><circle cx="3.2" cy="9" r="2.1"/>
+        <circle cx="10.8" cy="5" r="2.1"/><circle cx="10.8" cy="9" r="2.1"/>
+    </symbol>
     <symbol id="i-paw" viewBox="0 0 14 14">
         <ellipse cx="7" cy="9.4" rx="3.9" ry="3.2"/>
         <ellipse cx="2.6" cy="5.6" rx="1.8" ry="2.3"/>
@@ -577,6 +599,9 @@ body.waiting #hud { display: none; }
         <div class="plate sign" id="roundplate"><svg class="ico"><use href="#i-cal"/></svg><span
             id="round-val">Monday</span><span class="of" id="weekno">Week 1</span></div>
         <div id="till" class="sign"><span id="money">&pound;0.00</span></div>
+        <button id="toy" hidden aria-label="Throw the dog toy">
+            <svg viewBox="0 0 14 14"><use href="#i-bone"/></svg>
+        </button>
         <button id="mute" aria-label="Sound on or off">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dcab3e"
                  stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -591,11 +616,13 @@ body.waiting #hud { display: none; }
     <div id="tally"></div>
 
     <div id="intro">
+        <div class="top">
         <div class="front"><canvas id="shopfront" width="340" height="400"></canvas></div>
         <div class="mid">
             <div class="rule"></div>
             <p id="cast-line">Six days. One string a day.</p>
             <div class="bank" id="bank-line">In the till: <b>&pound;0.00</b></div>
+        </div>
         </div>
         <div class="acts">
             <button class="btn" id="play">Open up shop</button>
@@ -655,7 +682,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v25';
+const APP_VERSION = 'v26';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1041,6 +1068,70 @@ const sausageAt = s => {
    the string. Spoil a sausage in the same swipe and it pays nothing, because
    then it was not a good line, it was a lucky one. */
 const CHEER = [, , 'DOUBLE', 'TREBLE', 'FOUR AT ONCE', 'FIVE AT ONCE', 'SIX AT ONCE'];
+
+/* ---- what the butcher can do about it ----------------------------------
+   One throw a week, and it is a week and not a day: spending it on Monday
+   because Monday looked hairy is the decision, and there is no second one.
+   The dog does not stop dead - it turns round and goes after the bone, which
+   is a few seconds of it walking away from the string. */
+const TOY_S = 3.2, LAD_Q = 74;
+let toyLeft = 0, toyFly = null;
+const toyBtn = document.getElementById('toy');
+const showToy = () => { toyBtn.hidden = !(live && armed && toyLeft > 0); };
+const squeak = () => safely(t => {
+    tone(t, { freq: 900, to: 1900, dur: .13, type: 'square', vol: .12 });
+    tone(t, { freq: 1900, to: 780, dur: .15, type: 'square', vol: .1, at: .13 });
+    hiss(t, { hp: 4000, dur: .1, vol: .05, at: .02 });
+});
+function throwToy() {
+    if (!live || !armed || toyLeft <= 0) return;
+    toyLeft--;
+    /* It lands by the dog, but the dog spends half the day below the bottom
+       of the window and a bone thrown off the screen is a bone nobody saw. */
+    const [dx, dy] = dogAt();
+    toyFly = { t0: now(), x0: W - 44, y0: H - 40,
+               x1: clamp(dx + 46, 40, W - 40), y1: Math.min(dy + 30, H - 52) };
+    dog.toy = TOY_S;
+    dog.chomp = 0;
+    squeak();
+    showToy();
+}
+toyBtn.addEventListener('click', e => { e.stopPropagation(); throwToy(); });
+/* The lad is not a better player than you, he is a spare pair of hands: one
+   link off the bottom of the string, halfway through the day, at the quality
+   of somebody who has done it a hundred times and is not trying to impress. */
+function ladCut() {
+    if (!live || !armed) return;
+    for (let k = string.n - 2; k >= 0; k--) {
+        const p = pieceAt(string.twists[k]);
+        if (p && p.from <= k && p.to > k) { splitAt(p, k, LAD_Q); return; }
+    }
+}
+function drawToy(ms) {
+    if (!toyFly && !(dog.toy > 0)) return;
+    let x, y, spin = ms / 90;
+    if (toyFly) {
+        const e = Math.min(1, (ms - toyFly.t0) / 340);
+        x = toyFly.x0 + (toyFly.x1 - toyFly.x0) * e;
+        y = toyFly.y0 + (toyFly.y1 - toyFly.y0) * e - Math.sin(e * Math.PI) * 90;
+        if (e >= 1) { toyFly = null; x = undefined; }
+    }
+    if (x === undefined) {
+        if (!(dog.toy > 0)) return;
+        const [dx, dy] = dogAt();
+        x = clamp(dx + 46, 40, W - 40); y = Math.min(dy + 30, H - 52); spin = 0;
+    }
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(spin + .4);
+    ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
+    ctx.fillStyle = '#f3e9d6';
+    ctx.beginPath(); ctx.roundRect(-13, -5, 26, 10, 5); ctx.fill();
+    for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
+        ctx.beginPath(); ctx.ellipse(sx * 14, sy * 6, 7, 6.5, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+}
 /* Where its head is on the page, and how big, so everything that needs to
    know can ask - the blade, the steak, and the drawing. The lunge is in here
    too: a steak coming down anywhere in the window is a steak it will leave
@@ -1351,6 +1442,15 @@ function chompPose(e) {
 }
 function dogStep(dt) {
     if (!dog.going) return;
+    if (dog.toy > 0) {                                  // off after the bone
+        dog.toy -= dt;
+        /* It gives back the ground it has made and waits at the bottom. A cap
+           measured from the string rather than from where it happens to be
+           standing is the whole point: whatever it had climbed, it loses. */
+        const home = string.len + 90;
+        if (dog.s < home) dog.s = Math.min(home, dog.s + dog.speed * 1.05 * dt);
+        return;
+    }
     if (dog.chomp > 0) {                                        // busy eating
         const was = dog.chomp;
         dog.chomp -= dt;
@@ -1463,7 +1563,9 @@ function startRound(n) {
        second and a bit, which is one cut if you are quick and none if you
        are admiring the string. */
     dog.s = string.len + dog.speed * 1.25; dog.going = false;
-    dog.chomp = 0; dog.keen = 0; dog.grabX = null;
+    dog.chomp = 0; dog.keen = 0; dog.grabX = null; dog.toy = 0;
+    toyFly = null;
+    if (n === 1) toyLeft = running('toy') ? 1 : 0;      // one throw a week
     roundT0 = now();
     armed = false;
     showHud();
@@ -1505,6 +1607,10 @@ function countdown(n) {
         armed = true;
         dog.going = true;
         woof();
+        showToy();
+        // the lad gets to it about halfway down the string
+        if (running('apprentice')) countT.push(setTimeout(ladCut,
+            string.len / dog.speed * 450));
         /* One steak a day from Tuesday, or two a day from Monday if the slab
            is stocked for it. They are spaced far enough apart that the second
            is never asking for the first one's airspace. */
@@ -1532,6 +1638,7 @@ function finishDay() {
 function endRound() {
     if (!live) return;
     live = false; armed = false; dog.going = false; teaching = false;
+    showToy();
     countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
     ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, steaks });
     tallying = true;
@@ -1550,6 +1657,7 @@ const HOLD_MS = 5000;
 let holdT = 0;
 function endWeek() {
     live = false; armed = false; tallying = false; dog.going = false; teaching = false;
+    showToy();
     countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
     clearTimeout(tallyT); tallyEl.classList.remove('on');
     /* The week's takings go in the till and stay there. There is no best week
@@ -1618,6 +1726,7 @@ function dogDown() {
     countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
     clearTimeout(tallyT);
     tallyEl.classList.remove('on');
+    showToy();
     const [gx, gy] = dogAt();
     ghost = { x: gx, y: gy, t0: now() };
     tick();
@@ -2135,6 +2244,10 @@ const KIT = [
       why: 'Two steaks a day, and from Monday.' },
     { id: 'sawdust',   kind: 'line',  name: 'Sawdust floor',     price: 22000,
       why: 'The dog drops one in four. You sell them anyway.' },
+    { id: 'toy',       kind: 'skill', name: 'Squeaky bone',     price: 24000,
+      why: 'Once a week: throw it and the dog goes after it instead.' },
+    { id: 'apprentice', kind: 'hand',  name: 'An apprentice',    price: 32000,
+      why: 'Cuts one link a day, about halfway through.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -2146,6 +2259,8 @@ const STOCK = KNIVES.concat(KIT);
 const itemById = id => STOCK.find(i => i.id === id);
 const KINDS = [
     { kind: 'line',   label: 'On the rail' },
+    { kind: 'skill',  label: 'Once a week' },
+    { kind: 'hand',   label: 'On the payroll' },
     { kind: 'knife',  label: 'On the block' },
     { kind: 'hat',    label: 'Hats, ears and onesies' },
     { kind: 'face',   label: 'Faces' },
@@ -2180,6 +2295,8 @@ function loadSave() {
 function putSave() {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* never mind */ }
 }
+// the shelves you switch rather than wear
+const SWITCHED = ['line', 'skill', 'hand'];
 const owns = id => save.owned.includes(id);
 const running = id => owns(id) && save.on.includes(id);
 const wearing = kind => itemById(save.worn[kind]) || STOCK.find(i => i.kind === kind);
@@ -3189,6 +3306,7 @@ function draw() {
 
     drawSteak(ctx);
 
+    drawToy(ms);
     if (demoOn()) drawDemo(ms);
 
     // what that swipe was worth, said out loud
@@ -3452,6 +3570,23 @@ function drawTile(c, item) {
         }
         return;
     }
+    if (item.kind === 'skill') {                      // the bone, off its string
+        g.save();
+        g.translate(TILE_W / 2, TILE_H / 2);
+        g.rotate(-.34); g.scale(1.5, 1.5);
+        g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 8; g.shadowOffsetY = 4;
+        g.fillStyle = '#f3e9d6';
+        g.beginPath(); g.roundRect(-13, -5, 26, 10, 5); g.fill();
+        for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
+            g.beginPath(); g.ellipse(sx * 14, sy * 6, 7, 6.5, 0, 0, Math.PI * 2); g.fill();
+        }
+        g.restore();
+        return;
+    }
+    if (item.kind === 'hand') {                       // and the lad himself
+        drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 7, k: .28, holds: 'knife' });
+        return;
+    }
     if (item.kind === 'knife') {
         g.save();
         g.translate(TILE_W / 2, TILE_H / 2);
@@ -3469,7 +3604,7 @@ function paintStore() {
     showBank();
     drawPreview('stock-dog', 230, 142, false);
     document.getElementById('stock').innerHTML = KINDS.map(({ kind, label }) => {
-        const shopUp = kind === 'line';
+        const shopUp = SWITCHED.includes(kind);
         // cheapest first on every shelf, so the shop reads as a price list
         const tiles = STOCK.filter(i => i.kind === kind)
                            .sort((x, y) => x.price - y.price).map(i => {
@@ -3555,7 +3690,7 @@ document.getElementById('stock').addEventListener('click', e => {
    it on, and any number of them can be on at once - so tapping one you own
    toggles it instead of picking it. */
 function equip(item) {
-    if (item.kind !== 'line') { save.worn[item.kind] = item.id; return; }
+    if (!SWITCHED.includes(item.kind)) { save.worn[item.kind] = item.id; return; }
     const at = save.on.indexOf(item.id);
     at < 0 ? save.on.push(item.id) : save.on.splice(at, 1);
 }
@@ -3567,7 +3702,7 @@ document.getElementById('tryon').addEventListener('click', e => {
     const item = tryOn;
     save.bank -= item.price;
     save.owned.push(item.id);
-    if (item.kind === 'line') save.on.push(item.id);   // bought is switched on
+    if (SWITCHED.includes(item.kind)) save.on.push(item.id);   // bought is switched on
     else save.worn[item.kind] = item.id;
     tryOn = null;
     till(); putSave(); paintStore();
@@ -3599,7 +3734,8 @@ wipeBtn.addEventListener('click', () => {
 function showShop() {
     money = 0; ledger = []; fed = 0;
     round = 0; live = false; armed = false; tallying = false; teaching = false;
-    dog.going = false; dog.chomp = 0;
+    dog.going = false; dog.chomp = 0; dog.toy = 0;
+    toyFly = null; toyLeft = 0; showToy();
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT); clearTimeout(teachT);
     countT.forEach(clearTimeout); countT = [];
     tallyEl.classList.remove('on');

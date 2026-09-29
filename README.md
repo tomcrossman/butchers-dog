@@ -201,6 +201,18 @@ sells.
   on the hook and pays a little under a cut one, because it has been in a dog's
   mouth.
 
+**Once a week** is the shelf the butcher uses himself. A squeaky bone, two
+hundred and forty: a gold button appears on the HUD the moment the day starts,
+and throwing it sends the dog back down to the bottom of the string after it.
+It is a week and not a day - spending it on Monday because Monday looked hairy
+is the decision, and there is no second one - so the button is there until it
+is thrown and then gone until next Monday.
+
+**On the payroll** is somebody else doing it. An apprentice, three hundred and
+twenty: one link off the bottom of the string, about halfway through the day,
+cut at the quality of somebody who has done it a hundred times and is not
+trying to impress. He is a spare pair of hands, not a better player than you.
+
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
 rather than Worn or Wear. They get two to a row and a line under each saying
@@ -245,9 +257,9 @@ will not be pressed.
 The button that opens the shop is a word and nothing else; a cleaver on it was
 tried and looked like a small appliance.
 
-The shopfront is three things with a third of the window each - the sign at the
-top, the two of them in the middle, the way in at the bottom - rather than all
-of it huddled at the bottom with the wall left empty above the sign. The shop
+The shopfront is two blocks rather than five: the sign, the two of them and the
+till are one thing being shown and they stay together at the top, and the way
+in is the footer at the bottom. The shop
 scales to whatever height is going, so it fits a short phone without squashing
 the butcher.
 
