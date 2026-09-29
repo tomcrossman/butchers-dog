@@ -104,14 +104,25 @@ Six days, Monday to Saturday, one delivery a day. The string gets longer and
 the dog gets bigger every morning, and Wednesday is a half day, because it
 always was.
 
-| Day | Sausages | Dog |
+| Day | Sausages | |
 | --- | --- | --- |
-| Monday | 4 | smallest |
+| Monday | 4 | |
 | Tuesday | 5 | |
 | Wednesday | 3 | half day |
 | Thursday | 7 | |
 | Friday | 9 | |
-| Saturday | 11 | biggest |
+| Saturday | 11 | |
+
+**Every week has the same thirty-nine sausages in it.** The till is the only
+score there is, so two weeks are only worth comparing if they were worth the
+same money to begin with - a week that happened to deal forty-one would beat a
+week that dealt thirty-seven before either of you picked up a knife.
+
+What varies is how they are spread. A sausage is moved from one day to another
+a dozen times when the week is dealt, never taking a day more than two from
+where it starts, so Thursday might be a heavy one this week and a light one the
+next. The sum cannot drift, because nothing is ever created or destroyed, only
+moved: eight hundred different splits, one total.
 
 ## The cast
 
@@ -170,7 +181,10 @@ Nobody reads an instruction, so on Monday - while the count is running and
 there is nothing else to do with the screen - a ghost knife walks the cut you
 are meant to make: square across the bottom twist, in one stroke, over and over
 until the dog is let off, with SWIPE TO CUT written next to it rather than down
-at the bottom of the window where it may as well not be. The bottom twist
+at the bottom of the window where it may as well not be. It runs for a few
+seconds before the count starts, because one and a bit sweeps under a running
+clock is not long enough to take in - and a tap gets on with it, so it is
+patient the first time and out of the way every time after that. The bottom twist
 because that frees the sausage nearest the dog, which is the one you actually
 want off first; demonstrating a cut in the middle taught the gesture and
 nothing about the game. It stops the moment the round is live, because by then

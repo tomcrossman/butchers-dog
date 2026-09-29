@@ -102,8 +102,8 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 @keyframes beat { from { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
                   to   { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 16px rgba(220,171,62,.6); } }
 #till {
-    flex: 1; min-width: 96px; display: flex; align-items: center; justify-content: center;
-    gap: 0; padding: 6px 10px 5px; white-space: nowrap;
+    display: flex; align-items: center;
+    gap: 0; padding: 6px 11px 5px; white-space: nowrap;
     font-family: var(--font-display); font-size: 17px; color: var(--gold);
     text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
@@ -130,6 +130,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #card.grave #score { color: #5a564e; }
 #card.grave #ribbon { background: #4b4842; color: #efe7d4; }
 #mute {
+    margin-left: auto;           /* the row is two plates and a button, not a bar */
     pointer-events: auto; cursor: pointer; padding: 7px 8px 4px; line-height: 0;
     background: linear-gradient(180deg, #1a4636, #123327);
     border: 2px solid var(--gold-d); border-radius: 3px;
@@ -689,8 +690,8 @@ function layout() {
 }
 // the day decides how much is on the string and how much sway is in it
 function makeString(day) {
-    const D = DAYS[Math.min(DAYS.length, Math.max(1, day)) - 1];
-    const n = D.n, wiggle = D.wiggle;
+    const i = Math.min(DAYS.length, Math.max(1, day)) - 1, D = DAYS[i];
+    const n = cast.days[i], wiggle = D.wiggle;
     string = { n, wiggle, phase: Math.random() * Math.PI * 2 };
     layout();
     // one piece holding the lot, and the twists evenly spaced down it
@@ -1129,14 +1130,25 @@ function startRound(n) {
     roundT0 = now();
     armed = false;
     showHud();
-    // the countdown puts the day here, and takes it away again on CUT
-    countdown(n);
+    /* Monday gets a few seconds of the demonstration before the count starts,
+       because one and a bit sweeps under a running clock is not long enough to
+       take in. A tap gets on with it, so it is patient the first time and out
+       of the way every time after that. */
+    if (n === 1) { teaching = true; teachT = setTimeout(beginCount, TEACH_MS); }
+    else countdown(n);
     tick();
 }
 /* Three, two, one, and the dog is off the leash. The count is the only part of
    a day that is not a scramble, so it is where the day says what it is and
    who is coming for it. */
-let countT = [];
+const TEACH_MS = 3400;
+let countT = [], teachT = 0, teaching = false;
+function beginCount() {
+    if (!teaching) return;
+    teaching = false;
+    clearTimeout(teachT);
+    countdown(round);
+}
 function countdown(n) {
     countT.forEach(clearTimeout); countT = [];
     const D = DAYS[n - 1], B = breedFor(n);
@@ -1168,8 +1180,8 @@ const beep = i => safely(t => {
 // the string is finished - cut up, or eaten, or the dog has run out of it
 function endRound() {
     if (!live) return;
-    live = false; armed = false; dog.going = false;
-    countT.forEach(clearTimeout); countT = [];
+    live = false; armed = false; dog.going = false; teaching = false;
+    countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
     ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, steaks });
     tallying = true;
     tallyEl.innerHTML = `<span class="n">${money2(roundMoney)}</span>` +
@@ -1183,8 +1195,8 @@ function endRound() {
    is, and whether he is holding the takings over his head or standing there
    with his hands empty is whether it beat the best week. */
 function endWeek() {
-    live = false; armed = false; tallying = false; dog.going = false;
-    countT.forEach(clearTimeout); countT = [];
+    live = false; armed = false; tallying = false; dog.going = false; teaching = false;
+    countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
     clearTimeout(tallyT); tallyEl.classList.remove('on');
     const record = money > best;
     if (record) { best = money; try { localStorage.setItem(bestKey, String(best)); } catch (e) { /* private */ } }
@@ -1234,8 +1246,8 @@ const GONE_MS = 1750;
 let ghost = null;
 function dogDown() {
     if (!live) return;
-    live = false; armed = false; dog.going = false; tallying = false;
-    countT.forEach(clearTimeout); countT = [];
+    live = false; armed = false; dog.going = false; tallying = false; teaching = false;
+    countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
     clearTimeout(tallyT);
     tallyEl.classList.remove('on');
     const [gx, gy] = dogAt();
@@ -1344,6 +1356,7 @@ const xy = e => {
 };
 function down(x, y) {
     if (tallying) return nextRound();
+    if (teaching) return beginCount();           // seen enough, thank you
     if (!card.hidden || !live || !armed || showingIntro) return;
     swipe = [[x, y]];
 }
@@ -1602,6 +1615,28 @@ const DAYS = [
     { name: 'Friday',    short: 'FRI', n: 9,  wiggle: 1.85, speed: 176 },
     { name: 'Saturday',  short: 'SAT', n: 11, wiggle: 2.2, speed: 196 },
 ];
+/* Every week has the same number of sausages in it. The till is the only
+   score there is, so two weeks are only worth comparing if they were worth
+   the same money to begin with - a week that happened to deal forty-one would
+   beat a week that dealt thirty-seven before either of you picked up a knife.
+
+   What varies is how they are spread. A sausage is moved from one day to
+   another a dozen times, never taking a day more than two from where it
+   started, so Thursday might be a heavy one this week and a light one the
+   next - but the sum cannot drift, because nothing is ever created or
+   destroyed, only moved. */
+const WEEK_TOTAL = DAYS.reduce((t, d) => t + d.n, 0);
+function dealDays() {
+    const n = DAYS.map(d => d.n);
+    for (let i = 0; i < 12; i++) {
+        const a = (Math.random() * DAYS.length) | 0, b = (Math.random() * DAYS.length) | 0;
+        if (a === b) continue;
+        if (n[a] - 1 < Math.max(3, DAYS[a].n - 2)) continue;
+        if (n[b] + 1 > DAYS[b].n + 2) continue;
+        n[a]--; n[b]++;
+    }
+    return n;
+}
 
 /* ---- whose shop it is ---------------------------------------------------
    One of these a week, and the dogs and the knife are dealt with them, so a
@@ -1648,6 +1683,7 @@ function deal() {
         shop: pick(SHOPS),
         knife: pick(KNIVES),
         dog: { ...pick(TIERS[tier]), dog: pick(DOG_NAMES), speed: .94 + tier * .025 },
+        days: dealDays(),
     };
 }
 const breedFor = () => cast.dog;
@@ -2423,9 +2459,9 @@ function jolt() {
    up, which is the only reason to have a shopfront at all. */
 function showShop() {
     money = 0; ledger = []; fed = 0;
-    round = 0; live = false; armed = false; tallying = false;
+    round = 0; live = false; armed = false; tallying = false; teaching = false;
     dog.going = false; dog.chomp = 0;
-    clearTimeout(tallyT); clearTimeout(settleT);
+    clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(teachT);
     countT.forEach(clearTimeout); countT = [];
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
