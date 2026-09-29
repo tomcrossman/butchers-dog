@@ -450,12 +450,23 @@ body.waiting #hud { display: none; }
 }
 @keyframes ribbonIn { from { transform: translateX(-50%) scale(.6); opacity: 0; }
                       to   { transform: translateX(-50%) scale(1); opacity: 1; } }
-#card.record #ribbon { background: var(--gold); color: #2a2118; }
+#card.good #ribbon { background: var(--gold); color: #2a2118; }
 #card #score {
     display: block; font-family: var(--font-display); font-size: 48px; line-height: 1;
     color: #b03a25; margin: 8px 0 0;
 }
-#card.record #score { color: #a8791e; }
+#card.good #score { color: #a8791e; }
+/* The takings are a receipt, not a verdict, so the card does not wait to be
+   dismissed: it holds long enough to read and then puts you back in the
+   window. The line says how long that is rather than springing it on you. */
+#cardtime { display: none; height: 3px; margin: 14px -20px -20px;
+            background: rgba(42,33,24,.13); overflow: hidden; }
+#card.timed #cardtime { display: block; }
+#card.timed .btn { display: none; }
+#card.timed .inner { cursor: pointer; }
+#cardtime i { display: block; height: 100%; background: rgba(176,58,37,.55);
+              transform-origin: left; animation: cardtime 5s linear both; }
+@keyframes cardtime { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 #card .btn.ghost {
     background: transparent; color: #2a2118; border-color: #2a2118;
     box-shadow: 0 3px 0 rgba(0,0,0,.22); font-size: 15px; padding: 10px; margin-top: 8px;
@@ -560,7 +571,7 @@ body.waiting #hud { display: none; }
         <p id="cast-line">Six days. One string a day.</p>
         <div class="bank" id="bank-line">In the till: <b>&pound;0.00</b></div>
         <button class="btn" id="play">Open up shop</button>
-        <button class="btn ghost" id="to-shop">Upgrade</button>
+        <button class="btn ghost" id="to-shop">Upgrades</button>
     </div>
 
     <div id="setup" hidden>
@@ -606,7 +617,8 @@ body.waiting #hud { display: none; }
             <span id="score">0<span class="pc">for the week</span></span>
             <p id="rating">Butchered</p>
             <button class="btn" id="again">Another week</button>
-            <button class="btn ghost" id="again-shop">Upgrade</button>
+            <button class="btn ghost" id="again-shop">Upgrades</button>
+            <div id="cardtime"></div>
         </div>
     </div>
 
@@ -614,7 +626,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v21';
+const APP_VERSION = 'v22';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -783,6 +795,19 @@ const jingleLose = () => safely(t => {
         tone(t, { freq, dur: .62, type: 'triangle', vol: .11, at }));
     tone(t, { freq: 208, to: 92, dur: 1.05, type: 'sawtooth', vol: .16, at: 1.96 });
     hiss(t, { hp: 120, lp: 800, dur: .4, vol: .1, at: 2.55 });
+});
+
+/* A week closing: the drawer goes in, the coins settle, and that is all it
+   is. It used to play the losing jingle every single week, because 'record'
+   was hard-wired false once the high score went - so every honest week's work
+   was scored as a failure on the way out. */
+const drawerShut = () => safely(t => {
+    [1244, 1661].forEach((f, i) =>
+        tone(t, { freq: f, dur: .5 - i * .1, type: 'sine', vol: .1 - i * .03, at: i * .03 }));
+    hiss(t, { hp: 2600, dur: .22, vol: .09, at: .1 });          // the coins going in
+    tone(t, { freq: 220, to: 120, dur: .16, type: 'triangle', vol: .16, at: .3 });
+    tone(t, { freq: 90, to: 60, dur: .22, type: 'sine', vol: .14, at: .33 });
+    hiss(t, { hp: 140, lp: 900, dur: .13, vol: .12, at: .32 });  // and the drawer home
 });
 
 const SILENCE = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
@@ -1358,7 +1383,7 @@ function showHud() {
 function startRound(n) {
     if (n > DAYS.length) return endWeek();       // there is no seventh day
     round = n; live = true; tallying = false;
-    clearTimeout(tallyT); clearTimeout(settleT);
+    clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
     cutFx = []; mess = []; shouts = []; chewing = null; steak = null; ghost = null;
@@ -1448,8 +1473,11 @@ function endRound() {
     tallyT = setTimeout(nextRound, 1500);
 }
 /* Saturday night. The week is counted up in front of the man whose shop it
-   is, and whether he is holding the takings over his head or standing there
-   with his hands empty is whether it beat the best week. */
+   is, and then you are back in the window: there is nothing on the receipt to
+   act on, and the two things you might want to do next are both on the
+   shopfront anyway. A tap takes you there now rather than waiting. */
+const HOLD_MS = 5000;
+let holdT = 0;
 function endWeek() {
     live = false; armed = false; tallying = false; dog.going = false; teaching = false;
     countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
@@ -1459,7 +1487,12 @@ function endWeek() {
        the shop rather than on a card. */
     save.bank += money; save.weeks++;
     putSave();
-    const record = false;
+    /* Nothing here is measured against another week. What the art is allowed
+       to know is a fact about this one: whether the dog got at most a quarter
+       of the string off you, which is the difference between a good week and
+       a week. It changes the pose and the colour of the number, and nothing
+       else. */
+    const good = fed <= Math.floor(WEEK_TOTAL / 4);
     const top = Math.max(...ledger.map(r => r.took));
     document.getElementById('ribbon').textContent = 'WEEK’S TAKINGS';
     document.getElementById('ledger').innerHTML = ledger.map(r =>
@@ -1470,7 +1503,8 @@ function endWeek() {
         `<td class="m">${money2(r.took)}</td></tr>`).join('');
     document.getElementById('score').innerHTML =
         `${money2(money)}<span class="pc">banked &middot; ${money2(save.bank)} in the till</span>`;
-    card.className = record ? 'record' : '';
+    card.className = 'timed' + (good ? ' good' : '');
+    document.getElementById('cardtime').innerHTML = '<i></i>';   // restart the line
     // the canvas is drawn on more than once a session, and a butcher who was
     // holding the takings up last week leaves the arm behind if it is not
     // wiped first - drawButcher paints, it does not clear
@@ -1479,10 +1513,14 @@ function endWeek() {
        all week, or a dog that has never eaten better next to a man who has. */
     const bg = document.getElementById('butcher').getContext('2d');
     bg.clearRect(0, 0, 330, 300);
-    drawButcher(bg, record, { cx: 112, cy: 202 });
+    drawButcher(bg, good, { cx: 112, cy: 202 });
     drawDog(bg, 258, 218, .66 / cast.dog.k,
-            { open: record ? 0 : .72, mood: record ? 'glum' : 'chuffed' }, 0, cast.dog);
-    settleT = setTimeout(() => { card.hidden = false; record ? jingleWin() : jingleLose(); }, 520);
+            { open: good ? 0 : .72, mood: good ? 'glum' : 'chuffed' }, 0, cast.dog);
+    settleT = setTimeout(() => {
+        card.hidden = false;
+        drawerShut();
+        holdT = setTimeout(showShop, HOLD_MS);
+    }, 520);
 }
 /* You were aiming for the sausages. The week stops there and nothing is
    banked - a fail state with no cost is not one - and the dog gets a stone
@@ -3377,7 +3415,7 @@ function showShop() {
     money = 0; ledger = []; fed = 0;
     round = 0; live = false; armed = false; tallying = false; teaching = false;
     dog.going = false; dog.chomp = 0;
-    clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(teachT);
+    clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT); clearTimeout(teachT);
     countT.forEach(clearTimeout); countT = [];
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
@@ -3404,6 +3442,11 @@ function openStore() {
 /* The ticket ends where the front door starts: another week, or go and spend
    what the last one made. Both of them reset the shop first, so the week
    about to be played is dealt from the save either way. */
+card.addEventListener('click', () => {
+    if (!card.classList.contains('timed')) return;
+    clearTimeout(holdT);
+    showShop();
+});
 document.getElementById('again').addEventListener('click', e => {
     e.stopPropagation();
     showShop();

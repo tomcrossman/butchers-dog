@@ -225,10 +225,22 @@ to roll if you cannot think of one - and that, the till and the wardrobe are
 saved. It is one object under one key, and there is a
 Start again at the bottom of the shop that asks twice before it wipes it.
 
-Saturday night ends where the front door starts: another week, or go and spend
-what the last one made. Both ways out of Saturday go through the same door now:
-the tap that skips the tally used to ask for a seventh day, which does not
-exist, and froze the week where it stood.
+Saturday night is a receipt and not a verdict: the six days, what each one
+took, the total and what is in the till. There is nothing on it to press - the
+two things you might do next are both on the shopfront - so it holds for five
+seconds with a line running out along the bottom and puts you back there. A tap
+goes now. The only thing the art is allowed to know is whether the dog got at
+most a quarter of the string off you, which decides the pose and the colour of
+the number and nothing else.
+
+It used to play the losing jingle every week without exception, because the
+flag it asked was hard-wired false once the high score went - so an honest
+week's work was scored as a failure on the way out. It is a till drawer going
+in now, which is all the end of a week is.
+
+Both ways out of Saturday go through the same door: the tap that skips the
+tally used to ask for a seventh day, which does not exist, and froze the week
+where it stood.
 
 Kill the dog and you lose the week's takings, which are spent on the funeral. A
 new dog turns up on Monday with a new name, a different breed and the same
