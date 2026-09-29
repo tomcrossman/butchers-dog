@@ -132,11 +132,13 @@ more than that. What escalates is the week - a longer string and a quicker dog
 every morning, and a dog that has been fed getting keener with it. Feed it on
 Monday and you will know about it on Saturday.
 
-Behind the counter: Reg of A Cut Above, Sid of Beef Encounter, Pearl of Meat
-Expectations, Wally of Bangers & Cash, Doreen of The Merchant of Venison, or Mo
-of Best of the Wurst - in a boater or a flat cap or a white peaked hat, with
-the shop's name signwritten on the fascia over their head. On the block: a
-butcher's knife, a cleaver, a boning knife or a pair of shears. They all cut exactly the same - a
+Behind the counter: Reg, Sid, Pearl, Wally, Doreen or Mo, in a boater or a flat
+cap or a white peaked hat. Over their head, signwritten on the fascia, whatever
+the shop is called this week - A Cut Above, Beef Encounter, Meat Expectations,
+Fillet of Soul, Cleaver Girl, Much Ado About Mutton, Sir Loin of Beef, Rack &
+Ruin and a dozen more, because a butcher's shop is obliged by long tradition to
+be called something like that. On the block: a butcher's knife, a cleaver, a
+boning knife or a pair of shears. They all cut exactly the same - a
 randomised advantage would not be a joke, it would be a cheat - so the
 difference is what it looks and sounds like in your hand, down to the cleaver
 not ringing after a good cut.
@@ -169,8 +171,11 @@ then you either have it or you have not.
 ## The one that falls
 
 From Tuesday on, once a day, a steak comes off the top of the window. Catch it
-with the blade on the way down and it is worth about two sausages; let it hit
-the floor and it is worth nothing and the dog has not even had to work for it.
+with the blade on the way down and it is worth about two sausages.
+
+Let it past and it does not reach the floor: the dog has it, and a dog that has
+had a steak off you is a dog that comes back quicker for the rest of the week.
+So the steak is not a free bonus you can decline - ignoring it costs you twice.
 
 It is the only thing in the game that asks you to look away from the string,
 which is the whole reason it is there.
@@ -180,8 +185,11 @@ which is the whole reason it is there.
 There is one way to lose, and it is not the dog's fault.
 
 Put the blade through the dog and the week stops there. Nothing is banked - a
-fail state with no cost is not one - and the dog gets a headstone with its name
-on it, which is the least it deserves. The circle that counts as a hit is two
+fail state with no cost is not one - and the dog goes the way a cartoon dog
+goes: a flash, the eyes to crosses, and then off the top of the window with a
+halo on, spinning gently and getting smaller. The headstone lands while it is
+still going up, with its name and one of eighteen epitaphs on it, none of which
+uses a pronoun, because half of them are called Bess or Nell. The circle that counts as a hit is two
 thirds of the head it is drawn as, so a near miss is a near miss; but it sits
 squarely in front of the last twist on the string, which is exactly where the
 tempting cut is.

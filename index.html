@@ -392,7 +392,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v12';
+const APP_VERSION = 'v13';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -802,11 +802,23 @@ function steakStep(dt) {
     steak.vy += 1250 * dt;
     steak.y += steak.vy * dt;
     steak.ang += steak.spin * dt;
+    // if it gets past you it does not get past the dog, and a dog that has had
+    // a steak off you is a dog that comes back quicker
+    if (dog.going && dog.chomp <= 0) {
+        const [dx, dy, dr] = dogAt();
+        if (Math.hypot(steak.x - dx, steak.y - dy) < dr * .95) {
+            chewing = { x: steak.x, y: steak.y, ang: steak.ang, len: 30, kind: 'steak', t0: now() };
+            steak = null;
+            fed++; dog.keen++; dog.chomp = CHOMP;
+            snarl(); jolt();
+            return;
+        }
+    }
     if (steak.y > H + 60) { steak = null; splat(); }
 }
 function hitSteak(sw) {
     if (!steak || steak.bits) return false;
-    const r = 38;
+    const r = 46;
     for (let i = 1; i < sw.length; i++) {
         const [ax, ay] = sw[i - 1], [bx, by] = sw[i];
         const dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
@@ -836,15 +848,9 @@ const splat = () => safely(t => {
     sweep(t, { from: 600, to: 110, q: 1, dur: .2, vol: .34 });
     tone(t, { freq: 120, to: 48, dur: .22, type: 'sine', vol: .18 });
 });
-function drawSteak(ctx) {
-    if (!steak) return;
-    const one = (x, y, ang, half) => {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(ang);
-        ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
-        if (half) ctx.scale(half > 0 ? 1 : -1, 1);
-        const RX = 43, RY = 33;
+// drawn at the origin, so the dog can be handed one as easily as the window can
+function steakShape(ctx, half) {
+        const RX = 52, RY = 40;
         ctx.beginPath();
         // a ribeye: the fat round most of the rim, the eye of it in the middle
         if (half) { ctx.moveTo(0, -RY); ctx.quadraticCurveTo(RX * .9, -RY * .9, RX, 0);
@@ -863,6 +869,16 @@ function drawSteak(ctx) {
             ctx.stroke();
         }
         ctx.restore();
+}
+function drawSteak(ctx) {
+    if (!steak) return;
+    const one = (x, y, ang, half) => {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(ang);
+        ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
+        if (half) ctx.scale(half > 0 ? 1 : -1, 1);
+        steakShape(ctx, half);
         ctx.restore();
     };
     if (steak.bits) {
@@ -1078,7 +1094,8 @@ function startRound(n) {
     clearTimeout(tallyT); clearTimeout(settleT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
-    cutFx = []; mess = []; shouts = []; chewing = null; steak = null; swipe = null; blade = null;
+    cutFx = []; mess = []; shouts = []; chewing = null; steak = null; ghost = null;
+    swipe = null; blade = null;
     const D = DAYS[n - 1], count = makeString(n);
     roundMoney = 0;
     // a dog that has been fed comes back keener, all week, up to a point
@@ -1185,18 +1202,34 @@ function endWeek() {
 /* You were aiming for the sausages. The week stops there and nothing is
    banked - a fail state with no cost is not one - and the dog gets a stone
    with its name on it, which is the least it deserves. */
-const EPITAPH = ['He only wanted a sausage', 'A good dog', 'He was only doing his job',
-                 'Taken before his time', 'He would have shared', 'Loyal to the last link'];
+// no pronouns on the stone: half of them are called Bess or Nell
+const EPITAPH = ['Only wanted a sausage', 'A very good dog', 'Just doing the job',
+                 'Loyal to the last link', 'Would have shared', 'Nobody blames the dog',
+                 'Never even got the steak', 'Good dog. Wrong place.',
+                 'Sit. Stay. Forever.', 'Wagging to the end', 'Off the lead at last',
+                 'Fetched one too many', 'Knew the risks', 'Died as lived: hungry',
+                 'Should have stopped at the gate', 'Not the butcher’s finest hour',
+                 'Gone, and the sausages with it', 'Taken between customers'];
 const SORRY = ['You were aiming for the sausages', 'That was not a sausage',
                'The shop is closed pending enquiries', 'A terrible business',
-               'Nobody is buying anything now', 'He never saw it coming',
-               'Six days of work, one bad swipe'];
+               'Nobody is buying anything now', 'Never saw it coming',
+               'Six days of work, one bad swipe', 'That is not what the knife is for',
+               'The whole street heard that'];
+/* Cartoon rules: a flash, the eyes go to crosses, and then it drifts off the
+   top of the window with a halo on, spinning gently and getting smaller. It
+   is not a nice thing to have done, but it is not a grisly one either, and
+   the headstone lands while it is still going up. */
+const GONE_MS = 1750;
+let ghost = null;
 function dogDown() {
     if (!live) return;
     live = false; armed = false; dog.going = false; tallying = false;
     countT.forEach(clearTimeout); countT = [];
     clearTimeout(tallyT);
     tallyEl.classList.remove('on');
+    const [gx, gy] = dogAt();
+    ghost = { x: gx, y: gy, t0: now() };
+    tick();
     jolt(); yelpBad();
     const bg = document.getElementById('butcher').getContext('2d');
     bg.clearRect(0, 0, 330, 300);
@@ -1206,7 +1239,7 @@ function dogDown() {
         `${money2(money)}<span class="pc">taken, and not banked</span>`;
     document.getElementById('rating').textContent = pick(SORRY);
     card.className = 'grave';
-    settleT = setTimeout(() => { card.hidden = false; jingleLose(); }, 620);
+    settleT = setTimeout(() => { card.hidden = false; jingleLose(); }, GONE_MS - 260);
 }
 const yelpBad = () => safely(t => {
     tone(t, { freq: 820, to: 1250, dur: .1, type: 'sawtooth', vol: .2 });
@@ -1565,14 +1598,21 @@ const DAYS = [
    One of these a week, and the dogs and the knife are dealt with them, so a
    run has a cast rather than a set of settings. */
 const BUTCHERS = [
-    { name: 'Reg',    shop: 'A Cut Above',            skin: '#e5ab7e', skinD: '#c98a5e', hair: '#4a3428', hat: 'boater', apron: '#4a79b8', face: 'tash' },
-    { name: 'Sid',    shop: 'Beef Encounter',         skin: '#c98552', skinD: '#a86a3c', hair: '#2e241d', hat: 'cap',    apron: '#b8434a', face: 'beard' },
-    { name: 'Pearl',  shop: 'Meat Expectations',      skin: '#8a5a3a', skinD: '#6e442a', hair: '#1f1712', hat: 'trilby', apron: '#3f8f6a', face: 'none' },
-    { name: 'Wally',  shop: 'Bangers & Cash',         skin: '#efc19b', skinD: '#d09b72', hair: '#a8622a', hat: 'boater', apron: '#4a79b8', face: 'tash' },
-    { name: 'Doreen', shop: 'The Merchant of Venison', skin: '#e0b48d', skinD: '#c08f65', hair: '#7a4a2a', hat: 'cap',    apron: '#7a5aa8', face: 'none' },
-    { name: 'Mo',     shop: 'Best of the Wurst',      skin: '#7a4e30', skinD: '#5e3a22', hair: '#171210', hat: 'trilby', apron: '#b8434a', face: 'beard' },
+    { name: 'Reg',    skin: '#e5ab7e', skinD: '#c98a5e', hair: '#4a3428', hat: 'boater', apron: '#4a79b8', face: 'tash' },
+    { name: 'Sid',    skin: '#c98552', skinD: '#a86a3c', hair: '#2e241d', hat: 'cap',    apron: '#b8434a', face: 'beard' },
+    { name: 'Pearl',  skin: '#8a5a3a', skinD: '#6e442a', hair: '#1f1712', hat: 'trilby', apron: '#3f8f6a', face: 'none' },
+    { name: 'Wally',  skin: '#efc19b', skinD: '#d09b72', hair: '#a8622a', hat: 'boater', apron: '#4a79b8', face: 'tash' },
+    { name: 'Doreen', skin: '#e0b48d', skinD: '#c08f65', hair: '#7a4a2a', hat: 'cap',    apron: '#7a5aa8', face: 'none' },
+    { name: 'Mo',     skin: '#7a4e30', skinD: '#5e3a22', hair: '#171210', hat: 'trilby', apron: '#b8434a', face: 'beard' },
 ];
 // what is on the block this week. Cosmetic to a fault: they all cut the same.
+/* The name over the door, dealt fresh with everything else. A butcher's shop
+   is obliged by long tradition to be called something like this. */
+const SHOPS = ['A Cut Above', 'Beef Encounter', 'Meat Expectations', 'Bangers & Cash',
+               'The Merchant of Venison', 'Best of the Wurst', 'Fillet of Soul',
+               'Cleaver Girl', 'Nice to Meat You', 'Much Ado About Mutton',
+               'The Chop Shop', 'Sir Loin of Beef', 'Prime Suspect', 'Rack & Ruin',
+               'Meat & Greet', 'Chop Chop', 'The Rump Room', 'Lord of the Wings'];
 const KNIVES = [
     { name: 'butcher’s knife', kind: 'chef',    ring: 1 },
     { name: 'cleaver',              kind: 'cleaver', ring: .5 },
@@ -1596,6 +1636,7 @@ function deal() {
     const tier = (Math.random() * TIERS.length) | 0;
     cast = {
         butcher: pick(BUTCHERS),
+        shop: pick(SHOPS),
         knife: pick(KNIVES),
         dog: { ...pick(TIERS[tier]), dog: pick(DOG_NAMES), speed: .94 + tier * .025 },
     };
@@ -1609,7 +1650,7 @@ function drawDog(ctx, x, y, k, pose, ms, B) {
     B = B || (cast ? cast.dog : TIERS[2][0]);
     const o = pose.open, sq = pose.squash || 0;
     // how it feels about the week, which is the opposite of how he feels
-    const glum = pose.mood === 'glum';
+    const glum = pose.mood === 'glum', gone = pose.mood === 'gone';
     ctx.save();
     ctx.translate(x, y - (pose.reach || 0));
     ctx.scale(k * B.k * (1 + sq * .07), k * B.k * (1 - sq * .05));
@@ -1696,10 +1737,19 @@ function drawDog(ctx, x, y, k, pose, ms, B) {
             }
         });
     }
-    // eyes
+    // eyes, or what a cartoon puts there instead when it is all over
     for (const sx of [-1, 1]) {
-        blob('#201814', () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2], 0, Math.PI * 2));
-        blob('#fdf7e8', () => ctx.arc(sx * B.eyes[0] - B.eyes[2] * .35, B.eyes[1] - B.eyes[2] * .4, B.eyes[2] * .33, 0, Math.PI * 2));
+        if (gone) {
+            const r = B.eyes[2] * 1.5;
+            ctx.strokeStyle = '#201814'; ctx.lineWidth = 3.4; ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(sx * B.eyes[0] - r, B.eyes[1] - r); ctx.lineTo(sx * B.eyes[0] + r, B.eyes[1] + r);
+            ctx.moveTo(sx * B.eyes[0] + r, B.eyes[1] - r); ctx.lineTo(sx * B.eyes[0] - r, B.eyes[1] + r);
+            ctx.stroke();
+        } else {
+            blob('#201814', () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2], 0, Math.PI * 2));
+            blob('#fdf7e8', () => ctx.arc(sx * B.eyes[0] - B.eyes[2] * .35, B.eyes[1] - B.eyes[2] * .4, B.eyes[2] * .33, 0, Math.PI * 2));
+        }
     }
     // the muzzle, the nose, and whatever the mouth is doing
     const [mw, mh, my] = B.snout;
@@ -1721,6 +1771,14 @@ function drawDog(ctx, x, y, k, pose, ms, B) {
                 ctx.lineTo(sx * mw * .55, jawY + 7);
             });
         blob('#d4667c', () => ctx.ellipse(0, jawY + gape * .95, mw * .38, gape * .55, 0, 0, Math.PI * 2));
+    } else if (gone) {
+        // mouth open and the tongue out of the side of it, as is traditional
+        blob('#4d1c27', () => ctx.ellipse(0, jawY + 5, mw * .5, 9, 0, 0, Math.PI * 2));
+        blob('#d4667c', () => {
+            ctx.moveTo(mw * .1, jawY + 2); ctx.quadraticCurveTo(mw * .85, jawY + 8, mw * .82, jawY + 26);
+            ctx.quadraticCurveTo(mw * .7, jawY + 38, mw * .4, jawY + 30);
+            ctx.quadraticCurveTo(mw * .18, jawY + 20, mw * .1, jawY + 2);
+        });
     } else if (glum) {
         // mouth shut and turned down, and not a sign of the tongue
         blob('rgba(58,47,34,.85)', () => {
@@ -2106,7 +2164,10 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
 const DEMO_CYCLE = 1600, DEMO_SWEEP = .5;
 const demoOn = () => live && !armed && round === 1 && string && !swipe;
 function drawDemo(ms) {
-    const k = (string.n - 1) >> 1;                     // a twist near the middle
+    /* The bottom twist, which frees the bottom sausage - the one nearest the
+       dog, and so the one you actually want off first. Demonstrating a cut in
+       the middle taught the gesture and nothing about the game. */
+    const k = string.n - 2;
     const [cx, cy, tx, ty] = at(string.twists[k]);
     const nx = -ty, ny = tx, L = 78;                   // square across the string
     const ax = cx - nx * L, ay = cy - ny * L;
@@ -2211,17 +2272,21 @@ function draw() {
             ctx.translate(x, y);
             ctx.rotate(chewing.ang + f * 1.1);
             ctx.scale(1 - f * .55, 1 - f * .35);
-            ctx.beginPath();
-            ctx.ellipse(0, 0, chewing.len, FAT * .92, 0, 0, Math.PI * 2);
-            ctx.fillStyle = '#c4472e'; ctx.fill();
-            ctx.save(); ctx.clip();
-            ctx.beginPath();
-            ctx.ellipse(0, FAT * .6, chewing.len, FAT * .7, 0, 0, Math.PI * 2);
-            ctx.fillStyle = '#8c2b1b'; ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(-chewing.len * .12, -FAT * .34, chewing.len * .6, FAT * .18, 0, 0, Math.PI * 2);
-            ctx.fillStyle = '#dd6f4c'; ctx.fill();
-            ctx.restore();
+            if (chewing.kind === 'steak') {
+                steakShape(ctx, 0);
+            } else {
+                ctx.beginPath();
+                ctx.ellipse(0, 0, chewing.len, FAT * .92, 0, 0, Math.PI * 2);
+                ctx.fillStyle = '#c4472e'; ctx.fill();
+                ctx.save(); ctx.clip();
+                ctx.beginPath();
+                ctx.ellipse(0, FAT * .6, chewing.len, FAT * .7, 0, 0, Math.PI * 2);
+                ctx.fillStyle = '#8c2b1b'; ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(-chewing.len * .12, -FAT * .34, chewing.len * .6, FAT * .18, 0, 0, Math.PI * 2);
+                ctx.fillStyle = '#dd6f4c'; ctx.fill();
+                ctx.restore();
+            }
             ctx.restore();
         }
     }
@@ -2250,7 +2315,53 @@ function draw() {
         ctx.restore();
     }
 
-    if (dog.going || dog.s <= string.len + 80) {
+    if (ghost) {
+        const e = (ms - ghost.t0) / GONE_MS;
+        if (e >= 1) ghost = null;
+        else {
+            const rise = e < .16 ? 0 : Math.pow((e - .16) / .84, 1.4);
+            const gy = ghost.y - rise * (ghost.y + 120);
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, 1 - Math.pow(e, 2.4));
+            ctx.translate(ghost.x, gy);
+            ctx.rotate(Math.sin(e * 7) * .18);
+            const sq = e < .16 ? 1 + Math.sin(e / .16 * Math.PI) * .16 : 1;
+            ctx.scale(sq * (1 - rise * .35), (2 - sq) * (1 - rise * .35));
+            // a halo, and the pair of wings that go with it
+            if (e > .14) {
+                ctx.save();
+                ctx.globalAlpha = Math.min(1, (e - .14) * 6);
+                ctx.strokeStyle = '#f0d484'; ctx.lineWidth = 5;
+                ctx.beginPath(); ctx.ellipse(0, -74, 26, 8, 0, 0, Math.PI * 2); ctx.stroke();
+                const flap = Math.sin(ms / 90) * .3;
+                for (const sx of [-1, 1]) {
+                    ctx.save();
+                    ctx.translate(sx * 48, -6);
+                    ctx.rotate(sx * (.5 + flap));
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(sx * 30, -30, sx * 54, -8);
+                    ctx.quadraticCurveTo(sx * 34, 4, 0, 14);
+                    ctx.closePath();
+                    ctx.fillStyle = '#fdf7e8'; ctx.fill();
+                    ctx.restore();
+                }
+                ctx.restore();
+            }
+            drawDog(ctx, 0, 0, 1.02, { open: 0, mood: 'gone' }, 0, cast.dog);
+            ctx.restore();
+            // the stroke that did it, flashing white for a moment
+            if (e < .22) {
+                ctx.save();
+                ctx.globalAlpha = 1 - e / .22;
+                ctx.strokeStyle = '#fff6dd'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(ghost.x - 90, ghost.y - 18); ctx.lineTo(ghost.x + 90, ghost.y + 18);
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+    } else if (dog.going || dog.s <= string.len + 80) {
         const s = clamp(dog.s, 0, string.len);
         const [x, y] = at(s);
         const below = dog.s > string.len;
@@ -2276,7 +2387,7 @@ function tick() {
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || steak || demoOn() || !resting) raf = requestAnimationFrame(step);
+            || chewing || steak || ghost || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -2355,7 +2466,7 @@ function drawFascia(g, name) {
 function drawShopfront() {
     const c = document.getElementById('shopfront'), g = c.getContext('2d');
     g.clearRect(0, 0, 340, 268);
-    drawFascia(g, cast.butcher.shop);
+    drawFascia(g, cast.shop);
     drawButcher(g, true, { cx: 122, cy: 192, k: .68, holds: 'knife' });
     drawDog(g, 258, 208, .80 / cast.dog.k, { open: 0 }, 0, cast.dog);
     // the knife is in his hand and the dog is stood next to him, so the line
