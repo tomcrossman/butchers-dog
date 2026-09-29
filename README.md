@@ -168,74 +168,47 @@ There is no pass mark, and nothing to lose but money.
 
 A sausage sells for what it looks like it is worth: a clean cut through the
 middle of a twist leaves two tidy ends and it goes in the window at £1.65; a
-scrappy one still sells, to somebody, for 95p. So the score is the till, and
-the reason to cut well is that it pays.
+scrappy one still sells, to somebody, for 95p. A cut dead through the middle
+and square across it - which is the one thing in this game you can actually get
+better at - pays a pound on top and says PERFECT about it.
 
-There are no lives and there is no losing. The week always runs Monday to
-Saturday, and what the dog gets is simply money you did not take - which is the
-worst thing that can happen to a shop. A fixed-length run needs an unbounded
-score or everybody finishes level, and money is one: two people can both get to
-Saturday and take wildly different amounts.
+**The money is banked.** There is no best week and no high score: the week's
+takings go in the till and stay there, and what you did with the money is the
+score. A week always runs Monday to Saturday, and what the dog gets is simply
+money you did not take.
 
-Nobody reads an instruction, so on Monday - while the count is running and
-there is nothing else to do with the screen - a ghost knife walks the cut you
-are meant to make: square across the bottom twist, in one stroke, over and over
-until the dog is let off, with SWIPE TO CUT written next to it rather than down
-at the bottom of the window where it may as well not be. It runs for two and a half
-seconds before the count starts, because one and a bit sweeps under a running
-clock is not long enough to take in - and a tap gets on with it, so it is
-patient the first time and out of the way every time after that. The bottom twist
-because that frees the sausage nearest the dog, which is the one you actually
-want off first; demonstrating a cut in the middle taught the gesture and
-nothing about the game. It stops the moment the round is live, because by then
-you either have it or you have not.
+## The shop
 
-## The one that falls
+The till buys things, and the things are the point.
 
-From Tuesday on, once a day, a steak comes off the top of the window with a
-whistle to tell you to look up. It takes about two seconds to fall. Catch it
-with the blade on the way down and it is worth about two sausages.
+A knife for yourself - the butcher's own, a boning knife, a cleaver or a pair
+of shears - and then everything the dog can be got into: flat caps, beanies,
+party hats, a chef's hat, a builder's hat, cat ears, bunny ears, ear muffs,
+devil horns, a sausage hat, a bone hat, a top hat, a frog onesie, a teddy
+onesie, a capybara onesie and a gold crown. Round glasses, sunglasses, an eye
+patch, a clown nose, a fancy moustache, flying goggles, a monocle, a superhero
+mask and a skull mask. Bow ties, neckerchiefs, skull collars, a superhero cape
+and a gold collar. Eighteen pounds to four hundred and fifty.
 
-A day will not end underneath one. If the last sausage comes off the string
-while a steak is still in the air, the till does not ring until the steak has
-settled one way or the other - you get your swipe at it, or you watch the dog
-take it. Money still in the air is money still on the table.
+**None of it does anything at all to how the game plays.** A dog in a top hat is
+exactly as quick as a dog without one, and every one of the twelve breeds runs
+at the same speed, because the day the kit changes the odds is the day you are
+buying your way past the dog rather than getting better at getting past it.
 
-It is cut the moment the blade passes through it rather than when your finger
-comes off the glass. The whole path gets tested either way, so it changes no
-outcome - but a falling steak has moved on by the time you let go, and the
-swipe was being checked against where it used to be, which made catching one
-very nearly impossible. The dog is checked the same way, for the same reason.
+The shop puts it on before it takes the money: tapping something you do not own
+does not buy it, it puts it on the dog in the window and the row turns into the
+price with Buy on it. Tapping again is the purchase.
 
-Let it past and it does not reach the floor. It does not have to land on the
-dog's head either: a steak is worth leaving the string for, so the dog jumps
-for wherever the thing is coming down, right across the window if it has to,
-and takes it out of the air. A dog that has had a steak off you is a dog that
-comes back quicker for the rest of the week, so the steak is not a free bonus
-you can decline - ignoring it costs you twice.
+## Your shop, kept
 
-It is the only thing in the game that asks you to look away from the string,
-which is the whole reason it is there.
+You pick the man behind the counter, the dog at the door, its name and the name
+over the window - with a die to roll if you cannot think of one - and that, the
+till and the wardrobe are saved. It is one object under one key, and there is a
+Start again at the bottom of the shop that asks twice before it wipes it.
 
-## Mind the dog
-
-There is one way to lose, and it is not the dog's fault.
-
-Put the blade through the dog and the week stops there. Nothing is banked - a
-fail state with no cost is not one - and the dog goes the way a cartoon dog
-goes: a flash, the eyes to crosses, and then off the top of the window with a
-halo on, spinning gently and getting smaller. The headstone lands while it is
-still going up, with its name and one of eighteen epitaphs on it, none of which
-uses a pronoun, because half of them are called Bess or Nell. The circle that counts as a hit is two
-thirds of the head it is drawn as, so a near miss is a near miss; but it sits
-squarely in front of the last twist on the string, which is exactly where the
-tempting cut is.
-
-Saturday night takes the whole window. The week is counted up day by day -
-what sold, what steaks were caught, what each day took, with the best day of
-the six marked - in front of the man whose shop it is, and whether he is
-holding the takings over his head or standing there with his hands empty is
-whether it beat the best week.
+Kill the dog and you lose the week's takings, which are spent on the funeral. A
+new dog turns up on Monday with a new name and the same wardrobe, because the
+collar and the hat were bought and paid for and nobody is burying those.
 
 ## The noise
 
