@@ -372,7 +372,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v8';
+const APP_VERSION = 'v9';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -2026,9 +2026,10 @@ function drawShopfront() {
     g.clearRect(0, 0, 340, 250);
     drawButcher(g, true, { cx: 122, cy: 172, k: .70, holds: 'knife' });
     drawDog(g, 258, 190, .84 / cast.dog.k, { open: 0 }, 0, cast.dog);
+    // the knife is in his hand and the dog is stood next to him, so the line
+    // only has to introduce the two of them
     document.getElementById('cast-line').innerHTML =
-        `${cast.butcher.name}’s shop, a ${cast.knife.name}, and ` +
-        `${cast.dog.dog} the ${cast.dog.name} at the door all week`;
+        `${cast.butcher.name} and ${cast.dog.dog} the ${cast.dog.name}`;
 }
 deal();
 drawShopfront();
