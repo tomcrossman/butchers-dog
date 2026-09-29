@@ -372,7 +372,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v7';
+const APP_VERSION = 'v8';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -836,6 +836,7 @@ function ruin(p, k, x, y) {
    it gets keener every time it manages it.
    ============================================================ */
 const dog = { s: 1e5, speed: 0, going: false, chomp: 0, keen: 0 };
+let fed = 0;                        // how many it has had off you this week
 /* Getting one is the only thing the dog ever does, so it is worth the frames.
    It gapes on the way up, snaps at a third of the way through - which is when
    the sausage actually arrives in its mouth and the screen jolts - and then
@@ -882,7 +883,7 @@ function dogStep(dt) {
         if (k === p.from) pieces.splice(i, 1);
         else pieces.splice(i, 1, { from: p.from, to: k - 1 });
         snarl();
-        lost++; dog.keen++; dog.chomp = CHOMP;
+        lost++; fed++; dog.keen++; dog.chomp = CHOMP;
         showHud();
         const rp = document.getElementById('roundplate');
         rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
@@ -925,7 +926,7 @@ const moneyEl = document.getElementById('money');
 
 function showHud() {
     document.getElementById('round-val').textContent = DAYS[Math.min(5, round - 1)].short;
-    document.getElementById('whodog').textContent = breedFor(round).dog;
+    document.getElementById('whodog').textContent = breedFor().dog;
     moneyEl.textContent = money2(money);
     document.getElementById('best-val').textContent = money2(Math.max(best, money));
 }
@@ -937,7 +938,8 @@ function startRound(n) {
     cutFx = []; mess = []; shouts = []; chewing = null; swipe = null; blade = null;
     const D = DAYS[n - 1], count = makeString(n);
     roundMoney = 0;
-    dog.speed = D.speed * breedFor(n).speed;
+    // a dog that has been fed comes back keener, all week, up to a point
+    dog.speed = D.speed * breedFor().speed * (1 + Math.min(.20, fed * .022));
     /* Far enough off the end that it has to run at you first. Measured in its
        own seconds rather than pixels, so the Great Dane starts further out
        than the dachshund and you get the same breath either way - about a
@@ -969,7 +971,7 @@ function countdown(n) {
         bannerEl.classList.add('go');
     };
     const head = `${D.name}${D.half ? ' &middot; half day' : ''}`;
-    say('3', `${head} &mdash; ${B.dog} the ${B.name}`);
+    say('3', n === 1 ? `${head} &mdash; ${B.dog} the ${B.name}` : head);
     beep(0);
     countT.push(setTimeout(() => { if (round === n && live) { say('2', head); beep(1); } }, 620));
     countT.push(setTimeout(() => { if (round === n && live) { say('1', head); beep(2); } }, 1240));
@@ -991,11 +993,11 @@ function endRound() {
     if (!live) return;
     live = false; armed = false; dog.going = false;
     countT.forEach(clearTimeout); countT = [];
-    ledger.push({ day: DAYS[round - 1], dog: breedFor(round), took: roundMoney, sold: saved, lost });
+    ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost });
     tallying = true;
     tallyEl.innerHTML = `<span class="n">${money2(roundMoney)}</span>` +
         `<span class="l">${pick(lost === 0 ? CLEAN : saved ? THROUGH : MISSED)}</span>` +
-        `<span class="b">${saved} sold &middot; ${breedFor(round).dog} got ${lost}</span>`;
+        `<span class="b">${saved} sold &middot; ${breedFor().dog} got ${lost}</span>`;
     tallyEl.classList.add('on');
     jingleUp();
     tallyT = setTimeout(round >= DAYS.length ? endWeek : nextRound, 1500);
@@ -1013,14 +1015,20 @@ function endWeek() {
     document.getElementById('ribbon').textContent = record ? 'BEST WEEK' : 'SATURDAY NIGHT';
     document.getElementById('ledger').innerHTML = ledger.map(r =>
         `<tr class="${r.took === top && top > 0 ? 'best' : ''}">` +
-        `<td class="d">${r.day.short}</td><td class="w">${r.dog.dog}</td>` +
+        `<td class="d">${r.day.short}</td>` +
+        `<td class="w">${r.sold} sold${r.lost ? `, ${r.lost} gone` : ''}</td>` +
         `<td class="m">${money2(r.took)}</td></tr>`).join('');
     document.getElementById('score').innerHTML =
         `${money2(money)}<span class="pc">for the week</span>`;
     document.getElementById('rating').textContent =
         record ? pick(RECORD_LINES) : pick(money >= best * .8 ? SHUT : MISSED_WEEK);
     card.className = record ? 'record' : '';
-    drawButcher(document.getElementById('butcher').getContext('2d'), record, { cx: 130, cy: 196 });
+    // the canvas is drawn on more than once a session, and a butcher who was
+    // holding the takings up last week leaves the arm behind if it is not
+    // wiped first - drawButcher paints, it does not clear
+    const bg = document.getElementById('butcher').getContext('2d');
+    bg.clearRect(0, 0, 260, 300);
+    drawButcher(bg, record, { cx: 130, cy: 196 });
     settleT = setTimeout(() => { card.hidden = false; record ? jingleWin() : jingleLose(); }, 520);
 }
 function nextRound() { tallying = false; startRound(round + 1); }
@@ -1038,9 +1046,10 @@ const MISSED = ['The dog ate well', 'Nothing for the window', 'All of that was d
 const SHUT = ['A respectable week', 'That will keep the lights on', 'Not far off your best',
               'A fair week of it', 'Nearly a good one', 'The rent is paid'];
 // and nowhere near it
-const MISSED_WEEK = ['A thin week', 'The dogs ate the profit', 'Those dogs want paying',
+const MISSED_WEEK = ['A thin week', 'That dog ate the profit', 'That dog wants paying',
                      'Six days for that', 'The window was never full', 'Barely worth opening',
-                     'The dogs are not sorry', 'You will hear about this'];
+                     'The dog is not sorry', 'You will hear about this',
+                     'Should have got a cat'];
 const RECORD_LINES = ['Your best week yet', 'A record week', 'Never done better',
                       'The window has never looked fuller', 'Nobody has taken more. Including you.',
                       'One for the books'];
@@ -1326,19 +1335,27 @@ const KNIVES = [
     { name: 'pair of shears',       kind: 'shears',  ring: .8 },
 ];
 
-const shuffle = a => { const c = a.slice();
-    for (let i = c.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0;
-        [c[i], c[j]] = [c[j], c[i]]; } return c; };
+/* One dog a week, and it is at the door every morning. Which one is dealt
+   with the butcher and the knife, so a week has a cast rather than a set of
+   settings, and the dog you spend six days getting past is a particular
+   animal with a name rather than a difficulty setting.
+
+   Its breed is looks, near enough. A dachshund week and a Great Dane week
+   have to be worth comparing, now that the till is the only score, so the
+   twelve of them are pulled into a narrow band of speed - the bigger ones a
+   shade quicker and no more than that. What escalates is the week: a longer
+   string and a quicker dog every morning, and a dog that has been fed
+   getting keener with it. */
 let cast = null;
 function deal() {
-    const names = shuffle(DOG_NAMES).slice(0, 6);
+    const tier = (Math.random() * TIERS.length) | 0;
     cast = {
         butcher: pick(BUTCHERS),
         knife: pick(KNIVES),
-        dogs: TIERS.map((tier, i) => ({ ...pick(tier), dog: names[i] })),
+        dog: { ...pick(TIERS[tier]), dog: pick(DOG_NAMES), speed: .94 + tier * .025 },
     };
 }
-const breedFor = n => cast.dogs[Math.min(cast.dogs.length, Math.max(1, n)) - 1];
+const breedFor = () => cast.dog;
 
 /* Drawn on the same terms as the meat: no outline, just shapes with the light
    on one side. `pose` is where it is in a bite - how far the jaw is open, how
@@ -1938,7 +1955,7 @@ function draw() {
         const pose = dog.chomp > 0 ? chompPose(1 - dog.chomp / CHOMP)
                                    : { open: 0, reach: 0, tilt: 0, squash: 0 };
         drawDog(ctx, x, below ? at(string.len)[1] + (dog.s - string.len) : y, 1.02,
-                pose, ms, breedFor(round));
+                pose, ms, breedFor());
     }
 
     }
@@ -1969,16 +1986,28 @@ function jolt() {
 
 /* A new week: a new man behind the counter, a new knife on the block and six
    new dogs to get past. */
-function newRun() {
-    money = 0; ledger = [];
+/* A new week is dealt on the shopfront rather than behind your back: the
+   till is emptied, a new man is behind the counter with a new knife, and a
+   new dog is at the door. You get to see who all three are before you open
+   up, which is the only reason to have a shopfront at all. */
+function showShop() {
+    money = 0; ledger = []; fed = 0;
+    round = 0; live = false; armed = false; tallying = false;
+    dog.going = false; dog.chomp = 0;
+    clearTimeout(tallyT); clearTimeout(settleT);
+    countT.forEach(clearTimeout); countT = [];
+    tallyEl.classList.remove('on');
+    card.hidden = true; card.className = '';
     deal();
     drawShopfront();
-    startRound(1);            // which sets the HUD, once there is a day to put in it
+    showingIntro = true;
+    document.getElementById('intro').hidden = false;
+    document.body.classList.add('waiting');
+    draw();
 }
 document.getElementById('again').addEventListener('click', e => {
     e.stopPropagation();
-    card.hidden = true; card.className = '';
-    newRun();
+    showShop();
 });
 document.getElementById('play').addEventListener('click', e => {
     e.stopPropagation();
@@ -1986,7 +2015,7 @@ document.getElementById('play').addEventListener('click', e => {
     showingIntro = false;
     document.getElementById('intro').hidden = true;
     document.body.classList.remove('waiting');
-    newRun();
+    startRound(1);            // which sets the HUD, once there is a day to put in it
 });
 
 /* Who you are this week, what you are cutting with, and the six of them
@@ -1995,13 +2024,11 @@ document.getElementById('play').addEventListener('click', e => {
 function drawShopfront() {
     const c = document.getElementById('shopfront'), g = c.getContext('2d');
     g.clearRect(0, 0, 340, 250);
-    drawButcher(g, true, { cx: 170, cy: 158, k: .68, holds: 'knife' });
-    cast.dogs.forEach((B, i) => {
-        const k = (.30 + i * .035) / B.k;
-        drawDog(g, 32 + i * 55, 220 - i * 3, k, { open: 0 }, i * 700, B);
-    });
+    drawButcher(g, true, { cx: 122, cy: 172, k: .70, holds: 'knife' });
+    drawDog(g, 258, 190, .84 / cast.dog.k, { open: 0 }, 0, cast.dog);
     document.getElementById('cast-line').innerHTML =
-        `${cast.butcher.name}’s shop, a ${cast.knife.name}, and six dogs to get past`;
+        `${cast.butcher.name}’s shop, a ${cast.knife.name}, and ` +
+        `${cast.dog.dog} the ${cast.dog.name} at the door all week`;
 }
 deal();
 drawShopfront();

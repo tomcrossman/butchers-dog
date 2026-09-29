@@ -113,23 +113,35 @@ always was.
 | Friday | 9 | |
 | Saturday | 11 | biggest |
 
-A day of the week is an abstraction; a bigger dog is not, so the ladder is run
-by the animal - one to a day, each bigger and quicker than the one before it.
-There are two of everything at every size and a bag of names to go with them,
-so no two weeks bring the same six dogs round: a dachshund or a corgi on
-Monday, a Great Dane or a mastiff on Saturday. Every one of them is the same
-drawing with different numbers - a skull, a jaw, a muzzle, a pair of ears and a
-coat - because twelve hand-drawn dogs would have been twelve chances to get one
-wrong.
+## The cast
 
-The man behind the counter is dealt with them, and so is the knife on the
-block: Reg or Sid or Pearl or Doreen or Wally or Mo, in a boater or a flat cap
-or a white peaked hat, with a butcher's knife or a cleaver or a boning knife or
-a pair of shears. They all cut exactly the same - a randomised advantage would
-not be a joke, it would be a cheat - so the difference is what it looks and
-sounds like in your hand. The whole cast is lined up on the shopfront before
-you open up, the dogs in the order they will turn up, which is the difficulty
-curve said without a word.
+One dog a week, and it is at the door every morning - a particular animal with
+a name rather than a difficulty setting. Which one is dealt with the man behind
+the counter and the knife on the block, so a week has a cast rather than a set
+of settings.
+
+There are twelve of them, two at every size, and a bag of names to go with
+them. Every one is the same drawing with different numbers - a skull, a jaw, a
+muzzle, a pair of ears and a coat - because twelve hand-drawn dogs would have
+been twelve chances to get one wrong.
+
+Its breed is looks, near enough. A dachshund week and a Great Dane week have to
+be worth comparing, now that the till is the only score, so the twelve of them
+are pulled into a narrow band of speed: the bigger ones a shade quicker, and no
+more than that. What escalates is the week - a longer string and a quicker dog
+every morning, and a dog that has been fed getting keener with it. Feed it on
+Monday and you will know about it on Saturday.
+
+Behind the counter: Reg or Sid or Pearl or Doreen or Wally or Mo, in a boater
+or a flat cap or a white peaked hat. On the block: a butcher's knife, a
+cleaver, a boning knife or a pair of shears. They all cut exactly the same - a
+randomised advantage would not be a joke, it would be a cheat - so the
+difference is what it looks and sounds like in your hand, down to the cleaver
+not ringing after a good cut.
+
+All three are stood on the shopfront before you open up, and every new week is
+dealt there rather than behind your back: finishing a week takes you back to
+the shop window to meet the next lot.
 
 ## The till
 
