@@ -148,25 +148,33 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 }
 #prompt.gone { opacity: 0; }
 
+/* The count is the only thing on the screen that is about to matter, so it
+   gets the middle of it. What day it is is a caption, and captions go at the
+   bottom where the prompt always went. */
 #banner {
-    position: absolute; left: 0; right: 0; top: 28%; z-index: 4;
+    position: absolute; left: 0; right: 0; top: 50%; z-index: 4;
+    transform: translateY(-50%);
     text-align: center; pointer-events: none; opacity: 0;
     font-family: var(--font-display); color: var(--gold);
     text-shadow: 0 3px 0 rgba(0,0,0,.45);
 }
-#banner .who {
-    display: block; font-family: var(--font); font-weight: 900; font-size: 13px;
-    text-transform: uppercase; letter-spacing: .16em; color: var(--cream);
-    opacity: .68; margin-bottom: 6px;
+/* In the middle of the window it lands on top of the sausages, so it carries
+   its own dark outline rather than relying on whatever is behind it */
+#banner .r {
+    display: block; font-size: clamp(46px, 16vw, 78px); line-height: 1; letter-spacing: .01em;
+    text-shadow:
+        0 0 16px rgba(8,22,17,.95),
+        3px 3px 0 rgba(8,22,17,.92), -3px 3px 0 rgba(8,22,17,.92),
+        3px -3px 0 rgba(8,22,17,.92), -3px -3px 0 rgba(8,22,17,.92),
+        0 5px 0 rgba(0,0,0,.45);
 }
-#banner .r { display: block; font-size: clamp(46px, 16vw, 78px); line-height: 1; letter-spacing: .01em; }
 #banner .r.go-word { font-size: clamp(38px, 13vw, 62px); color: #8fd6a2; }
 #banner.go { animation: bannerGo .62s ease-out both; }
 @keyframes bannerGo {
-    0%   { transform: scale(1.4); opacity: 0; }
-    16%  { transform: scale(1); opacity: 1; }
-    72%  { transform: scale(1); opacity: 1; }
-    100% { transform: scale(.92); opacity: 0; }
+    0%   { transform: translateY(-50%) scale(1.4); opacity: 0; }
+    16%  { transform: translateY(-50%) scale(1); opacity: 1; }
+    72%  { transform: translateY(-50%) scale(1); opacity: 1; }
+    100% { transform: translateY(-50%) scale(.92); opacity: 0; }
 }
 
 /* The day's takings, over the middle of the window rather than the bottom of
@@ -1131,9 +1139,7 @@ function startRound(n) {
     roundT0 = now();
     armed = false;
     showHud();
-    // the demonstration carries its own label now, next to the cut it is making
-    promptEl.textContent = '';
-    promptEl.classList.add('gone');
+    // the countdown puts the day here, and takes it away again on CUT
     countdown(n);
     tick();
 }
@@ -1144,21 +1150,22 @@ let countT = [];
 function countdown(n) {
     countT.forEach(clearTimeout); countT = [];
     const D = DAYS[n - 1], B = breedFor(n);
-    const say = (big, small, cls) => {
-        bannerEl.innerHTML = (small ? `<span class="who">${small}</span>` : '') +
-                             `<span class="r ${cls || ''}">${big}</span>`;
+    const say = (big, cls) => {
+        bannerEl.innerHTML = `<span class="r ${cls || ''}">${big}</span>`;
         bannerEl.classList.remove('go');
         void bannerEl.offsetWidth;
         bannerEl.classList.add('go');
     };
-    const head = `${D.name}${D.half ? ' &middot; half day' : ''}`;
-    say('3', n === 1 ? `${head} &mdash; ${B.dog} the ${B.name}` : head);
+    promptEl.innerHTML = `${D.name}${D.half ? ' &middot; half day' : ''}` +
+                         (n === 1 ? ` &mdash; ${B.dog} the ${B.name}` : '');
+    promptEl.classList.remove('gone');
+    say('3');
     beep(0);
-    countT.push(setTimeout(() => { if (round === n && live) { say('2', head); beep(1); } }, 620));
-    countT.push(setTimeout(() => { if (round === n && live) { say('1', head); beep(2); } }, 1240));
+    countT.push(setTimeout(() => { if (round === n && live) { say('2'); beep(1); } }, 620));
+    countT.push(setTimeout(() => { if (round === n && live) { say('1'); beep(2); } }, 1240));
     countT.push(setTimeout(() => {
         if (round !== n || !live) return;
-        say('CUT!', '', 'go-word');
+        say('CUT!', 'go-word');
         armed = true;
         dog.going = true;
         woof();
