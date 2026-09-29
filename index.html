@@ -220,10 +220,6 @@ body.waiting #hud { display: none; }
 #intro p { margin: 0; max-width: 330px; font-size: 13px; font-weight: 700;
            line-height: 1.6; letter-spacing: .04em; opacity: .74; }
 #intro .btn { margin-top: 14px; width: 100%; max-width: 236px; }
-/* The one button that starts something gets the knife on it, so it reads as
-   the way in rather than the first of two choices. */
-.btn.go { display: flex; align-items: center; justify-content: center; gap: 9px; }
-.btn.go .ico { width: 19px; height: 19px; fill: #2a2118; flex: none; }
 .btn.ghost {
     background: linear-gradient(180deg, #1a4636, #123327); color: var(--gold);
     border-color: var(--gold-d); box-shadow: 0 3px 0 rgba(0,0,0,.4);
@@ -327,6 +323,14 @@ body.waiting #hud { display: none; }
    item is drawn on the dog's own head in its own little window, so a rack of
    seventeen hats reads at a glance instead of being seventeen words. */
 .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+/* Three of these, and each of them changes the game rather than the dog's
+   outfit, so they get half a row each and a line saying what they do. A hat
+   is a hat and needs no caption; a sawdust floor does. */
+.shelf.rail .tiles { grid-template-columns: repeat(2, 1fr); }
+/* twice the width does not mean twice the picture */
+.shelf.rail .buy canvas { width: min(100%, 96px); }
+.buy .why { font-size: 9.5px; font-weight: 700; line-height: 1.32; opacity: .6;
+            padding: 2px 5px 0; }
 .buy {
     position: relative;
     display: flex; flex-direction: column; align-items: center; gap: 1px;
@@ -348,10 +352,14 @@ body.waiting #hud { display: none; }
     background: linear-gradient(180deg, #2f7351, #1e5039);
     box-shadow: inset 0 0 0 2px rgba(220,171,62,.3), 0 0 0 1px rgba(0,0,0,.25);
 }
-.buy.worn .tag {
+/* the gold strip runs to the edges only when there is nothing under it - a
+   tile with a line of description has the strip sitting inside it instead */
+.buy.worn .tag { color: #8fd6a2; }
+.buy.worn .tag:last-child {
     width: calc(100% + 4px); margin: 2px -2px -4px; padding: 2px 0 3px;
     background: var(--gold); color: #2a2118;
 }
+.buy.trying .why { color: #2a2118; opacity: .72; }
 .buy .tick {
     position: absolute; top: 3px; right: 3px; width: 15px; height: 15px;
     border-radius: 50%; background: #3fa564; color: #0d2b1d;
@@ -386,8 +394,10 @@ body.waiting #hud { display: none; }
 #tryon .said { flex: 1; min-width: 0; text-align: left; }
 #tryon .nm { display: block; font-family: var(--font-display); font-size: 19px;
              color: var(--cream); line-height: 1.2; }
+#tryon .does { display: block; font-size: 11.5px; font-weight: 700; line-height: 1.35;
+               opacity: .75; margin-top: 2px; }
 #tryon .cost { display: block; font-size: 11px; font-weight: 900; letter-spacing: .1em;
-               text-transform: uppercase; opacity: .65; margin-top: 2px; }
+               text-transform: uppercase; opacity: .65; margin-top: 3px; }
 #tryon .pair { display: flex; gap: 8px; width: 100%; }
 #tryon .pair .btn { margin-top: 10px; font-size: 16px; padding: 11px 6px; }
 #tryon .no { flex: 1; background: transparent; color: var(--cream);
@@ -528,11 +538,6 @@ body.waiting #hud { display: none; }
         <path d="M 8.6 6.6 H 10.2 V 8 H 8.6 Z"/><path d="M 3.8 9 H 5.4 V 10.4 H 3.8 Z"/>
         <path d="M 6.2 9 H 7.8 V 10.4 H 6.2 Z"/>
     </symbol>
-    <symbol id="i-blade" viewBox="0 0 14 14">
-        <path fill-rule="evenodd" d="M 1.1 2.7 H 8.9 V 10.3 H 1.1 Z
-                 M 6.9 4.1 A 1 1 0 1 0 6.9 4.11 Z"/>
-        <path d="M 8.9 5.2 H 12.9 V 7.6 H 8.9 Z"/>
-    </symbol>
     <symbol id="i-paw" viewBox="0 0 14 14">
         <ellipse cx="7" cy="9.4" rx="3.9" ry="3.2"/>
         <ellipse cx="2.6" cy="5.6" rx="1.8" ry="2.3"/>
@@ -575,7 +580,7 @@ body.waiting #hud { display: none; }
         <div class="rule"></div>
         <p id="cast-line">Six days. One string a day.</p>
         <div class="bank" id="bank-line">In the till: <b>&pound;0.00</b></div>
-        <button class="btn go" id="play"><svg class="ico"><use href="#i-blade"/></svg>Open up shop</button>
+        <button class="btn" id="play">Open up shop</button>
         <button class="btn ghost" id="to-shop">Upgrades</button>
     </div>
 
@@ -631,7 +636,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v23';
+const APP_VERSION = 'v24';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -2105,9 +2110,12 @@ const KIT = [
        sits on the dog. It does not make the dog slower or the cutting easier -
        it makes the same work worth more, which is the only kind of advantage
        this game sells. */
-    { id: 'blankets',  kind: 'line',  name: 'Pigs in blankets', price: 28000 },
-    { id: 'moresteak', kind: 'line',  name: 'Steak on the slab', price: 19000 },
-    { id: 'sawdust',   kind: 'line',  name: 'Sawdust floor',     price: 22000 },
+    { id: 'blankets',  kind: 'line',  name: 'Pigs in blankets', price: 28000,
+      why: 'A third of the day comes wrapped. They pay double.' },
+    { id: 'moresteak', kind: 'line',  name: 'Steak on the slab', price: 19000,
+      why: 'Two steaks a day, and from Monday.' },
+    { id: 'sawdust',   kind: 'line',  name: 'Sawdust floor',     price: 22000,
+      why: 'The dog drops one in four. You sell them anyway.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -3443,7 +3451,9 @@ function paintStore() {
     drawPreview('stock-dog', 230, 142, false);
     document.getElementById('stock').innerHTML = KINDS.map(({ kind, label }) => {
         const shopUp = kind === 'line';
-        const tiles = STOCK.filter(i => i.kind === kind).map(i => {
+        // cheapest first on every shelf, so the shop reads as a price list
+        const tiles = STOCK.filter(i => i.kind === kind)
+                           .sort((x, y) => x.price - y.price).map(i => {
             const got = owns(i.id);
             const on = shopUp ? save.on.includes(i.id) : save.worn[kind] === i.id;
             const trying = tryOn && tryOn.id === i.id;
@@ -3455,10 +3465,12 @@ function paintStore() {
                              `<span class="tag">${shopUp ? 'On' : 'Worn'}</span>`
                       : got ? `<span class="tag">${shopUp ? 'Off' : 'Wear'}</span>`
                       : `<span class="pr">${money0(i.price)}</span>`;
+            const why = i.why ? `<span class="why">${i.why}</span>` : '';
             return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
-                   `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>${tag}</button>`;
+                   `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>${tag}${why}</button>`;
         }).join('');
-        return `<div class="shelf"><h3>${label}</h3><div class="tiles">${tiles}</div></div>`;
+        return `<div class="shelf${shopUp ? ' rail' : ''}"><h3>${label}</h3>` +
+               `<div class="tiles">${tiles}</div></div>`;
     }).join('');
     document.querySelectorAll('#stock .buy').forEach(btn =>
         drawTile(btn.querySelector('canvas'), itemById(btn.dataset.item)));
@@ -3480,6 +3492,7 @@ function paintTryOn() {
         `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>` +
         `<span class="said">` +
         `<span class="nm">${tryOn.name}</span>` +
+        (tryOn.why ? `<span class="does">${tryOn.why}</span>` : '') +
         `<span class="cost">${can ? `Yours for ${money0(tryOn.price)}`
                                   : `${money0(short)} short`}</span></span>` +
         `<span class="pair">` +
