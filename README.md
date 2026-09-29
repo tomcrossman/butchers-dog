@@ -203,7 +203,9 @@ sells.
 
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
-rather than Worn or Wear.
+rather than Worn or Wear. They get two to a row and a line under each saying
+what they do, on the shelf and again on the counter, because a hat is a hat and
+needs no caption but a sawdust floor does. Every shelf runs cheapest first.
 
 A knife for yourself - the butcher's own, a boning knife, a cleaver or a pair
 of shears - and then everything the dog can be got into: flat caps, beanies,
@@ -239,6 +241,9 @@ the shop that spends anything, and if the till is short it says how short and
 will not be pressed.
 
 ## Your shop, kept
+
+The button that opens the shop is a word and nothing else; a cleaver on it was
+tried and looked like a small appliance.
 
 The game's name is on the setup screen and nowhere else: once the shop is
 yours, the sign over the window is the one that matters, so the shopfront gets
