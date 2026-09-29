@@ -180,9 +180,30 @@ money you did not take.
 
 ## Upgrades
 
-The till buys things, and the things are the point. It is called Upgrade on
+The till buys things, and the things are the point. It is called Upgrades on
 the door and in the ledger, because the shop in this game is the one with the
 sausages in the window.
+
+**On the rail** is the shelf that changes what you are cutting rather than what
+the dog is wearing. None of it makes the dog slower or the cutting easier - it
+makes the same work worth more, which is the only kind of advantage this shop
+sells.
+
+- **Pigs in blankets**, two hundred and eighty pounds. About a third of every
+  day's links come with a rasher wound round them - three bands across the
+  link, the fat running the length of the rasher rather than the length of the
+  sausage - and they pay double.
+- **Steak on the slab**, a hundred and ninety. Two a day instead of one, and
+  from Monday rather than Tuesday. They are spaced far enough apart that the
+  second is never asking for the first one's airspace.
+- **Sawdust floor**, two hundred and twenty. The dog drops about one in four of
+  the ones it takes, and a sausage on clean boards is still a sausage: it goes
+  on the hook and pays a little under a cut one, because it has been in a dog's
+  mouth.
+
+A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
+ones you own on and off, any number at a time, and the tile says On or Off
+rather than Worn or Wear.
 
 A knife for yourself - the butcher's own, a boning knife, a cleaver or a pair
 of shears - and then everything the dog can be got into: flat caps, beanies,
@@ -218,6 +239,10 @@ the shop that spends anything, and if the till is short it says how short and
 will not be pressed.
 
 ## Your shop, kept
+
+The game's name is on the setup screen and nowhere else: once the shop is
+yours, the sign over the window is the one that matters, so the shopfront gets
+the room the title used to have and the till under it is the score.
 
 You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the game's own name, with a die

@@ -113,7 +113,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #roundplate.hurt { animation: hurt .5s ease-out both; }
 @keyframes hurt { 0%, 100% { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
                   30% { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 20px rgba(216,70,47,.9); } }
-#shopfront { width: min(84vw, 330px); height: auto; margin-bottom: 4px;
+#shopfront { width: min(94vw, 386px); height: auto; margin-bottom: 4px;
              animation: butcherIn .6s cubic-bezier(.2, 1.5, .4, 1) both; }
 /* the week's takings, day by day */
 #ledger { width: 100%; border-collapse: collapse; margin: 4px 0 10px;
@@ -213,11 +213,6 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 @keyframes introIn { from { opacity: 0; } to { opacity: 1; } }
 #intro[hidden] { display: none; }
 body.waiting #hud { display: none; }
-#intro h1 {
-    margin: 0 0 20px; font-family: var(--font-display); font-weight: 400; color: var(--gold);
-    font-size: clamp(38px, 13.5vw, 60px); line-height: .98; letter-spacing: .01em;
-    text-shadow: 0 4px 0 rgba(0,0,0,.45);
-}
 #intro .rule {
     width: 132px; height: 2px; margin: 16px 0 12px;
     background: linear-gradient(90deg, transparent, var(--gold-d), transparent);
@@ -225,6 +220,10 @@ body.waiting #hud { display: none; }
 #intro p { margin: 0; max-width: 330px; font-size: 13px; font-weight: 700;
            line-height: 1.6; letter-spacing: .04em; opacity: .74; }
 #intro .btn { margin-top: 14px; width: 100%; max-width: 236px; }
+/* The one button that starts something gets the knife on it, so it reads as
+   the way in rather than the first of two choices. */
+.btn.go { display: flex; align-items: center; justify-content: center; gap: 9px; }
+.btn.go .ico { width: 19px; height: 19px; fill: #2a2118; flex: none; }
 .btn.ghost {
     background: linear-gradient(180deg, #1a4636, #123327); color: var(--gold);
     border-color: var(--gold-d); box-shadow: 0 3px 0 rgba(0,0,0,.4);
@@ -234,6 +233,8 @@ body.waiting #hud { display: none; }
         text-transform: uppercase; opacity: .6; }
 .bank b { font-family: var(--font-display); font-size: 17px; letter-spacing: .02em;
           color: var(--gold); opacity: 1; margin-left: 5px; }
+#bank-line { margin-top: 12px; }
+#bank-line b { font-size: 27px; margin-left: 7px; text-shadow: 0 3px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
 #setup, #store {
@@ -527,6 +528,11 @@ body.waiting #hud { display: none; }
         <path d="M 8.6 6.6 H 10.2 V 8 H 8.6 Z"/><path d="M 3.8 9 H 5.4 V 10.4 H 3.8 Z"/>
         <path d="M 6.2 9 H 7.8 V 10.4 H 6.2 Z"/>
     </symbol>
+    <symbol id="i-blade" viewBox="0 0 14 14">
+        <path fill-rule="evenodd" d="M 1.1 2.7 H 8.9 V 10.3 H 1.1 Z
+                 M 6.9 4.1 A 1 1 0 1 0 6.9 4.11 Z"/>
+        <path d="M 8.9 5.2 H 12.9 V 7.6 H 8.9 Z"/>
+    </symbol>
     <symbol id="i-paw" viewBox="0 0 14 14">
         <ellipse cx="7" cy="9.4" rx="3.9" ry="3.2"/>
         <ellipse cx="2.6" cy="5.6" rx="1.8" ry="2.3"/>
@@ -565,12 +571,11 @@ body.waiting #hud { display: none; }
     <div id="tally"></div>
 
     <div id="intro">
-        <h1>Butcher's<br>Dog</h1>
         <canvas id="shopfront" width="340" height="312"></canvas>
         <div class="rule"></div>
         <p id="cast-line">Six days. One string a day.</p>
         <div class="bank" id="bank-line">In the till: <b>&pound;0.00</b></div>
-        <button class="btn" id="play">Open up shop</button>
+        <button class="btn go" id="play"><svg class="ico"><use href="#i-blade"/></svg>Open up shop</button>
         <button class="btn ghost" id="to-shop">Upgrades</button>
     </div>
 
@@ -626,7 +631,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v22';
+const APP_VERSION = 'v23';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -943,6 +948,19 @@ function makeString(day) {
     string.twists = [];
     for (let i = 1; i < n; i++) string.twists.push(string.len * i / n);
     pieces = [{ from: 0, to: n - 1 }];
+    /* Pigs in blankets, if the shop runs them: a fixed share of the day's
+       links rather than a coin flip per link, so a Tuesday is worth what a
+       Tuesday is worth and the week does not swing on the deal. */
+    string.posh = new Array(n).fill(false);
+    if (running('blankets')) {
+        const want = Math.max(1, Math.round(n * BLANKET_SHARE));
+        const idx = [...Array(n).keys()];
+        for (let i = idx.length - 1; i > 0; i--) {
+            const j = (Math.random() * (i + 1)) | 0;
+            [idx[i], idx[j]] = [idx[j], idx[i]];
+        }
+        for (const i of idx.slice(0, want)) string.posh[i] = true;
+    }
     loose = []; saved = 0; lost = 0;
     return n;
 }
@@ -1256,10 +1274,11 @@ function free(bit, q) {
     const [a, b] = spanOf(bit);
     const [x, y] = at((a + b) / 2);
     saved++;
-    const p = priceOf(q);
+    const posh = poshLink(bit.from);
+    const p = priceOf(q) * (posh ? BLANKET_PAY : 1);
     money += p; roundMoney += p;
     showHud();
-    shouts.push({ text: money2(p), x, y, t0: now(), small: true });
+    shouts.push({ text: money2(p), x, y, t0: now(), small: true, rich: posh });
     loose.push({ x, y, from: bit.from, t0: now(), q,
                  tx: 48 + ((saved - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
     plop(saved);
@@ -1332,10 +1351,27 @@ function dogStep(dt) {
         if (k === p.from) pieces.splice(i, 1);
         else pieces.splice(i, 1, { from: p.from, to: k - 1 });
         snarl();
-        lost++; fed++; dog.keen++; dog.chomp = CHOMP; dog.grabX = null;
+        /* A clean floor is worth money: on a sawdust floor the dog drops about
+           one in four of the ones it takes, and a dropped sausage is off the
+           string and on the boards rather than in the dog. It pays a little
+           under a cut one, because it has been in a dog's mouth. */
+        const dropped = running('sawdust') && Math.random() < DROP_CHANCE;
+        if (dropped) {
+            saved++;
+            const pay = priceOf(DROP_Q) * (poshLink(k) ? BLANKET_PAY : 1);
+            money += pay; roundMoney += pay;
+            shouts.push({ text: `DROPPED ${money2(pay)}`, x: mx, y: my, t0: now(),
+                          small: true, rich: true });
+            loose.push({ x: mx, y: my, from: k, t0: now(), q: DROP_Q,
+                         tx: 48 + ((saved - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
+            plop(saved);
+        } else {
+            lost++; fed++;
+            const rp = document.getElementById('roundplate');
+            rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
+        }
+        dog.keen++; dog.chomp = CHOMP; dog.grabX = null;
         showHud();
-        const rp = document.getElementById('roundplate');
-        rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
         if (pieces.length === 0) finishDay();
     }
 }
@@ -1356,6 +1392,11 @@ function dogStep(dt) {
    always runs Monday to Saturday, and what the dog gets is simply money you
    did not take. Which is the worst thing that can happen to a shop. */
 const priceOf = q => Math.round((55 + 1.12 * q) / 5) * 5;      // pence, 95p to £1.67
+// a rasher round it is worth double, and about a third of the day comes wrapped
+const BLANKET_SHARE = .34, BLANKET_PAY = 2;
+// how often the dog fumbles one onto the sawdust, and what it fetches
+const DROP_CHANCE = .28, DROP_Q = 50;
+const poshLink = i => !!(string.posh && string.posh[i]);
 const money2 = p => '£' + (p / 100).toFixed(2);
 // on a tile there is no room for two noughts nobody reads
 const money0 = p => p % 100 === 0 ? '£' + (p / 100) : money2(p);
@@ -1440,9 +1481,14 @@ function countdown(n) {
         armed = true;
         dog.going = true;
         woof();
-        if (n >= 2) countT.push(setTimeout(() => {
-            if (round === n && live) dropSteak();
-        }, 700 + Math.random() * 1500));
+        /* One steak a day from Tuesday, or two a day from Monday if the slab
+           is stocked for it. They are spaced far enough apart that the second
+           is never asking for the first one's airspace. */
+        const more = running('moresteak');
+        if (n >= (more ? 1 : 2)) for (let d = 0; d < (more ? 2 : 1); d++)
+            countT.push(setTimeout(() => {
+                if (round === n && live && !steak) dropSteak();
+            }, 700 + Math.random() * 1400 + d * 2800));
     }, 1860));
 }
 const beep = i => safely(t => {
@@ -1801,6 +1847,38 @@ function drawPiece(piece, alpha = 1) {
             ctx.stroke();
         }
     }
+    /* A pig in a blanket is the same link with a rasher wound round it. Each
+       band is a short run of the centre line stroked at the full width of the
+       sausage, so it sits square across it and follows every bend for nothing.
+       The fat runs the length of the rasher, which is across the sausage and
+       not along it - drawn the other way it comes out as a checkerboard. */
+    for (let i = piece.from; i <= piece.to; i++) {
+        if (!poshLink(i)) continue;
+        const s0 = i === 0 ? 0 : string.twists[i - 1];
+        const s1 = i === string.n - 1 ? string.len : string.twists[i];
+        const lo = Math.max(a, s0) + 15, hi = Math.min(b, s1) - 15;
+        if (hi - lo < 18) continue;
+        const bands = 3, half = (hi - lo) / bands * .34;
+        const band = (col, t0, t1, mul) => {
+            ctx.beginPath();
+            let first = true;
+            for (let t = t0; t <= t1 + .01; t += 1.2) {
+                const [x, y] = at(t);
+                first ? (ctx.moveTo(x, y), first = false) : ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = col;
+            ctx.lineWidth = Math.max(2, widthAt((t0 + t1) / 2, piece) * mul);
+            ctx.stroke();
+        };
+        ctx.lineCap = 'butt';
+        for (let k = 0; k < bands; k++) {
+            const c = lo + (hi - lo) * (k + .5) / bands;
+            band('#d9836a', c - half, c + half, 1.92);              // the rasher
+            band('#b06048', c + half * .58, c + half, 1.92);        // its trailing edge
+            band('#f3c6b0', c - half * .46, c - half * .12, 1.92);  // the fat down it
+        }
+        ctx.lineCap = 'round';
+    }
     // the turns of skin at each neck, which is what says twist rather than dent
     for (let i = piece.from; i < piece.to; i++) {
         const c = string.twists[i];
@@ -2023,6 +2101,13 @@ const KIT = [
     { id: 'hero',     kind: 'face',   name: 'Superhero mask',   price: 20000 },
     { id: 'skullmask',kind: 'face',   name: 'Skull mask',       price: 32000 },
 
+    /* The first upgrade that changes what hangs on the rail rather than what
+       sits on the dog. It does not make the dog slower or the cutting easier -
+       it makes the same work worth more, which is the only kind of advantage
+       this game sells. */
+    { id: 'blankets',  kind: 'line',  name: 'Pigs in blankets', price: 28000 },
+    { id: 'moresteak', kind: 'line',  name: 'Steak on the slab', price: 19000 },
+    { id: 'sawdust',   kind: 'line',  name: 'Sawdust floor',     price: 22000 },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -2033,6 +2118,7 @@ const KIT = [
 const STOCK = KNIVES.concat(KIT);
 const itemById = id => STOCK.find(i => i.id === id);
 const KINDS = [
+    { kind: 'line',   label: 'On the rail' },
     { kind: 'knife',  label: 'On the block' },
     { kind: 'hat',    label: 'Hats, ears and onesies' },
     { kind: 'face',   label: 'Faces' },
@@ -2046,6 +2132,10 @@ const FRESH = () => ({
     butcher: 0, tier: 2, breed: 0, dogName: 'Nipper', shop: 'A Cut Above',
     bank: 0, weeks: 0,
     owned: ['blade', 'bare', 'plain', 'spiked'],
+    /* Shop upgrades are not a wardrobe: you do not pick one of them, you
+       switch the ones you have bought on and off, and any number can be on
+       at once. They live in their own list for that reason. */
+    on: [],
     worn: { knife: 'blade', hat: 'bare', face: 'plain', collar: 'spiked' },
 });
 let save = FRESH(), started = false;
@@ -2064,6 +2154,7 @@ function putSave() {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* never mind */ }
 }
 const owns = id => save.owned.includes(id);
+const running = id => owns(id) && save.on.includes(id);
 const wearing = kind => itemById(save.worn[kind]) || STOCK.find(i => i.kind === kind);
 
 /* What the week is played with, built from the save rather than dealt. The
@@ -3102,7 +3193,7 @@ function draw() {
         ctx.lineJoin = 'round';
         ctx.strokeStyle = 'rgba(12,32,24,.92)'; ctx.lineWidth = sh.small ? 5 : 7;
         ctx.strokeText(sh.text, 0, 0);
-        ctx.fillStyle = sh.bad ? '#d8462f' : sh.small ? '#bdf0cc'
+        ctx.fillStyle = sh.bad ? '#d8462f' : sh.rich ? '#ffd873' : sh.small ? '#bdf0cc'
                       : sh.gold ? '#ffe9a8' : '#f0d484';
         ctx.fillText(sh.text, 0, 0);
         ctx.restore();
@@ -3281,9 +3372,59 @@ document.getElementById('setup-done').addEventListener('click', () => {
    at the time. The knives have no head to sit on and are drawn on their own. */
 const BARE = { hat: 'bare', face: 'plain', collar: 'spiked' };
 const TILE_W = 104, TILE_H = 92;
+/* One pig in a blanket, off the string and on its own, for the shelf. Same
+   three bands and the same fat down the lit side as the ones on the rail. */
+function drawBlanket(g, cx, cy, k, ang, plain) {
+    g.save();
+    g.translate(cx, cy); g.rotate(ang); g.scale(k, k);
+    const L = 34, R = 13;
+    g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 8; g.shadowOffsetY = 4;
+    g.fillStyle = '#c4472e';
+    g.beginPath(); g.roundRect(-L, -R, L * 2, R * 2, R); g.fill();
+    g.shadowColor = 'transparent';
+    g.fillStyle = '#dd6f4c';                              // the light down one side
+    g.beginPath(); g.roundRect(-L + 5, -R + 2.5, L * 2 - 10, R * .6, R * .3); g.fill();
+    if (plain) { g.restore(); return; }                   // a bare link, for the floor
+    g.save();                                             // and the rasher, inside the skin
+    g.beginPath(); g.roundRect(-L, -R, L * 2, R * 2, R); g.clip();
+    for (let i = -1; i <= 1; i++) {
+        const x = i * L * .56;
+        g.fillStyle = '#d9836a'; g.fillRect(x - 6, -R, 12, R * 2);
+        g.fillStyle = '#b06048'; g.fillRect(x + 3.6, -R, 2.4, R * 2);
+        g.fillStyle = '#f3c6b0'; g.fillRect(x - 4.4, -R, 2.6, R * 2);
+    }
+    g.restore();
+    g.restore();
+}
 function drawTile(c, item) {
     const g = c.getContext('2d');
     g.clearRect(0, 0, TILE_W, TILE_H);
+    if (item.kind === 'line') {
+        if (item.id === 'moresteak') {
+            g.save();
+            g.translate(TILE_W / 2, TILE_H / 2);
+            g.rotate(-.22); g.scale(.62, .62);
+            g.shadowColor = 'rgba(0,0,0,.42)'; g.shadowBlur = 10; g.shadowOffsetY = 6;
+            steakShape(g, 0);
+            g.restore();
+        } else if (item.id === 'sawdust') {
+            // a sausage on the boards, and the sawdust that makes it sellable
+            g.save();
+            g.fillStyle = '#d8c48f';
+            for (let i = 0; i < 26; i++) {
+                const a = i * 2.399, r = 8 + (i % 7) * 4.6;
+                g.globalAlpha = .28 + (i % 3) * .14;
+                g.fillRect(TILE_W / 2 + Math.cos(a) * r * 1.5 - 1.5,
+                           TILE_H / 2 + 16 + Math.sin(a) * r * .42, 3.4, 2);
+            }
+            g.globalAlpha = 1;
+            g.restore();
+            drawBlanket(g, TILE_W / 2, TILE_H / 2 - 2, .66, .16, true);
+        } else {
+            drawBlanket(g, TILE_W / 2, TILE_H / 2, .82, -.36);
+        }
+        return;
+    }
     if (item.kind === 'knife') {
         g.save();
         g.translate(TILE_W / 2, TILE_H / 2);
@@ -3301,15 +3442,18 @@ function paintStore() {
     showBank();
     drawPreview('stock-dog', 230, 142, false);
     document.getElementById('stock').innerHTML = KINDS.map(({ kind, label }) => {
+        const shopUp = kind === 'line';
         const tiles = STOCK.filter(i => i.kind === kind).map(i => {
-            const got = owns(i.id), on = save.worn[kind] === i.id;
+            const got = owns(i.id);
+            const on = shopUp ? save.on.includes(i.id) : save.worn[kind] === i.id;
             const trying = tryOn && tryOn.id === i.id;
             const canAfford = save.bank >= i.price;
             const cls = trying ? 'buy trying' : on ? 'buy worn' : got ? 'buy got'
                       : canAfford ? 'buy' : 'buy poor';
             const tag = trying ? `<span class="tag">Trying</span>`
-                      : on ? `<span class="tick">&#10003;</span><span class="tag">Worn</span>`
-                      : got ? `<span class="tag">Wear</span>`
+                      : on ? `<span class="tick">&#10003;</span>` +
+                             `<span class="tag">${shopUp ? 'On' : 'Worn'}</span>`
+                      : got ? `<span class="tag">${shopUp ? 'Off' : 'Wear'}</span>`
                       : `<span class="pr">${money0(i.price)}</span>`;
             return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
                    `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>${tag}</button>`;
@@ -3371,10 +3515,18 @@ document.getElementById('stock').addEventListener('click', e => {
     }
     plop(3);
     tryOn = null;
-    save.worn[item.kind] = item.id;
+    equip(item);
     putSave();
     paintStore();
 });
+/* A hat replaces the hat. A shop upgrade has nothing to replace - you switch
+   it on, and any number of them can be on at once - so tapping one you own
+   toggles it instead of picking it. */
+function equip(item) {
+    if (item.kind !== 'line') { save.worn[item.kind] = item.id; return; }
+    const at = save.on.indexOf(item.id);
+    at < 0 ? save.on.push(item.id) : save.on.splice(at, 1);
+}
 document.getElementById('tryon').addEventListener('click', e => {
     const btn = e.target.closest('[data-try]');
     if (!btn || !tryOn) return;
@@ -3383,7 +3535,8 @@ document.getElementById('tryon').addEventListener('click', e => {
     const item = tryOn;
     save.bank -= item.price;
     save.owned.push(item.id);
-    save.worn[item.kind] = item.id;
+    if (item.kind === 'line') save.on.push(item.id);   // bought is switched on
+    else save.worn[item.kind] = item.id;
     tryOn = null;
     till(); putSave(); paintStore();
 });
