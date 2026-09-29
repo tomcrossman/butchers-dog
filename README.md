@@ -74,30 +74,72 @@ The dog is the clock. There is no bar creeping down a corner: a dog comes up
 the string and eats whatever you have not got off it yet. You can see exactly
 how long you have, because it is a dog and it is right there.
 
+Each round counts you in - three, two, one - and then lets it off the leash
+from far enough out that it has to run at you first. The run-up is measured in
+the dog's own seconds rather than in pixels, so the Great Dane starts further
+away than the dachshund and you get the same breath either way: about a second
+and a bit, which is one cut if you are quick and none if you are admiring the
+string.
+
 It eats one sausage at a time, off the end of whatever piece it reaches - so
 leaving four joined together is not four times as safe, it is four separate
-mouthfuls in a row. Every one it gets, it gets keener, and keener is faster.
+mouthfuls in a row. Getting one takes it the best part of a second, which is
+the mercy built into its being greedy, and every one it gets it gets keener.
 
-When it reaches the top of the string the round is over, whether you are
-finished or not.
+### The breeds
 
-## The run
+A round number is an abstraction; a bigger dog is not. So the ladder is run by
+the animal, and each one has a name, because a butcher's dog would.
 
-Each round is a string with a quota: save six of eight. Missing the quota ends
-the run, and how far you got is the score - the string gets longer, the sway
-gets deeper and the dog gets quicker every round, so the round you reached is
-the difficulty you survived.
+| From | Dog | Breed |
+| --- | --- | --- |
+| 1 | Chipolata | Dachshund - a dog shaped like the thing it is stealing |
+| 3 | Nipper | Jack Russell |
+| 5 | Bangers | Bulldog |
+| 8 | Chops | Boxer |
+| 11 | Cleaver | Dobermann |
+| 14 | Hackett | Great Dane |
 
-Losing one to the dog costs you, but it does not end anything on its own.
-There is room in the quota to lose a couple, which is what makes the greedy
-three-twist swipe worth trying.
+Every one of them is the same drawing with different numbers - a skull, a jaw,
+a muzzle, a pair of ears and a coat - because six hand-drawn dogs would have
+been six chances to get one wrong.
+
+Getting one is the only thing a dog ever does here, so it is worth the frames.
+It gapes on the way up, snaps a third of the way through the bite - which is
+when the sausage actually arrives in its mouth and the screen jolts - and then
+works it down with three quick chews on the way back to the string. The whole
+animation is one number: how far through the bite it is.
+
+## The till, and your three chances
+
+There is no pass mark. Sausages are worth money and you have three lives.
+
+A sausage sells for what it looks like it is worth: a clean cut through the
+middle of a twist leaves two tidy ends and it goes in the window at £1.65; a
+scrappy one still sells, to somebody, for 95p. So the score is the till, and
+the reason to cut well is that it pays.
+
+Every chomp the dog manages costs you one of three chances, and when they are
+gone the shop is shut. That is the only thing that ends a run, so a round is
+never lost - only more or less expensive.
 
 ## The noise
 
-All of it is synthesised - there is not a recording in the project. A clean
-cut is a snick of steel pitched by how good it was, so a square cut through
-the middle of a twist sounds different from one that only just counted. A cut
-through a sausage is a squelch. The dog gets a chomp and a bark.
+All of it is synthesised - there is not a recording in the project.
+
+Nearly everything in the game is noise pushed through a filter that slides
+down as it goes, because that is what most real noises do: a blade is bright
+at the top of the stroke and dull at the bottom of it, and so is a jaw. The
+knife is two of those an instant apart - the wide one is the draw of the
+blade, the narrow one is the edge finding the skin - with a ring over the top
+that only a good cut earns, and all of it pitched by the quality, so you learn
+the difference between a good cut and a lucky one without being told. A cut
+through a sausage is the same thing dragged down into a squelch.
+
+The dog comes in two parts: it starts growling as it lifts off the string - a
+low buzz that will not sit still, which is three detuned saws with a rasp of
+noise dragged across them - and the snap lands a moment later, followed by the
+two chews and the gulp it takes to get one down.
 
 The title page with its Play button is not decoration. Safari on iOS will not
 open an audio session on the first touch a page receives - it neither grants

@@ -81,7 +81,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 }
 #hud {
     position: absolute; top: 0; left: 0; right: 0; z-index: 3;
-    display: flex; align-items: stretch; gap: 8px;
+    display: flex; align-items: center; gap: 8px;
     padding: 11px 11px; pointer-events: none;
 }
 .plate {
@@ -89,24 +89,30 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     font-family: var(--font-display); font-size: 17px; letter-spacing: .01em;
     color: var(--gold); text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
-.plate .ico { width: 14px; height: 14px; fill: var(--gold); flex: none; opacity: .9; }
-.plate .of {
+/* every icon in the row is the same size, wherever it hangs - left to itself
+   an inline svg with no width takes the whole plate with it */
+.sign .ico { width: 13px; height: 13px; fill: var(--gold); flex: none; opacity: .9; }
+.plate .of, #till .of {
     display: inline-flex; align-items: center; gap: 4px;
-    margin-left: 8px; padding-left: 9px; border-left: 1px solid rgba(220,171,62,.4);
+    margin-left: 9px; padding-left: 10px; border-left: 1px solid rgba(220,171,62,.4);
     font-size: .82em; opacity: .78;
 }
-#bestplate.beating { animation: beat .55s ease-in-out infinite alternate; }
-#bestplate.beating .of { display: none; }
+#roundplate.beating { animation: beat .55s ease-in-out infinite alternate; }
+#roundplate.beating .of { display: none; }
 @keyframes beat { from { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
                   to   { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 16px rgba(220,171,62,.6); } }
-#quota { flex: 1; min-width: 74px; display: flex; align-items: center; padding: 6px 9px; }
-#quota .pips { display: flex; gap: 4px; flex: 1; }
-#quota .pip {
-    flex: 1; height: 11px; min-width: 4px; border-radius: 2px;
-    border: 1.5px solid rgba(220,171,62,.5); background: transparent;
+#till {
+    flex: 1; min-width: 96px; display: flex; align-items: center; justify-content: center;
+    gap: 0; padding: 6px 10px 5px; white-space: nowrap;
+    font-family: var(--font-display); font-size: 17px; color: var(--gold);
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
-#quota .pip.need { background: rgba(220,171,62,.16); }
-#quota .pip.got  { background: var(--meat); border-color: var(--meat-hi); }
+#lives { gap: 4px; }
+#lives .ico { opacity: 1; }
+#lives .ico.spent { fill: rgba(220,171,62,.18); }
+#roundplate.hurt { animation: hurt .5s ease-out both; }
+@keyframes hurt { 0%, 100% { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
+                  30% { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 20px rgba(216,70,47,.9); } }
 #mute {
     pointer-events: auto; cursor: pointer; padding: 7px 8px 4px; line-height: 0;
     background: linear-gradient(180deg, #1a4636, #123327);
@@ -132,13 +138,19 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     font-family: var(--font-display); color: var(--gold);
     text-shadow: 0 3px 0 rgba(0,0,0,.45);
 }
-#banner .r { display: block; font-size: clamp(34px, 11vw, 54px); line-height: 1; letter-spacing: .01em; }
-#banner.go { animation: bannerGo 1.2s ease-out both; }
+#banner .who {
+    display: block; font-family: var(--font); font-weight: 900; font-size: 13px;
+    text-transform: uppercase; letter-spacing: .16em; color: var(--cream);
+    opacity: .68; margin-bottom: 6px;
+}
+#banner .r { display: block; font-size: clamp(46px, 16vw, 78px); line-height: 1; letter-spacing: .01em; }
+#banner .r.go-word { font-size: clamp(38px, 13vw, 62px); color: #8fd6a2; }
+#banner.go { animation: bannerGo .62s ease-out both; }
 @keyframes bannerGo {
-    0%   { transform: scale(.82); opacity: 0; }
-    18%  { transform: scale(1); opacity: 1; }
-    70%  { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.06); opacity: 0; }
+    0%   { transform: scale(1.4); opacity: 0; }
+    16%  { transform: scale(1); opacity: 1; }
+    72%  { transform: scale(1); opacity: 1; }
+    100% { transform: scale(.92); opacity: 0; }
 }
 
 #tally {
@@ -219,7 +231,7 @@ body.waiting #hud { display: none; }
                       to   { transform: translateX(-50%) scale(1); opacity: 1; } }
 #card.record #ribbon { background: var(--gold); color: #2a2118; }
 #card #score {
-    display: block; font-family: var(--font-display); font-size: 56px; line-height: 1;
+    display: block; font-family: var(--font-display); font-size: 52px; line-height: 1;
     color: #b03a25; margin: 10px 0 0;
 }
 #card.record #score { color: #a8791e; }
@@ -231,7 +243,7 @@ body.waiting #hud { display: none; }
         text-transform: uppercase; opacity: .55; }
 .btn {
     margin-top: 16px; width: 100%;
-    font-family: var(--font-display); font-size: 19px; font-weight: 400; letter-spacing: .04em;
+    font-family: var(--font-display); font-size: 17px; font-weight: 400; letter-spacing: .04em;
     padding: 13px; color: #2a2118;
     background: linear-gradient(180deg, #e8be55, var(--brass));
     border: 2.5px solid #2a2118; border-radius: 3px;
@@ -278,6 +290,13 @@ body.waiting #hud { display: none; }
 <body class="waiting">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-paw" viewBox="0 0 14 14">
+        <ellipse cx="7" cy="9.4" rx="3.9" ry="3.2"/>
+        <ellipse cx="2.6" cy="5.6" rx="1.8" ry="2.3"/>
+        <ellipse cx="11.4" cy="5.6" rx="1.8" ry="2.3"/>
+        <ellipse cx="5.2" cy="2.4" rx="1.7" ry="2.1"/>
+        <ellipse cx="8.8" cy="2.4" rx="1.7" ry="2.1"/>
+    </symbol>
     <symbol id="i-cup" viewBox="0 0 14 14">
         <path d="M 4 1.4 H 10 V 5.2 C 10 7.3, 8.7 8.6, 7 8.6 C 5.3 8.6, 4 7.3, 4 5.2 Z"/>
         <path d="M 6 8.4 H 8 V 10.4 H 6 Z"/><path d="M 3.4 10.4 H 10.6 V 12.6 H 3.4 Z"/>
@@ -292,9 +311,10 @@ body.waiting #hud { display: none; }
     <canvas id="pad"></canvas>
 
     <div id="hud">
-        <div class="plate sign" id="bestplate">Round&nbsp;<span id="round-val">1</span><span
-            class="of"><svg class="ico"><use href="#i-cup"/></svg><span id="best-val">0</span></span></div>
-        <div id="quota" class="sign"><span class="pips" id="pips"></span></div>
+        <div class="plate sign" id="roundplate">Round&nbsp;<span id="round-val">1</span><span
+            class="of" id="lives"></span></div>
+        <div id="till" class="sign"><span id="money">&pound;0.00</span><span
+            class="of"><svg class="ico"><use href="#i-cup"/></svg><span id="best-val">&pound;0.00</span></span></div>
         <button id="mute" aria-label="Sound on or off">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dcab3e"
                  stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -323,7 +343,7 @@ body.waiting #hud { display: none; }
             <span id="score">0<span class="pc">rounds</span></span>
             <p id="rating">Butchered</p>
             <p id="pass"></p>
-            <button class="btn" id="again">Again!</button>
+            <button class="btn" id="again">Back to the meat!</button>
         </div>
     </div>
 
@@ -331,7 +351,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v2';
+const APP_VERSION = 'v3';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -408,30 +428,68 @@ function hiss(t0, { hp = 1200, lp = 16000, dur = .12, vol = .3, at = 0 }) {
     n.connect(h); h.connect(l); l.connect(g); g.connect(master);
     n.start(s); n.stop(s + dur + .02);
 }
-/* A clean cut is a snick: a scrape of steel and a short bright ring, pitched
-   up by how good it was, so a dead square cut through the middle of a twist
-   sounds different from one that only just counted. */
+/* Noise pushed through a filter that slides down as it goes, which is what
+   nearly everything in this game actually sounds like: a blade is bright at
+   the top of the stroke and dull at the bottom of it, and so is a jaw. */
+function sweep(t0, { from = 6000, to = 1400, q = 3, dur = .12, vol = .3, at = 0 }) {
+    const n = audioCtx.createBufferSource(), f = audioCtx.createBiquadFilter(),
+          g = audioCtx.createGain(), s = t0 + at;
+    n.buffer = noise();
+    f.type = 'bandpass'; f.Q.value = q;
+    f.frequency.setValueAtTime(from, s);
+    f.frequency.exponentialRampToValueAtTime(Math.max(60, to), s + dur);
+    g.gain.setValueAtTime(.0001, s);
+    g.gain.exponentialRampToValueAtTime(vol, s + .008);
+    g.gain.exponentialRampToValueAtTime(.0001, s + dur);
+    n.connect(f); f.connect(g); g.connect(master);
+    n.start(s); n.stop(s + dur + .02);
+}
+/* The knife. Two sweeps an instant apart - the wide one is the draw of the
+   blade, the narrow one is the edge finding the skin - and a ring over the
+   top that only a good cut earns. All of it pitched by the quality, so a
+   square cut through the middle of a twist sounds different from one that
+   only just counted, and you learn the difference without being told. */
 const snick = q => safely(t => {
-    const k = .5 + q / 100;
-    hiss(t, { hp: 3400 * k, lp: 15000, dur: .05, vol: .3 });
-    tone(t, { freq: 900 * k, to: 1800 * k, dur: .07, type: 'square', vol: .1, at: .005 });
-    if (q > 75) tone(t, { freq: 2400 * k, dur: .16, type: 'triangle', vol: .07, at: .03 });
+    const k = .72 + q / 150;
+    sweep(t, { from: 7800 * k, to: 1500, q: 2, dur: .105, vol: .34 });
+    sweep(t, { from: 2700 * k, to: 820, q: 7, dur: .07, vol: .18, at: .012 });
+    tone(t, { freq: 1500 * k, to: 3000 * k, dur: .05, type: 'triangle', vol: .075, at: .006 });
+    if (q > 72) {
+        tone(t, { freq: 3200 * k, dur: .3, type: 'sine', vol: .05, at: .04 });
+        tone(t, { freq: 4700 * k, dur: .22, type: 'sine', vol: .028, at: .055 });
+    }
 });
 // a cut through the middle of a sausage, which is not a cut, it is a mess
 const squelch = () => safely(t => {
-    hiss(t, { hp: 180, lp: 900, dur: .17, vol: .34 });
-    tone(t, { freq: 190, to: 70, dur: .2, type: 'sawtooth', vol: .16 });
+    sweep(t, { from: 900, to: 140, q: 1, dur: .19, vol: .38 });
+    tone(t, { freq: 190, to: 64, dur: .22, type: 'sawtooth', vol: .17 });
+    tone(t, { freq: 95, to: 42, dur: .26, type: 'sine', vol: .13, at: .02 });
 });
 // a sausage landing in the tray
 const plop = n => safely(t => {
     tone(t, { freq: 330 + n * 26, dur: .1, type: 'triangle', vol: .16 });
     tone(t, { freq: 660 + n * 52, dur: .07, type: 'sine', vol: .08, at: .02 });
 });
-// the dog getting one
+/* The dog, in two parts. It starts growling as it comes up off the string -
+   a low buzz that will not sit still, which is a handful of detuned saws with
+   a rasp of noise dragged across them - and the snap lands a moment later,
+   followed by the two chews and the gulp it takes to get one down. */
+const snarl = () => safely(t => {
+    for (const [f, v] of [[98, .17], [147, .085], [62, .11]])
+        tone(t, { freq: f * 1.14, to: f * .80, dur: .38, type: 'sawtooth', vol: v });
+    sweep(t, { from: 1000, to: 240, q: 1.1, dur: .38, vol: .2 });
+    for (let i = 0; i < 8; i++)                       // the roughness in it
+        hiss(t, { hp: 170, lp: 1500, dur: .045, vol: .10 + .05 * Math.sin(i * 1.7), at: i * .044 });
+});
 const chomp = () => safely(t => {
-    hiss(t, { hp: 300, lp: 2600, dur: .09, vol: .34 });
-    tone(t, { freq: 150, to: 58, dur: .16, type: 'square', vol: .2, at: .01 });
-    tone(t, { freq: 320, to: 120, dur: .2, type: 'sawtooth', vol: .12, at: .06 });
+    sweep(t, { from: 2800, to: 280, q: 1.4, dur: .07, vol: .42 });     // the jaw shutting
+    tone(t, { freq: 195, to: 50, dur: .1, type: 'square', vol: .25 });
+    tone(t, { freq: 88, to: 42, dur: .17, type: 'sine', vol: .2, at: .008 });
+    for (let i = 1; i <= 2; i++) {                                      // and chewing it down
+        sweep(t, { from: 1500, to: 360, q: 2, dur: .05, vol: .17, at: .17 * i });
+        tone(t, { freq: 150, to: 68, dur: .07, type: 'square', vol: .11, at: .17 * i });
+    }
+    tone(t, { freq: 300, to: 110, dur: .24, type: 'sawtooth', vol: .11, at: .44 });   // the gulp
 });
 const woof = () => safely(t => {
     tone(t, { freq: 420, to: 150, dur: .13, type: 'sawtooth', vol: .2 });
@@ -724,7 +782,11 @@ function free(bit, q) {
     pieces.splice(pieces.indexOf(bit), 1);
     const [a, b] = spanOf(bit);
     const [x, y] = at((a + b) / 2);
-    saved++; showPips();
+    saved++;
+    const p = priceOf(q);
+    money += p; roundMoney += p;
+    showHud();
+    shouts.push({ text: money2(p), x, y, t0: now(), small: true });
     loose.push({ x, y, from: bit.from, t0: now(), q,
                  tx: 48 + ((saved - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
     plop(saved);
@@ -737,7 +799,7 @@ function ruin(p, k, x, y) {
     if (k < p.to) out.push({ from: k + 1, to: p.to });
     pieces.splice(i, 1, ...out);
     for (const bit of out) if (bit.from === bit.to) free(bit, 45);
-    lost++; showPips();
+    lost++; showHud();
     mess.push({ x, y, t0: now() });
     squelch();
     jolt();
@@ -750,20 +812,57 @@ function ruin(p, k, x, y) {
    it gets keener every time it manages it.
    ============================================================ */
 const dog = { s: 1e5, speed: 0, going: false, chomp: 0, keen: 0 };
+/* Getting one is the only thing the dog ever does, so it is worth the frames.
+   It gapes on the way up, snaps at a third of the way through - which is when
+   the sausage actually arrives in its mouth and the screen jolts - and then
+   works it down with three quick chews on the way back to the string. The
+   whole thing is one number: how far through the bite it is. */
+const CHOMP = .72;
+function chompPose(e) {
+    // reaching up for it, then settling back
+    const reach = e < .30 ? Math.sin(Math.PI * (e / .30) * .5)
+                          : Math.max(0, 1 - (e - .30) / .38);
+    let open;
+    if (e < .24)      open = Math.pow(e / .24, .55);            // the gape
+    else if (e < .33) open = 1 - (e - .24) / .09;               // the snap
+    else if (e < .80) open = Math.abs(Math.sin((e - .33) / .47 * Math.PI * 3)) * .42;
+    else              open = 0;
+    // a squash on the snap, and the head tipping back as it reaches
+    const hit = Math.max(0, 1 - Math.abs(e - .33) / .10);
+    return { open: clamp(open, 0, 1), reach: reach * 32,
+             tilt: -.13 * (e < .33 ? reach : 0) + .05 * hit, squash: hit };
+}
 function dogStep(dt) {
     if (!dog.going) return;
-    if (dog.chomp > 0) { dog.chomp -= dt; return; }              // busy eating
+    if (dog.chomp > 0) {                                        // busy eating
+        const was = dog.chomp;
+        dog.chomp -= dt;
+        // the sausage lands in its mouth on the snap, not when the bite began
+        if (was / CHOMP > .67 && dog.chomp / CHOMP <= .67) { chomp(); jolt(); }
+        return;
+    }
     dog.s -= dog.speed * (1 + dog.keen * .13) * dt;
     if (dog.s <= 0) { dog.s = 0; endRound(); return; }
     const p = pieceAt(dog.s);
     if (p) {
-        // the sausage at this end of the piece is gone
+        // the sausage at this end of the piece is off the string, and on its
+        // way into the dog - which is a thing you get to watch
         const k = p.to;
         const i = pieces.indexOf(p);
+        const s0 = k === 0 ? 0 : string.twists[k - 1];
+        const s1 = k === string.n - 1 ? string.len : string.twists[k];
+        const [mx, my] = at((s0 + s1) / 2);
+        const [ax, ay, tx, ty] = at(s1);
+        chewing = { x: mx, y: my, ang: Math.atan2(ay - my, ax - mx),
+                    len: Math.abs(s1 - s0) * .42, t0: now() };
         if (k === p.from) pieces.splice(i, 1);
         else pieces.splice(i, 1, { from: p.from, to: k - 1 });
-        lost++; dog.keen++; dog.chomp = .42; showPips();
-        chomp(); jolt();
+        snarl();
+        lost++; dog.keen++; dog.chomp = CHOMP;
+        lives--; showHud();
+        const rp = document.getElementById('roundplate');
+        rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
+        if (lives <= 0) { gameOver(); return; }
         if (pieces.length === 0) endRound();
     }
 }
@@ -771,83 +870,132 @@ function dogStep(dt) {
 /* ============================================================
    THE ROUND
    ============================================================ */
-const passFor = n => Math.min(n, Math.max(2, Math.round(n * .58) + Math.floor((round - 1) / 3)));
-const speedFor = r => 46 + (r - 1) * 7;
+/* A sausage is worth what it looks like it is worth. A clean cut through the
+   middle of a twist leaves a sausage with two tidy ends and it goes in the
+   window; a scrappy one still sells, to somebody, for rather less. So the
+   score is the till, and the reason to cut well is that it pays. */
+const LIVES = 3;
+const priceOf = q => Math.round((55 + 1.12 * q) / 5) * 5;      // pence, 95p to £1.67
+const money2 = p => '\u00a3' + (p / 100).toFixed(2);
+/* It does not amble up the string any more, it is let off a countdown. So the
+   speed is what a dog does when it has seen something: the whole round is a
+   few seconds, and the only thing slowing it down is that eating one takes it
+   most of a second, which is the mercy built into being greedy. */
+const speedFor = r => (128 + (r - 1) * 6) * breedFor(r).speed;
 
-let round = 0, live = false, tallying = false, quota = 0, roundT0 = 0;
-let cutFx = [], mess = [], shouts = [], swipe = null, blade = null, raf = 0, lastMs = 0;
+let round = 0, live = false, armed = false, tallying = false, roundT0 = 0;
+let money = 0, roundMoney = 0, lives = LIVES;
+let cutFx = [], mess = [], shouts = [], chewing = null, swipe = null, blade = null, raf = 0, lastMs = 0;
 let tallyT = 0, settleT = 0, showingIntro = true;
 
-const bestKey = 'bd-rounds';
+const bestKey = 'bd-till';
 let best = 0;
 try { best = parseInt(localStorage.getItem(bestKey) || '0', 10) || 0; } catch (e) { /* private mode */ }
-document.getElementById('best-val').textContent = best;
+document.getElementById('best-val').textContent = money2(best);
 
 const bannerEl = document.getElementById('banner');
 const promptEl = document.getElementById('prompt');
 const tallyEl = document.getElementById('tally');
 const card = document.getElementById('card');
-const pipsEl = document.getElementById('pips');
+const livesEl = document.getElementById('lives');
+const moneyEl = document.getElementById('money');
 
-function showPips() {
-    const n = string ? string.n : 0;
+function showHud() {
     let h = '';
-    for (let i = 0; i < n; i++)
-        h += `<i class="pip ${i < saved ? 'got' : i < quota ? 'need' : ''}"></i>`;
-    pipsEl.innerHTML = h;
+    for (let i = 0; i < LIVES; i++)
+        h += `<svg class="ico ${i < lives ? '' : 'spent'}"><use href="#i-paw"/></svg>`;
+    livesEl.innerHTML = h;
+    moneyEl.textContent = money2(money);
+    document.getElementById('best-val').textContent = money2(Math.max(best, money));
 }
 function startRound(n) {
     round = n; live = true; tallying = false;
     clearTimeout(tallyT); clearTimeout(settleT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
-    cutFx = []; mess = []; shouts = []; swipe = null; blade = null;
+    cutFx = []; mess = []; shouts = []; chewing = null; swipe = null; blade = null;
     const count = makeString(n);
-    quota = passFor(count);
-    dog.s = string.len + 70; dog.speed = speedFor(n); dog.going = false;
+    roundMoney = 0;
+    dog.speed = speedFor(n);
+    /* Far enough off the end that it has to run at you first. Measured in its
+       own seconds rather than pixels, so the Great Dane starts further out
+       than the dachshund and you get the same breath either way - about a
+       second and a bit, which is one cut if you are quick and none if you
+       are admiring the string. */
+    dog.s = string.len + dog.speed * 1.25; dog.going = false;
     dog.chomp = 0; dog.keen = 0;
     roundT0 = now();
+    armed = false;
     document.getElementById('round-val').textContent = n;
-    document.getElementById('best-val').textContent = best;
-    document.getElementById('bestplate').classList.toggle('beating', n - 1 > best);
-    showPips();
+    showHud();
     promptEl.textContent = n === 1 ? 'Swipe through the twists'
-                         : `Save ${quota} of ${count}`;
+                         : `${count} on the string`;
     promptEl.classList.remove('gone');
-    bannerEl.innerHTML = `<span class="r">Round ${n}</span>`;
-    bannerEl.classList.remove('go');
-    void bannerEl.offsetWidth;
-    bannerEl.classList.add('go');
-    // a moment to look at it before the dog is let in
-    setTimeout(() => {
-        if (live && round === n) { dog.going = true; woof(); promptEl.classList.add('gone'); }
-    }, 900);
+    countdown(n);
     tick();
 }
+/* Three, two, one, and the dog is off the leash. The count is the only part of
+   a round that is not a scramble, so it is where the round says what it is and
+   who is coming for it. */
+let countT = [];
+function countdown(n) {
+    countT.forEach(clearTimeout); countT = [];
+    const B = breedFor(n), fresh = n === B.from;
+    const say = (big, small, cls) => {
+        bannerEl.innerHTML = (small ? `<span class="who">${small}</span>` : '') +
+                             `<span class="r ${cls || ''}">${big}</span>`;
+        bannerEl.classList.remove('go');
+        void bannerEl.offsetWidth;
+        bannerEl.classList.add('go');
+    };
+    const head = `Round ${n} &middot; ${B.dog}`;
+    say('3', fresh ? `${head} &mdash; a ${B.name}!` : head);
+    beep(0);
+    countT.push(setTimeout(() => { if (round === n && live) { say('2', head); beep(1); } }, 620));
+    countT.push(setTimeout(() => { if (round === n && live) { say('1', head); beep(2); } }, 1240));
+    countT.push(setTimeout(() => {
+        if (round !== n || !live) return;
+        say('GO!', '', 'go-word');
+        armed = true;
+        dog.going = true;
+        woof();
+        promptEl.classList.add('gone');
+    }, 1860));
+}
+const beep = i => safely(t => {
+    tone(t, { freq: 440 + i * 70, dur: .09, type: 'square', vol: .13 });
+    tone(t, { freq: 880 + i * 140, dur: .06, type: 'triangle', vol: .06, at: .01 });
+});
+/* The string is finished - cut up, eaten, or the dog has run out of it. There
+   is no pass mark any more: you take what you took, and the run carries on
+   until the dog has had you three times. */
 function endRound() {
     if (!live) return;
-    live = false; dog.going = false;
-    const passed = saved >= quota;
-    if (passed) {
-        tallying = true;
-        tallyEl.innerHTML = `<span class="n">${saved}<i></i></span>` +
-            `<span class="l">${pick(passed && lost === 0 ? CLEAN : THROUGH)}</span>` +
-            `<span class="b">needed ${quota}</span>`;
-        tallyEl.classList.add('on');
-        jingleUp();
-        tallyT = setTimeout(nextRound, 1500);
-        return;
-    }
-    const done = round - 1, record = done > best;
-    if (record) { best = done; try { localStorage.setItem(bestKey, String(best)); } catch (e) { /* private */ } }
-    document.getElementById('ribbon').textContent = record ? 'NEW BEST' : 'GAME OVER';
+    live = false; armed = false; dog.going = false;
+    countT.forEach(clearTimeout); countT = [];
+    tallying = true;
+    tallyEl.innerHTML = `<span class="n">${money2(roundMoney)}</span>` +
+        `<span class="l">${pick(lost === 0 ? CLEAN : saved ? THROUGH : MISSED)}</span>` +
+        `<span class="b">${saved} sold · ${breedFor(round).dog} got ${lost}</span>`;
+    tallyEl.classList.add('on');
+    jingleUp();
+    tallyT = setTimeout(nextRound, 1400);
+}
+function gameOver() {
+    live = false; armed = false; dog.going = false; tallying = false;
+    countT.forEach(clearTimeout); countT = [];
+    clearTimeout(tallyT); tallyEl.classList.remove('on');
+    const record = money > best;
+    if (record) { best = money; try { localStorage.setItem(bestKey, String(best)); } catch (e) { /* private */ } }
+    document.getElementById('ribbon').textContent = record ? 'BEST TAKINGS' : 'SHOP SHUT';
     document.getElementById('score').innerHTML =
-        `${done}<span class="pc">${done === 1 ? 'round' : 'rounds'}</span>`;
-    document.getElementById('rating').textContent = record ? pick(RECORD_LINES) : pick(MISSED);
-    document.getElementById('pass').textContent = `${saved} saved, needed ${quota}`;
+        `${money2(money)}<span class="pc">taken</span>`;
+    document.getElementById('rating').textContent = record ? pick(RECORD_LINES) : pick(SHUT);
+    document.getElementById('pass').textContent =
+        `${breedFor(round).dog} saw you off on round ${round}`;
     card.className = record ? 'record' : '';
-    drawMug(saved < quota);
-    settleT = setTimeout(() => { card.hidden = false; record ? jingleWin() : jingleLose(); }, 460);
+    drawMug(true);
+    settleT = setTimeout(() => { card.hidden = false; record ? jingleWin() : jingleLose(); }, 520);
 }
 function nextRound() { tallying = false; startRound(round + 1); }
 const jingleUp = () => safely(t => {
@@ -858,11 +1006,13 @@ const CLEAN = ['Not one lost', 'The whole string', 'Clean sweep', 'The dog got n
                'Every last one', 'Immaculate'];
 const THROUGH = ['Through', 'That will do', 'Enough for the window', 'Good enough',
                  'The dog ate the difference', 'Counter-ready'];
-const MISSED = ['The dog ate well', 'Too slow', 'That is a lot of dog food',
-                'Short of the order', 'The window is half empty', 'Not enough left to sell',
-                'The dog is delighted', 'You will hear about this'];
-const RECORD_LINES = ['Your best yet', 'A new record', 'Further than ever before',
-                      'Nobody has got further. Including you.', 'A personal best'];
+const MISSED = ['The dog ate well', 'Nothing for the window', 'All of that was dog food',
+                'Not a thing sold', 'A complete loss', 'The dog is delighted'];
+const SHUT = ['Closed for the day', 'That dog wants paying', 'Beaten by a dog',
+              'The window is empty', 'You will hear about this', 'Try a quieter trade',
+              'Out of sausages, out of luck', 'The dog is not sorry'];
+const RECORD_LINES = ['Your best takings', 'A record day', 'Never done better',
+                      'The window has never looked fuller', 'Nobody has taken more. Including you.'];
 
 /* ============================================================
    INPUT
@@ -874,7 +1024,7 @@ const xy = e => {
 };
 function down(x, y) {
     if (tallying) return nextRound();
-    if (!card.hidden || !live || showingIntro) return;
+    if (!card.hidden || !live || !armed || showingIntro) return;
     swipe = [[x, y]];
     promptEl.classList.add('gone');
 }
@@ -1037,113 +1187,174 @@ function drawHook(x, yTop, k = 1) {
     ctx.stroke();
     ctx.restore();
 }
-/* The dog, on the same terms: no outline, just shapes with the light on one
-   side. Everything wide and low, the skull small against the jaw, jowls that
-   hang past the mouth, ears folded over rather than up, and a collar carrying
-   more studs than the job calls for. */
-function drawDog(ctx, x, y, k, open, ms) {
+/* ---- the dogs -----------------------------------------------------------
+   The round number is an abstraction; a bigger dog is not. So the ladder is
+   run by the animal: it starts as a dachshund, which is a dog shaped like the
+   thing it is stealing, and ends as a Great Dane that covers the string in
+   about the time it takes to think about it. Every breed is the same drawing
+   with different numbers - a skull, a jaw, a muzzle, a pair of ears and a
+   coat - because six hand-drawn dogs would be six chances to get one wrong. */
+const BREEDS = [
+    { from: 1,  name: 'Dachshund',   dog: 'Chipolata',   k: .74, speed: .80,
+      coat: '#a55c28', lit: '#c47a3c', shade: '#743c15', muzzle: '#c8863f',
+      ear: 'drop', earCol: '#77401a', skullW: 30, skullH: 40, jawW: 36, jawY: 16,
+      chin: 40, snout: [27, 17, 21], eyes: [16, -16, 4.8], brow: .3, tongue: .8 },
+    { from: 3,  name: 'Jack Russell', dog: 'Nipper', k: .86, speed: .95,
+      coat: '#f2e8d4', lit: '#fdf7e8', shade: '#cdbfa2', muzzle: '#fdf7e8',
+      ear: 'fold', earCol: '#a8703a', skullW: 34, skullH: 40, jawW: 42, jawY: 18,
+      chin: 42, snout: [27, 20, 15], eyes: [18, -14, 5], brow: .5, tongue: 1,
+      patch: '#a8703a' },
+    { from: 5,  name: 'Bulldog',     dog: 'Bangers',     k: 1, speed: 1,
+      coat: '#efe3ca', lit: '#fdf7e8', shade: '#d5c6a6', muzzle: '#fdf7e8',
+      ear: 'fold', earCol: '#b9a98c', skullW: 38, skullH: 40, jawW: 56, jawY: 20,
+      chin: 45, snout: [31, 20, 12], eyes: [21, -13, 5.4], brow: 1, tongue: 1 },
+    { from: 8,  name: 'Boxer',       dog: 'Chops',       k: 1.12, speed: 1.14,
+      coat: '#c08240', lit: '#d79c58', shade: '#8c5a24', muzzle: '#3a2a22',
+      ear: 'fold', earCol: '#8c5a24', skullW: 36, skullH: 42, jawW: 50, jawY: 20,
+      chin: 46, snout: [30, 21, 14], eyes: [20, -14, 5.2], brow: .8, tongue: 1,
+      mask: '#3a2a22' },
+    { from: 11, name: 'Dobermann',   dog: 'Cleaver',   k: 1.2, speed: 1.3,
+      coat: '#2f2622', lit: '#453832', shade: '#1d1715', muzzle: '#4a3c35',
+      ear: 'prick', earCol: '#241d1a', skullW: 32, skullH: 44, jawW: 40, jawY: 18,
+      chin: 48, snout: [25, 20, 20], eyes: [17, -16, 4.8], brow: .4, tongue: 1,
+      points: '#9a5a26' },
+    { from: 14, name: 'Great Dane',  dog: 'Hackett',  k: 1.38, speed: 1.46,
+      coat: '#6e6a63', lit: '#8a857c', shade: '#4b4842', muzzle: '#8a857c',
+      ear: 'drop', earCol: '#4b4842', skullW: 34, skullH: 46, jawW: 46, jawY: 20,
+      chin: 50, snout: [28, 22, 18], eyes: [18, -16, 5], brow: .6, tongue: 1,
+      mask: '#3b3833' },
+];
+const breedFor = r => BREEDS.filter(b => b.from <= r).pop();
+
+/* Drawn on the same terms as the meat: no outline, just shapes with the light
+   on one side. `pose` is where it is in a bite - how far the jaw is open, how
+   far it has reached up the string, and the squash on the moment of contact. */
+function drawDog(ctx, x, y, k, pose, ms, B) {
+    B = B || BREEDS[2];
+    const o = pose.open, sq = pose.squash || 0;
     ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(k, k);
-    ctx.rotate(Math.sin(ms / 170) * .045);
+    ctx.translate(x, y - (pose.reach || 0));
+    ctx.scale(k * B.k * (1 + sq * .07), k * B.k * (1 - sq * .05));
+    ctx.rotate((pose.tilt || 0) + Math.sin(ms / 170) * .04);
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
+    const head = () => {
+        ctx.moveTo(-B.skullW, -B.skullH * .4);
+        ctx.quadraticCurveTo(-B.skullW + 2, -B.skullH, 0, -B.skullH);
+        ctx.quadraticCurveTo(B.skullW - 2, -B.skullH, B.skullW, -B.skullH * .4);
+        ctx.quadraticCurveTo(B.jawW + 4, -4, B.jawW, B.jawY);
+        ctx.quadraticCurveTo(B.jawW - 6, B.chin - 1, 0, B.chin);
+        ctx.quadraticCurveTo(-B.jawW + 6, B.chin - 1, -B.jawW, B.jawY);
+        ctx.quadraticCurveTo(-B.jawW - 4, -4, -B.skullW, -B.skullH * .4);
+    };
 
+    // the collar first, so the jowls hang over it
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 7;
-    // the collar first, so the jowls hang over it
     blob('#2b2333', () => {
-        ctx.moveTo(-52, 30); ctx.quadraticCurveTo(0, 48, 52, 30);
-        ctx.lineTo(52, 49); ctx.quadraticCurveTo(0, 67, -52, 49);
+        ctx.moveTo(-B.jawW - 2, B.chin - 14); ctx.quadraticCurveTo(0, B.chin + 4, B.jawW + 2, B.chin - 14);
+        ctx.lineTo(B.jawW + 2, B.chin + 5); ctx.quadraticCurveTo(0, B.chin + 23, -B.jawW - 2, B.chin + 5);
     });
     ctx.restore();
     for (let i = -2; i <= 2; i++) {
-        const px = i * 20, py = 47 + (2 - Math.abs(i)) * 3.4;
+        const px = i * (B.jawW * .38), py = B.chin + 3 + (2 - Math.abs(i)) * 3.4;
         blob('#dcab3e', () => { ctx.moveTo(px - 6, py + 4); ctx.lineTo(px, py - 8); ctx.lineTo(px + 6, py + 4); });
         blob('rgba(255,244,205,.55)', () => { ctx.moveTo(px - 2.4, py + 2); ctx.lineTo(px, py - 7); ctx.lineTo(px + 1.4, py + 1); });
     }
-    // ears, folded over and set wide
+    // ears: folded over, pricked up, or hanging down the side of the head
     for (const sx of [-1, 1]) {
-        blob('#b9a98c', () => {
-            ctx.moveTo(sx * 34, -30);
-            ctx.quadraticCurveTo(sx * 58, -34, sx * 56, -10);
-            ctx.quadraticCurveTo(sx * 52, 8, sx * 36, 0);
-        });
+        if (B.ear === 'prick') {
+            blob(B.earCol, () => {
+                ctx.moveTo(sx * (B.skullW - 14), -B.skullH * .70);
+                ctx.quadraticCurveTo(sx * (B.skullW - 6), -B.skullH - 36, sx * (B.skullW + 4), -B.skullH - 30);
+                ctx.quadraticCurveTo(sx * (B.skullW + 9), -B.skullH + 4, sx * (B.skullW - 1), -B.skullH * .48);
+            });
+            blob('rgba(212,102,124,.45)', () => {
+                ctx.moveTo(sx * (B.skullW - 10), -B.skullH * .74);
+                ctx.quadraticCurveTo(sx * (B.skullW - 4), -B.skullH - 24, sx * (B.skullW + 1), -B.skullH - 20);
+                ctx.quadraticCurveTo(sx * (B.skullW + 4), -B.skullH, sx * (B.skullW - 3), -B.skullH * .56);
+            });
+        } else if (B.ear === 'drop') {
+            blob(B.earCol, () => {
+                ctx.moveTo(sx * (B.skullW - 6), -B.skullH * .55);
+                ctx.quadraticCurveTo(sx * (B.jawW + 26), -B.skullH * .4, sx * (B.jawW + 20), B.jawY + 10);
+                ctx.quadraticCurveTo(sx * (B.jawW + 12), B.chin + 6, sx * (B.jawW - 8), B.jawY);
+            });
+        } else {
+            blob(B.earCol, () => {
+                ctx.moveTo(sx * (B.skullW - 4), -B.skullH + 10);
+                ctx.quadraticCurveTo(sx * (B.jawW + 6), -B.skullH + 6, sx * (B.jawW + 4), -4);
+                ctx.quadraticCurveTo(sx * B.jawW, B.jawY - 6, sx * (B.skullW - 2), B.jawY - 14);
+            });
+        }
     }
-    // the head: a small skull on a very wide jaw
+    // the head, and the light down one side of it
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 12; ctx.shadowOffsetY = 5;
-    blob('#efe3ca', () => {
-        ctx.moveTo(-38, -16);
-        ctx.quadraticCurveTo(-36, -40, 0, -40);
-        ctx.quadraticCurveTo(36, -40, 38, -16);
-        ctx.quadraticCurveTo(60, -4, 56, 20);
-        ctx.quadraticCurveTo(50, 44, 0, 45);
-        ctx.quadraticCurveTo(-50, 44, -56, 20);
-        ctx.quadraticCurveTo(-60, -4, -38, -16);
-    });
+    blob(B.coat, head);
     ctx.restore();
-    // the light down the left of the face, and the jowls in shade
     ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(-38, -16);
-    ctx.quadraticCurveTo(-36, -40, 0, -40);
-    ctx.quadraticCurveTo(36, -40, 38, -16);
-    ctx.quadraticCurveTo(60, -4, 56, 20);
-    ctx.quadraticCurveTo(50, 44, 0, 45);
-    ctx.quadraticCurveTo(-50, 44, -56, 20);
-    ctx.quadraticCurveTo(-60, -4, -38, -16);
-    ctx.closePath();
-    ctx.clip();
-    blob('#fdf7e8', () => { ctx.moveTo(-64, -46); ctx.lineTo(-6, -46); ctx.lineTo(-30, 50); ctx.lineTo(-64, 50); });
-    blob('#d5c6a6', () => { ctx.moveTo(-64, 22); ctx.quadraticCurveTo(0, 36, 64, 22); ctx.lineTo(64, 52); ctx.lineTo(-64, 52); });
-    ctx.restore();
-    // the brow, which is where a bulldog keeps its opinion
-    for (const sx of [-1, 1]) {
-        blob('#3a2f22', () => {
-            ctx.moveTo(sx * 6, -25); ctx.quadraticCurveTo(sx * 22, -33, sx * 34, -19);
-            ctx.quadraticCurveTo(sx * 22, -27, sx * 7, -21);
-        });
-        blob('rgba(180,164,132,.7)', () => {
-            ctx.moveTo(sx * 10, -34); ctx.quadraticCurveTo(sx * 21, -39, sx * 29, -32);
-            ctx.quadraticCurveTo(sx * 21, -36, sx * 10, -32);
-        });
-    }
-    blob('rgba(180,164,132,.7)', () => { ctx.moveTo(-1.4, -31); ctx.lineTo(1.4, -31); ctx.lineTo(1.4, -19); ctx.lineTo(-1.4, -19); });
-    // eyes, wide apart and low
-    for (const sx of [-1, 1]) {
-        blob('#2a201a', () => ctx.arc(sx * 21, -13, 5.4, 0, Math.PI * 2));
-        blob('#fdf7e8', () => ctx.arc(sx * 21 - 1.9, -15.2, 1.8, 0, Math.PI * 2));
-    }
-    // the muzzle: wide, flat and pushed in
-    blob('#fdf7e8', () => ctx.ellipse(0, 12, 31, 20, 0, 0, Math.PI * 2));
-    blob('rgba(213,198,166,.55)', () => ctx.ellipse(0, 20, 27, 12, 0, 0, Math.PI * 2));
-    blob('#2a201a', () => {
-        ctx.moveTo(-13, 0); ctx.quadraticCurveTo(0, -9, 13, 0); ctx.quadraticCurveTo(0, 11, -13, 0);
+    ctx.beginPath(); head(); ctx.clip();
+    blob(B.lit, () => { ctx.moveTo(-90, -70); ctx.lineTo(-6, -70); ctx.lineTo(-30, 70); ctx.lineTo(-90, 70); });
+    blob(B.shade, () => {
+        ctx.moveTo(-90, B.jawY + 2); ctx.quadraticCurveTo(0, B.jawY + 16, 90, B.jawY + 2);
+        ctx.lineTo(90, 80); ctx.lineTo(-90, 80);
     });
-    blob('rgba(255,255,255,.3)', () => ctx.ellipse(-5, -3, 4, 2, -.3, 0, Math.PI * 2));
+    if (B.mask) blob(B.mask, () => ctx.ellipse(0, B.snout[2] - 2, B.snout[0] + 7, B.snout[1] + 9, 0, 0, Math.PI * 2));
+    if (B.patch) blob(B.patch, () => ctx.ellipse(-B.eyes[0] - 3, B.eyes[1] - 3, 15, 16, .2, 0, Math.PI * 2));
+    if (B.points) for (const sx of [-1, 1])
+        blob(B.points, () => ctx.ellipse(sx * B.eyes[0], B.eyes[1] - 9, 9, 5, 0, 0, Math.PI * 2));
+    ctx.restore();
+    // the brow, which is where a dog keeps its opinion
+    if (B.brow > .05) for (const sx of [-1, 1]) {
+        const bw = B.brow;
+        blob('rgba(58,47,34,' + (.45 + .5 * bw) + ')', () => {
+            ctx.moveTo(sx * 6, B.eyes[1] - 12); ctx.quadraticCurveTo(sx * 22, B.eyes[1] - 20, sx * 34, B.eyes[1] - 6);
+            ctx.quadraticCurveTo(sx * 22, B.eyes[1] - 14, sx * 7, B.eyes[1] - 8);
+        });
+    }
+    // eyes
+    for (const sx of [-1, 1]) {
+        blob('#201814', () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2], 0, Math.PI * 2));
+        blob('#fdf7e8', () => ctx.arc(sx * B.eyes[0] - B.eyes[2] * .35, B.eyes[1] - B.eyes[2] * .4, B.eyes[2] * .33, 0, Math.PI * 2));
+    }
+    // the muzzle, the nose, and whatever the mouth is doing
+    const [mw, mh, my] = B.snout;
+    blob(B.muzzle, () => ctx.ellipse(0, my, mw, mh, 0, 0, Math.PI * 2));
+    blob('rgba(0,0,0,.10)', () => ctx.ellipse(0, my + mh * .45, mw * .86, mh * .55, 0, 0, Math.PI * 2));
+    blob('#201814', () => {
+        ctx.moveTo(-mw * .42, my - mh * .58); ctx.quadraticCurveTo(0, my - mh * 1.05, mw * .42, my - mh * .58);
+        ctx.quadraticCurveTo(0, my - mh * .05, -mw * .42, my - mh * .58);
+    });
+    blob('rgba(255,255,255,.28)', () => ctx.ellipse(-mw * .16, my - mh * .72, mw * .13, mh * .1, -.3, 0, Math.PI * 2));
 
-    if (open) {
-        blob('#4d1c27', () => ctx.ellipse(0, 24, 22, 17, 0, 0, Math.PI * 2));
+    const jawY = my + mh * .55;
+    if (o > .04) {
+        const gape = 3 + 15 * o;
+        blob('#4d1c27', () => ctx.ellipse(0, jawY + gape * .5, mw * .72, gape, 0, 0, Math.PI * 2));
         for (const sx of [-1, 1])
-            blob('#fdf7e8', () => { ctx.moveTo(sx * 13, 11); ctx.lineTo(sx * 9, 21); ctx.lineTo(sx * 17, 21); });
-        blob('#d4667c', () => ctx.ellipse(0, 31, 12, 9, 0, 0, Math.PI * 2));
+            blob('#fdf7e8', () => {
+                ctx.moveTo(sx * mw * .42, jawY - 4); ctx.lineTo(sx * mw * .29, jawY + 7);
+                ctx.lineTo(sx * mw * .55, jawY + 7);
+            });
+        blob('#d4667c', () => ctx.ellipse(0, jawY + gape * .95, mw * .38, gape * .55, 0, 0, Math.PI * 2));
     } else {
-        blob('#3a2f22', () => {
-            ctx.moveTo(-18, 13); ctx.quadraticCurveTo(-9, 23, 0, 15);
-            ctx.quadraticCurveTo(9, 23, 18, 13);
-            ctx.quadraticCurveTo(9, 20, 0, 12);
-            ctx.quadraticCurveTo(-9, 20, -18, 13);
+        blob('rgba(58,47,34,.85)', () => {
+            ctx.moveTo(-mw * .58, jawY - 4); ctx.quadraticCurveTo(-mw * .29, jawY + 6, 0, jawY - 2);
+            ctx.quadraticCurveTo(mw * .29, jawY + 6, mw * .58, jawY - 4);
+            ctx.quadraticCurveTo(mw * .29, jawY + 2, 0, jawY - 5);
+            ctx.quadraticCurveTo(-mw * .29, jawY + 2, -mw * .58, jawY - 4);
         });
-        for (const sx of [-1, 1])
-            blob('#fdf7e8', () => { ctx.moveTo(sx * 13, 21); ctx.lineTo(sx * 10, 12); ctx.lineTo(sx * 17, 12); });
-        blob('#d4667c', () => {
-            ctx.moveTo(4, 21); ctx.quadraticCurveTo(20, 25, 18, 40);
-            ctx.quadraticCurveTo(15, 50, 6, 46); ctx.quadraticCurveTo(0, 40, 4, 21);
-        });
-        blob('rgba(255,255,255,.22)', () => {
-            ctx.moveTo(8, 26); ctx.quadraticCurveTo(16, 30, 14, 40);
-            ctx.quadraticCurveTo(11, 34, 8, 26);
+        if (B.brow > .7) for (const sx of [-1, 1])       // the underbite, on those that have one
+            blob('#fdf7e8', () => {
+                ctx.moveTo(sx * mw * .42, jawY + 5); ctx.lineTo(sx * mw * .32, jawY - 4);
+                ctx.lineTo(sx * mw * .55, jawY - 4);
+            });
+        blob('#d4667c', () => {                           // and the tongue, lolling
+            const t = B.tongue;
+            ctx.moveTo(mw * .13, jawY + 1); ctx.quadraticCurveTo(mw * .65 * t, jawY + 5, mw * .58 * t, jawY + 20 * t);
+            ctx.quadraticCurveTo(mw * .48 * t, jawY + 30 * t, mw * .19, jawY + 26 * t);
+            ctx.quadraticCurveTo(0, jawY + 20 * t, mw * .13, jawY + 1);
         });
     }
     ctx.restore();
@@ -1152,7 +1363,8 @@ function drawDog(ctx, x, y, k, open, ms) {
 function drawMug(short) {
     const g = document.getElementById('mug').getContext('2d');
     g.clearRect(0, 0, 88, 88);
-    drawDog(g, 44, 38, .62, short, 0);
+    const B = breedFor(round);
+    drawDog(g, 44, 40, .60 / B.k, { open: short ? .85 : 0 }, 0, B);
 }
 
 function drawLoose(ms) {
@@ -1245,6 +1457,36 @@ function draw() {
         ctx.restore();
     }
 
+    // the one it has got, on its way in: it leaves the string as the jaw opens
+    // and is gone by the time the jaw shuts, which is the whole point of the
+    // gape happening first
+    if (chewing) {
+        const e = (ms - chewing.t0) / (CHOMP * 1000);
+        if (e >= .34) chewing = null;
+        else if (e > .05) {
+            const f = clamp((e - .05) / .29, 0, 1), ease = f * f;
+            const [dx, dy] = at(clamp(dog.s, 0, string.len));
+            const x = chewing.x + (dx - chewing.x) * ease;
+            const y = chewing.y + (dy + 14 - chewing.y) * ease;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(chewing.ang + f * 1.1);
+            ctx.scale(1 - f * .55, 1 - f * .35);
+            ctx.beginPath();
+            ctx.ellipse(0, 0, chewing.len, FAT * .92, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#c4472e'; ctx.fill();
+            ctx.save(); ctx.clip();
+            ctx.beginPath();
+            ctx.ellipse(0, FAT * .6, chewing.len, FAT * .7, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#8c2b1b'; ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(-chewing.len * .12, -FAT * .34, chewing.len * .6, FAT * .18, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#dd6f4c'; ctx.fill();
+            ctx.restore();
+            ctx.restore();
+        }
+    }
+
     // what that swipe was worth, said out loud
     for (let i = shouts.length - 1; i >= 0; i--) {
         const sh = shouts[i], e = (now() - sh.t0) / 980;
@@ -1255,12 +1497,12 @@ function draw() {
         ctx.globalAlpha = e > .6 ? 1 - (e - .6) / .4 : 1;
         ctx.translate(clamp(sh.x, 76, W - 76), sh.y - 34 * rise);
         ctx.scale(pop, pop);
-        ctx.font = '700 27px "Alfa Slab One", Georgia, serif';
+        ctx.font = (sh.small ? '700 19px' : '700 27px') + ' "Alfa Slab One", Georgia, serif';
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.lineJoin = 'round';
-        ctx.strokeStyle = 'rgba(12,32,24,.92)'; ctx.lineWidth = 7;
+        ctx.strokeStyle = 'rgba(12,32,24,.92)'; ctx.lineWidth = sh.small ? 5 : 7;
         ctx.strokeText(sh.text, 0, 0);
-        ctx.fillStyle = sh.bad ? '#d8462f' : '#f0d484';
+        ctx.fillStyle = sh.bad ? '#d8462f' : sh.small ? '#bdf0cc' : '#f0d484';
         ctx.fillText(sh.text, 0, 0);
         ctx.restore();
     }
@@ -1269,8 +1511,10 @@ function draw() {
         const s = clamp(dog.s, 0, string.len);
         const [x, y] = at(s);
         const below = dog.s > string.len;
+        const pose = dog.chomp > 0 ? chompPose(1 - dog.chomp / CHOMP)
+                                   : { open: 0, reach: 0, tilt: 0, squash: 0 };
         drawDog(ctx, x, below ? at(string.len)[1] + (dog.s - string.len) : y, 1.02,
-                dog.chomp > 0, ms);
+                pose, ms, breedFor(round));
     }
 }
 function tick() {
@@ -1281,7 +1525,7 @@ function tick() {
         lastMs = ms;
         dogStep(dt);
         draw();
-        if (live || loose.length || cutFx.length || mess.length || shouts.length) raf = requestAnimationFrame(step);
+        if (live || loose.length || cutFx.length || mess.length || shouts.length || chewing) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -1292,10 +1536,14 @@ function jolt() {
     app.classList.add('shake');
 }
 
+function newRun() {
+    money = 0; lives = LIVES; showHud();
+    startRound(1);
+}
 document.getElementById('again').addEventListener('click', e => {
     e.stopPropagation();
     card.hidden = true; card.className = '';
-    startRound(1);
+    newRun();
 });
 document.getElementById('play').addEventListener('click', e => {
     e.stopPropagation();
@@ -1303,7 +1551,7 @@ document.getElementById('play').addEventListener('click', e => {
     showingIntro = false;
     document.getElementById('intro').hidden = true;
     document.body.classList.remove('waiting');
-    startRound(1);
+    newRun();
 });
 
 fit();
