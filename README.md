@@ -231,8 +231,11 @@ the tap that skips the tally used to ask for a seventh day, which does not
 exist, and froze the week where it stood.
 
 Kill the dog and you lose the week's takings, which are spent on the funeral. A
-new dog turns up on Monday with a new name and the same wardrobe, because the
-collar and the hat were bought and paid for and nobody is burying those.
+new dog turns up on Monday with a new name, a different breed and the same
+wardrobe - the collar and the hat were bought and paid for and nobody is
+burying those, but a replacement that looked exactly like the one you just
+buried made it read as a respawn rather than a loss. It runs at the same speed,
+as all twelve of them do.
 
 ## The noise
 

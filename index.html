@@ -615,7 +615,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v17';
+const APP_VERSION = 'v18';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1533,6 +1533,11 @@ function dogDown() {
        the hat were bought and paid for and nobody is burying those. */
     const was = save.dogName;
     save.dogName = pick(DOG_NAMES.filter(n => n !== was));
+    /* And it is not the same dog wearing a different name: the one on Monday
+       is a different breed, because a replacement that looked identical to the
+       one you just buried made the whole thing feel like a respawn. */
+    const here = breedIndex();
+    setBreed(pick([...Array(breedList().length).keys()].filter(i => i !== here)));
     putSave();
     document.getElementById('rating').textContent = `${save.dogName} starts on Monday`;
     card.className = 'grave';
