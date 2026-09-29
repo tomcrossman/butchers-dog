@@ -203,6 +203,12 @@ itself drawn in it - the hat on the dog's own head, the knife on its own - four
 to a row, because seventeen hats written out is seventeen words to read and a
 rack of pictures is one glance.
 
+The dog is pinned to the top of the shop and does not scroll away with the
+first shelf, so whatever you try goes on in front of you without scrolling back
+up for a look. What it has on already is filled in, gold all the way round,
+ticked in the corner and labelled along the bottom - an outline on its own was
+not enough to find among thirty tiles.
+
 The shop puts it on before it takes the money, and nothing on the shelf can be
 bought by tapping it. A tap tries a thing on: the tile goes gold side out and
 says Trying, and a counter comes up along the bottom with the thing drawn on the
@@ -214,12 +220,15 @@ will not be pressed.
 ## Your shop, kept
 
 You pick the man behind the counter, the dog at the door, its name and the name
-over the window - with a die to roll if you cannot think of one - and that, the
-till and the wardrobe are saved. It is one object under one key, and there is a
+over the window - four lines of one form under the game's own name, with a die
+to roll if you cannot think of one - and that, the till and the wardrobe are
+saved. It is one object under one key, and there is a
 Start again at the bottom of the shop that asks twice before it wipes it.
 
 Saturday night ends where the front door starts: another week, or go and spend
-what the last one made.
+what the last one made. Both ways out of Saturday go through the same door now:
+the tap that skips the tally used to ask for a seventh day, which does not
+exist, and froze the week where it stood.
 
 Kill the dog and you lose the week's takings, which are spent on the funeral. A
 new dog turns up on Monday with a new name and the same wardrobe, because the

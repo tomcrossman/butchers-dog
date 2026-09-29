@@ -255,14 +255,49 @@ body.waiting #hud { display: none; }
     margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
     font-size: 30px; color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.4);
 }
+/* The setup screen is the first thing anyone sees, so it wears the name
+   rather than a heading that could belong to any screen. */
+#setup h1 {
+    margin: 0; font-family: var(--font-display); font-weight: 400; color: var(--gold);
+    font-size: clamp(28px, 9.5vw, 42px); line-height: .96; letter-spacing: .01em;
+    text-shadow: 0 4px 0 rgba(0,0,0,.45);
+}
+#setup .sub {
+    margin: 7px 0 0; font-size: 11px; font-weight: 900; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--cream); opacity: .55;
+}
+#preview { margin-top: 2px; }
 #preview { width: min(76vw, 300px); height: auto; }
-#stock-dog { width: min(50vw, 200px); height: auto; }
-.rows { width: 100%; max-width: 320px; margin: 10px 0 4px; }
-.row {
-    display: flex; align-items: center; gap: 8px; padding: 7px 10px; margin-bottom: 7px;
+/* The dog is the whole point of the shop, so it does not scroll away with the
+   first shelf: it is pinned to the top and every tile you try goes straight
+   onto it, in view, without scrolling back up for a look. */
+#store { padding-top: 0; }
+#stock-head {
+    position: sticky; top: 0; z-index: 2; width: 100%;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 10px 0 8px;
+    background: linear-gradient(180deg, #1f4f3c, #17402f);
+}
+#stock-head::after {                                  /* it casts onto the shelves */
+    content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 16px;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(10,28,21,.5), rgba(10,28,21,0));
+}
+#stock-head h2 { margin: 0; font-size: 24px; line-height: 1; }
+#stock-head .bank { margin-top: 2px; }
+#stock-dog { width: min(42vw, 166px); height: auto; margin-top: 2px; }
+/* One panel, four lines in it, hairlines between. Four separate boxes read as
+   four separate questions; this reads as the one form it is. */
+.rows {
+    width: 100%; max-width: 320px; margin: 12px 0 4px; overflow: hidden;
     background: linear-gradient(180deg, #1a4636, #123327);
     border: 2px solid var(--gold-d); border-radius: 3px;
 }
+.row {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    border-top: 1px solid rgba(220,171,62,.22);
+}
+.row:first-child { border-top: 0; }
 .row .lab { flex: none; width: 74px; text-align: left; font-size: 11px; font-weight: 900;
             letter-spacing: .1em; text-transform: uppercase; opacity: .6; }
 .row b { flex: 1; font-family: var(--font-display); font-weight: 400; font-size: 17px;
@@ -291,6 +326,7 @@ body.waiting #hud { display: none; }
    seventeen hats reads at a glance instead of being seventeen words. */
 .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .buy {
+    position: relative;
     display: flex; flex-direction: column; align-items: center; gap: 1px;
     padding: 3px 2px 4px; cursor: pointer; overflow: hidden;
     background: linear-gradient(180deg, #1a4636, #123327);
@@ -302,8 +338,24 @@ body.waiting #hud { display: none; }
            line-height: 1.1; }
 .buy .tag { font-size: 8px; font-weight: 900; letter-spacing: .08em;
             text-transform: uppercase; line-height: 1.5; }
-.buy.worn { border-color: var(--gold); box-shadow: inset 0 0 0 2px rgba(220,171,62,.25); }
-.buy.worn .tag { color: #8fd6a2; }
+/* What it has on now: filled in, gold all the way round, a tick in the corner
+   and its own gold strip along the bottom. An outline on its own was not
+   enough to tell it apart from the thirty tiles either side of it. */
+.buy.worn {
+    border-color: var(--gold);
+    background: linear-gradient(180deg, #2f7351, #1e5039);
+    box-shadow: inset 0 0 0 2px rgba(220,171,62,.3), 0 0 0 1px rgba(0,0,0,.25);
+}
+.buy.worn .tag {
+    width: calc(100% + 4px); margin: 2px -2px -4px; padding: 2px 0 3px;
+    background: var(--gold); color: #2a2118;
+}
+.buy .tick {
+    position: absolute; top: 3px; right: 3px; width: 15px; height: 15px;
+    border-radius: 50%; background: #3fa564; color: #0d2b1d;
+    box-shadow: 0 0 0 1.5px rgba(13,43,29,.45);
+    font-size: 10px; font-weight: 900; line-height: 15px; text-align: center;
+}
 .buy.got { border-color: rgba(220,171,62,.55); }
 .buy.got .tag { color: var(--cream); opacity: .7; }
 /* trying something on is not owning it, so it does not look like owning it:
@@ -513,8 +565,9 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="setup" hidden>
-        <h2>Your shop</h2>
-        <canvas id="preview" width="330" height="250"></canvas>
+        <h1>Butcher&rsquo;s<br>Dog</h1>
+        <p class="sub">Your shop</p>
+        <canvas id="preview" width="330" height="196"></canvas>
         <div class="rows">
             <div class="row"><span class="lab">Butcher</span>
                 <button class="nudge" data-pick="butcher" data-step="-1">&lsaquo;</button>
@@ -535,11 +588,13 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="store" hidden>
-        <h2>Upgrades</h2>
-        <canvas id="stock-dog" width="230" height="210"></canvas>
-        <div class="bank" id="store-bank">In the till: <b>&pound;0.00</b></div>
+        <div id="stock-head">
+            <h2>Upgrades</h2>
+            <canvas id="stock-dog" width="230" height="142"></canvas>
+            <div class="bank" id="store-bank">In the till: <b>&pound;0.00</b></div>
+        </div>
         <div id="stock"></div>
-        <button class="btn" id="store-done">Back to the shop</button>
+        <button class="btn" id="store-done">Back to work</button>
         <button class="wipe" id="wipe">Start again from nothing</button>
         <div id="tryon" hidden></div>
     </div>
@@ -560,7 +615,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v16';
+const APP_VERSION = 'v17';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1302,6 +1357,7 @@ function showHud() {
     moneyEl.textContent = money2(save.bank + money);
 }
 function startRound(n) {
+    if (n > DAYS.length) return endWeek();       // there is no seventh day
     round = n; live = true; tallying = false;
     clearTimeout(tallyT); clearTimeout(settleT);
     tallyEl.classList.remove('on');
@@ -1390,7 +1446,7 @@ function endRound() {
         `<span class="b">${saved} sold</span>`;
     tallyEl.classList.add('on');
     jingleUp();
-    tallyT = setTimeout(round >= DAYS.length ? endWeek : nextRound, 1500);
+    tallyT = setTimeout(nextRound, 1500);
 }
 /* Saturday night. The week is counted up in front of the man whose shop it
    is, and whether he is holding the takings over his head or standing there
@@ -1550,7 +1606,14 @@ function drawGrave(g, name, epitaph) {
     g.restore();
     g.restore();
 }
-function nextRound() { tallying = false; startRound(round + 1); }
+function nextRound() {
+    if (!tallying) return;                       // and only once
+    tallying = false;
+    clearTimeout(tallyT);
+    tallyEl.classList.remove('on');
+    if (round >= DAYS.length) { endWeek(); return; }
+    startRound(round + 1);
+}
 const jingleUp = () => safely(t => {
     [523, 659, 784].forEach((f, i) => tone(t, { freq: f, dur: .2, type: 'triangle', vol: .15, at: i * .07 }));
 });
@@ -2826,8 +2889,13 @@ function drawDemo(ms) {
     const k = string.n - 2;
     const [cx, cy, tx, ty] = at(string.twists[k]);
     const nx = -ty, ny = tx, L = 78;                   // square across the string
-    const ax = cx - nx * L, ay = cy - ny * L;
-    const bx = cx + nx * L, by = cy + ny * L;
+    let ax = cx - nx * L, ay = cy - ny * L;
+    let bx = cx + nx * L, by = cy + ny * L;
+    /* Always left to right. Which end of the normal comes first depends on
+       which way the string happens to lean at that twist, and a demonstration
+       that sweeps back towards the hand is a demonstration of the wrong
+       gesture for the nine people in ten holding the phone in their right. */
+    if (bx < ax) { [ax, bx] = [bx, ax]; [ay, by] = [by, ay]; }
     const e = ((ms - roundT0) % DEMO_CYCLE) / DEMO_CYCLE;
     const p = Math.min(1, e / DEMO_SWEEP);
     const ease = p * p * (3 - 2 * p);
@@ -3107,11 +3175,11 @@ function drawPreview(id, w, h, withMan) {
         drawButcher(g, true, { cx: w * .33, cy: h * .84, k: .54, holds: 'knife' });
         drawDog(g, w * .77, h * .80, .58 / cast.dog.k, { open: 0 }, 0, cast.dog, cast.kit);
     } else {
-        drawDog(g, w / 2, h * .62, .74 / cast.dog.k, { open: 0 }, 0, cast.dog, previewKit());
+        drawDog(g, w / 2, h * .60, .68 / cast.dog.k, { open: 0 }, 0, cast.dog, previewKit());
         g.save();                                       // and whatever is on the block
-        g.translate(w / 2 + 44, h - 22);
+        g.translate(w / 2 + 64, h - 22);
         g.rotate(-.34);
-        drawKnife(g, 0, 0, 0, .52, previewKnife());
+        drawKnife(g, 0, 0, 0, .46, previewKnife());
         g.restore();
     }
 }
@@ -3133,7 +3201,7 @@ function paintSetup() {
     deal();
     document.getElementById('pick-butcher').textContent = BUTCHERS[save.butcher].name;
     document.getElementById('pick-dog').textContent = breedList()[breedIndex()].name;
-    drawPreview('preview', 330, 250, true);
+    drawPreview('preview', 330, 196, true);
 }
 function openSetup() {
     document.getElementById('in-dog').value = save.dogName;
@@ -3189,7 +3257,7 @@ function drawTile(c, item) {
 function paintStore() {
     deal();
     showBank();
-    drawPreview('stock-dog', 230, 210, false);
+    drawPreview('stock-dog', 230, 142, false);
     document.getElementById('stock').innerHTML = KINDS.map(({ kind, label }) => {
         const tiles = STOCK.filter(i => i.kind === kind).map(i => {
             const got = owns(i.id), on = save.worn[kind] === i.id;
@@ -3198,7 +3266,7 @@ function paintStore() {
             const cls = trying ? 'buy trying' : on ? 'buy worn' : got ? 'buy got'
                       : canAfford ? 'buy' : 'buy poor';
             const tag = trying ? `<span class="tag">Trying</span>`
-                      : on ? `<span class="tag">Worn</span>`
+                      : on ? `<span class="tick">&#10003;</span><span class="tag">Worn</span>`
                       : got ? `<span class="tag">Wear</span>`
                       : `<span class="pr">${money0(i.price)}</span>`;
             return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
