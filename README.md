@@ -245,6 +245,12 @@ will not be pressed.
 The button that opens the shop is a word and nothing else; a cleaver on it was
 tried and looked like a small appliance.
 
+The shopfront is three things with a third of the window each - the sign at the
+top, the two of them in the middle, the way in at the bottom - rather than all
+of it huddled at the bottom with the wall left empty above the sign. The shop
+scales to whatever height is going, so it fits a short phone without squashing
+the butcher.
+
 The game's name is on the setup screen and nowhere else: once the shop is
 yours, the sign over the window is the one that matters, so the shopfront gets
 the room the title used to have and the till under it is the score.
