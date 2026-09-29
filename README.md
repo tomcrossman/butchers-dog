@@ -170,16 +170,19 @@ A sausage sells for what it looks like it is worth: a clean cut through the
 middle of a twist leaves two tidy ends and it goes in the window at £1.65; a
 scrappy one still sells, to somebody, for 95p. A cut dead through the middle
 and square across it - which is the one thing in this game you can actually get
-better at - pays a pound on top and says PERFECT about it.
+better at - pays a pound on top and says PERFECT +£1 about it, on one
+line, because two labels over one cut read as two payments.
 
 **The money is banked.** There is no best week and no high score: the week's
 takings go in the till and stay there, and what you did with the money is the
 score. A week always runs Monday to Saturday, and what the dog gets is simply
 money you did not take.
 
-## The shop
+## Upgrades
 
-The till buys things, and the things are the point.
+The till buys things, and the things are the point. It is called Upgrade on
+the door and in the ledger, because the shop in this game is the one with the
+sausages in the window.
 
 A knife for yourself - the butcher's own, a boning knife, a cleaver or a pair
 of shears - and then everything the dog can be got into: flat caps, beanies,
@@ -195,8 +198,13 @@ exactly as quick as a dog without one, and every one of the twelve breeds runs
 at the same speed, because the day the kit changes the odds is the day you are
 buying your way past the dog rather than getting better at getting past it.
 
+Nothing on the shelves is named. Every item is a square tile with the thing
+itself drawn in it - the hat on the dog's own head, the knife on its own - four
+to a row, because seventeen hats written out is seventeen words to read and a
+rack of pictures is one glance.
+
 The shop puts it on before it takes the money: tapping something you do not own
-does not buy it, it puts it on the dog in the window and the row turns into the
+does not buy it, it puts it on the dog in the window and the tile turns into the
 price with Buy on it. Tapping again is the purchase.
 
 ## Your shop, kept
@@ -205,6 +213,9 @@ You pick the man behind the counter, the dog at the door, its name and the name
 over the window - with a die to roll if you cannot think of one - and that, the
 till and the wardrobe are saved. It is one object under one key, and there is a
 Start again at the bottom of the shop that asks twice before it wipes it.
+
+Saturday night ends where the front door starts: another week, or go and spend
+what the last one made.
 
 Kill the dog and you lose the week's takings, which are spent on the funeral. A
 new dog turns up on Monday with a new name and the same wardrobe, because the

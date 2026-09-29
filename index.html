@@ -238,7 +238,10 @@ body.waiting #hud { display: none; }
 /* ---- picking your lot, and spending what you have ---------------------- */
 #setup, #store {
     position: absolute; inset: 0; z-index: 13; overflow-y: auto;
+    /* safe centring: a shelf taller than the window centres its own top off
+       the screen, and no amount of scrolling gets it back */
     display: flex; flex-direction: column; align-items: center; justify-content: center;
+    justify-content: safe center;
     padding: 22px 18px; text-align: center;
     background:
         radial-gradient(120% 80% at 50% 30%, rgba(255,255,255,.06) 0%, transparent 60%),
@@ -283,19 +286,25 @@ body.waiting #hud { display: none; }
     margin: 0 0 5px; font-size: 10px; font-weight: 900; letter-spacing: .16em;
     text-transform: uppercase; color: var(--gold); opacity: .75; text-align: left;
 }
+/* A shop tells you what a thing looks like, not what it is called: every
+   item is drawn on the dog's own head in its own little window, so a rack of
+   seventeen hats reads at a glance instead of being seventeen words. */
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .buy {
-    display: flex; align-items: center; gap: 8px; width: 100%; margin-bottom: 5px;
-    padding: 7px 10px; cursor: pointer; text-align: left;
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    padding: 3px 2px 4px; cursor: pointer; overflow: hidden;
     background: linear-gradient(180deg, #1a4636, #123327);
     border: 2px solid var(--gold-d); border-radius: 3px; color: var(--cream);
     font-family: var(--font); font-weight: 700; font-size: 13px;
 }
-.buy .nm { flex: 1; }
-.buy .pr { font-family: var(--font-display); font-size: 15px; color: var(--gold); }
-.buy .tag { font-size: 10px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.buy canvas { width: 100%; height: auto; display: block; }
+.buy .pr { font-family: var(--font-display); font-size: 12px; color: var(--gold);
+           line-height: 1.1; }
+.buy .tag { font-size: 8px; font-weight: 900; letter-spacing: .08em;
+            text-transform: uppercase; line-height: 1.5; }
 .buy.worn { border-color: var(--gold); }
 .buy.trying { border-color: var(--gold); background: linear-gradient(180deg, #24593f, #1a4132); }
-.buy.trying .tag { color: var(--gold); }
+.buy.trying .pr, .buy.trying .tag { color: var(--gold); }
 .buy.worn .tag { color: #8fd6a2; }
 .buy.poor { opacity: .42; }
 .buy:active { transform: translateY(1px); }
@@ -314,6 +323,7 @@ body.waiting #hud { display: none; }
 #card {
     position: absolute; inset: 0; z-index: 10;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
+    justify-content: safe center;
     gap: 2px; padding: 20px 18px; pointer-events: auto; overflow-y: auto;
     background:
         radial-gradient(120% 80% at 50% 34%, rgba(255,255,255,.07) 0%, transparent 60%),
@@ -360,6 +370,10 @@ body.waiting #hud { display: none; }
     color: #b03a25; margin: 8px 0 0;
 }
 #card.record #score { color: #a8791e; }
+#card .btn.ghost {
+    background: transparent; color: #2a2118; border-color: #2a2118;
+    box-shadow: 0 3px 0 rgba(0,0,0,.22); font-size: 15px; padding: 10px; margin-top: 8px;
+}
 /* the caption sits under the number rather than beside it - "for the week"
    alongside a five-figure total wraps, and wraps badly */
 #score .pc { display: block; font-size: .24em; letter-spacing: .16em;
@@ -460,7 +474,7 @@ body.waiting #hud { display: none; }
         <p id="cast-line">Six days. One string a day.</p>
         <div class="bank" id="bank-line">In the till: <b>&pound;0.00</b></div>
         <button class="btn" id="play">Open up shop</button>
-        <button class="btn ghost" id="to-shop">Shop</button>
+        <button class="btn ghost" id="to-shop">Upgrade</button>
     </div>
 
     <div id="setup" hidden>
@@ -486,7 +500,7 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="store" hidden>
-        <h2>The shop</h2>
+        <h2>Upgrades</h2>
         <canvas id="stock-dog" width="230" height="210"></canvas>
         <div class="bank" id="store-bank">In the till: <b>&pound;0.00</b></div>
         <div id="stock"></div>
@@ -501,7 +515,8 @@ body.waiting #hud { display: none; }
             <table id="ledger"></table>
             <span id="score">0<span class="pc">for the week</span></span>
             <p id="rating">Butchered</p>
-            <button class="btn" id="again">Try again</button>
+            <button class="btn" id="again">Another week</button>
+            <button class="btn ghost" id="again-shop">Upgrade</button>
         </div>
     </div>
 
@@ -509,7 +524,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v14';
+const APP_VERSION = 'v15';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1108,8 +1123,10 @@ function splitAt(p, k, q) {
         money += PERFECT_PAY; roundMoney += PERFECT_PAY;
         showHud();
         const [px, py] = at(string.twists[k]);
-        shouts.push({ text: 'PERFECT', x: px, y: py - 30, t0: now(), gold: true });
-        shouts.push({ text: money2(PERFECT_PAY), x: px, y: py + 6, t0: now(), small: true });
+        // the bonus rides on the word rather than under it - two labels for
+        // one cut, one of them already saying £1, reads as two payments
+        shouts.push({ text: `PERFECT +${money0(PERFECT_PAY)}`,
+                      x: px, y: py - 30, t0: now(), gold: true });
         ping();
     }
 }
@@ -1225,6 +1242,8 @@ function dogStep(dt) {
    did not take. Which is the worst thing that can happen to a shop. */
 const priceOf = q => Math.round((55 + 1.12 * q) / 5) * 5;      // pence, 95p to £1.67
 const money2 = p => '£' + (p / 100).toFixed(2);
+// on a tile there is no room for two noughts nobody reads
+const money0 = p => p % 100 === 0 ? '£' + (p / 100) : money2(p);
 
 let round = 0, live = false, armed = false, tallying = false, roundT0 = 0;
 let money = 0, roundMoney = 0, ledger = [], steaks = 0;
@@ -1838,7 +1857,7 @@ const KIT = [
     { id: 'cap',      kind: 'hat',    name: 'Flat cap',         price: 1800 },
     { id: 'beanie',   kind: 'hat',    name: 'Beanie',           price: 2200 },
     { id: 'party',    kind: 'hat',    name: 'Party hat',        price: 2600 },
-    { id: 'chef',     kind: 'hat',    name: 'Chef\u2019s hat',   price: 3200 },
+    { id: 'chefhat',  kind: 'hat',    name: 'Chef\u2019s hat',   price: 3200 },
     { id: 'builder',  kind: 'hat',    name: 'Builder\u2019s hat', price: 4000 },
     { id: 'catears',  kind: 'hat',    name: 'Cat ears',         price: 4600 },
     { id: 'bunny',    kind: 'hat',    name: 'Bunny ears',       price: 5200 },
@@ -1892,7 +1911,12 @@ let save = FRESH(), started = false;
 function loadSave() {
     try {
         const raw = localStorage.getItem(SAVE_KEY);
-        if (raw) { save = Object.assign(FRESH(), JSON.parse(raw)); started = true; }
+        if (raw) {
+            save = Object.assign(FRESH(), JSON.parse(raw));
+            // the chef's hat used to share an id with the butcher's knife
+            if (save.worn.hat === 'chef') save.worn.hat = 'chefhat';
+            started = true;
+        }
     } catch (e) { /* private mode: play it as a stranger every time */ }
 }
 function putSave() {
@@ -2054,7 +2078,7 @@ function drawKit(ctx, B, kit, glum) {
         blob('#f0d484', () => { ctx.moveTo(-12, T - 12); ctx.lineTo(-6, T - 26); ctx.lineTo(8, T - 10); ctx.lineTo(2, T + 1); });
         blob('#fdf7e8', () => ctx.arc(4, T - 56, 7, 0, Math.PI * 2));
         break;
-    case 'chef':
+    case 'chefhat':
         blob('#fdfaf2', () => {
             ctx.moveTo(-W2, T + 8); ctx.lineTo(-W2, T - 12);
             ctx.quadraticCurveTo(-W2 - 12, T - 48, -8, T - 44);
@@ -2167,6 +2191,11 @@ function drawKit(ctx, B, kit, glum) {
 
 function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     B = B || (cast ? cast.dog : TIERS[2][0]);
+    /* What it has on is part of what it is: unless a caller is deliberately
+       showing something else (the shop, trying a hat on), the dog wears what
+       is in the save. This used to be left undefined, so the only dog in the
+       game wearing the shopping was the one in the window. */
+    if (kit === undefined) kit = cast ? cast.kit : null;
     const o = pose.open, sq = pose.squash || 0;
     // how it feels about the week, which is the opposite of how he feels
     const glum = pose.mood === 'glum', gone = pose.mood === 'gone';
@@ -2186,18 +2215,89 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
         ctx.quadraticCurveTo(-B.jawW - 4, -4, -B.skullW, -B.skullH * .4);
     };
 
-    // the collar first, so the jowls hang over it
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 7;
-    blob('#2b2333', () => {
-        ctx.moveTo(-B.jawW - 2, B.chin - 14); ctx.quadraticCurveTo(0, B.chin + 4, B.jawW + 2, B.chin - 14);
-        ctx.lineTo(B.jawW + 2, B.chin + 5); ctx.quadraticCurveTo(0, B.chin + 23, -B.jawW - 2, B.chin + 5);
-    });
-    ctx.restore();
-    for (let i = -2; i <= 2; i++) {
-        const px = i * (B.jawW * .38), py = B.chin + 3 + (2 - Math.abs(i)) * 3.4;
-        blob('#dcab3e', () => { ctx.moveTo(px - 6, py + 4); ctx.lineTo(px, py - 8); ctx.lineTo(px + 6, py + 4); });
-        blob('rgba(255,244,205,.55)', () => { ctx.moveTo(px - 2.4, py + 2); ctx.lineTo(px, py - 7); ctx.lineTo(px + 1.4, py + 1); });
+    /* The collar first, so the jowls hang over it. It is drawn here rather
+       than with the rest of the kit because it goes on before the head does,
+       and the cape goes on before the collar - there is nothing else in the
+       wardrobe that has to sit behind the dog. */
+    const neck = (kit && kit.collar) || 'spiked';
+    const band = fill => {
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 7;
+        blob(fill, () => {
+            ctx.moveTo(-B.jawW - 2, B.chin - 14); ctx.quadraticCurveTo(0, B.chin + 4, B.jawW + 2, B.chin - 14);
+            ctx.lineTo(B.jawW + 2, B.chin + 5); ctx.quadraticCurveTo(0, B.chin + 23, -B.jawW - 2, B.chin + 5);
+        });
+        ctx.restore();
+    };
+    const C = B.chin, JW = B.jawW;
+    if (neck === 'cape') {
+        blob('#8e2a1b', () => {                       // the lining, and then the cape
+            ctx.moveTo(-JW + 4, C - 8); ctx.quadraticCurveTo(-JW - 50, C + 34, -JW - 38, C + 84);
+            ctx.quadraticCurveTo(0, C + 62, JW + 38, C + 84);
+            ctx.quadraticCurveTo(JW + 50, C + 34, JW - 4, C - 8);
+        });
+        blob('#c23b26', () => {
+            ctx.moveTo(-JW + 4, C - 8); ctx.quadraticCurveTo(-JW - 42, C + 32, -JW - 30, C + 74);
+            ctx.quadraticCurveTo(0, C + 54, JW + 30, C + 74);
+            ctx.quadraticCurveTo(JW + 42, C + 32, JW - 4, C - 8);
+        });
+    }
+    switch (neck) {
+    case 'bow':
+        band('#2b2333');
+        blob('#b03a25', () => {
+            ctx.moveTo(0, C + 4);
+            ctx.lineTo(-21, C - 7); ctx.lineTo(-21, C + 17); ctx.lineTo(0, C + 4);
+            ctx.lineTo(21, C - 7); ctx.lineTo(21, C + 17);
+        });
+        blob('#7d2417', () => ctx.ellipse(0, C + 5, 5.5, 6.5, 0, 0, Math.PI * 2));
+        break;
+    case 'scarf':
+        band('#a8202a');
+        blob('#c8303a', () => {                       // the point of it hanging down
+            ctx.moveTo(-19, C + 3); ctx.lineTo(19, C + 3); ctx.lineTo(0, C + 42);
+        });
+        blob('rgba(255,255,255,.22)', () => {
+            ctx.moveTo(-9, C + 8); ctx.lineTo(1, C + 8); ctx.lineTo(-4, C + 24);
+        });
+        break;
+    case 'skullcol':
+        band('#1d1a22');
+        for (let i = -1; i <= 1; i++) {
+            const px = i * (JW * .54), py = C + 3 + (1 - Math.abs(i)) * 3.2;
+            blob('#efe7d4', () => ctx.ellipse(px, py, 6, 6.4, 0, 0, Math.PI * 2));
+            blob('#efe7d4', () => {
+                ctx.moveTo(px - 4.2, py + 3); ctx.lineTo(px + 4.2, py + 3);
+                ctx.lineTo(px + 3, py + 9.5); ctx.lineTo(px - 3, py + 9.5);
+            });
+            for (const sx of [-1, 1])
+                blob('#1d1a22', () => ctx.ellipse(px + sx * 2.5, py - .4, 1.8, 2.2, 0, 0, Math.PI * 2));
+        }
+        break;
+    case 'cape':
+        band('#2b2333');
+        for (const sx of [-1, 1]) {                   // the clasps that hold it on
+            blob('#e8c15a', () => ctx.ellipse(sx * (JW * .56), C + 3, 6.5, 7, 0, 0, Math.PI * 2));
+            blob('rgba(255,244,205,.5)', () => ctx.ellipse(sx * (JW * .56) - 1.6, C + 1, 2.6, 3, 0, 0, Math.PI * 2));
+        }
+        break;
+    case 'goldcol':
+        band('#b0821f');
+        blob('#e8c15a', () => {
+            ctx.moveTo(-JW - 2, C - 13); ctx.quadraticCurveTo(0, C + 5, JW + 2, C - 13);
+            ctx.lineTo(JW + 2, C - 5); ctx.quadraticCurveTo(0, C + 13, -JW - 2, C - 5);
+        });
+        blob('#c08f2a', () => ctx.ellipse(0, C + 20, 10, 11, 0, 0, Math.PI * 2));
+        blob('#f0d478', () => ctx.ellipse(0, C + 18.5, 8.5, 9.5, 0, 0, Math.PI * 2));
+        blob('rgba(140,100,20,.5)', () => ctx.ellipse(0, C + 19, 3.4, 4, 0, 0, Math.PI * 2));
+        break;
+    default:
+        band('#2b2333');
+        for (let i = -2; i <= 2; i++) {
+            const px = i * (JW * .38), py = C + 3 + (2 - Math.abs(i)) * 3.4;
+            blob('#dcab3e', () => { ctx.moveTo(px - 6, py + 4); ctx.lineTo(px, py - 8); ctx.lineTo(px + 6, py + 4); });
+            blob('rgba(255,244,205,.55)', () => { ctx.moveTo(px - 2.4, py + 2); ctx.lineTo(px, py - 7); ctx.lineTo(px + 1.4, py + 1); });
+        }
     }
     // ears: folded over, pricked up, or hanging down the side of the head
     for (const sx of [-1, 1]) {
@@ -2837,7 +2937,7 @@ function draw() {
         ctx.globalAlpha = e > .6 ? 1 - (e - .6) / .4 : 1;
         ctx.translate(clamp(sh.x, 76, W - 76), sh.y - 34 * rise);
         ctx.scale(pop, pop);
-        ctx.font = (sh.small ? '700 19px' : sh.gold ? '700 31px' : '700 27px') +
+        ctx.font = (sh.small ? '700 19px' : sh.gold ? '700 26px' : '700 27px') +
                    ' "Alfa Slab One", Georgia, serif';
         if (sh.gold) {
             ctx.save();                                   // a flash of it going off
@@ -3030,32 +3130,61 @@ document.getElementById('setup-done').addEventListener('click', () => {
 });
 
 /* ---- spending it -------------------------------------------------------- */
+/* Everything but the one thing being shown is stripped back to nothing, so a
+   tile is the item and not the item plus whatever the dog happens to have on
+   at the time. The knives have no head to sit on and are drawn on their own. */
+const BARE = { hat: 'bare', face: 'plain', collar: 'spiked' };
+const TILE_W = 104, TILE_H = 92;
+function drawTile(c, item) {
+    const g = c.getContext('2d');
+    g.clearRect(0, 0, TILE_W, TILE_H);
+    if (item.kind === 'knife') {
+        g.save();
+        g.translate(TILE_W / 2, TILE_H / 2);
+        g.rotate(-.5);
+        drawKnife(g, 0, 0, 0, .58, item);
+        g.restore();
+        return;
+    }
+    const B = cast.dog;
+    drawDog(g, TILE_W / 2, TILE_H * .60, .46 / B.k, { open: 0 }, 0, B,
+            { ...BARE, [item.kind]: item.id });
+}
 function paintStore() {
     deal();
     showBank();
     drawPreview('stock-dog', 230, 210, false);
     document.getElementById('stock').innerHTML = KINDS.map(({ kind, label }) => {
-        const rows = STOCK.filter(i => i.kind === kind).map(i => {
+        const tiles = STOCK.filter(i => i.kind === kind).map(i => {
             const got = owns(i.id), on = save.worn[kind] === i.id;
             const trying = tryOn && tryOn.id === i.id;
             const canAfford = save.bank >= i.price;
             const cls = on ? 'buy worn' : trying ? 'buy trying'
                       : got || canAfford ? 'buy' : 'buy poor';
-            const tag = on ? 'Worn' : got ? 'Wear'
-                      : trying ? (canAfford ? `Buy &middot; ${money2(i.price)}` : 'Not enough')
-                      : money2(i.price);
-            return `<button class="${cls}" data-item="${i.id}">` +
-                   `<span class="nm">${i.name}</span>` +
-                   `<span class="${got || trying ? 'tag' : 'pr'}">${tag}</span></button>`;
+            const tag = on ? `<span class="tag">Worn</span>`
+                      : got ? `<span class="tag">Wear</span>`
+                      : trying ? (canAfford ? `<span class="tag">Buy &middot; ${money0(i.price)}</span>`
+                                            : `<span class="tag">Short</span>`)
+                      : `<span class="pr">${money0(i.price)}</span>`;
+            return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
+                   `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>${tag}</button>`;
         }).join('');
-        return `<div class="shelf"><h3>${label}</h3>${rows}</div>`;
+        return `<div class="shelf"><h3>${label}</h3><div class="tiles">${tiles}</div></div>`;
     }).join('');
+    document.querySelectorAll('#stock .buy').forEach(btn =>
+        drawTile(btn.querySelector('canvas'), itemById(btn.dataset.item)));
 }
 const till = () => safely(t => {
     tone(t, { freq: 1200, dur: .08, type: 'square', vol: .13 });
     tone(t, { freq: 1800, dur: .3, type: 'triangle', vol: .1, at: .05 });
     tone(t, { freq: 900, dur: .34, type: 'sine', vol: .08, at: .06 });
     hiss(t, { hp: 5000, dur: .18, vol: .1, at: .04 });
+});
+// the sound of not having enough for it, which the shop referred to and
+// never had: tapping something out of reach used to throw instead of buzz
+const buzz = () => safely(t => {
+    tone(t, { freq: 190, to: 120, dur: .16, type: 'square', vol: .12 });
+    tone(t, { freq: 140, to: 96, dur: .22, type: 'square', vol: .1, at: .1 });
 });
 document.getElementById('stock').addEventListener('click', e => {
     const btn = e.target.closest('[data-item]');
@@ -3076,12 +3205,7 @@ document.getElementById('stock').addEventListener('click', e => {
     putSave();
     paintStore();
 });
-document.getElementById('to-shop').addEventListener('click', () => {
-    startSession(); audioNow();
-    tryOn = null;
-    paintStore();
-    storeEl.hidden = false;
-});
+document.getElementById('to-shop').addEventListener('click', openStore);
 document.getElementById('store-done').addEventListener('click', () => {
     tryOn = null;
     storeEl.hidden = true;
@@ -3120,17 +3244,35 @@ function showShop() {
     document.body.classList.add('waiting');
     draw();
 }
-document.getElementById('again').addEventListener('click', e => {
-    e.stopPropagation();
-    showShop();
-});
-document.getElementById('play').addEventListener('click', e => {
-    e.stopPropagation();
+function beginWeek() {
     startSession(); audioNow();
     showingIntro = false;
     document.getElementById('intro').hidden = true;
     document.body.classList.remove('waiting');
     startRound(1);            // which sets the HUD, once there is a day to put in it
+}
+function openStore() {
+    startSession(); audioNow();
+    tryOn = null;
+    paintStore();
+    storeEl.hidden = false;
+}
+/* The ticket ends where the front door starts: another week, or go and spend
+   what the last one made. Both of them reset the shop first, so the week
+   about to be played is dealt from the save either way. */
+document.getElementById('again').addEventListener('click', e => {
+    e.stopPropagation();
+    showShop();
+    beginWeek();
+});
+document.getElementById('again-shop').addEventListener('click', e => {
+    e.stopPropagation();
+    showShop();
+    openStore();
+});
+document.getElementById('play').addEventListener('click', e => {
+    e.stopPropagation();
+    beginWeek();
 });
 
 /* Who you are this week, what you are cutting with, and the six of them
