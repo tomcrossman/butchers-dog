@@ -132,9 +132,11 @@ more than that. What escalates is the week - a longer string and a quicker dog
 every morning, and a dog that has been fed getting keener with it. Feed it on
 Monday and you will know about it on Saturday.
 
-Behind the counter: Reg or Sid or Pearl or Doreen or Wally or Mo, in a boater
-or a flat cap or a white peaked hat. On the block: a butcher's knife, a
-cleaver, a boning knife or a pair of shears. They all cut exactly the same - a
+Behind the counter: Reg of A Cut Above, Sid of Beef Encounter, Pearl of Meat
+Expectations, Wally of Bangers & Cash, Doreen of The Merchant of Venison, or Mo
+of Best of the Wurst - in a boater or a flat cap or a white peaked hat, with
+the shop's name signwritten on the fascia over their head. On the block: a
+butcher's knife, a cleaver, a boning knife or a pair of shears. They all cut exactly the same - a
 randomised advantage would not be a joke, it would be a cheat - so the
 difference is what it looks and sounds like in your hand, down to the cleaver
 not ringing after a good cut.
@@ -157,6 +159,23 @@ Saturday, and what the dog gets is simply money you did not take - which is the
 worst thing that can happen to a shop. A fixed-length run needs an unbounded
 score or everybody finishes level, and money is one: two people can both get to
 Saturday and take wildly different amounts.
+
+Nobody reads an instruction, so on Monday - while the count is running and
+there is nothing else to do with the screen - a ghost knife walks the cut you
+are meant to make: square across the middle twist, in one stroke, over and over
+until the dog is let off. It stops the moment the round is live, because by
+then you either have it or you have not.
+
+## Mind the dog
+
+There is one way to lose, and it is not the dog's fault.
+
+Put the blade through the dog and the week stops there. Nothing is banked - a
+fail state with no cost is not one - and the dog gets a headstone with its name
+on it, which is the least it deserves. The circle that counts as a hit is two
+thirds of the head it is drawn as, so a near miss is a near miss; but it sits
+squarely in front of the last twist on the string, which is exactly where the
+tempting cut is.
 
 Saturday night takes the whole window. The week is counted up day by day in
 front of the man whose shop it is, and whether he is holding the takings over

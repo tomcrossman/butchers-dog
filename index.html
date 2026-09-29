@@ -107,8 +107,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     font-family: var(--font-display); font-size: 17px; color: var(--gold);
     text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
-#whodog { font-family: var(--font); font-weight: 900; font-size: .62em;
-          letter-spacing: .1em; text-transform: uppercase; }
+
 #roundplate.hurt { animation: hurt .5s ease-out both; }
 @keyframes hurt { 0%, 100% { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
                   30% { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 20px rgba(216,70,47,.9); } }
@@ -124,6 +123,10 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger td.m { text-align: right; font-family: var(--font-display); font-size: 15px; }
 #ledger tr.shut td { opacity: .35; }
 #ledger tr.best td.m { color: #1f7a3f; }
+/* the week that ended with a stone in it has no ledger worth printing */
+#card.grave #ledger { display: none; }
+#card.grave #score { color: #5a564e; }
+#card.grave #ribbon { background: #4b4842; color: #efe7d4; }
 #mute {
     pointer-events: auto; cursor: pointer; padding: 7px 8px 4px; line-height: 0;
     background: linear-gradient(180deg, #1a4636, #123327);
@@ -164,19 +167,28 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     100% { transform: scale(.92); opacity: 0; }
 }
 
+/* The day's takings, over the middle of the window rather than the bottom of
+   it - the dog finishes wherever it got to, and the bottom of the string is
+   exactly where it usually is. On its own plate, so it reads over whatever
+   is behind it. */
 #tally {
-    position: absolute; left: 0; right: 0; bottom: 13%; z-index: 9;
-    text-align: center; pointer-events: none; display: none; padding: 0 18px;
+    position: absolute; left: 50%; top: 32%; z-index: 9;
+    transform: translate(-50%, -50%);
+    text-align: center; pointer-events: none; display: none;
+    width: max-content; max-width: min(80vw, 290px); padding: 13px 22px 11px;
+    background: rgba(12, 34, 26, .88);
+    border: 2px solid var(--gold-d); border-radius: 3px;
+    box-shadow: 0 4px 0 rgba(0,0,0,.4);
 }
 #tally.on { display: block; animation: tallyIn .3s cubic-bezier(.2, 1.4, .4, 1) both; }
-@keyframes tallyIn { from { transform: translateY(14px) scale(.92); opacity: 0; }
-                     to   { transform: none; opacity: 1; } }
+@keyframes tallyIn { from { transform: translate(-50%, -44%) scale(.92); opacity: 0; }
+                     to   { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
 #tally .n {
     display: block; font-family: var(--font-display); font-size: clamp(40px, 13vw, 58px);
     line-height: 1; color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.45);
 }
-#tally .l { display: block; font-family: var(--font); font-weight: 900; font-size: 17px;
-            text-transform: uppercase; letter-spacing: .1em; margin-top: 3px; }
+#tally .l { display: block; font-family: var(--font); font-weight: 900; font-size: 15px;
+            text-transform: uppercase; letter-spacing: .08em; margin-top: 3px; line-height: 1.25; }
 #tally .b { display: block; font-size: 11px; font-weight: 700; letter-spacing: .12em;
             text-transform: uppercase; opacity: .5; margin-top: 5px; }
 
@@ -227,7 +239,7 @@ body.waiting #hud { display: none; }
 }
 #card[hidden] { display: none; }
 #butcher {
-    width: min(52vw, 214px); height: auto; flex: none;
+    width: min(74vw, 292px); height: auto; flex: none;
     filter: drop-shadow(0 10px 14px rgba(0,0,0,.45));
     animation: butcherIn .55s cubic-bezier(.2, 1.5, .4, 1) both;
 }
@@ -292,7 +304,7 @@ body.waiting #hud { display: none; }
            text-transform: uppercase; color: var(--cream); opacity: .22; }
 
 @media (max-height: 700px) {
-    #butcher { width: min(40vw, 160px); }
+    #butcher { width: min(56vw, 216px); }
     #card #score { font-size: 40px; }
     #ledger { font-size: 12px; margin: 2px 0 6px; }
 }
@@ -310,6 +322,14 @@ body.waiting #hud { display: none; }
 <body class="waiting">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-cal" viewBox="0 0 14 14">
+        <path d="M 3.2 .6 H 4.8 V 2.6 H 3.2 Z"/><path d="M 9.2 .6 H 10.8 V 2.6 H 9.2 Z"/>
+        <path fill-rule="evenodd" d="M 1 1.8 H 13 V 13.4 H 1 Z
+                 M 2.6 5.4 V 11.8 H 11.4 V 5.4 Z"/>
+        <path d="M 3.8 6.6 H 5.4 V 8 H 3.8 Z"/><path d="M 6.2 6.6 H 7.8 V 8 H 6.2 Z"/>
+        <path d="M 8.6 6.6 H 10.2 V 8 H 8.6 Z"/><path d="M 3.8 9 H 5.4 V 10.4 H 3.8 Z"/>
+        <path d="M 6.2 9 H 7.8 V 10.4 H 6.2 Z"/>
+    </symbol>
     <symbol id="i-paw" viewBox="0 0 14 14">
         <ellipse cx="7" cy="9.4" rx="3.9" ry="3.2"/>
         <ellipse cx="2.6" cy="5.6" rx="1.8" ry="2.3"/>
@@ -331,8 +351,8 @@ body.waiting #hud { display: none; }
     <canvas id="pad"></canvas>
 
     <div id="hud">
-        <div class="plate sign" id="roundplate"><span id="round-val">MON</span><span
-            class="of" id="whodog">Alfie</span></div>
+        <div class="plate sign" id="roundplate"><svg class="ico"><use href="#i-cal"/></svg><span
+            id="round-val">MON</span></div>
         <div id="till" class="sign"><span id="money">&pound;0.00</span><span
             class="of"><svg class="ico"><use href="#i-cup"/></svg><span id="best-val">&pound;0.00</span></span></div>
         <button id="mute" aria-label="Sound on or off">
@@ -351,20 +371,20 @@ body.waiting #hud { display: none; }
 
     <div id="intro">
         <h1>Butcher's<br>Dog</h1>
-        <canvas id="shopfront" width="340" height="250"></canvas>
+        <canvas id="shopfront" width="340" height="268"></canvas>
         <div class="rule"></div>
         <p id="cast-line">Six days. One string a day. A bigger dog every morning.</p>
         <button class="btn" id="play">Open up shop</button>
     </div>
 
     <div id="card" hidden>
-        <canvas id="butcher" width="260" height="300"></canvas>
+        <canvas id="butcher" width="330" height="300"></canvas>
         <div class="inner">
-            <div id="ribbon">SATURDAY NIGHT</div>
+            <div id="ribbon">WEEK&rsquo;S TAKINGS</div>
             <table id="ledger"></table>
             <span id="score">0<span class="pc">for the week</span></span>
             <p id="rating">Butchered</p>
-            <button class="btn" id="again">Back to the meat!</button>
+            <button class="btn" id="again">Try again</button>
         </div>
     </div>
 
@@ -372,7 +392,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v9';
+const APP_VERSION = 'v11';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -732,7 +752,33 @@ const sausageAt = s => {
    the string. Spoil a sausage in the same swipe and it pays nothing, because
    then it was not a good line, it was a lucky one. */
 const CHEER = [, , 'DOUBLE', 'TREBLE', 'FOUR AT ONCE', 'FIVE AT ONCE', 'SIX AT ONCE'];
+// where its head is on the page, and how big, so two things can ask
+function dogAt() {
+    const sc = clamp(dog.s, 0, string.len);
+    const [x, y] = at(sc);
+    const below = dog.s > string.len;
+    return [x, below ? at(string.len)[1] + (dog.s - string.len) : y,
+            46 * 1.02 * cast.dog.k];
+}
+/* Did that stroke go through the dog. The circle is two thirds of the head it
+   is drawn as, because this ends the week on the spot and a near miss should
+   be a near miss - but it is squarely in the way of the last twist on the
+   string, which is exactly where the tempting cut is. */
+function hitDog(sw) {
+    if (!dog.going || dog.chomp > 0) return false;
+    const [cx, cy, r0] = dogAt(), r = r0 * .66;
+    for (let i = 1; i < sw.length; i++) {
+        const [ax, ay] = sw[i - 1], [bx, by] = sw[i];
+        const dx = bx - ax, dy = by - ay;
+        const len2 = dx * dx + dy * dy;
+        let t = len2 ? ((cx - ax) * dx + (cy - ay) * dy) / len2 : 0;
+        t = clamp(t, 0, 1);
+        if (Math.hypot(ax + dx * t - cx, ay + dy * t - cy) <= r) return true;
+    }
+    return false;
+}
 function cut(swipe) {
+    if (hitDog(swipe)) { dogDown(); return { any: false, best: 0, marks: [] }; }
     const marks = crossings(swipe);
     let any = false, best = 0, freedNow = [], hits = 0, spoiled = 0, sumQ = 0;
     for (const m of marks) {
@@ -926,7 +972,6 @@ const moneyEl = document.getElementById('money');
 
 function showHud() {
     document.getElementById('round-val').textContent = DAYS[Math.min(5, round - 1)].short;
-    document.getElementById('whodog').textContent = breedFor().dog;
     moneyEl.textContent = money2(money);
     document.getElementById('best-val').textContent = money2(Math.max(best, money));
 }
@@ -997,7 +1042,7 @@ function endRound() {
     tallying = true;
     tallyEl.innerHTML = `<span class="n">${money2(roundMoney)}</span>` +
         `<span class="l">${pick(lost === 0 ? CLEAN : saved ? THROUGH : MISSED)}</span>` +
-        `<span class="b">${saved} sold &middot; ${breedFor().dog} got ${lost}</span>`;
+        `<span class="b">${saved} sold</span>`;
     tallyEl.classList.add('on');
     jingleUp();
     tallyT = setTimeout(round >= DAYS.length ? endWeek : nextRound, 1500);
@@ -1012,11 +1057,11 @@ function endWeek() {
     const record = money > best;
     if (record) { best = money; try { localStorage.setItem(bestKey, String(best)); } catch (e) { /* private */ } }
     const top = Math.max(...ledger.map(r => r.took));
-    document.getElementById('ribbon').textContent = record ? 'BEST WEEK' : 'SATURDAY NIGHT';
+    document.getElementById('ribbon').textContent = record ? 'BEST WEEK' : 'WEEK’S TAKINGS';
     document.getElementById('ledger').innerHTML = ledger.map(r =>
         `<tr class="${r.took === top && top > 0 ? 'best' : ''}">` +
         `<td class="d">${r.day.short}</td>` +
-        `<td class="w">${r.sold} sold${r.lost ? `, ${r.lost} gone` : ''}</td>` +
+        `<td class="w">${r.sold} sold</td>` +
         `<td class="m">${money2(r.took)}</td></tr>`).join('');
     document.getElementById('score').innerHTML =
         `${money2(money)}<span class="pc">for the week</span>`;
@@ -1026,10 +1071,109 @@ function endWeek() {
     // the canvas is drawn on more than once a session, and a butcher who was
     // holding the takings up last week leaves the arm behind if it is not
     // wiped first - drawButcher paints, it does not clear
+    /* The two of them, and a good week for one is a bad week for the other:
+       a man with his takings over his head next to a dog that has had nothing
+       all week, or a dog that has never eaten better next to a man who has. */
     const bg = document.getElementById('butcher').getContext('2d');
-    bg.clearRect(0, 0, 260, 300);
-    drawButcher(bg, record, { cx: 130, cy: 196 });
+    bg.clearRect(0, 0, 330, 300);
+    drawButcher(bg, record, { cx: 112, cy: 202 });
+    drawDog(bg, 258, 218, .66 / cast.dog.k,
+            { open: record ? 0 : .72, mood: record ? 'glum' : 'chuffed' }, 0, cast.dog);
     settleT = setTimeout(() => { card.hidden = false; record ? jingleWin() : jingleLose(); }, 520);
+}
+/* You were aiming for the sausages. The week stops there and nothing is
+   banked - a fail state with no cost is not one - and the dog gets a stone
+   with its name on it, which is the least it deserves. */
+const EPITAPH = ['He only wanted a sausage', 'A good dog', 'He was only doing his job',
+                 'Taken before his time', 'He would have shared', 'Loyal to the last link'];
+const SORRY = ['You were aiming for the sausages', 'That was not a sausage',
+               'The shop is closed pending enquiries', 'A terrible business',
+               'Nobody is buying anything now', 'He never saw it coming',
+               'Six days of work, one bad swipe'];
+function dogDown() {
+    if (!live) return;
+    live = false; armed = false; dog.going = false; tallying = false;
+    countT.forEach(clearTimeout); countT = [];
+    clearTimeout(tallyT);
+    tallyEl.classList.remove('on');
+    jolt(); yelpBad();
+    const bg = document.getElementById('butcher').getContext('2d');
+    bg.clearRect(0, 0, 330, 300);
+    drawGrave(bg, cast.dog.dog, pick(EPITAPH));
+    document.getElementById('ribbon').textContent = 'OH DEAR';
+    document.getElementById('score').innerHTML =
+        `${money2(money)}<span class="pc">taken, and not banked</span>`;
+    document.getElementById('rating').textContent = pick(SORRY);
+    card.className = 'grave';
+    settleT = setTimeout(() => { card.hidden = false; jingleLose(); }, 620);
+}
+const yelpBad = () => safely(t => {
+    tone(t, { freq: 820, to: 1250, dur: .1, type: 'sawtooth', vol: .2 });
+    tone(t, { freq: 1180, to: 420, dur: .26, type: 'sawtooth', vol: .16, at: .09 });
+    tone(t, { freq: 300, to: 110, dur: .5, type: 'triangle', vol: .12, at: .3 });
+    sweep(t, { from: 2400, to: 300, q: 1.2, dur: .16, vol: .3 });
+});
+/* A headstone, a bit of grass and a bone nobody is going to eat. */
+function drawGrave(g, name, epitaph) {
+    g.save();
+    g.translate(165, 300);
+    g.fillStyle = '#1e5a3e';                       // the grass it is stood in
+    g.beginPath(); g.ellipse(0, -14, 128, 26, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#2a6b4a';
+    g.beginPath(); g.ellipse(-16, -20, 104, 17, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#6e6a63';                       // the stone
+    g.beginPath();
+    g.moveTo(-72, -22);
+    g.lineTo(-72, -158); g.quadraticCurveTo(-72, -226, 0, -226);
+    g.quadraticCurveTo(72, -226, 72, -158); g.lineTo(72, -22);
+    g.closePath(); g.fill();
+    g.save(); g.clip();
+    g.fillStyle = '#87837b';
+    g.beginPath(); g.moveTo(-72, -230); g.lineTo(-16, -230); g.lineTo(-44, -18); g.lineTo(-72, -18);
+    g.closePath(); g.fill();
+    g.fillStyle = '#56534d';
+    g.beginPath(); g.moveTo(40, -230); g.lineTo(76, -230); g.lineTo(76, -18); g.lineTo(52, -18);
+    g.closePath(); g.fill();
+    g.restore();
+    g.fillStyle = '#4b4842';                       // the plinth
+    g.beginPath(); g.roundRect(-86, -30, 172, 20, 3); g.fill();
+    g.strokeStyle = 'rgba(40,38,34,.5)'; g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(-58, -30); g.lineTo(-58, -152);
+    g.quadraticCurveTo(-58, -212, 0, -212);
+    g.quadraticCurveTo(58, -212, 58, -152); g.lineTo(58, -30);
+    g.stroke();
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillStyle = '#39362f';
+    g.font = '400 25px "Alfa Slab One", Georgia, serif';
+    g.fillText('R.I.P.', 0, -178);
+    g.font = '400 30px "Alfa Slab One", Georgia, serif';
+    const room = 104, w = g.measureText(name).width;
+    g.save();
+    g.translate(0, -132);
+    if (w > room) g.scale(room / w, 1);
+    g.fillText(name, 0, 0);
+    g.restore();
+    g.font = '700 11px Lato, system-ui, sans-serif';
+    g.fillStyle = 'rgba(57,54,47,.8)';
+    const words = epitaph.split(' ');
+    const lines = [];
+    let line = '';
+    for (const wd of words) {
+        const t = line ? line + ' ' + wd : wd;
+        if (g.measureText(t).width > 108 && line) { lines.push(line); line = wd; } else line = t;
+    }
+    lines.push(line);
+    lines.forEach((l, i) => g.fillText(l, 0, -96 + i * 15));
+    g.fillStyle = '#efe7d4';                       // a bone nobody is going to eat
+    g.save();
+    g.translate(92, -20); g.rotate(-.22);
+    g.beginPath(); g.roundRect(-22, -3.5, 44, 7, 3.5); g.fill();
+    for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
+        g.beginPath(); g.arc(sx * 23, sy * 4.5, 5, 0, Math.PI * 2); g.fill();
+    }
+    g.restore();
+    g.restore();
 }
 function nextRound() { tallying = false; startRound(round + 1); }
 const jingleUp = () => safely(t => {
@@ -1047,7 +1191,7 @@ const SHUT = ['A respectable week', 'That will keep the lights on', 'Not far off
               'A fair week of it', 'Nearly a good one', 'The rent is paid'];
 // and nowhere near it
 const MISSED_WEEK = ['A thin week', 'That dog ate the profit', 'That dog wants paying',
-                     'Six days for that', 'The window was never full', 'Barely worth opening',
+                     'Six days for that', 'The window was never full',
                      'The dog is not sorry', 'You will hear about this',
                      'Should have got a cat'];
 const RECORD_LINES = ['Your best week yet', 'A record week', 'Never done better',
@@ -1320,12 +1464,12 @@ const DAYS = [
    One of these a week, and the dogs and the knife are dealt with them, so a
    run has a cast rather than a set of settings. */
 const BUTCHERS = [
-    { name: 'Reg',    skin: '#e5ab7e', skinD: '#c98a5e', hair: '#4a3428', hat: 'boater', apron: '#4a79b8', face: 'tash' },
-    { name: 'Sid',    skin: '#c98552', skinD: '#a86a3c', hair: '#2e241d', hat: 'cap',    apron: '#b8434a', face: 'beard' },
-    { name: 'Pearl',  skin: '#8a5a3a', skinD: '#6e442a', hair: '#1f1712', hat: 'trilby', apron: '#3f8f6a', face: 'none' },
-    { name: 'Wally',  skin: '#efc19b', skinD: '#d09b72', hair: '#a8622a', hat: 'boater', apron: '#4a79b8', face: 'tash' },
-    { name: 'Doreen', skin: '#e0b48d', skinD: '#c08f65', hair: '#7a4a2a', hat: 'cap',    apron: '#7a5aa8', face: 'none' },
-    { name: 'Mo',     skin: '#7a4e30', skinD: '#5e3a22', hair: '#171210', hat: 'trilby', apron: '#b8434a', face: 'beard' },
+    { name: 'Reg',    shop: 'A Cut Above',            skin: '#e5ab7e', skinD: '#c98a5e', hair: '#4a3428', hat: 'boater', apron: '#4a79b8', face: 'tash' },
+    { name: 'Sid',    shop: 'Beef Encounter',         skin: '#c98552', skinD: '#a86a3c', hair: '#2e241d', hat: 'cap',    apron: '#b8434a', face: 'beard' },
+    { name: 'Pearl',  shop: 'Meat Expectations',      skin: '#8a5a3a', skinD: '#6e442a', hair: '#1f1712', hat: 'trilby', apron: '#3f8f6a', face: 'none' },
+    { name: 'Wally',  shop: 'Bangers & Cash',         skin: '#efc19b', skinD: '#d09b72', hair: '#a8622a', hat: 'boater', apron: '#4a79b8', face: 'tash' },
+    { name: 'Doreen', shop: 'The Merchant of Venison', skin: '#e0b48d', skinD: '#c08f65', hair: '#7a4a2a', hat: 'cap',    apron: '#7a5aa8', face: 'none' },
+    { name: 'Mo',     shop: 'Best of the Wurst',      skin: '#7a4e30', skinD: '#5e3a22', hair: '#171210', hat: 'trilby', apron: '#b8434a', face: 'beard' },
 ];
 // what is on the block this week. Cosmetic to a fault: they all cut the same.
 const KNIVES = [
@@ -1361,8 +1505,10 @@ const breedFor = () => cast.dog;
    on one side. `pose` is where it is in a bite - how far the jaw is open, how
    far it has reached up the string, and the squash on the moment of contact. */
 function drawDog(ctx, x, y, k, pose, ms, B) {
-    B = B || BREEDS[2];
+    B = B || (cast ? cast.dog : TIERS[2][0]);
     const o = pose.open, sq = pose.squash || 0;
+    // how it feels about the week, which is the opposite of how he feels
+    const glum = pose.mood === 'glum';
     ctx.save();
     ctx.translate(x, y - (pose.reach || 0));
     ctx.scale(k * B.k * (1 + sq * .07), k * B.k * (1 - sq * .05));
@@ -1437,11 +1583,16 @@ function drawDog(ctx, x, y, k, pose, ms, B) {
         blob(B.points, () => ctx.ellipse(sx * B.eyes[0], B.eyes[1] - 9, 9, 5, 0, 0, Math.PI * 2));
     ctx.restore();
     // the brow, which is where a dog keeps its opinion
-    if (B.brow > .05) for (const sx of [-1, 1]) {
-        const bw = B.brow;
+    if (B.brow > .05 || glum) for (const sx of [-1, 1]) {
+        const bw = Math.max(.55, B.brow), e = B.eyes[1];
         blob('rgba(58,47,34,' + (.45 + .5 * bw) + ')', () => {
-            ctx.moveTo(sx * 6, B.eyes[1] - 12); ctx.quadraticCurveTo(sx * 22, B.eyes[1] - 20, sx * 34, B.eyes[1] - 6);
-            ctx.quadraticCurveTo(sx * 22, B.eyes[1] - 14, sx * 7, B.eyes[1] - 8);
+            if (glum) {          // inner ends up, which is the whole of a sulk
+                ctx.moveTo(sx * 7, e - 21); ctx.quadraticCurveTo(sx * 21, e - 14, sx * 33, e - 5);
+                ctx.quadraticCurveTo(sx * 21, e - 10, sx * 7, e - 16);
+            } else {
+                ctx.moveTo(sx * 6, e - 12); ctx.quadraticCurveTo(sx * 22, e - 20, sx * 34, e - 6);
+                ctx.quadraticCurveTo(sx * 22, e - 14, sx * 7, e - 8);
+            }
         });
     }
     // eyes
@@ -1469,6 +1620,12 @@ function drawDog(ctx, x, y, k, pose, ms, B) {
                 ctx.lineTo(sx * mw * .55, jawY + 7);
             });
         blob('#d4667c', () => ctx.ellipse(0, jawY + gape * .95, mw * .38, gape * .55, 0, 0, Math.PI * 2));
+    } else if (glum) {
+        // mouth shut and turned down, and not a sign of the tongue
+        blob('rgba(58,47,34,.85)', () => {
+            ctx.moveTo(-mw * .5, jawY + 6); ctx.quadraticCurveTo(0, jawY - 7, mw * .5, jawY + 6);
+            ctx.quadraticCurveTo(0, jawY - 1, -mw * .5, jawY + 6);
+        });
     } else {
         blob('rgba(58,47,34,.85)', () => {
             ctx.moveTo(-mw * .58, jawY - 4); ctx.quadraticCurveTo(-mw * .29, jawY + 6, 0, jawY - 2);
@@ -1839,6 +1996,46 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     ctx.restore();
 }
 
+/* ---- showing you how ----------------------------------------------------
+   Nobody reads an instruction. So on Monday, while the count is running and
+   there is nothing else to do with the screen, a ghost knife walks the cut
+   you are meant to make: square across the middle twist, in one stroke, over
+   and over until the dog is let off. It stops the moment the round is live,
+   because by then you either have it or you have not. */
+const DEMO_CYCLE = 1600, DEMO_SWEEP = .5;
+const demoOn = () => live && !armed && round === 1 && string && !swipe;
+function drawDemo(ms) {
+    const k = (string.n - 1) >> 1;                     // a twist near the middle
+    const [cx, cy, tx, ty] = at(string.twists[k]);
+    const nx = -ty, ny = tx, L = 78;                   // square across the string
+    const ax = cx - nx * L, ay = cy - ny * L;
+    const bx = cx + nx * L, by = cy + ny * L;
+    const e = ((ms - roundT0) % DEMO_CYCLE) / DEMO_CYCLE;
+    const p = Math.min(1, e / DEMO_SWEEP);
+    const ease = p * p * (3 - 2 * p);
+    const hx = ax + (bx - ax) * ease, hy = ay + (by - ay) * ease;
+    const fade = p < 1 ? 1 : Math.max(0, 1 - (e - DEMO_SWEEP) / .28);
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.globalAlpha = .5;                              // the line it wants, held
+    ctx.setLineDash([7, 8]);
+    ctx.strokeStyle = '#ffeab0'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+    ctx.setLineDash([]);
+    if (p > .02) {                                      // and the bit it has done
+        ctx.globalAlpha = .9 * fade;
+        ctx.strokeStyle = 'rgba(255,234,176,.3)'; ctx.lineWidth = 7;
+        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(hx, hy); ctx.stroke();
+        ctx.strokeStyle = '#fff6dd'; ctx.lineWidth = 2.2;
+        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(hx, hy); ctx.stroke();
+    }
+    if (p < 1) {
+        ctx.globalAlpha = .62;
+        drawKnife(ctx, hx, hy, Math.atan2(by - ay, bx - ax), .78, cast.knife);
+    }
+    ctx.restore();
+}
+
 function draw() {
     const ms = now();
     ctx.clearRect(0, 0, W, H);
@@ -1928,6 +2125,8 @@ function draw() {
         }
     }
 
+    if (demoOn()) drawDemo(ms);
+
     // what that swipe was worth, said out loud
     for (let i = shouts.length - 1; i >= 0; i--) {
         const sh = shouts[i], e = (now() - sh.t0) / 980;
@@ -1973,7 +2172,7 @@ function tick() {
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || !resting) raf = requestAnimationFrame(step);
+            || chewing || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -2021,11 +2220,40 @@ document.getElementById('play').addEventListener('click', e => {
 /* Who you are this week, what you are cutting with, and the six of them
    lined up in the order they will turn up. The dogs getting bigger left to
    right is the whole difficulty curve, said without a word. */
+/* The sign over the door. Signwritten gold on a dark board with a gold rule
+   inside the edge, hung off two brackets - the same thing the plates in the
+   HUD are, at the size a shop would paint it. The name is squeezed to fit
+   rather than wrapped, because a fascia board has one line and that is that. */
+function drawFascia(g, name) {
+    const x0 = 16, x1 = 324, y0 = 14, y1 = 62;
+    g.save();
+    for (const bx of [58, 282]) {                     // the brackets it hangs off
+        g.fillStyle = '#8a6417';
+        g.beginPath(); g.roundRect(bx - 4, 2, 8, 16, 3); g.fill();
+    }
+    g.fillStyle = '#123327';
+    g.beginPath(); g.roundRect(x0, y0, x1 - x0, y1 - y0, 3); g.fill();
+    g.strokeStyle = '#a87c22'; g.lineWidth = 2.5;
+    g.beginPath(); g.roundRect(x0 + 1, y0 + 1, x1 - x0 - 2, y1 - y0 - 2, 3); g.stroke();
+    g.strokeStyle = 'rgba(220,171,62,.5)'; g.lineWidth = 1;
+    g.beginPath(); g.roundRect(x0 + 6, y0 + 6, x1 - x0 - 12, y1 - y0 - 12, 2); g.stroke();
+    g.font = '400 27px "Alfa Slab One", Georgia, serif';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    const room = x1 - x0 - 34, w = g.measureText(name).width;
+    g.save();
+    g.translate((x0 + x1) / 2, (y0 + y1) / 2 + 1);
+    if (w > room) g.scale(room / w, 1);
+    g.fillStyle = '#dcab3e';
+    g.fillText(name, 0, 0);
+    g.restore();
+    g.restore();
+}
 function drawShopfront() {
     const c = document.getElementById('shopfront'), g = c.getContext('2d');
-    g.clearRect(0, 0, 340, 250);
-    drawButcher(g, true, { cx: 122, cy: 172, k: .70, holds: 'knife' });
-    drawDog(g, 258, 190, .84 / cast.dog.k, { open: 0 }, 0, cast.dog);
+    g.clearRect(0, 0, 340, 268);
+    drawFascia(g, cast.butcher.shop);
+    drawButcher(g, true, { cx: 122, cy: 192, k: .68, holds: 'knife' });
+    drawDog(g, 258, 208, .80 / cast.dog.k, { open: 0 }, 0, cast.dog);
     // the knife is in his hand and the dog is stood next to him, so the line
     // only has to introduce the two of them
     document.getElementById('cast-line').innerHTML =
