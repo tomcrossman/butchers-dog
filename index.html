@@ -124,7 +124,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger tr.shut td { opacity: .35; }
 #ledger tr.best td.m { color: #1f7a3f; }
 /* the week that ended with a stone in it has no ledger worth printing */
-#card.grave #ledger { display: none; }
+#card.grave #ledger, #card.grave #rating { display: none; }
 #card.grave #score { color: #5a564e; }
 #card.grave #ribbon { background: #4b4842; color: #efe7d4; }
 #mute {
@@ -1210,11 +1210,6 @@ const EPITAPH = ['Only wanted a sausage', 'A very good dog', 'Just doing the job
                  'Fetched one too many', 'Knew the risks', 'Died as lived: hungry',
                  'Should have stopped at the gate', 'Not the butcher’s finest hour',
                  'Gone, and the sausages with it', 'Taken between customers'];
-const SORRY = ['You were aiming for the sausages', 'That was not a sausage',
-               'The shop is closed pending enquiries', 'A terrible business',
-               'Nobody is buying anything now', 'Never saw it coming',
-               'Six days of work, one bad swipe', 'That is not what the knife is for',
-               'The whole street heard that'];
 /* Cartoon rules: a flash, the eyes go to crosses, and then it drifts off the
    top of the window with a halo on, spinning gently and getting smaller. It
    is not a nice thing to have done, but it is not a grisly one either, and
@@ -1235,9 +1230,11 @@ function dogDown() {
     bg.clearRect(0, 0, 330, 300);
     drawGrave(bg, cast.dog.dog, pick(EPITAPH));
     document.getElementById('ribbon').textContent = 'OH DEAR';
+    /* The stone says what happened and the epitaph does the joke, so the card
+       under it only has to say what it cost. Three lines of commiseration on
+       top of a headstone is two too many. */
     document.getElementById('score').innerHTML =
-        `${money2(money)}<span class="pc">taken, and not banked</span>`;
-    document.getElementById('rating').textContent = pick(SORRY);
+        `${money2(money)}<span class="pc">not banked</span>`;
     card.className = 'grave';
     settleT = setTimeout(() => { card.hidden = false; jingleLose(); }, GONE_MS - 260);
 }
