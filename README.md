@@ -181,7 +181,7 @@ Nobody reads an instruction, so on Monday - while the count is running and
 there is nothing else to do with the screen - a ghost knife walks the cut you
 are meant to make: square across the bottom twist, in one stroke, over and over
 until the dog is let off, with SWIPE TO CUT written next to it rather than down
-at the bottom of the window where it may as well not be. It runs for a few
+at the bottom of the window where it may as well not be. It runs for two and a half
 seconds before the count starts, because one and a bit sweeps under a running
 clock is not long enough to take in - and a tap gets on with it, so it is
 patient the first time and out of the way every time after that. The bottom twist

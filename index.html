@@ -1141,7 +1141,7 @@ function startRound(n) {
 /* Three, two, one, and the dog is off the leash. The count is the only part of
    a day that is not a scramble, so it is where the day says what it is and
    who is coming for it. */
-const TEACH_MS = 3400;
+const TEACH_MS = 2500;
 let countT = [], teachT = 0, teaching = false;
 function beginCount() {
     if (!teaching) return;
@@ -2259,10 +2259,11 @@ function draw() {
     ctx.clearRect(0, 0, W, H);
     if (!string) return;
 
-    drawRail();
-    // nothing hangs off it on the title page: the shopfront is the picture
-    // there, and a string of sausages through the middle of the title is not
+    /* The title page draws none of the shop: the shopfront canvas is the
+       picture there, and a brass rail with nothing on it over the top of it
+       is just one more thing in the way on a phone. */
     if (!showingIntro) {
+    drawRail();
     const head = pieces.find(p => p.from === 0);
     if (head) drawHook(at(0)[0] - 7, at(0)[1]);
 
