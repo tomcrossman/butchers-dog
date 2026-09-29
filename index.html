@@ -1158,7 +1158,7 @@ function countdown(n) {
     countT.push(setTimeout(() => { if (round === n && live) { say('1', head); beep(2); } }, 1240));
     countT.push(setTimeout(() => {
         if (round !== n || !live) return;
-        say('GO!', '', 'go-word');
+        say('CUT!', '', 'go-word');
         armed = true;
         dog.going = true;
         woof();
@@ -1222,6 +1222,9 @@ function endWeek() {
 /* You were aiming for the sausages. The week stops there and nothing is
    banked - a fail state with no cost is not one - and the dog gets a stone
    with its name on it, which is the least it deserves. */
+// what became of the week's takings, which is not the bank
+const SPENT = ['spent on the funeral', 'gone on the funeral', 'it paid for the stone',
+               'spent on flowers', 'the wake took the rest'];
 // no pronouns on the stone: half of them are called Bess or Nell
 const EPITAPH = ['Only wanted a sausage', 'A very good dog', 'Just doing the job',
                  'Loyal to the last link', 'Would have shared', 'Nobody blames the dog',
@@ -1254,7 +1257,7 @@ function dogDown() {
        under it only has to say what it cost. Three lines of commiseration on
        top of a headstone is two too many. */
     document.getElementById('score').innerHTML =
-        `${money2(money)}<span class="pc">not banked</span>`;
+        `${money2(money)}<span class="pc">${pick(SPENT)}</span>`;
     card.className = 'grave';
     settleT = setTimeout(() => { card.hidden = false; jingleLose(); }, GONE_MS - 260);
 }
