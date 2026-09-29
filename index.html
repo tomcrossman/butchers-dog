@@ -336,7 +336,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v4';
+const APP_VERSION = 'v5';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -579,6 +579,7 @@ function fit() {
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     if (string) layout();
+    [knife.x, knife.y, knife.ang] = restPose();
     draw();
 }
 addEventListener('resize', fit);
@@ -1377,6 +1378,89 @@ function drawLoose(ms) {
     }
 }
 
+/* ---- the knife ---------------------------------------------------------
+   Something has to be doing the cutting. It lies in the corner of the window
+   until you put a finger down, then it is at the finger for as long as you
+   are dragging - tip on the point of contact, handle trailing back along the
+   way you are going, so the blade is pointing where the cut is going rather
+   than where it has been. Between swipes it eases back to the corner, which
+   is also how you know the game is waiting for you rather than stuck. */
+const knife = { x: 0, y: 0, ang: 0, at: 0 };
+const restPose = () => [W - 46, H - 58, -2.2];
+function knifeStep(dt) {
+    let [tx, ty, ta] = restPose();
+    let held = 0;
+    if (swipe && swipe.length) {
+        const n = swipe.length, p = swipe[n - 1], q = swipe[Math.max(0, n - 5)];
+        const dx = p[0] - q[0], dy = p[1] - q[1];
+        tx = p[0]; ty = p[1]; held = 1;
+        if (Math.hypot(dx, dy) > 3) ta = Math.atan2(dy, dx);
+        else ta = knife.ang;
+    }
+    // the shortest way round to the angle it wants, so it never spins the
+    // long way when a swipe crosses the back of the compass
+    let d = ta - knife.ang;
+    while (d > Math.PI) d -= Math.PI * 2;
+    while (d < -Math.PI) d += Math.PI * 2;
+    if (held) { knife.x = tx; knife.y = ty; }     // the tip is the finger, exactly
+    else {
+        const ease = 1 - Math.pow(.004, dt);       // and it wanders home afterwards
+        knife.x += (tx - knife.x) * ease;
+        knife.y += (ty - knife.y) * ease;
+    }
+    // the angle is eased either way, so a shaky finger does not make it flap
+    knife.ang += d * (1 - Math.pow(.000004, dt));
+    knife.at += (held - knife.at) * (1 - Math.pow(.0005, dt));
+}
+function drawKnife(ctx, x, y, ang, k) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(ang);
+    ctx.scale(k, k);
+    ctx.lineJoin = 'round';
+    ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 9; ctx.shadowOffsetY = 5;
+    const shape = fill => { ctx.fillStyle = fill; ctx.fill(); };
+    // the blade: a straight spine, an edge curving back to the heel, a point
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(-34, 9, -76, 10);
+    ctx.lineTo(-76, -16);
+    ctx.quadraticCurveTo(-40, -15, 0, 0);
+    ctx.closePath();
+    shape('#b9bfc7');
+    ctx.shadowColor = 'transparent';
+    ctx.save();
+    ctx.clip();
+    ctx.beginPath();                                   // the light down the spine
+    ctx.moveTo(-76, -16); ctx.quadraticCurveTo(-40, -15, 0, 0);
+    ctx.lineTo(-24, -1); ctx.quadraticCurveTo(-46, -8, -76, -8);
+    ctx.closePath(); shape('#e9edf1');
+    ctx.beginPath();                                   // and the edge, ground bright
+    ctx.moveTo(0, 0); ctx.quadraticCurveTo(-34, 9, -76, 10);
+    ctx.lineTo(-76, 5); ctx.quadraticCurveTo(-34, 4, 0, -2);
+    ctx.closePath(); shape('#fbfdff');
+    ctx.restore();
+    // the bolster, and the handle it is holding on to
+    ctx.beginPath();
+    ctx.moveTo(-74, -17); ctx.lineTo(-88, -16); ctx.lineTo(-88, 12); ctx.lineTo(-74, 11);
+    ctx.closePath(); shape('#8f959d');
+    ctx.beginPath();
+    ctx.moveTo(-88, -15);
+    ctx.lineTo(-128, -13); ctx.quadraticCurveTo(-140, -12, -139, -2);
+    ctx.quadraticCurveTo(-138, 9, -127, 10); ctx.lineTo(-88, 11);
+    ctx.closePath(); shape('#5d3a21');
+    ctx.beginPath();
+    ctx.moveTo(-88, -15); ctx.lineTo(-128, -13);
+    ctx.quadraticCurveTo(-138, -12, -137, -6);
+    ctx.lineTo(-88, -8);
+    ctx.closePath(); shape('#7a4d2c');
+    for (const rx of [-101, -120]) {
+        ctx.beginPath(); ctx.arc(rx, -2, 4, 0, Math.PI * 2); shape('#c59430');
+        ctx.beginPath(); ctx.arc(rx - 1, -3, 1.7, 0, Math.PI * 2); shape('#f0d484');
+    }
+    ctx.restore();
+}
+
 function draw() {
     const ms = now();
     ctx.clearRect(0, 0, W, H);
@@ -1493,6 +1577,8 @@ function draw() {
         drawDog(ctx, x, below ? at(string.len)[1] + (dog.s - string.len) : y, 1.02,
                 pose, ms, breedFor(round));
     }
+
+    if (!showingIntro) drawKnife(ctx, knife.x, knife.y, knife.ang, .86 + knife.at * .16);
 }
 function tick() {
     cancelAnimationFrame(raf);
@@ -1501,8 +1587,11 @@ function tick() {
         const dt = Math.min(.05, (ms - (lastMs || ms)) / 1000);
         lastMs = ms;
         dogStep(dt);
+        knifeStep(dt);
         draw();
-        if (live || loose.length || cutFx.length || mess.length || shouts.length || chewing) raf = requestAnimationFrame(step);
+        const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
+        if (live || loose.length || cutFx.length || mess.length || shouts.length
+            || chewing || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }

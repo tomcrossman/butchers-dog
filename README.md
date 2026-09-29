@@ -36,6 +36,13 @@ swipe can cross the string as many times as you can line up - a long diagonal
 through three twists is the whole game in one gesture, and half a centimetre
 out it is the whole game in one gesture as well.
 
+The knife is on screen. It lies in the corner of the window until you put a
+finger down, then its tip is on the point of contact for as long as you are
+dragging, handle trailing back along the way you are going - so the blade
+points where the cut is going rather than where it has been. Between swipes it
+wanders back to the corner, which is also how you know the game is waiting for
+you rather than stuck.
+
 The **twists** are the targets, not the sausages. A string of sausages is a
 row of fat bits joined by pinched twists, and the twist is the only place a
 butcher would cut. Land on one and the string parts there. Land on a sausage
