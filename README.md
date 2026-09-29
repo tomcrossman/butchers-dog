@@ -5,8 +5,29 @@ time, before the dog gets up the string and eats what is left.
 
 A single self-contained `index.html`, a service worker and four icons. No
 build step, no dependencies, served from GitHub Pages. Sister to Perfect
-Circle and Run Boys, Run, and it borrows their house style and every hard
-lesson they paid for.
+Circle and Run Boys, Run, and it borrows every hard lesson they paid for -
+but not their look.
+
+## How it is drawn
+
+The other two are ink on squared paper. This one is a butcher's window:
+bottle-green glazed tiles, a brass rail across the top with the string hanging
+off it, gold signwriting on dark plates, and a ticket for a scorecard.
+
+There is no outline on anything. A sausage with a line drawn round it is a
+cartoon of a sausage; this one is three flat shapes - the body, a band of light
+down one side and a band of shade down the other - which is how the thing is
+actually lit in a window. The bands are offset copies of the same centre line,
+so they follow every bend of the string for nothing. The dog is drawn on the
+same terms.
+
+Each twist is a thread of skin with a bit of slack in it, not a pinch to a
+point. A straight taper into the middle draws two sausages meeting at an X,
+which is a diagram of sausages rather than sausages - the giveaway is that the
+outline has a corner in it, and nothing on a sausage has a corner. So the neck
+is a parallel thread for a few pixels either side and shoulders back up to full
+on a smoothstep, which meets the thread flat, meets the sausage flat, and has
+no corner anywhere.
 
 ## The cut
 
@@ -30,9 +51,22 @@ the middle at right angles pays everything. Both matter, which is why the
 string hangs with a sway in it rather than standing up straight: the angle you
 have to cut at is different at every twist, and more different every round.
 
-A piece of string with one sausage left in it is off the string and yours. So
-cutting both ends of the middle sausage frees it, and cutting either end of an
-end sausage frees that.
+A piece of string with one sausage left in it is off the string and yours, and
+gets hung on the rail. So cutting both ends of the middle sausage frees it, and
+cutting either end of an end sausage frees that.
+
+## Taking two at once
+
+What one swipe is worth is not the sum of its cuts. Two twists in a stroke, or
+three, is the only thing in the game that asks for more than a steady hand -
+you have to find the line that passes through all of them square-ish and miss
+every sausage on the way - so it pays in the only currency here, which is time:
+the dog hears the knife and backs off down the string, further the tidier the
+line was. The bonus is measured in the dog's own seconds rather than in pixels,
+so it is worth the same at round 3 as at round 15.
+
+Spoil a sausage in the same swipe and it pays nothing, and says GREEDY where it
+would have said DOUBLE. Then it was not a good line, it was a lucky one.
 
 ## The dog
 

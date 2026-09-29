@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<meta name="theme-color" content="#F6EFE2">
+<meta name="theme-color" content="#1c4a39">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Butcher's Dog">
 <meta name="mobile-web-app-capable" content="yes">
@@ -15,214 +15,243 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lato:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
-   TOKENS - the same house as Perfect Circle and Run Boys, Run,
-   on butcher's paper rather than squared
+   A BUTCHER'S WINDOW
+
+   Not the squared paper of the other two. Bottle-green glazed tiles, a
+   brass rail across the top with the string hanging off it, gold
+   signwriting, and no ink outline anywhere: the meat is built from flat
+   shapes with the light on one side of them, which is how a sausage is
+   drawn and nothing like how a cartoon is.
    ============================================================ */
 :root {
-    --ink:     #241F2E;
-    --paper:   #F6EFE2;
-    --stripe:  rgba(196, 84, 60, .07);
-    --panel:   #fffdf8;
-    --gold:    #f4b32c;
-    --good:    #3fa45b;
-    --danger:  #e8524f;
-    --meat:    #cf5b3e;
-    --meat-hi: #e07a5a;
-    --meat-lo: #ad4429;
-    --pop:     4px 4px 0 var(--ink);
-    --pop-s:   2px 2px 0 var(--ink);
-    --font:         "Comic Neue", "Comic Sans MS", system-ui, sans-serif;
-    --font-display: "Bangers", "Comic Sans MS", Impact, system-ui, sans-serif;
+    --tile:    #1c4a39;
+    --tile-lo: #17402f;
+    --grout:   #12362a;
+    --shade:   #143d2f;
+    --cream:   #f3e9d6;
+    --cream-d: #d9cbb0;
+    --gold:    #dcab3e;
+    --gold-d:  #a87c22;
+    --brass:   #c59430;
+    --brass-h: #f0d484;
+    --meat:    #c4472e;
+    --meat-hi: #dd6f4c;
+    --meat-lo: #8c2b1b;
+    --danger:  #d8462f;
+    --good:    #74b985;
+    --font:         "Lato", system-ui, -apple-system, sans-serif;
+    --font-display: "Alfa Slab One", Georgia, serif;
 }
 * { box-sizing: border-box; touch-action: manipulation; -webkit-user-select: none; user-select: none;
     -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
-body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--ink); background: var(--paper); }
+body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream); background: var(--tile); }
 
-/* butcher's paper: a pink pinstripe, and a little grease in the corners */
+/* glazed tiles: a grid of grout, a wipe of light down the wall, and the
+   corners falling away so it reads as a room rather than a pattern */
 #app {
     position: fixed; inset: 0; overflow: hidden; touch-action: none;
     background:
-        radial-gradient(120% 90% at 50% 40%, transparent 52%, rgba(120, 96, 52, .10) 100%),
-        repeating-linear-gradient(90deg, var(--stripe) 0 2px, transparent 2px 26px),
-        var(--paper);
+        radial-gradient(130% 80% at 50% 26%, rgba(255,255,255,.10) 0%, transparent 62%),
+        radial-gradient(120% 100% at 50% 50%, transparent 46%, rgba(0,0,0,.40) 100%),
+        repeating-linear-gradient(0deg, var(--grout) 0 2.5px, transparent 2.5px 48px),
+        repeating-linear-gradient(90deg, var(--grout) 0 2.5px, transparent 2.5px 60px),
+        linear-gradient(180deg, #235c47 0%, var(--tile) 42%, #163d2f 100%);
 }
 #pad { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
 /* ============================================================
-   HUD
+   SIGNWRITING
+   Every panel is the same thing: a dark plate, a gold hairline a little
+   way inside it, and gold letters. No wonky outlines, no drop shadow.
    ============================================================ */
+.sign {
+    position: relative;
+    background: linear-gradient(180deg, #1a4636, #123327);
+    border: 2px solid var(--gold-d); border-radius: 3px;
+    box-shadow: 0 2px 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.07);
+}
+.sign::after {
+    content: ''; position: absolute; inset: 3px; pointer-events: none;
+    border: 1px solid rgba(220, 171, 62, .55); border-radius: 1px;
+}
 #hud {
     position: absolute; top: 0; left: 0; right: 0; z-index: 3;
-    display: flex; align-items: center; gap: 6px;
-    padding: 12px 10px; pointer-events: none;
+    display: flex; align-items: stretch; gap: 8px;
+    padding: 11px 11px; pointer-events: none;
 }
 .plate {
-    display: flex; align-items: center; gap: 6px;
-    font-family: var(--font-display); font-size: 23px; letter-spacing: .02em;
-    padding: 4px 10px 2px;
-    background: var(--panel); border: 3px solid var(--ink); border-radius: 13px;
-    box-shadow: var(--pop-s);
+    display: flex; align-items: center; gap: 7px; padding: 6px 11px 5px;
+    font-family: var(--font-display); font-size: 17px; letter-spacing: .01em;
+    color: var(--gold); text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
-.plate .ico { width: 17px; height: 17px; fill: var(--gold); flex: none; }
+.plate .ico { width: 14px; height: 14px; fill: var(--gold); flex: none; opacity: .9; }
 .plate .of {
-    display: inline-flex; align-items: center; gap: 3px;
-    margin-left: 7px; padding-left: 8px; border-left: 2.5px solid rgba(36,31,46,.18);
-    font-size: .74em; opacity: .62;
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-left: 8px; padding-left: 9px; border-left: 1px solid rgba(220,171,62,.4);
+    font-size: .82em; opacity: .78;
 }
-#bestplate.beating { background: var(--gold); animation: beat .5s ease-in-out infinite alternate; }
+#bestplate.beating { animation: beat .55s ease-in-out infinite alternate; }
 #bestplate.beating .of { display: none; }
-@keyframes beat { from { transform: scale(1); } to { transform: scale(1.06); } }
-/* the quota, filling up as you save them */
-#quota {
-    flex: 1; min-width: 70px;
-    display: flex; align-items: center; gap: 7px; padding: 4px 8px;
-    background: var(--panel); border: 3px solid var(--ink); border-radius: 13px;
-    box-shadow: var(--pop-s);
-    font-family: var(--font-display); font-size: 20px; letter-spacing: .02em;
-}
-#quota .pips { display: flex; gap: 3px; flex: 1; flex-wrap: nowrap; }
+@keyframes beat { from { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
+                  to   { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 16px rgba(220,171,62,.6); } }
+#quota { flex: 1; min-width: 74px; display: flex; align-items: center; padding: 6px 9px; }
+#quota .pips { display: flex; gap: 4px; flex: 1; }
 #quota .pip {
-    flex: 1; height: 12px; min-width: 4px; border: 2px solid var(--ink); border-radius: 4px;
-    background: transparent;
+    flex: 1; height: 11px; min-width: 4px; border-radius: 2px;
+    border: 1.5px solid rgba(220,171,62,.5); background: transparent;
 }
-#quota .pip.got { background: var(--meat); }
-#quota .pip.need { background: rgba(36,31,46,.13); }
+#quota .pip.need { background: rgba(220,171,62,.16); }
+#quota .pip.got  { background: var(--meat); border-color: var(--meat-hi); }
 #mute {
-    pointer-events: auto; cursor: pointer; align-self: center;
-    padding: 6px 7px 3px; line-height: 0;
-    background: var(--panel); border: 3px solid var(--ink); border-radius: 13px;
-    box-shadow: var(--pop-s);
+    pointer-events: auto; cursor: pointer; padding: 7px 8px 4px; line-height: 0;
+    background: linear-gradient(180deg, #1a4636, #123327);
+    border: 2px solid var(--gold-d); border-radius: 3px;
 }
-#mute:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink); }
+#mute:active { transform: translateY(1px); }
 #mute .off { display: none; }
 #mute.muted .on { display: none; }
 #mute.muted .off { display: inline; }
 
 #prompt {
-    position: absolute; left: 0; right: 0; bottom: 7%; z-index: 2;
+    position: absolute; left: 0; right: 0; bottom: 6%; z-index: 2;
     text-align: center; pointer-events: none; padding: 0 22px;
-    font-family: var(--font-display); font-size: clamp(18px, 5vw, 25px); letter-spacing: .03em;
-    color: var(--ink); opacity: .6; transition: opacity .2s;
+    font-family: var(--font); font-weight: 900; text-transform: uppercase;
+    font-size: clamp(12px, 3.4vw, 15px); letter-spacing: .18em;
+    color: var(--cream); opacity: .5; transition: opacity .25s;
 }
 #prompt.gone { opacity: 0; }
 
 #banner {
-    position: absolute; left: 0; right: 0; top: 30%; z-index: 4;
+    position: absolute; left: 0; right: 0; top: 28%; z-index: 4;
     text-align: center; pointer-events: none; opacity: 0;
-    font-family: var(--font-display); letter-spacing: .03em; color: var(--ink);
+    font-family: var(--font-display); color: var(--gold);
+    text-shadow: 0 3px 0 rgba(0,0,0,.45);
 }
-#banner .r { display: block; font-size: clamp(38px, 12vw, 60px); line-height: 1; }
+#banner .r { display: block; font-size: clamp(34px, 11vw, 54px); line-height: 1; letter-spacing: .01em; }
 #banner.go { animation: bannerGo 1.2s ease-out both; }
 @keyframes bannerGo {
-    0%   { transform: scale(.7); opacity: 0; }
+    0%   { transform: scale(.82); opacity: 0; }
     18%  { transform: scale(1); opacity: 1; }
     70%  { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.08); opacity: 0; }
+    100% { transform: scale(1.06); opacity: 0; }
 }
 
-/* got through: the count, a beat to read it, and straight on */
 #tally {
-    position: absolute; left: 0; right: 0; bottom: 12%; z-index: 9;
+    position: absolute; left: 0; right: 0; bottom: 13%; z-index: 9;
     text-align: center; pointer-events: none; display: none; padding: 0 18px;
 }
 #tally.on { display: block; animation: tallyIn .3s cubic-bezier(.2, 1.4, .4, 1) both; }
-@keyframes tallyIn { from { transform: translateY(14px) scale(.9); opacity: 0; }
+@keyframes tallyIn { from { transform: translateY(14px) scale(.92); opacity: 0; }
                      to   { transform: none; opacity: 1; } }
 #tally .n {
-    display: block; font-family: var(--font-display); font-size: clamp(44px, 14vw, 62px);
-    line-height: 1; letter-spacing: .02em; color: var(--good);
+    display: block; font-family: var(--font-display); font-size: clamp(40px, 13vw, 58px);
+    line-height: 1; color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.45);
 }
-#tally .l { display: block; font-family: var(--font-display); font-size: 24px; letter-spacing: .03em; }
-#tally .b {
-    display: block; font-family: var(--font); font-size: 11px; font-weight: 900;
-    letter-spacing: .05em; opacity: .45; margin-top: 4px;
-}
+#tally .l { display: block; font-family: var(--font); font-weight: 900; font-size: 17px;
+            text-transform: uppercase; letter-spacing: .1em; margin-top: 3px; }
+#tally .b { display: block; font-size: 11px; font-weight: 700; letter-spacing: .12em;
+            text-transform: uppercase; opacity: .5; margin-top: 5px; }
 
-/* ---- the front door --------------------------------------------------
+/* ---- the front door ---------------------------------------------------
    A phone browser will not let a freshly loaded page make a sound on the
    first touch it receives, so the first press has to be spent on something
-   that is not the game. Pressing Play is what opens the audio. */
+   that is not the game. Pressing Open is what opens the audio. */
 #intro {
     position: absolute; inset: 0; z-index: 12;
     display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    padding: 0 22px 8%; text-align: center;
-    background: linear-gradient(transparent 30%, var(--paper) 54%, var(--paper));
+    padding: 0 22px 9%; text-align: center;
+    background: linear-gradient(transparent 26%, rgba(18,51,39,.85) 46%, #123327 62%);
     animation: introIn .5s ease-out both;
 }
 @keyframes introIn { from { opacity: 0; } to { opacity: 1; } }
 #intro[hidden] { display: none; }
 body.waiting #hud { display: none; }
 #intro h1 {
-    margin: 0; font-family: var(--font-display); font-weight: 400;
-    font-size: clamp(42px, 15vw, 68px); line-height: .92; letter-spacing: .02em;
-    text-shadow: 3px 3px 0 rgba(207, 91, 62, .5); rotate: -1.4deg;
+    margin: 0; font-family: var(--font-display); font-weight: 400; color: var(--gold);
+    font-size: clamp(38px, 13.5vw, 60px); line-height: .98; letter-spacing: .01em;
+    text-shadow: 0 4px 0 rgba(0,0,0,.45);
 }
-#intro p { margin: 12px 0 0; max-width: 340px; font-size: 14px; font-weight: 700;
-           line-height: 1.5; opacity: .72; }
-#intro .btn { margin-top: 20px; width: 100%; max-width: 250px; }
+#intro .rule {
+    width: 132px; height: 2px; margin: 13px 0 12px;
+    background: linear-gradient(90deg, transparent, var(--gold-d), transparent);
+}
+#intro p { margin: 0; max-width: 330px; font-size: 13px; font-weight: 700;
+           line-height: 1.6; letter-spacing: .04em; opacity: .74; }
+#intro .btn { margin-top: 22px; width: 100%; max-width: 236px; }
 
 /* ============================================================
-   THE VERDICT
+   THE TICKET
    ============================================================ */
 #card {
     position: absolute; inset: 0; z-index: 10;
     display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    padding: 14px 18px 16px; pointer-events: none;
-    background: linear-gradient(transparent 46%, rgba(24,20,32,.16) 78%, rgba(24,20,32,.34) 100%);
+    padding: 14px 18px 18px; pointer-events: none;
+    background: linear-gradient(transparent 40%, rgba(8,22,17,.55) 76%, rgba(8,22,17,.82) 100%);
 }
 #card[hidden] { display: none; }
 #card .inner {
     position: relative; flex: none; pointer-events: auto;
     animation: sheetIn .34s cubic-bezier(.2, 1.3, .4, 1) both;
-    width: 100%; max-width: 320px; padding: 20px;
-    background: var(--panel); border: 3.5px solid var(--ink); border-radius: 22px;
-    box-shadow: 4px 4px 0 var(--ink); text-align: center;
+    width: 100%; max-width: 316px; padding: 22px 20px 20px;
+    background: linear-gradient(180deg, #faf4e6, #eadfc6);
+    border: 3px solid #2a2118; border-radius: 4px;
+    box-shadow: 0 10px 0 rgba(0,0,0,.30); text-align: center; color: #2a2118;
+}
+#card .inner::after {
+    content: ''; position: absolute; inset: 6px; pointer-events: none;
+    border: 1.5px solid rgba(42,33,24,.35);
 }
 @keyframes sheetIn { from { transform: translateY(26px); opacity: 0; }
                      to   { transform: translateY(0); opacity: 1; } }
 #ribbon {
-    position: absolute; top: -21px; left: 50%;
-    font-family: var(--font-display); font-size: 17px; letter-spacing: .08em; white-space: nowrap;
-    padding: 3px 16px 1px; transform: translateX(-50%) rotate(-3deg);
-    background: var(--danger); color: var(--panel);
-    border: 3px solid var(--ink); border-radius: 9px; box-shadow: var(--pop-s);
-    animation: ribbonIn .5s cubic-bezier(.2, 1.6, .4, 1) both; z-index: 3;
+    position: absolute; top: -17px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-display); font-size: 14px; letter-spacing: .16em; white-space: nowrap;
+    padding: 5px 18px 4px; background: var(--danger); color: #fff5e6;
+    border: 2.5px solid #2a2118; border-radius: 2px; z-index: 3;
+    animation: ribbonIn .5s cubic-bezier(.2, 1.6, .4, 1) both;
 }
-@keyframes ribbonIn { from { transform: translateX(-50%) rotate(-3deg) scale(0); }
-                      to   { transform: translateX(-50%) rotate(-3deg) scale(1); } }
-#card.record .inner { border-color: var(--gold); }
-#card.record #ribbon { background: var(--gold); color: var(--ink); }
-#card.record #score { color: var(--gold); }
+@keyframes ribbonIn { from { transform: translateX(-50%) scale(.6); opacity: 0; }
+                      to   { transform: translateX(-50%) scale(1); opacity: 1; } }
+#card.record #ribbon { background: var(--gold); color: #2a2118; }
 #card #score {
-    display: block; font-family: var(--font-display); font-size: 62px; line-height: .95;
-    letter-spacing: .02em; color: var(--danger); margin: 6px 0 0;
+    display: block; font-family: var(--font-display); font-size: 56px; line-height: 1;
+    color: #b03a25; margin: 10px 0 0;
 }
-#score .pc { font-size: .34em; opacity: .65; margin-left: 5px; }
-#rating { margin: 2px 0 0; font-family: var(--font-display); font-size: 26px; letter-spacing: .03em; }
-#pass { margin: 5px 0 0; font-size: 12px; font-weight: 900; letter-spacing: .04em; opacity: .8; }
+#card.record #score { color: #a8791e; }
+#score .pc { font-size: .28em; letter-spacing: .12em; text-transform: uppercase;
+             opacity: .7; margin-left: 7px; }
+#rating { margin: 6px 0 0; font-family: var(--font); font-weight: 900; font-size: 17px;
+          text-transform: uppercase; letter-spacing: .06em; }
+#pass { margin: 7px 0 0; font-size: 11px; font-weight: 700; letter-spacing: .12em;
+        text-transform: uppercase; opacity: .55; }
 .btn {
-    margin-top: 12px; width: 100%;
-    font-family: var(--font-display); font-size: 24px; font-weight: 400; letter-spacing: .03em;
-    padding: 12px; color: var(--ink);
-    background: var(--gold); border: 3px solid var(--ink); border-radius: 15px;
-    box-shadow: var(--pop-s); cursor: pointer;
+    margin-top: 16px; width: 100%;
+    font-family: var(--font-display); font-size: 19px; font-weight: 400; letter-spacing: .04em;
+    padding: 13px; color: #2a2118;
+    background: linear-gradient(180deg, #e8be55, var(--brass));
+    border: 2.5px solid #2a2118; border-radius: 3px;
+    box-shadow: 0 4px 0 rgba(0,0,0,.35); cursor: pointer;
 }
-.btn:active { transform: translate(2px,2px); box-shadow: 0 0 0 var(--ink); }
-/* the dog, taking a view on your butchery */
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.35); }
+/* the dog, taking a view on your butchery, in an enamel roundel */
 .cheer {
-    position: absolute; left: -22px; top: -16px;
-    width: 88px; height: 88px; border-radius: 50%; overflow: hidden;
-    background: linear-gradient(#d8d2c6, #efeae0);
-    border: 3.5px solid var(--ink); box-shadow: var(--pop-s); z-index: 2;
+    position: absolute; left: -20px; top: -20px;
+    width: 84px; height: 84px; border-radius: 50%; overflow: hidden;
+    background: radial-gradient(circle at 42% 34%, #2a6650, #143d2f);
+    border: 3px solid #2a2118; box-shadow: 0 4px 0 rgba(0,0,0,.3); z-index: 2;
     animation: cheerIn .6s cubic-bezier(.2, 1.7, .4, 1) both;
 }
+.cheer::after {
+    content: ''; position: absolute; inset: 4px; border-radius: 50%; pointer-events: none;
+    border: 1.5px solid rgba(220,171,62,.5);
+}
 .cheer canvas { width: 100%; height: 100%; display: block; }
-@keyframes cheerIn { from { transform: scale(0) rotate(-20deg); } to { transform: scale(1) rotate(-6deg); } }
+@keyframes cheerIn { from { transform: scale(0) rotate(-16deg); } to { transform: scale(1) rotate(-4deg); } }
 
 #app.shake { animation: shake .42s cubic-bezier(.36,.07,.19,.97) both; }
 @keyframes shake {
@@ -231,57 +260,17 @@ body.waiting #hud { display: none; }
     30%, 50%, 70% { transform: translate3d(-11px, 2px, 0); }
     40%, 60% { transform: translate3d(11px, -1px, 0); }
 }
-#version { position: absolute; bottom: 8px; right: 10px; z-index: 3;
-           font-size: 9px; font-weight: 800; letter-spacing: .1em; opacity: .3; }
-
-/* ============================================================
-   DRAWN, NOT PRINTED
-   ============================================================ */
-.plate, #mute, #quota, #card .inner, .btn, #ribbon {
-    border-radius: 22px 9px 19px 12px / 11px 20px 10px 23px;
-}
-.plate, #mute, #quota, #card .inner, .btn { position: relative; }
-.plate::before, #mute::before, #quota::before, #card .inner::before, .btn::before,
-.plate::after,  #mute::after,  #quota::after,  #card .inner::after,  .btn::after {
-    content: ''; position: absolute; pointer-events: none; border: 2.4px solid var(--ink);
-}
-.plate::after, #mute::after, #quota::after, #card .inner::after, .btn::after {
-    inset: -4px -1px -2px -3px; opacity: .34;
-    border-radius: 10px 21px 11px 20px / 20px 11px 22px 10px;
-    transform: rotate(1.15deg);
-}
-.plate::before, #mute::before, #quota::before, #card .inner::before, .btn::before {
-    inset: -1px -3px -4px -1px; opacity: .17;
-    border-radius: 19px 13px 23px 9px / 13px 22px 9px 19px;
-    transform: rotate(-.95deg);
-}
-#card .inner::after  { inset: -6px -2px -3px -5px; border-width: 3px; transform: rotate(-.7deg); }
-#card .inner::before { inset: -2px -5px -6px -2px; border-width: 2.6px; transform: rotate(1deg); }
-.plate  { rotate: -1.3deg; }
-#mute   { rotate: 1.9deg; }
-#quota  { rotate: .7deg; }
-.btn    { rotate: -1.1deg; }
-#card .inner { rotate: .6deg; }
-#card .inner, .plate, #quota {
-    background-image: repeating-linear-gradient(48deg,
-        rgba(64, 92, 122, .05) 0 1.5px, transparent 1.5px 7px);
-}
-.cheer { border-radius: 58% 42% 54% 46% / 45% 57% 43% 55%; }
-.cheer::before, .cheer::after {
-    content: ''; position: absolute; pointer-events: none; border: 2.2px solid var(--ink);
-}
-.cheer::after  { inset: 2px; opacity: .3;
-    border-radius: 44% 56% 46% 54% / 56% 44% 55% 45%; transform: rotate(3.2deg); }
-.cheer::before { inset: 5px; opacity: .14;
-    border-radius: 55% 45% 57% 43% / 43% 56% 44% 57%; transform: rotate(-4deg); }
+#version { position: absolute; bottom: 7px; right: 10px; z-index: 3;
+           font-size: 9px; font-weight: 700; letter-spacing: .14em;
+           text-transform: uppercase; color: var(--cream); opacity: .22; }
 
 @media (max-width: 400px) {
-    #hud { padding: 10px 8px; gap: 4px; }
-    .plate { font-size: 18px; padding: 3px 7px 1px; }
-    .plate .ico { width: 14px; height: 14px; }
-    #quota { font-size: 17px; padding: 3px 6px; }
-    #mute { padding: 5px 6px 2px; }
-    #mute svg { width: 19px; height: 19px; }
+    #hud { padding: 9px 9px; gap: 6px; }
+    .plate { font-size: 14px; padding: 5px 8px 4px; }
+    .plate .ico { width: 12px; height: 12px; }
+    #quota { padding: 5px 7px; }
+    #mute { padding: 6px 7px 3px; }
+    #mute svg { width: 18px; height: 18px; }
 }
 </style>
 </head>
@@ -303,13 +292,13 @@ body.waiting #hud { display: none; }
     <canvas id="pad"></canvas>
 
     <div id="hud">
-        <div class="plate" id="bestplate">Round&nbsp;<span id="round-val">1</span><span
+        <div class="plate sign" id="bestplate">Round&nbsp;<span id="round-val">1</span><span
             class="of"><svg class="ico"><use href="#i-cup"/></svg><span id="best-val">0</span></span></div>
-        <div id="quota"><span class="pips" id="pips"></span></div>
+        <div id="quota" class="sign"><span class="pips" id="pips"></span></div>
         <button id="mute" aria-label="Sound on or off">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#241F2E"
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dcab3e"
                  stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M 4 9 H 8 L 13 5 V 19 L 8 15 H 4 Z" fill="#241F2E"/>
+                <path d="M 4 9 H 8 L 13 5 V 19 L 8 15 H 4 Z" fill="#dcab3e"/>
                 <g class="on"><path d="M 16.5 9.5 q 2 2.5 0 5"/><path d="M 19.5 7 q 3.6 5 0 10"/></g>
                 <g class="off"><path d="M 17 9.5 L 22 14.5 M 22 9.5 L 17 14.5"/></g>
             </svg>
@@ -322,8 +311,9 @@ body.waiting #hud { display: none; }
 
     <div id="intro">
         <h1>Butcher's<br>Dog</h1>
-        <p>Cut the sausages off the string before the dog gets to them!</p>
-        <button class="btn" id="play">Play</button>
+        <div class="rule"></div>
+        <p>Cut the sausages off the string before the dog gets to them</p>
+        <button class="btn" id="play">Open Up</button>
     </div>
 
     <div id="card" hidden>
@@ -341,7 +331,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1';
+const APP_VERSION = 'v2';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -559,7 +549,7 @@ let string = null;          // { pts, cum, len, n, wiggle }
    tall and a thumb swipes sideways comfortably. Later rounds put more sway
    in it, which is what makes a square cut something you have to aim. */
 function makePath(n, wiggle, phase) {
-    const top = 158, bot = H - 104, span = bot - top;
+    const top = RAIL + 26, bot = H - 104, span = bot - top;
     const pts = [];
     const SAMPLES = 300;
     for (let i = 0; i <= SAMPLES; i++) {
@@ -652,9 +642,17 @@ const sausageAt = s => {
     return i;
 };
 
+/* What one swipe is worth is not the sum of its cuts. Taking two twists in a
+   stroke, or three, is the only thing in the game that asks for more than a
+   steady hand - you have to find the line that passes through all of them
+   square-ish and miss every sausage on the way - so it pays in the only
+   currency here, which is time: the dog hears the knife and backs off down
+   the string. Spoil a sausage in the same swipe and it pays nothing, because
+   then it was not a good line, it was a lucky one. */
+const CHEER = [, , 'DOUBLE', 'TREBLE', 'FOUR AT ONCE', 'FIVE AT ONCE', 'SIX AT ONCE'];
 function cut(swipe) {
     const marks = crossings(swipe);
-    let any = false, best = 0, freedNow = [];
+    let any = false, best = 0, freedNow = [], hits = 0, spoiled = 0, sumQ = 0;
     for (const m of marks) {
         const p = pieceAt(m.s);
         if (!p) continue;                                   // cut thin air
@@ -673,14 +671,47 @@ function cut(swipe) {
             const ang = Math.max(0, (perp - .3) / .7);
             const q = 35 + 35 * place + 30 * ang;
             best = Math.max(best, q);
+            hits++; sumQ += q;
             splitAt(p, k, q);
             freedNow.push(q);
         } else {
+            spoiled++;
             ruin(p, sausageAt(m.s), m.x, m.y);
+        }
+    }
+    if (hits >= 2) {
+        const mid = marks[Math.floor(marks.length / 2)];
+        if (spoiled) {
+            shouts.push({ text: 'GREEDY', x: mid.x, y: mid.y, t0: now(), bad: true });
+        } else {
+            // a tidier line backs it off further, and there is a limit to how
+            // far down the string it can be sent however good the swipe was
+            // measured in the dog's own seconds rather than in pixels, so the
+            // bonus is worth the same at round 3 as at round 15
+            const avg = sumQ / hits;
+            const push = (hits - 1) * dog.speed * .55 * (.55 + avg / 220);
+            dog.s = Math.min(string.len + 70, dog.s + push);
+            dog.chomp = 0;
+            shouts.push({ text: CHEER[Math.min(hits, 6)] || `${hits} AT ONCE`,
+                          x: mid.x, y: mid.y, t0: now() });
+            fanfare(hits);
+            yelp();
         }
     }
     return { any, best, marks };
 }
+// the knife going through more than one, and the dog deciding to wait
+const fanfare = n => safely(t => {
+    const base = 523;
+    for (let i = 0; i < Math.min(n, 5) + 1; i++)
+        tone(t, { freq: base * Math.pow(2, i * 2 / 12), dur: .2, type: 'triangle',
+                  vol: .13, at: i * .055 });
+    hiss(t, { hp: 5000, dur: .22, vol: .12, at: .05 });
+});
+const yelp = () => safely(t => {
+    tone(t, { freq: 620, to: 980, dur: .09, type: 'sawtooth', vol: .14, at: .12 });
+    tone(t, { freq: 980, to: 520, dur: .13, type: 'sawtooth', vol: .11, at: .2 });
+});
 function splitAt(p, k, q) {
     const i = pieces.indexOf(p);
     const left = { from: p.from, to: k }, right = { from: k + 1, to: p.to };
@@ -695,7 +726,7 @@ function free(bit, q) {
     const [x, y] = at((a + b) / 2);
     saved++; showPips();
     loose.push({ x, y, from: bit.from, t0: now(), q,
-                 tx: 46 + ((saved - 1) % 6) * ((W - 92) / 5), ty: 103 });
+                 tx: 48 + ((saved - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
     plop(saved);
 }
 function ruin(p, k, x, y) {
@@ -718,7 +749,7 @@ function ruin(p, k, x, y) {
    dog comes up the string and eats what you have not got off it yet, and
    it gets keener every time it manages it.
    ============================================================ */
-const dog = { s: 0, speed: 0, going: false, chomp: 0, keen: 0 };
+const dog = { s: 1e5, speed: 0, going: false, chomp: 0, keen: 0 };
 function dogStep(dt) {
     if (!dog.going) return;
     if (dog.chomp > 0) { dog.chomp -= dt; return; }              // busy eating
@@ -744,7 +775,7 @@ const passFor = n => Math.min(n, Math.max(2, Math.round(n * .58) + Math.floor((r
 const speedFor = r => 46 + (r - 1) * 7;
 
 let round = 0, live = false, tallying = false, quota = 0, roundT0 = 0;
-let cutFx = [], mess = [], swipe = null, blade = null, raf = 0, lastMs = 0;
+let cutFx = [], mess = [], shouts = [], swipe = null, blade = null, raf = 0, lastMs = 0;
 let tallyT = 0, settleT = 0, showingIntro = true;
 
 const bestKey = 'bd-rounds';
@@ -770,7 +801,7 @@ function startRound(n) {
     clearTimeout(tallyT); clearTimeout(settleT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
-    cutFx = []; mess = []; swipe = null; blade = null;
+    cutFx = []; mess = []; shouts = []; swipe = null; blade = null;
     const count = makeString(n);
     quota = passFor(count);
     dog.s = string.len + 70; dog.speed = speedFor(n); dog.going = false;
@@ -872,13 +903,22 @@ cv.addEventListener('pointercancel', () => { penDown = false; up(); });
    DRAWING IT
    ============================================================ */
 const FAT = 27;                 // how fat a sausage is at its fattest
+const RAIL = 104;               // the brass rail everything hangs off
 
 /* How fat the string is at a point. Three things decide it, in this order:
    a sausage is fattest in its middle and eases off towards both ends, a twist
    pinches it down to a thread of skin, and wherever a piece actually stops -
    the ends of the string, or where you have cut - it rounds off. Get the
    first one wrong and the whole thing draws as a row of bars. */
-const CAP = 16;
+const CAP = 16, NECK = 5;
+/* The twist wants a thread of skin with a bit of slack in it, not a pinch to
+   a point. A straight taper into the middle draws two sausages meeting at an
+   X, which is a diagram of sausages rather than sausages: the giveaway is
+   that the outline has a corner in it, and nothing on a sausage has a corner.
+   So the neck is a parallel thread for a few pixels either side of the twist
+   and shoulders back up to full on a smoothstep, which meets the thread flat
+   and meets the sausage flat and has no corner anywhere. */
+const shoulder = t => t * t * (3 - 2 * t);
 function widthAt(s, piece) {
     const [a, b] = spanOf(piece);
     const i = sausageAt(s);
@@ -888,15 +928,20 @@ function widthAt(s, piece) {
     let w = FAT * (.66 + .34 * Math.pow(Math.sin(Math.PI * u), .45));
     for (let j = piece.from; j < piece.to; j++) {
         const d = Math.abs(s - string.twists[j]);
-        if (d < TWIST) w = Math.min(w, FAT * (.15 + .85 * Math.pow(d / TWIST, .85)));
+        if (d >= TWIST) continue;
+        const thin = FAT * .13;
+        const t = clamp((d - NECK) / (TWIST - NECK), 0, 1);
+        w = Math.min(w, thin + (w - thin) * shoulder(t));
     }
+    // and where a piece actually stops - the ends of the string, or where you
+    // have cut - it rounds off, which is a cap rather than a shoulder
     const de = Math.min(s - a, b - s);
     if (de < CAP) w = Math.min(w, FAT * Math.sqrt(Math.max(0, 1 - Math.pow(1 - de / CAP, 2))));
     return Math.max(.8, w);
 }
 function ribbon(piece) {
     const [a, b] = spanOf(piece);
-    const step = 3, up = [], dn = [];
+    const step = 1.6, up = [], dn = [];
     for (let s = a; s <= b; s += step) {
         const [x, y, tx, ty] = at(s), w = widthAt(s, piece);
         up.push([x - ty * w, y + tx * w]);
@@ -906,140 +951,200 @@ function ribbon(piece) {
     up.push([x - ty * w, y + tx * w]); dn.push([x + ty * w, y - tx * w]);
     return up.concat(dn.reverse());
 }
-function fillPoly(p) {
+function fillPoly(ctx, p) {
     ctx.beginPath();
     p.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
     ctx.closePath();
 }
+/* A sausage with a line drawn round it is a cartoon of a sausage. This one is
+   three flat shapes instead: the body, a band of light down one side of it and
+   a band of shade down the other, which is how the thing is actually lit in a
+   window. The bands are drawn as offset copies of the same centre line, so
+   they follow every bend of the string for nothing. */
 function drawPiece(piece, alpha = 1) {
-    const poly = ribbon(piece);
-    ctx.globalAlpha = alpha;
-    fillPoly(poly);
-    ctx.fillStyle = '#cf5b3e';
-    ctx.fill();
-    ctx.lineJoin = 'round'; ctx.lineWidth = 3.2;
-    ctx.strokeStyle = '#241F2E';
-    ctx.stroke();
-    // a shine along the top of each sausage, and a crease under it
     const [a, b] = spanOf(piece);
+    ctx.globalAlpha = alpha;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 11;
+    ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 6;
+    fillPoly(ctx, ribbon(piece));
+    ctx.fillStyle = '#c4472e';
+    ctx.fill();
+    ctx.restore();
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     for (let i = piece.from; i <= piece.to; i++) {
-        const s0 = i === 0 ? 0 : string.twists[i - 1], s1 = i === string.n - 1 ? string.len : string.twists[i];
-        const from = Math.max(a, s0) + 12, to = Math.min(b, s1) - 12;
-        if (to - from < 8) continue;
-        for (const [off, col, wid] of [[-.42, '#e07a5a', 4], [.46, '#ad4429', 5]]) {
+        const s0 = i === 0 ? 0 : string.twists[i - 1];
+        const s1 = i === string.n - 1 ? string.len : string.twists[i];
+        const from = Math.max(a, s0) + 13, to = Math.min(b, s1) - 13;
+        if (to - from < 10) continue;
+        for (const [off, col, wid] of [[.52, '#8c2b1b', .34], [-.50, '#dd6f4c', .30],
+                                       [-.56, '#ea8f6e', .13]]) {
             ctx.beginPath();
-            for (let s = from; s <= to; s += 4) {
-                const [x, y, tx, ty] = at(s), w = widthAt(s, piece) * off;
-                const px = x - ty * w, py = y + tx * w;
-                s === from ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+            for (let t = from; t <= to; t += 3) {
+                const [x, y, tx, ty] = at(t), w = widthAt(t, piece);
+                const px = x - ty * w * off, py = y + tx * w * off;
+                t === from ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
             }
-            ctx.strokeStyle = col; ctx.lineWidth = wid; ctx.lineCap = 'round';
+            ctx.strokeStyle = col;
+            ctx.lineWidth = Math.max(2, FAT * wid * 2);
             ctx.stroke();
+        }
+    }
+    // the turns of skin at each neck, which is what says twist rather than dent
+    for (let i = piece.from; i < piece.to; i++) {
+        const c = string.twists[i];
+        for (const o of [-3.2, 0, 3.2]) {
+            const [x, y, tx, ty] = at(c + o), w = widthAt(c + o, piece) * 1.15;
+            ctx.beginPath();
+            ctx.moveTo(x - ty * w - tx * 1.5, y + tx * w - ty * 1.5);
+            ctx.lineTo(x + ty * w + tx * 1.5, y - tx * w + ty * 1.5);
+            ctx.strokeStyle = 'rgba(80,22,12,.5)'; ctx.lineWidth = 1.5; ctx.stroke();
         }
     }
     ctx.globalAlpha = 1;
 }
-
-/* The dog. Drawn rather than drawn from life: everything wide and low, the
-   skull small against the jaw, jowls that hang past the mouth, ears folded
-   over rather than up, and a collar carrying more studs than the job calls
-   for. It bobs as it comes and opens up when it gets one. */
+/* The rail, and the hook the string is on. Brass, so a bar of dark, a bar of
+   light and a bright line where the top of it catches the room. */
+function drawRail() {
+    const g = ctx.createLinearGradient(0, RAIL - 9, 0, RAIL + 9);
+    g.addColorStop(0, '#8a6417'); g.addColorStop(.30, '#f0d484');
+    g.addColorStop(.55, '#c59430'); g.addColorStop(1, '#6d4d12');
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.roundRect(-6, RAIL - 9, W + 12, 18, 9); ctx.fill();
+    ctx.restore();
+    // the brackets holding it up
+    for (const x of [30, W - 30]) {
+        ctx.fillStyle = '#8a6417';
+        ctx.beginPath(); ctx.roundRect(x - 7, RAIL - 26, 14, 20, 4); ctx.fill();
+        ctx.fillStyle = 'rgba(240,212,132,.55)';
+        ctx.beginPath(); ctx.roundRect(x - 4, RAIL - 24, 4, 16, 2); ctx.fill();
+    }
+}
+function drawHook(x, yTop, k = 1) {
+    ctx.save();
+    ctx.strokeStyle = '#c59430'; ctx.lineWidth = 4.5 * k; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(x, RAIL + 5 * k, 7 * k, Math.PI, Math.PI * 2.05);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 7 * k, RAIL + 5 * k); ctx.lineTo(x + 7 * k, yTop);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(240,212,132,.5)'; ctx.lineWidth = 1.6 * k;
+    ctx.beginPath();
+    ctx.moveTo(x + 5.6 * k, RAIL + 5 * k); ctx.lineTo(x + 5.6 * k, yTop);
+    ctx.stroke();
+    ctx.restore();
+}
+/* The dog, on the same terms: no outline, just shapes with the light on one
+   side. Everything wide and low, the skull small against the jaw, jowls that
+   hang past the mouth, ears folded over rather than up, and a collar carrying
+   more studs than the job calls for. */
 function drawDog(ctx, x, y, k, open, ms) {
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(k, k);
     ctx.rotate(Math.sin(ms / 170) * .045);
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-    const INK = '#241F2E';
-    const line = w => { ctx.strokeStyle = INK; ctx.lineWidth = w; ctx.stroke(); };
+    const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
 
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 7;
     // the collar first, so the jowls hang over it
-    ctx.beginPath();
-    ctx.moveTo(-52, 30); ctx.quadraticCurveTo(0, 48, 52, 30);
-    ctx.lineTo(52, 48); ctx.quadraticCurveTo(0, 66, -52, 48);
-    ctx.closePath();
-    ctx.fillStyle = '#2f2a3a'; ctx.fill(); line(3.6);
+    blob('#2b2333', () => {
+        ctx.moveTo(-52, 30); ctx.quadraticCurveTo(0, 48, 52, 30);
+        ctx.lineTo(52, 49); ctx.quadraticCurveTo(0, 67, -52, 49);
+    });
+    ctx.restore();
     for (let i = -2; i <= 2; i++) {
-        const px = i * 20, py = 46 + (2 - Math.abs(i)) * 3.4;
-        ctx.beginPath();
-        ctx.moveTo(px - 6, py + 4); ctx.lineTo(px, py - 7); ctx.lineTo(px + 6, py + 4);
-        ctx.closePath(); ctx.fillStyle = '#d6d1de'; ctx.fill(); line(2.2);
+        const px = i * 20, py = 47 + (2 - Math.abs(i)) * 3.4;
+        blob('#dcab3e', () => { ctx.moveTo(px - 6, py + 4); ctx.lineTo(px, py - 8); ctx.lineTo(px + 6, py + 4); });
+        blob('rgba(255,244,205,.55)', () => { ctx.moveTo(px - 2.4, py + 2); ctx.lineTo(px, py - 7); ctx.lineTo(px + 1.4, py + 1); });
     }
     // ears, folded over and set wide
     for (const sx of [-1, 1]) {
-        ctx.beginPath();
-        ctx.moveTo(sx * 34, -30);
-        ctx.quadraticCurveTo(sx * 58, -34, sx * 56, -10);
-        ctx.quadraticCurveTo(sx * 52, 8, sx * 36, 0);
-        ctx.closePath();
-        ctx.fillStyle = '#d8d0c1'; ctx.fill(); line(4);
+        blob('#b9a98c', () => {
+            ctx.moveTo(sx * 34, -30);
+            ctx.quadraticCurveTo(sx * 58, -34, sx * 56, -10);
+            ctx.quadraticCurveTo(sx * 52, 8, sx * 36, 0);
+        });
     }
     // the head: a small skull on a very wide jaw
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 12; ctx.shadowOffsetY = 5;
+    blob('#efe3ca', () => {
+        ctx.moveTo(-38, -16);
+        ctx.quadraticCurveTo(-36, -40, 0, -40);
+        ctx.quadraticCurveTo(36, -40, 38, -16);
+        ctx.quadraticCurveTo(60, -4, 56, 20);
+        ctx.quadraticCurveTo(50, 44, 0, 45);
+        ctx.quadraticCurveTo(-50, 44, -56, 20);
+        ctx.quadraticCurveTo(-60, -4, -38, -16);
+    });
+    ctx.restore();
+    // the light down the left of the face, and the jowls in shade
+    ctx.save();
     ctx.beginPath();
     ctx.moveTo(-38, -16);
-    ctx.quadraticCurveTo(-36, -40, 0, -40);          // a small flat skull
+    ctx.quadraticCurveTo(-36, -40, 0, -40);
     ctx.quadraticCurveTo(36, -40, 38, -16);
-    ctx.quadraticCurveTo(60, -4, 56, 20);            // the jowls, flaring wide
+    ctx.quadraticCurveTo(60, -4, 56, 20);
     ctx.quadraticCurveTo(50, 44, 0, 45);
     ctx.quadraticCurveTo(-50, 44, -56, 20);
     ctx.quadraticCurveTo(-60, -4, -38, -16);
     ctx.closePath();
-    ctx.fillStyle = '#f4efe3'; ctx.fill(); line(4);
+    ctx.clip();
+    blob('#fdf7e8', () => { ctx.moveTo(-64, -46); ctx.lineTo(-6, -46); ctx.lineTo(-30, 50); ctx.lineTo(-64, 50); });
+    blob('#d5c6a6', () => { ctx.moveTo(-64, 22); ctx.quadraticCurveTo(0, 36, 64, 22); ctx.lineTo(64, 52); ctx.lineTo(-64, 52); });
+    ctx.restore();
     // the brow, which is where a bulldog keeps its opinion
     for (const sx of [-1, 1]) {
-        ctx.beginPath();
-        ctx.moveTo(sx * 7, -26); ctx.quadraticCurveTo(sx * 22, -32, sx * 33, -19);
-        line(4);
-        ctx.beginPath();
-        ctx.moveTo(sx * 10, -34); ctx.quadraticCurveTo(sx * 21, -38, sx * 29, -31);
-        ctx.strokeStyle = 'rgba(36,31,46,.35)'; ctx.lineWidth = 2.6; ctx.stroke();
+        blob('#3a2f22', () => {
+            ctx.moveTo(sx * 6, -25); ctx.quadraticCurveTo(sx * 22, -33, sx * 34, -19);
+            ctx.quadraticCurveTo(sx * 22, -27, sx * 7, -21);
+        });
+        blob('rgba(180,164,132,.7)', () => {
+            ctx.moveTo(sx * 10, -34); ctx.quadraticCurveTo(sx * 21, -39, sx * 29, -32);
+            ctx.quadraticCurveTo(sx * 21, -36, sx * 10, -32);
+        });
     }
-    ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(0, -18);
-    ctx.strokeStyle = 'rgba(36,31,46,.35)'; ctx.lineWidth = 2.6; ctx.stroke();
+    blob('rgba(180,164,132,.7)', () => { ctx.moveTo(-1.4, -31); ctx.lineTo(1.4, -31); ctx.lineTo(1.4, -19); ctx.lineTo(-1.4, -19); });
     // eyes, wide apart and low
     for (const sx of [-1, 1]) {
-        ctx.beginPath(); ctx.arc(sx * 21, -13, 5.2, 0, Math.PI * 2);
-        ctx.fillStyle = INK; ctx.fill();
-        ctx.beginPath(); ctx.arc(sx * 21 - 1.8, -15, 1.7, 0, Math.PI * 2);
-        ctx.fillStyle = '#fffdf8'; ctx.fill();
+        blob('#2a201a', () => ctx.arc(sx * 21, -13, 5.4, 0, Math.PI * 2));
+        blob('#fdf7e8', () => ctx.arc(sx * 21 - 1.9, -15.2, 1.8, 0, Math.PI * 2));
     }
     // the muzzle: wide, flat and pushed in
-    ctx.beginPath();
-    ctx.ellipse(0, 12, 31, 20, 0, 0, Math.PI * 2);
-    ctx.fillStyle = '#fffdf8'; ctx.fill(); line(3.6);
-    ctx.beginPath();
-    ctx.moveTo(-13, 0); ctx.quadraticCurveTo(0, -9, 13, 0);
-    ctx.quadraticCurveTo(0, 11, -13, 0);
-    ctx.closePath(); ctx.fillStyle = INK; ctx.fill();
+    blob('#fdf7e8', () => ctx.ellipse(0, 12, 31, 20, 0, 0, Math.PI * 2));
+    blob('rgba(213,198,166,.55)', () => ctx.ellipse(0, 20, 27, 12, 0, 0, Math.PI * 2));
+    blob('#2a201a', () => {
+        ctx.moveTo(-13, 0); ctx.quadraticCurveTo(0, -9, 13, 0); ctx.quadraticCurveTo(0, 11, -13, 0);
+    });
+    blob('rgba(255,255,255,.3)', () => ctx.ellipse(-5, -3, 4, 2, -.3, 0, Math.PI * 2));
 
     if (open) {
-        ctx.beginPath();
-        ctx.ellipse(0, 24, 22, 17, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#5b2230'; ctx.fill(); line(3.4);
-        for (const sx of [-1, 1]) {                      // the teeth it is proud of
-            ctx.beginPath();
-            ctx.moveTo(sx * 13, 12); ctx.lineTo(sx * 9, 21); ctx.lineTo(sx * 17, 21);
-            ctx.closePath(); ctx.fillStyle = '#fffdf8'; ctx.fill(); line(2);
-        }
-        ctx.beginPath();
-        ctx.ellipse(0, 31, 12, 9, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#e8748a'; ctx.fill(); line(2.6);
+        blob('#4d1c27', () => ctx.ellipse(0, 24, 22, 17, 0, 0, Math.PI * 2));
+        for (const sx of [-1, 1])
+            blob('#fdf7e8', () => { ctx.moveTo(sx * 13, 11); ctx.lineTo(sx * 9, 21); ctx.lineTo(sx * 17, 21); });
+        blob('#d4667c', () => ctx.ellipse(0, 31, 12, 9, 0, 0, Math.PI * 2));
     } else {
-        ctx.beginPath();
-        ctx.moveTo(-18, 14); ctx.quadraticCurveTo(-9, 24, 0, 16);
-        ctx.quadraticCurveTo(9, 24, 18, 14);
-        line(3.6);
-        for (const sx of [-1, 1]) {                      // an underbite, as supplied
-            ctx.beginPath();
-            ctx.moveTo(sx * 13, 21); ctx.lineTo(sx * 10, 13); ctx.lineTo(sx * 17, 13);
-            ctx.closePath(); ctx.fillStyle = '#fffdf8'; ctx.fill(); line(1.8);
-        }
-        ctx.beginPath();                                  // and the tongue, lolling
-        ctx.moveTo(4, 22);
-        ctx.quadraticCurveTo(20, 26, 18, 40);
-        ctx.quadraticCurveTo(15, 50, 6, 46);
-        ctx.quadraticCurveTo(0, 40, 4, 22);
-        ctx.closePath(); ctx.fillStyle = '#e8748a'; ctx.fill(); line(3);
+        blob('#3a2f22', () => {
+            ctx.moveTo(-18, 13); ctx.quadraticCurveTo(-9, 23, 0, 15);
+            ctx.quadraticCurveTo(9, 23, 18, 13);
+            ctx.quadraticCurveTo(9, 20, 0, 12);
+            ctx.quadraticCurveTo(-9, 20, -18, 13);
+        });
+        for (const sx of [-1, 1])
+            blob('#fdf7e8', () => { ctx.moveTo(sx * 13, 21); ctx.lineTo(sx * 10, 12); ctx.lineTo(sx * 17, 12); });
+        blob('#d4667c', () => {
+            ctx.moveTo(4, 21); ctx.quadraticCurveTo(20, 25, 18, 40);
+            ctx.quadraticCurveTo(15, 50, 6, 46); ctx.quadraticCurveTo(0, 40, 4, 21);
+        });
+        blob('rgba(255,255,255,.22)', () => {
+            ctx.moveTo(8, 26); ctx.quadraticCurveTo(16, 30, 14, 40);
+            ctx.quadraticCurveTo(11, 34, 8, 26);
+        });
     }
     ctx.restore();
 }
@@ -1052,21 +1157,33 @@ function drawMug(short) {
 
 function drawLoose(ms) {
     for (const l of loose) {
-        const e = Math.min(1, (ms - l.t0) / 520);
+        const e = Math.min(1, (ms - l.t0) / 560);
         const ease = 1 - Math.pow(1 - e, 3);
         const x = l.x + (l.tx - l.x) * ease;
         const y = l.y + (l.ty - l.y) * ease;
+        if (e > .55) drawHook(x - 7, y - 16, .62);      // the hook it ends up on
         ctx.save();
         ctx.translate(x, y);
-        ctx.rotate((1 - ease) * 2.4 + .3);
-        ctx.scale(.72 + .16 * (1 - ease), .72 + .16 * (1 - ease));
+        ctx.rotate((1 - ease) * 2.2 + Math.sin((ms - l.t0) / 260) * .05 * ease);
+        ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
         ctx.beginPath();
-        ctx.ellipse(0, 0, 34, 13, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#cf5b3e'; ctx.fill();
-        ctx.strokeStyle = '#241F2E'; ctx.lineWidth = 4; ctx.stroke();
+        ctx.ellipse(0, 0, 15.5, 29, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#c4472e'; ctx.fill();
+        ctx.shadowColor = 'transparent';
+        // the shade is a crescent taken off the lit side rather than a second
+        // blob dropped on top, which came out looking like a hole in it
+        ctx.save();
+        ctx.clip();
         ctx.beginPath();
-        ctx.ellipse(-4, -4, 20, 4, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#e07a5a'; ctx.fill();
+        ctx.ellipse(11, 3, 9, 30, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#8c2b1b'; ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(-5.5, -3, 4.2, 18, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#dd6f4c'; ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(-6, -6, 1.8, 11, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#ea8f6e'; ctx.fill();
+        ctx.restore();
         ctx.restore();
     }
 }
@@ -1076,13 +1193,10 @@ function draw() {
     ctx.clearRect(0, 0, W, H);
     if (!string) return;
 
-    // the tray, where the saved ones go
-    ctx.save();
-    ctx.globalAlpha = .5;
-    ctx.strokeStyle = '#241F2E'; ctx.lineWidth = 3; ctx.setLineDash([9, 7]);
-    ctx.strokeRect(14, 78, W - 28, 50);
-    ctx.setLineDash([]);
-    ctx.restore();
+    drawRail();
+    // the string is on the rail until its top sausage is cut off or eaten
+    const head = pieces.find(p => p.from === 0);
+    if (head) drawHook(at(0)[0] - 7, at(0)[1]);
 
     for (const p of pieces) drawPiece(p);
     drawLoose(ms);
@@ -1094,7 +1208,7 @@ function draw() {
         const [x, y, tx, ty] = at(string.twists[f.k]);
         ctx.save();
         ctx.globalAlpha = 1 - e;
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+        ctx.strokeStyle = '#ffeab0'; ctx.lineWidth = 4; ctx.lineCap = 'round';
         const L = 26 + e * 26;
         ctx.beginPath();
         ctx.moveTo(x - ty * L, y + tx * L); ctx.lineTo(x + ty * L, y - tx * L);
@@ -1107,7 +1221,7 @@ function draw() {
         if (e >= 1) { mess.splice(i, 1); continue; }
         ctx.save();
         ctx.globalAlpha = (1 - e) * .8;
-        ctx.fillStyle = '#ad4429';
+        ctx.fillStyle = '#8c2b1b';
         for (let j = 0; j < 6; j++) {
             const a = j / 6 * Math.PI * 2 + m.t0;
             ctx.beginPath();
@@ -1123,10 +1237,31 @@ function draw() {
     if (line && line.length > 1) {
         ctx.save();
         ctx.globalAlpha = swipe ? .9 : 1 - (ms - blade.t0) / 220;
-        ctx.strokeStyle = '#241F2E'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
         ctx.beginPath();
         line.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
-        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,234,176,.28)'; ctx.lineWidth = 7; ctx.stroke();
+        ctx.strokeStyle = '#fff6dd'; ctx.lineWidth = 2.2; ctx.stroke();
+        ctx.restore();
+    }
+
+    // what that swipe was worth, said out loud
+    for (let i = shouts.length - 1; i >= 0; i--) {
+        const sh = shouts[i], e = (now() - sh.t0) / 980;
+        if (e >= 1) { shouts.splice(i, 1); continue; }
+        const rise = 1 - Math.pow(1 - Math.min(1, e * 2.2), 3);
+        const pop = e < .16 ? .6 + .4 * (e / .16) * (2 - e / .16) : 1;
+        ctx.save();
+        ctx.globalAlpha = e > .6 ? 1 - (e - .6) / .4 : 1;
+        ctx.translate(clamp(sh.x, 76, W - 76), sh.y - 34 * rise);
+        ctx.scale(pop, pop);
+        ctx.font = '700 27px "Alfa Slab One", Georgia, serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = 'rgba(12,32,24,.92)'; ctx.lineWidth = 7;
+        ctx.strokeText(sh.text, 0, 0);
+        ctx.fillStyle = sh.bad ? '#d8462f' : '#f0d484';
+        ctx.fillText(sh.text, 0, 0);
         ctx.restore();
     }
 
@@ -1146,7 +1281,7 @@ function tick() {
         lastMs = ms;
         dogStep(dt);
         draw();
-        if (live || loose.length || cutFx.length || mess.length) raf = requestAnimationFrame(step);
+        if (live || loose.length || cutFx.length || mess.length || shouts.length) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -1173,6 +1308,7 @@ document.getElementById('play').addEventListener('click', e => {
 
 fit();
 makeString(1);
+dog.s = string.len + 64;          // waiting at the bottom of the title page
 draw();
 </script>
 </body>
