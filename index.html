@@ -813,7 +813,7 @@ function steakStep(dt) {
             b.vy += 900 * dt;
             b.x += b.vx * dt; b.y += b.vy * dt; b.ang += b.spin * dt;
         }
-        if (now() - steak.t0 > 900) steak = null;
+        if (now() - steak.t0 > 900) { steak = null; settleUp(); }
         return;
     }
     steak.vy += 400 * dt;
@@ -831,12 +831,14 @@ function steakStep(dt) {
             dog.grabX = steak.x;
             steak = null;
             fed++; dog.keen++; dog.chomp = CHOMP;
-            snarl(); jolt();
+            snarl(); jolt(); settleUp();
             return;
         }
     }
-    if (steak.y > H + 60) { steak = null; splat(); }
+    if (steak.y > H + 60) { steak = null; splat(); settleUp(); }
 }
+// a day that was only waiting on the steak can finish now
+function settleUp() { if (pendingEnd) { pendingEnd = false; endRound(); } }
 function hitSteak(sw) {
     if (!steak || steak.bits) return false;
     const r = 50;
@@ -1048,7 +1050,7 @@ function dogStep(dt) {
         return;
     }
     dog.s -= dog.speed * (1 + dog.keen * .13) * dt;
-    if (dog.s <= 0) { dog.s = 0; endRound(); return; }
+    if (dog.s <= 0) { dog.s = 0; dog.going = false; finishDay(); return; }
     const p = pieceAt(dog.s);
     if (p) {
         // the sausage at this end of the piece is off the string, and on its
@@ -1068,7 +1070,7 @@ function dogStep(dt) {
         showHud();
         const rp = document.getElementById('roundplate');
         rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
-        if (pieces.length === 0) endRound();
+        if (pieces.length === 0) finishDay();
     }
 }
 
@@ -1117,7 +1119,7 @@ function startRound(n) {
     cutFx = []; mess = []; shouts = []; chewing = null; steak = null; ghost = null;
     swipe = null; blade = null;
     const D = DAYS[n - 1], count = makeString(n);
-    roundMoney = 0; steaks = 0;
+    roundMoney = 0; steaks = 0; pendingEnd = false;
     // a dog that has been fed comes back keener, all week, up to a point
     dog.speed = D.speed * breedFor().speed * (1 + Math.min(.20, fed * .022));
     /* Far enough off the end that it has to run at you first. Measured in its
@@ -1177,7 +1179,16 @@ const beep = i => safely(t => {
     tone(t, { freq: 440 + i * 70, dur: .09, type: 'square', vol: .13 });
     tone(t, { freq: 880 + i * 140, dur: .06, type: 'triangle', vol: .06, at: .01 });
 });
-// the string is finished - cut up, or eaten, or the dog has run out of it
+/* The string is finished - cut up, or eaten, or the dog has run out of it.
+   But a steak still in the air is money still on the table, so the day waits
+   for it: you get your swipe at it, or you watch the dog take it, and only
+   then does the till ring. */
+let pendingEnd = false;
+function finishDay() {
+    if (!live) return;
+    if (steak) { pendingEnd = true; return; }
+    endRound();
+}
 function endRound() {
     if (!live) return;
     live = false; armed = false; dog.going = false; teaching = false;
@@ -1380,7 +1391,7 @@ function up() {
     if (s.length > 1) {
         blade = { pts: s, t0: now() };
         cut(s);
-        if (pieces.length === 0) endRound();
+        if (pieces.length === 0) finishDay();
     }
 }
 let penDown = false;

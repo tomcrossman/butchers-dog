@@ -196,6 +196,11 @@ From Tuesday on, once a day, a steak comes off the top of the window with a
 whistle to tell you to look up. It takes about two seconds to fall. Catch it
 with the blade on the way down and it is worth about two sausages.
 
+A day will not end underneath one. If the last sausage comes off the string
+while a steak is still in the air, the till does not ring until the steak has
+settled one way or the other - you get your swipe at it, or you watch the dog
+take it. Money still in the air is money still on the table.
+
 It is cut the moment the blade passes through it rather than when your finger
 comes off the glass. The whole path gets tested either way, so it changes no
 outcome - but a falling steak has moved on by the time you let go, and the
