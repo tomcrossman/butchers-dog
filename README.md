@@ -203,9 +203,13 @@ itself drawn in it - the hat on the dog's own head, the knife on its own - four
 to a row, because seventeen hats written out is seventeen words to read and a
 rack of pictures is one glance.
 
-The shop puts it on before it takes the money: tapping something you do not own
-does not buy it, it puts it on the dog in the window and the tile turns into the
-price with Buy on it. Tapping again is the purchase.
+The shop puts it on before it takes the money, and nothing on the shelf can be
+bought by tapping it. A tap tries a thing on: the tile goes gold side out and
+says Trying, and a counter comes up along the bottom with the thing drawn on the
+dog, what it is called, what it costs, and the two ways out - Put it back, or
+Buy it. Tap the same tile again and it comes off. Buy it is the only button in
+the shop that spends anything, and if the till is short it says how short and
+will not be pressed.
 
 ## Your shop, kept
 
