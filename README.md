@@ -166,6 +166,15 @@ are meant to make: square across the middle twist, in one stroke, over and over
 until the dog is let off. It stops the moment the round is live, because by
 then you either have it or you have not.
 
+## The one that falls
+
+From Tuesday on, once a day, a steak comes off the top of the window. Catch it
+with the blade on the way down and it is worth about two sausages; let it hit
+the floor and it is worth nothing and the dog has not even had to work for it.
+
+It is the only thing in the game that asks you to look away from the string,
+which is the whole reason it is there.
+
 ## Mind the dog
 
 There is one way to lose, and it is not the dog's fault.

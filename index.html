@@ -392,7 +392,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v11';
+const APP_VERSION = 'v12';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -777,8 +777,106 @@ function hitDog(sw) {
     }
     return false;
 }
+/* ---- the one that falls ------------------------------------------------
+   A steak comes off the top of the window once a day from Tuesday on. Catch
+   it with the blade on the way down and it is worth about two sausages; let
+   it hit the floor and it is worth nothing and the dog has not even had to
+   work for it. It is the only thing in the game that asks you to look away
+   from the string, which is the whole reason it is there. */
+const STEAK_PAY = 330;
+let steak = null, steakT = 0;
+function dropSteak() {
+    steak = { x: 56 + Math.random() * Math.max(40, W - 112), y: -54, vy: 60,
+              ang: Math.random() * 6.28, spin: (Math.random() - .5) * 2.6, bits: null, t0: now() };
+}
+function steakStep(dt) {
+    if (!steak) return;
+    if (steak.bits) {
+        for (const b of steak.bits) {
+            b.vy += 1500 * dt;
+            b.x += b.vx * dt; b.y += b.vy * dt; b.ang += b.spin * dt;
+        }
+        if (now() - steak.t0 > 900) steak = null;
+        return;
+    }
+    steak.vy += 1250 * dt;
+    steak.y += steak.vy * dt;
+    steak.ang += steak.spin * dt;
+    if (steak.y > H + 60) { steak = null; splat(); }
+}
+function hitSteak(sw) {
+    if (!steak || steak.bits) return false;
+    const r = 38;
+    for (let i = 1; i < sw.length; i++) {
+        const [ax, ay] = sw[i - 1], [bx, by] = sw[i];
+        const dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
+        let t = len2 ? ((steak.x - ax) * dx + (steak.y - ay) * dy) / len2 : 0;
+        t = clamp(t, 0, 1);
+        if (Math.hypot(ax + dx * t - steak.x, ay + dy * t - steak.y) <= r) return true;
+    }
+    return false;
+}
+function sliceSteak() {
+    money += STEAK_PAY; roundMoney += STEAK_PAY;
+    showHud();
+    shouts.push({ text: 'PRIME CUT', x: steak.x, y: steak.y - 26, t0: now() });
+    shouts.push({ text: money2(STEAK_PAY), x: steak.x, y: steak.y + 10, t0: now(), small: true });
+    steak.bits = [-1, 1].map(sx => ({ x: steak.x, y: steak.y, vx: sx * 150, vy: -120,
+                                      ang: steak.ang, spin: sx * 5, sx }));
+    steak.t0 = now();
+    steakCut();
+}
+const steakCut = () => safely(t => {
+    sweep(t, { from: 6800, to: 900, q: 2.4, dur: .1, vol: .3 });
+    sweep(t, { from: 700, to: 180, q: 1.2, dur: .14, vol: .22, at: .02 });
+    [784, 1047, 1319].forEach((f, i) =>
+        tone(t, { freq: f, dur: .22, type: 'triangle', vol: .12, at: .04 + i * .05 }));
+});
+const splat = () => safely(t => {
+    sweep(t, { from: 600, to: 110, q: 1, dur: .2, vol: .34 });
+    tone(t, { freq: 120, to: 48, dur: .22, type: 'sine', vol: .18 });
+});
+function drawSteak(ctx) {
+    if (!steak) return;
+    const one = (x, y, ang, half) => {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(ang);
+        ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
+        if (half) ctx.scale(half > 0 ? 1 : -1, 1);
+        const RX = 43, RY = 33;
+        ctx.beginPath();
+        // a ribeye: the fat round most of the rim, the eye of it in the middle
+        if (half) { ctx.moveTo(0, -RY); ctx.quadraticCurveTo(RX * .9, -RY * .9, RX, 0);
+                    ctx.quadraticCurveTo(RX * .9, RY * .9, 0, RY); ctx.closePath(); }
+        else ctx.ellipse(0, 0, RX, RY, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#f0e2c6'; ctx.fill();               // the fat, as the whole rim
+        ctx.shadowColor = 'transparent';
+        ctx.save(); ctx.clip();
+        ctx.beginPath(); ctx.ellipse(-1, 1, RX - 7, RY - 7, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#9e3326'; ctx.fill();               // and the meat inside it
+        ctx.beginPath(); ctx.ellipse(-7, -8, RX - 19, RY - 17, -.3, 0, Math.PI * 2);
+        ctx.fillStyle = '#bb4a35'; ctx.fill();
+        ctx.strokeStyle = 'rgba(245,232,210,.5)'; ctx.lineWidth = 3.4; ctx.lineCap = 'round';
+        for (const [a, b2, c, d] of [[-22, -12, 6, -19], [-15, 7, 16, -3], [-4, 18, 22, 13]]) {
+            ctx.beginPath(); ctx.moveTo(a, b2); ctx.quadraticCurveTo((a + c) / 2, (b2 + d) / 2 - 5, c, d);
+            ctx.stroke();
+        }
+        ctx.restore();
+        ctx.restore();
+    };
+    if (steak.bits) {
+        const e = Math.min(1, (now() - steak.t0) / 900);
+        ctx.save();
+        ctx.globalAlpha = 1 - e * e;
+        for (const b of steak.bits) one(b.x, b.y, b.ang, b.sx);
+        ctx.restore();
+    } else one(steak.x, steak.y, steak.ang, 0);
+}
+
 function cut(swipe) {
     if (hitDog(swipe)) { dogDown(); return { any: false, best: 0, marks: [] }; }
+    if (hitSteak(swipe)) sliceSteak();
     const marks = crossings(swipe);
     let any = false, best = 0, freedNow = [], hits = 0, spoiled = 0, sumQ = 0;
     for (const m of marks) {
@@ -980,7 +1078,7 @@ function startRound(n) {
     clearTimeout(tallyT); clearTimeout(settleT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
-    cutFx = []; mess = []; shouts = []; chewing = null; swipe = null; blade = null;
+    cutFx = []; mess = []; shouts = []; chewing = null; steak = null; swipe = null; blade = null;
     const D = DAYS[n - 1], count = makeString(n);
     roundMoney = 0;
     // a dog that has been fed comes back keener, all week, up to a point
@@ -1027,6 +1125,9 @@ function countdown(n) {
         dog.going = true;
         woof();
         promptEl.classList.add('gone');
+        if (n >= 2) countT.push(setTimeout(() => {
+            if (round === n && live) dropSteak();
+        }, 700 + Math.random() * 1500));
     }, 1860));
 }
 const beep = i => safely(t => {
@@ -2125,6 +2226,8 @@ function draw() {
         }
     }
 
+    drawSteak(ctx);
+
     if (demoOn()) drawDemo(ms);
 
     // what that swipe was worth, said out loud
@@ -2168,11 +2271,12 @@ function tick() {
         const dt = Math.min(.05, (ms - (lastMs || ms)) / 1000);
         lastMs = ms;
         dogStep(dt);
+        steakStep(dt);
         knifeStep(dt);
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || demoOn() || !resting) raf = requestAnimationFrame(step);
+            || chewing || steak || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
