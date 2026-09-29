@@ -199,16 +199,32 @@ body.waiting #hud { display: none; }
 /* ============================================================
    THE TICKET
    ============================================================ */
+/* The end of the day takes the whole window. Everything else is cleared away
+   and the man whose shop it is stands there with the takings, which says more
+   about how it went than the number does. */
 #card {
     position: absolute; inset: 0; z-index: 10;
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    padding: 14px 18px 18px; pointer-events: none;
-    background: linear-gradient(transparent 40%, rgba(8,22,17,.55) 76%, rgba(8,22,17,.82) 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; padding: 20px 18px; pointer-events: auto;
+    background:
+        radial-gradient(120% 80% at 50% 34%, rgba(255,255,255,.07) 0%, transparent 60%),
+        radial-gradient(120% 100% at 50% 50%, transparent 40%, rgba(0,0,0,.55) 100%),
+        repeating-linear-gradient(0deg, var(--grout) 0 2.5px, transparent 2.5px 48px),
+        repeating-linear-gradient(90deg, var(--grout) 0 2.5px, transparent 2.5px 60px),
+        linear-gradient(180deg, #1c4a39 0%, #16402f 60%, #102b21 100%);
+    animation: introIn .34s ease-out both;
 }
 #card[hidden] { display: none; }
+#butcher {
+    width: min(58vw, 236px); height: auto; flex: none;
+    filter: drop-shadow(0 10px 14px rgba(0,0,0,.45));
+    animation: butcherIn .55s cubic-bezier(.2, 1.5, .4, 1) both;
+}
+@keyframes butcherIn { from { transform: translateY(26px) scale(.9); opacity: 0; }
+                       to   { transform: none; opacity: 1; } }
 #card .inner {
     position: relative; flex: none; pointer-events: auto;
-    animation: sheetIn .34s cubic-bezier(.2, 1.3, .4, 1) both;
+    animation: sheetIn .34s cubic-bezier(.2, 1.3, .4, 1) .12s both;
     width: 100%; max-width: 316px; padding: 22px 20px 20px;
     background: linear-gradient(180deg, #faf4e6, #eadfc6);
     border: 3px solid #2a2118; border-radius: 4px;
@@ -319,13 +335,14 @@ body.waiting #hud { display: none; }
         <h1>Butcher's<br>Dog</h1>
         <div class="rule"></div>
         <p>Cut the sausages off the string before the dog gets to them</p>
-        <button class="btn" id="play">Open Up</button>
+        <button class="btn" id="play">Open up shop</button>
     </div>
 
     <div id="card" hidden>
+        <canvas id="butcher" width="260" height="300"></canvas>
         <div class="inner">
-            <div id="ribbon">GAME OVER</div>
-            <span id="score">0<span class="pc">rounds</span></span>
+            <div id="ribbon">SHOP SHUT</div>
+            <span id="score">0<span class="pc">taken</span></span>
             <p id="rating">Butchered</p>
             <p id="pass"></p>
             <button class="btn" id="again">Back to the meat!</button>
@@ -336,7 +353,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v5';
+const APP_VERSION = 'v6';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -980,6 +997,7 @@ function gameOver() {
     document.getElementById('pass').textContent =
         `${breedFor(round).dog} saw you off on round ${round}`;
     card.className = record ? 'record' : '';
+    drawButcher(document.getElementById('butcher').getContext('2d'), record);
     settleT = setTimeout(() => { card.hidden = false; record ? jingleWin() : jingleLose(); }, 520);
 }
 function nextRound() { tallying = false; startRound(round + 1); }
@@ -1180,7 +1198,7 @@ function drawHook(x, yTop, k = 1) {
    with different numbers - a skull, a jaw, a muzzle, a pair of ears and a
    coat - because six hand-drawn dogs would be six chances to get one wrong. */
 const BREEDS = [
-    { from: 1,  name: 'Dachshund',   dog: 'Chipolata',   k: .74, speed: .80,
+    { from: 1,  name: 'Dachshund',   dog: 'Alfie',   k: .74, speed: .80,
       coat: '#a55c28', lit: '#c47a3c', shade: '#743c15', muzzle: '#c8863f',
       ear: 'drop', earCol: '#77401a', skullW: 30, skullH: 40, jawW: 36, jawY: 16,
       chin: 40, snout: [27, 17, 21], eyes: [16, -16, 4.8], brow: .3, tongue: .8 },
@@ -1189,21 +1207,21 @@ const BREEDS = [
       ear: 'fold', earCol: '#a8703a', skullW: 34, skullH: 40, jawW: 42, jawY: 18,
       chin: 42, snout: [27, 20, 15], eyes: [18, -14, 5], brow: .5, tongue: 1,
       patch: '#a8703a' },
-    { from: 5,  name: 'Bulldog',     dog: 'Bangers',     k: 1, speed: 1,
+    { from: 5,  name: 'Bulldog',     dog: 'Winston',     k: 1, speed: 1,
       coat: '#efe3ca', lit: '#fdf7e8', shade: '#d5c6a6', muzzle: '#fdf7e8',
       ear: 'fold', earCol: '#b9a98c', skullW: 38, skullH: 40, jawW: 56, jawY: 20,
       chin: 45, snout: [31, 20, 12], eyes: [21, -13, 5.4], brow: 1, tongue: 1 },
-    { from: 8,  name: 'Boxer',       dog: 'Chops',       k: 1.12, speed: 1.14,
+    { from: 8,  name: 'Boxer',       dog: 'Duke',       k: 1.12, speed: 1.14,
       coat: '#c08240', lit: '#d79c58', shade: '#8c5a24', muzzle: '#3a2a22',
       ear: 'fold', earCol: '#8c5a24', skullW: 36, skullH: 42, jawW: 50, jawY: 20,
       chin: 46, snout: [30, 21, 14], eyes: [20, -14, 5.2], brow: .8, tongue: 1,
       mask: '#3a2a22' },
-    { from: 11, name: 'Dobermann',   dog: 'Cleaver',   k: 1.2, speed: 1.3,
+    { from: 11, name: 'Dobermann',   dog: 'Bruno',   k: 1.2, speed: 1.3,
       coat: '#2f2622', lit: '#453832', shade: '#1d1715', muzzle: '#4a3c35',
       ear: 'prick', earCol: '#241d1a', skullW: 32, skullH: 44, jawW: 40, jawY: 18,
       chin: 48, snout: [25, 20, 20], eyes: [17, -16, 4.8], brow: .4, tongue: 1,
       points: '#9a5a26' },
-    { from: 14, name: 'Great Dane',  dog: 'Hackett',  k: 1.38, speed: 1.46,
+    { from: 14, name: 'Great Dane',  dog: 'Goliath',  k: 1.38, speed: 1.46,
       coat: '#6e6a63', lit: '#8a857c', shade: '#4b4842', muzzle: '#8a857c',
       ear: 'drop', earCol: '#4b4842', skullW: 34, skullH: 46, jawW: 46, jawY: 20,
       chin: 50, snout: [28, 22, 18], eyes: [18, -16, 5], brow: .6, tongue: 1,
@@ -1458,6 +1476,130 @@ function drawKnife(ctx, x, y, ang, k) {
         ctx.beginPath(); ctx.arc(rx, -2, 4, 0, Math.PI * 2); shape('#c59430');
         ctx.beginPath(); ctx.arc(rx - 1, -3, 1.7, 0, Math.PI * 2); shape('#f0d484');
     }
+    ctx.restore();
+}
+
+/* ---- the man whose shop it is -------------------------------------------
+   White coat, blue stripes, a straw boater and a moustache you could hang a
+   coat on. There are two of him: the one holding a fistful of notes up where
+   everyone can see it, and the one with his hands empty and his shoulders
+   down. Which one you get is whether the day beat the best day.
+
+   The head sits high enough to leave room under the moustache for a mouth,
+   which is the whole difference between the two of him. */
+function drawButcher(ctx, happy) {
+    const W2 = 260, H2 = 300;
+    ctx.clearRect(0, 0, W2, H2);
+    ctx.save();
+    ctx.translate(W2 / 2, 186);
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
+    const SKIN = '#e5ab7e', SKIN_D = '#c98a5e', COAT = '#f7f3ea', COAT_D = '#e3dccc';
+    const droop = happy ? 0 : 1;
+
+    // arms, behind the coat but hung wide enough to show past it
+    for (const sx of [-1, 1]) {
+        const up = happy && sx > 0;
+        blob(COAT_D, () => {
+            ctx.moveTo(sx * 40, -44);
+            if (up) {
+                ctx.quadraticCurveTo(sx * 88, -58, sx * 76, -116);
+                ctx.lineTo(sx * 50, -120);
+                ctx.quadraticCurveTo(sx * 60, -66, sx * 22, -38);
+            } else {
+                ctx.quadraticCurveTo(sx * 70, -10, sx * 66, 46);
+                ctx.lineTo(sx * 40, 46);
+                ctx.quadraticCurveTo(sx * 38, -8, sx * 22, -38);
+            }
+        });
+        const hx = up ? sx * 63 : sx * 53, hy = up ? -122 : 52;
+        blob(SKIN, () => ctx.ellipse(hx, hy, 13, 11, 0, 0, Math.PI * 2));
+        if (up) for (let i = 0; i < 4; i++) {          // a fistful of notes
+            ctx.save();
+            ctx.translate(hx + 2, hy - 8);
+            ctx.rotate(-.5 + i * .27);
+            blob('#cfe3c4', () => { ctx.rect(-8, -34, 22, 32); });
+            blob('#9dc48c', () => { ctx.rect(-8, -34, 22, 5); });
+            blob('#6f9c60', () => ctx.ellipse(3, -18, 5, 6, 0, 0, Math.PI * 2));
+            ctx.restore();
+        }
+    }
+    blob(SKIN_D, () => { ctx.rect(-13, -76, 26, 30); });   // the neck, under the collar
+    // the coat
+    blob(COAT, () => {
+        ctx.moveTo(-40, -56);
+        ctx.quadraticCurveTo(-52, -48, -54, 20);
+        ctx.lineTo(-56, 96); ctx.lineTo(56, 96);
+        ctx.quadraticCurveTo(54, 20, 52, -48);
+        ctx.quadraticCurveTo(40, -56, 0, -54);
+    });
+    // the apron over it, blue and white the way they all are
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(-28, -50); ctx.lineTo(28, -50);
+    ctx.quadraticCurveTo(34, 10, 40, 96); ctx.lineTo(-40, 96);
+    ctx.quadraticCurveTo(-34, 10, -28, -50);
+    ctx.closePath();
+    ctx.fillStyle = '#f7f3ea'; ctx.fill();
+    ctx.clip();
+    ctx.fillStyle = '#4a79b8';
+    for (let x = -46; x < 46; x += 15) ctx.fillRect(x, -60, 7, 170);
+    ctx.restore();
+    blob('rgba(0,0,0,.10)', () => { ctx.rect(-40, 88, 80, 8); });
+
+    // the head
+    blob(SKIN, () => ctx.ellipse(0, -106, 41, 48, 0, 0, Math.PI * 2));
+    for (const sx of [-1, 1]) blob(SKIN_D, () => ctx.ellipse(sx * 40, -104, 7, 10, 0, 0, Math.PI * 2));
+    for (const sx of [-1, 1])                               // ruddy from the cold room
+        blob('rgba(211,109,78,.42)', () => ctx.ellipse(sx * 27, -96, 13, 9, 0, 0, Math.PI * 2));
+    for (const sx of [-1, 1]) {
+        blob('#2a201a', () => ctx.ellipse(sx * 15, -114, 4.4, happy ? 3.4 : 4.8, 0, 0, Math.PI * 2));
+        blob('#4a3428', () => {
+            /* Wide apart either way. Brows that nearly meet read as one V
+               across the middle of his face, which is a scowl whichever way
+               up the two halves of it are. */
+            if (happy) {     // level and high, which is a man pleased with himself
+                ctx.moveTo(sx * 12, -129); ctx.quadraticCurveTo(sx * 22, -137, sx * 32, -131);
+                ctx.quadraticCurveTo(sx * 22, -132, sx * 12, -125);
+            } else {         // up at the inside, which is a man who has been robbed
+                ctx.moveTo(sx * 12, -133); ctx.quadraticCurveTo(sx * 22, -126, sx * 32, -118);
+                ctx.quadraticCurveTo(sx * 22, -122, sx * 12, -128);
+            }
+        });
+    }
+    blob(SKIN_D, () => ctx.ellipse(0, -100, 8, 7, 0, 0, Math.PI * 2));
+    // the mouth first, because the moustache sits over the top of it
+    if (happy) {
+        blob('#7a3628', () => ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2));
+        ctx.save();
+        ctx.beginPath(); ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2); ctx.clip();
+        blob('#fdf7e8', () => { ctx.rect(-18, -88, 36, 12); });
+        blob('#d4667c', () => ctx.ellipse(0, -66, 10, 7, 0, 0, Math.PI * 2));
+        ctx.restore();
+    } else {
+        blob('#8a4436', () => {
+            ctx.moveTo(-15, -68); ctx.quadraticCurveTo(0, -80, 15, -68);
+            ctx.quadraticCurveTo(0, -74, -15, -68);
+        });
+    }
+    // the moustache
+    blob('#4a3428', () => {
+        ctx.moveTo(0, -94);
+        ctx.quadraticCurveTo(-17, -100, -32, -88 + droop * 7);
+        ctx.quadraticCurveTo(-21, -78 + droop * 8, 0, -84);
+        ctx.quadraticCurveTo(21, -78 + droop * 8, 32, -88 + droop * 7);
+        ctx.quadraticCurveTo(17, -100, 0, -94);
+    });
+    // the boater
+    blob('#e0c47f', () => { ctx.ellipse(0, -146, 62, 12, 0, 0, Math.PI * 2); });
+    blob('#f0dca6', () => {
+        ctx.moveTo(-37, -148); ctx.quadraticCurveTo(-38, -178, 0, -178);
+        ctx.quadraticCurveTo(38, -178, 37, -148);
+    });
+    blob('#3f5f96', () => {
+        ctx.moveTo(-37.5, -149); ctx.quadraticCurveTo(0, -142, 37.5, -149);
+        ctx.lineTo(37.5, -160); ctx.quadraticCurveTo(0, -153, -37.5, -160);
+    });
     ctx.restore();
 }
 

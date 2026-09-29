@@ -100,12 +100,15 @@ the animal, and each one has a name, because a butcher's dog would.
 
 | From | Dog | Breed |
 | --- | --- | --- |
-| 1 | Chipolata | Dachshund - a dog shaped like the thing it is stealing |
+| 1 | Alfie | Dachshund - a dog shaped like the thing it is stealing |
 | 3 | Nipper | Jack Russell |
-| 5 | Bangers | Bulldog |
-| 8 | Chops | Boxer |
-| 11 | Cleaver | Dobermann |
-| 14 | Hackett | Great Dane |
+| 5 | Winston | Bulldog |
+| 8 | Duke | Boxer |
+| 11 | Bruno | Dobermann |
+| 14 | Goliath | Great Dane |
+
+They are dogs' names, not butcher's puns. The joke is the dachshund; naming
+it after a sausage as well is the same joke twice.
 
 Every one of them is the same drawing with different numbers - a skull, a jaw,
 a muzzle, a pair of ears and a coat - because six hand-drawn dogs would have
@@ -129,6 +132,13 @@ the reason to cut well is that it pays.
 Every chomp the dog manages costs you one of three chances, and when they are
 gone the shop is shut. That is the only thing that ends a run, so a round is
 never lost - only more or less expensive.
+
+The end of the day takes the whole window. Everything else is cleared away and
+the man whose shop it is stands there with the takings: boater, moustache,
+blue-striped apron, and either a fistful of notes held up where everyone can
+see it or his hands empty and his shoulders down. Which one you get is whether
+the day beat the best day, and it says more about how it went than the number
+does.
 
 ## The noise
 
