@@ -133,8 +133,12 @@ every morning, and a dog that has been fed getting keener with it. Feed it on
 Monday and you will know about it on Saturday.
 
 Behind the counter: Reg, Sid, Pearl, Wally, Doreen or Mo, in a boater or a flat
-cap or a white peaked hat. Over their head, signwritten on the fascia, whatever
-the shop is called this week - A Cut Above, Beef Encounter, Meat Expectations,
+cap or a white peaked hat. Over their head, a proper shopfront - a dark fascia
+board that throws a shadow on the tiles, the name signwritten in gold with
+FAMILY BUTCHER under it, and a scalloped awning below in the butcher's own
+apron colour, so the shop belongs to him. The sign used to be the same green as
+the wall behind it, which made it a plaque drawn onto the tiles rather than a
+board in front of them. What the shop is called changes every week - A Cut Above, Beef Encounter, Meat Expectations,
 Fillet of Soul, Cleaver Girl, Much Ado About Mutton, Sir Loin of Beef, Rack &
 Ruin and a dozen more, because a butcher's shop is obliged by long tradition to
 be called something like that. On the block: a butcher's knife, a cleaver, a

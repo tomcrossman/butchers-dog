@@ -371,7 +371,7 @@ body.waiting #hud { display: none; }
 
     <div id="intro">
         <h1>Butcher's<br>Dog</h1>
-        <canvas id="shopfront" width="340" height="268"></canvas>
+        <canvas id="shopfront" width="340" height="286"></canvas>
         <div class="rule"></div>
         <p id="cast-line">Six days. One string a day. A bigger dog every morning.</p>
         <button class="btn" id="play">Open up shop</button>
@@ -2432,40 +2432,73 @@ document.getElementById('play').addEventListener('click', e => {
 /* Who you are this week, what you are cutting with, and the six of them
    lined up in the order they will turn up. The dogs getting bigger left to
    right is the whole difficulty curve, said without a word. */
-/* The sign over the door. Signwritten gold on a dark board with a gold rule
-   inside the edge, hung off two brackets - the same thing the plates in the
-   HUD are, at the size a shop would paint it. The name is squeezed to fit
-   rather than wrapped, because a fascia board has one line and that is that. */
-function drawFascia(g, name) {
-    const x0 = 16, x1 = 324, y0 = 14, y1 = 62;
+/* The sign over the door, and the reason it did not look like one: it was the
+   same colour as the wall it hung on, so it read as a plaque drawn onto the
+   tiles rather than a board in front of them. Three things fix that - a solid
+   dark fascia that contrasts with the wall and throws a shadow onto it, a
+   trade line under the name in the way every shop sign ever painted has one,
+   and a striped awning underneath, which is the single strongest thing you
+   can draw that says shop. The awning takes the butcher's own apron colour,
+   so the shop belongs to him. */
+function drawFascia(g, name, apron) {
+    const x0 = 6, x1 = 334, y0 = 6, y1 = 62;
     g.save();
-    for (const bx of [58, 282]) {                     // the brackets it hangs off
-        g.fillStyle = '#8a6417';
-        g.beginPath(); g.roundRect(bx - 4, 2, 8, 16, 3); g.fill();
-    }
-    g.fillStyle = '#123327';
-    g.beginPath(); g.roundRect(x0, y0, x1 - x0, y1 - y0, 3); g.fill();
-    g.strokeStyle = '#a87c22'; g.lineWidth = 2.5;
-    g.beginPath(); g.roundRect(x0 + 1, y0 + 1, x1 - x0 - 2, y1 - y0 - 2, 3); g.stroke();
-    g.strokeStyle = 'rgba(220,171,62,.5)'; g.lineWidth = 1;
-    g.beginPath(); g.roundRect(x0 + 6, y0 + 6, x1 - x0 - 12, y1 - y0 - 12, 2); g.stroke();
-    g.font = '400 27px "Alfa Slab One", Georgia, serif';
+    g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = 12; g.shadowOffsetY = 6;
+    g.fillStyle = '#241a16';
+    g.beginPath(); g.roundRect(x0, y0, x1 - x0, y1 - y0, 2); g.fill();
+    g.shadowColor = 'transparent';
+    g.fillStyle = '#c59430';                            // a beaded gold edge
+    g.beginPath(); g.roundRect(x0, y0, x1 - x0, 4, 1); g.fill();
+    g.beginPath(); g.roundRect(x0, y1 - 4, x1 - x0, 4, 1); g.fill();
+    g.strokeStyle = 'rgba(220,171,62,.45)'; g.lineWidth = 1;
+    g.strokeRect(x0 + 7, y0 + 8, x1 - x0 - 14, y1 - y0 - 16);
     g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '400 26px "Alfa Slab One", Georgia, serif';
     const room = x1 - x0 - 34, w = g.measureText(name).width;
     g.save();
-    g.translate((x0 + x1) / 2, (y0 + y1) / 2 + 1);
+    g.translate((x0 + x1) / 2, y0 + 26);
     if (w > room) g.scale(room / w, 1);
-    g.fillStyle = '#dcab3e';
+    g.fillStyle = '#e8c15a';
     g.fillText(name, 0, 0);
+    g.restore();
+    g.font = '900 9px Lato, system-ui, sans-serif';     // and what the trade is
+    g.fillStyle = 'rgba(232,193,90,.62)';
+    g.save();
+    g.translate((x0 + x1) / 2, y0 + 45);
+    g.scale(1, 1);
+    for (let i = 0; i < 1; i++) g.fillText('F A M I L Y   B U T C H E R', 0, 0);
+    g.restore();
+
+    // the awning: stripes in his own apron, and a scalloped edge on the bottom
+    const ay = y1, ah = 26, scallop = 11, n = Math.round((x1 - x0) / (scallop * 2));
+    g.save();
+    g.shadowColor = 'rgba(0,0,0,.42)'; g.shadowBlur = 10; g.shadowOffsetY = 6;
+    g.beginPath();
+    g.moveTo(x0 - 4, ay);
+    g.lineTo(x1 + 4, ay);
+    g.lineTo(x1 + 4, ay + ah);
+    for (let i = n - 1; i >= 0; i--) {
+        const cx = x0 - 4 + (x1 - x0 + 8) * (i + .5) / n;
+        g.arc(cx, ay + ah, (x1 - x0 + 8) / (n * 2), 0, Math.PI, false);
+    }
+    g.lineTo(x0 - 4, ay + ah);
+    g.closePath();
+    g.fillStyle = '#f2ece0'; g.fill();
+    g.shadowColor = 'transparent';
+    g.clip();
+    g.fillStyle = apron;
+    for (let x = x0 - 12; x < x1 + 12; x += 34) g.fillRect(x, ay - 2, 17, ah + 20);
+    g.fillStyle = 'rgba(0,0,0,.16)';                    // it is not flat to the wall
+    g.fillRect(x0 - 8, ay, x1 - x0 + 16, 5);
     g.restore();
     g.restore();
 }
 function drawShopfront() {
     const c = document.getElementById('shopfront'), g = c.getContext('2d');
-    g.clearRect(0, 0, 340, 268);
-    drawFascia(g, cast.shop);
-    drawButcher(g, true, { cx: 122, cy: 192, k: .68, holds: 'knife' });
-    drawDog(g, 258, 208, .80 / cast.dog.k, { open: 0 }, 0, cast.dog);
+    g.clearRect(0, 0, 340, 286);
+    drawFascia(g, cast.shop, cast.butcher.apron);
+    drawButcher(g, true, { cx: 120, cy: 214, k: .64, holds: 'knife' });
+    drawDog(g, 264, 226, .76 / cast.dog.k, { open: 0 }, 0, cast.dog);
     // the knife is in his hand and the dog is stood next to him, so the line
     // only has to introduce the two of them
     document.getElementById('cast-line').innerHTML =
