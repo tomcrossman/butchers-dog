@@ -215,6 +215,12 @@ climbed. It was a button on the HUD first. The whole input of this game is a
 swipe, and a second kind of tap in the middle of a five-second day was one
 thing too many to be holding.
 
+**Insured** is the most expensive thing in the shop and the only one that is
+not about money. Twelve hundred pounds, and cutting the dog stops being the end
+of it: it is hurt, the day ends there, and it lives. No vet, no bill, no stone,
+no new dog on Monday - the week carries on with everything taken so far. It
+does not make the dog harder to hit; it makes hitting it something you survive.
+
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
 cut at the quality of somebody who has done it a hundred times and is not
@@ -314,7 +320,7 @@ Both ways out of Saturday go through the same door: the tap that skips the
 tally used to ask for a seventh day, which does not exist, and froze the week
 where it stood.
 
-Cut the dog and there is a vet. The bill is a quarter of the till, minimum a
+Cut the dog, uninsured, and there is a vet. The bill is a quarter of the till, minimum a
 fiver, and it hurts on purpose - but the dog you have spent a month dressing up
 is the dog that comes back, bandaged, keeping its name, its breed and every hat
 you ever bought it. Below the minimum there is nothing to decide, so nothing is

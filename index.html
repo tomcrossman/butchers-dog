@@ -311,7 +311,10 @@ body.waiting #hud { display: none; }
 /* The dog is the whole point of the shop, so it does not scroll away with the
    first shelf: it is pinned to the top and every tile you try goes straight
    onto it, in view, without scrolling back up for a look. */
-#store { padding-top: 0; }
+/* The shop starts at the top, always. Centring is right for a short screen
+   like the back room, but a shelf pinned to the top of a centred column sits
+   halfway down the window whenever the tab it is on happens to be short. */
+#store { padding-top: 0; justify-content: flex-start; }
 #store, #settings { padding-right: 18px; }
 #stock-head {
     position: sticky; top: 0; z-index: 2;
@@ -674,11 +677,11 @@ body.waiting #hud { display: none; }
                 <button class="nudge" data-pick="butcher" data-step="-1">&lsaquo;</button>
                 <b id="pick-butcher">Reg</b>
                 <button class="nudge" data-pick="butcher" data-step="1">&rsaquo;</button></div>
-            <div class="row"><span class="lab">Dog</span>
+            <div class="row"><span class="lab">Dog breed</span>
                 <button class="nudge" data-pick="dog" data-step="-1">&lsaquo;</button>
                 <b id="pick-dog">Bulldog</b>
                 <button class="nudge" data-pick="dog" data-step="1">&rsaquo;</button></div>
-            <div class="row"><span class="lab">Its name</span>
+            <div class="row"><span class="lab">Dog name</span>
                 <input id="in-dog" maxlength="12" autocomplete="off" spellcheck="false">
                 <button class="nudge" id="roll-dog">&#9861;</button></div>
             <div class="row"><span class="lab">Shop</span>
@@ -737,7 +740,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v37';
+const APP_VERSION = 'v39';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1796,6 +1799,14 @@ function dogDown() {
     clearTimeout(tallyT);
     tallyEl.classList.remove('on');
     jolt(); yelpBad();
+    /* Insured. It is hurt and the day is over, but it is not dead, there is
+       no bill and the week carries on with everything taken so far. */
+    if (running('insure')) {
+        live = true;                       // endRound wants a day to end
+        dog.toy = TOY_S;                   // it backs off, badly, and that is that
+        endRound();
+        return;
+    }
     /* The week's money comes straight back out of the till, where you can
        watch it go, and only then is the card allowed to mention it. */
     const gone = money;
@@ -2428,6 +2439,11 @@ const KIT = [
       why: 'One day a week the dog goes after the bone instead.' },
     { id: 'apprentice', kind: 'hand',  name: 'An apprentice',    price: 32000,
       why: 'Cuts one link a day, about halfway through.' },
+    /* The most expensive thing in the shop, and the only one that is not
+       about money at all. It does not make the dog harder to hit - it makes
+       hitting it something you survive. The day still stops there. */
+    { id: 'insure',    kind: 'care',  name: 'Dog insurance',    price: 120000,
+      why: 'Cut the dog and it lives. The day ends there.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -2446,6 +2462,7 @@ const KINDS = [
     { kind: 'knife',  label: 'On the block',  tab: 'shop' },
     { kind: 'skill',  label: 'Once a week',   tab: 'shop' },
     { kind: 'hand',   label: 'On the payroll', tab: 'shop' },
+    { kind: 'care',   label: 'Insured',       tab: 'shop' },
     { kind: 'hat',    label: 'Headwear',      tab: 'dog' },
     { kind: 'face',   label: 'Facewear',      tab: 'dog' },
     { kind: 'collar', label: 'Collars',       tab: 'dog' },
@@ -2459,14 +2476,14 @@ const SAVE_KEY = 'bd-shop-1';
 const FRESH = () => ({
     butcher: 0, tier: 2, breed: 0, dogName: 'Nipper', shop: 'A Cut Above',
     bank: 0, weeks: 0,
-    owned: ['blade', 'bare', 'plain', 'spiked'],
+    owned: ['chef', 'bare', 'plain', 'spiked'],
     /* Shop upgrades are not a wardrobe: you do not pick one of them, you
        switch the ones you have bought on and off, and any number can be on
        at once. They live in their own list for that reason. */
     on: [],
     debug: false,
     taught: false,
-    worn: { knife: 'blade', hat: 'bare', face: 'plain', collar: 'spiked' },
+    worn: { knife: 'chef', hat: 'bare', face: 'plain', collar: 'spiked' },
 });
 let save = FRESH(), started = false;
 function loadSave() {
@@ -2476,6 +2493,13 @@ function loadSave() {
             save = Object.assign(FRESH(), JSON.parse(raw));
             // the chef's hat used to share an id with the butcher's knife
             if (save.worn.hat === 'chef') save.worn.hat = 'chefhat';
+            // and the knife everyone starts with was saved under an id that
+            // was never on the shelf, so it turned up on it at nothing
+            save.owned = save.owned.map(id => id === 'blade' ? 'chef' : id);
+            if (save.worn.knife === 'blade') save.worn.knife = 'chef';
+            // whatever else it is, everything free is already yours
+            for (const i of STOCK) if (!i.price && !save.owned.includes(i.id))
+                save.owned.push(i.id);
             started = true;
         }
     } catch (e) { /* private mode: play it as a stranger every time */ }
@@ -2484,7 +2508,7 @@ function putSave() {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* never mind */ }
 }
 // the shelves you switch rather than wear
-const SWITCHED = ['line', 'skill', 'hand'];
+const SWITCHED = ['line', 'skill', 'hand', 'care'];
 /* Debug hands you the whole shop for nothing. It is a switch in the back room
    rather than a build flag, because the thing worth testing is what the
    upgrades do in a real week, and that means playing one. */
@@ -3889,6 +3913,26 @@ function drawTile(c, item) {
         }
         return;
     }
+    if (item.kind === 'care') {                       // a plaster, on its own
+        g.save();
+        g.translate(TILE_W / 2, TILE_H / 2);
+        g.rotate(-.42);
+        g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 8; g.shadowOffsetY = 4;
+        g.fillStyle = '#f2ddb8';
+        g.beginPath(); g.roundRect(-38, -13, 76, 26, 9); g.fill();
+        g.shadowColor = 'transparent';
+        g.fillStyle = '#fdf5e4';
+        g.beginPath(); g.roundRect(-14, -10, 28, 20, 4); g.fill();
+        g.fillStyle = 'rgba(160,138,102,.55)';
+        for (const sx of [-1, 1]) for (const sy of [-1, 1])
+            for (const dx of [0, 1]) {
+                g.beginPath();
+                g.arc(sx * (22 + dx * 9), sy * 5, 2, 0, Math.PI * 2);
+                g.fill();
+            }
+        g.restore();
+        return;
+    }
     if (item.kind === 'skill') {                      // the bone, off its string
         g.save();
         g.translate(TILE_W / 2, TILE_H / 2);
@@ -4010,7 +4054,7 @@ function paintTryOn() {
         `<span class="pair">` +
         `<button class="btn no" data-try="no">Put it back</button>` +
         `<button class="btn yes${can ? '' : ' poor'}" data-try="yes">` +
-        `${can ? `Buy it &middot; ${money0(tryOn.price)}` : 'Not enough'}</button></span>`;
+        `${can ? `Buy it &middot; ${money0(tryOn.price)}` : money0(tryOn.price)}</button></span>`;
     bar.hidden = false;
     storeEl.classList.add('trying');
     drawItemOnly(bar.querySelector('canvas'), tryOn);
