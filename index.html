@@ -82,7 +82,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #hud {
     position: absolute; top: 0; left: 0; right: 0; z-index: 3;
     display: flex; align-items: center; gap: 8px;
-    padding: 11px 11px; pointer-events: none;
+    padding: 7px 10px; pointer-events: none;
 }
 .plate {
     display: flex; align-items: center; gap: 7px; padding: 6px 11px 5px;
@@ -104,6 +104,9 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 @keyframes beat { from { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
                   to   { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 16px rgba(220,171,62,.6); } }
 #till {
+    /* the day on the left, the till on the right: with the speaker gone the
+       two of them huddled in one corner with half the window empty beside them */
+    margin-left: auto;
     display: flex; align-items: center;
     gap: 0; padding: 6px 11px 5px; white-space: nowrap;
     font-family: var(--font-display); font-size: 17px; color: var(--gold);
@@ -159,16 +162,6 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #card.grave #rating, #card.vet #rating, #card.hurt #rating { display: block; margin-top: 8px; }
 #card.grave #score { color: #5a564e; }
 #card.grave #ribbon { background: #4b4842; color: #efe7d4; }
-#mute {
-    margin-left: auto;           /* the row is two plates and a button, not a bar */
-    pointer-events: auto; cursor: pointer; padding: 7px 8px 4px; line-height: 0;
-    background: linear-gradient(180deg, #1a4636, #123327);
-    border: 2px solid var(--gold-d); border-radius: 3px;
-}
-#mute:active { transform: translateY(1px); }
-#mute .off { display: none; }
-#mute.muted .on { display: none; }
-#mute.muted .off { display: inline; }
 
 
 /* The count is the only thing on the screen that is about to matter, so it
@@ -609,8 +602,6 @@ body.waiting #hud { display: none; }
     .plate { font-size: 13px; padding: 5px 7px 4px; }
     .plate .ico { width: 12px; height: 12px; }
     #quota { padding: 5px 7px; }
-    #mute { padding: 6px 7px 3px; }
-    #mute svg { width: 18px; height: 18px; }
 }
 </style>
 </head>
@@ -669,14 +660,6 @@ body.waiting #hud { display: none; }
         <div class="plate sign" id="roundplate"><svg class="ico"><use href="#i-cal"/></svg><span
             id="round-val">Monday</span><span class="of" id="weekno">Week 1</span></div>
         <div id="till" class="sign"><span id="money">&pound;0.00</span></div>
-        <button id="mute" aria-label="Sound on or off">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dcab3e"
-                 stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M 4 9 H 8 L 13 5 V 19 L 8 15 H 4 Z" fill="#dcab3e"/>
-                <g class="on"><path d="M 16.5 9.5 q 2 2.5 0 5"/><path d="M 19.5 7 q 3.6 5 0 10"/></g>
-                <g class="off"><path d="M 17 9.5 L 22 14.5 M 22 9.5 L 17 14.5"/></g>
-            </svg>
-        </button>
     </div>
 
     <div id="banner"></div>
@@ -779,7 +762,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v72';
+const APP_VERSION = 'v73';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1010,16 +993,15 @@ addEventListener('visibilitychange', () => {
         audioCtx.resume().catch(() => {});
 });
 
-const muteBtn = document.getElementById('mute');
-const applySound = () => muteBtn.classList.toggle('muted', !soundOn);
-muteBtn.addEventListener('click', e => {
-    e.stopPropagation();
+/* The speaker used to sit in the corner of the window you play in. Sound is
+   not something anybody changes twice a day - it is set once, out the back,
+   with the rest of the settings - and it was one more thing across the top of
+   a screen that wanted the room. */
+function toggleSound() {
     soundOn = !soundOn;
     try { localStorage.setItem(soundKey, soundOn ? 'on' : 'off'); } catch (e) { /* private mode */ }
-    applySound();
     if (soundOn) plop(2);
-});
-applySound();
+}
 
 /* ============================================================
    THE STRING
@@ -2666,7 +2648,13 @@ cv.addEventListener('pointercancel', () => { penDown = false; up(); });
    DRAWING IT
    ============================================================ */
 const FAT = 27;                 // how fat a sausage is at its fattest
-const RAIL = 104;               // the brass rail everything hangs off
+/* The brass rail everything hangs off. It sat at 104 with the plates ending
+   around 40, which is sixty-odd pixels of tiled wall between the two and the
+   first sausage not starting until 130 - on a phone, with a browser bar over
+   the top of it, that is the most expensive stretch of the screen spent on
+   nothing. The brackets that hold the rail reach 26 above it, so this is as
+   far up as it goes without them fouling the till. */
+const RAIL = 74;
 
 /* How fat the string is at a point. Three things decide it, in this order:
    a sausage is fattest in its middle and eases off towards both ends, a twist
@@ -4920,7 +4908,7 @@ document.getElementById('set-done').addEventListener('click', () => {
 document.querySelectorAll('.nudge[data-flip]').forEach(btn =>
     btn.addEventListener('click', () => flip(btn.dataset.flip)));
 function flip(what) {
-    if (what === 'sound') { muteBtn.click(); paintSettings(); return; }
+    if (what === 'sound') { toggleSound(); paintSettings(); return; }
     save.debug = !save.debug;
     if (save.debug) {
         // everything switchable comes on, so one tap is a week with the lot

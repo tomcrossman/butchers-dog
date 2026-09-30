@@ -445,7 +445,21 @@ played. It has its own flag now, separate from the pause, because the pause
 ends when the count starts and the line should stay up through it.
 
 The version is out the back and nowhere else. It used to sit in the corner of
-every screen including the one you play on.
+every screen including the one you play on. So is the sound: there was a
+speaker button in the corner of the window you play in, and sound is not
+something anybody changes twice a day - it is set once, with the rest of the
+settings.
+
+That corner is worth something, which is the other half of it. The brass rail
+sat at 104 with the plates ending around 40, so there were sixty-odd pixels of
+tiled wall between the two and the first sausage did not start until 130 - on a
+phone, under a browser bar, that is the most expensive stretch of screen in the
+game spent on nothing. The rail is at 74 now, which is as far up as the
+brackets that hold it will go without fouling the till, and the day is the
+width of the window: the day on the left, the takings on the right, and the
+string starting straight underneath. The string is about five per cent longer
+for it, which is the same thing that happens when you play on a slightly taller
+phone.
 
 ## After hours
 
