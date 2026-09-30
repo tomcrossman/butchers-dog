@@ -215,7 +215,8 @@ climbed. It was a button on the HUD first. The whole input of this game is a
 swipe, and a second kind of tap in the middle of a five-second day was one
 thing too many to be holding.
 
-**A bit of help** is the bone, the apprentice and the insurance on one shelf.
+**A bit of help** is the bone, the cat, the apprentice and the insurance on one
+shelf.
 They were a heading each over a single tile, which is three headings over three
 things that are all the same thing anyway: somebody or something else taking a
 bit of the week off you.
@@ -225,6 +226,11 @@ not about money. Twelve hundred pounds, and cutting the dog stops being the end
 of it: it is hurt, the day ends there, and it lives. No vet, no bill, no stone,
 no new dog on Monday - the week carries on with everything taken so far. It
 does not make the dog harder to hit; it makes hitting it something you survive.
+
+**A cat**, four hundred and eighty, is the small favour to the bone's big one:
+one walks past every day at a moment nobody picked, and the dog stops dead to
+watch it go. It hands back none of the ground it has made - it just stands
+there for a second and a half, which is what a dog does.
 
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
@@ -257,15 +263,26 @@ at the same speed, because the day the kit changes the odds is the day you are
 buying your way past the dog rather than getting better at getting past it.
 
 Nothing on the shelves is named. Every item is a square tile with the thing
-itself drawn in it - the hat on the dog's own head, the knife on its own - four
-to a row, because seventeen hats written out is seventeen words to read and a
-rack of pictures is one glance.
+itself drawn in it, because seventeen hats written out is seventeen words to
+read and a rack of pictures is one glance.
+
+The wearables are drawn the way his accessories sheet drew them: the item on a
+plain circle standing in for the head. Thirty tiles of the same dog in thirty
+hats is thirty pictures of a dog. The circle is the skull the item is placed
+against, so everything still lands where it lands on a real one - hats on top,
+faces on the eye line, collars at the chin - and Nothing on its head is an
+empty circle, which is exactly right. The counter at the bottom draws the same
+thing; seeing it on the dog is what the pinned preview at the top is for.
 
 The dog is pinned to the top of the shop and does not scroll away with the
 first shelf, so whatever you try goes on in front of you without scrolling back
 up for a look. What it has on already is filled in, gold all the way round,
 ticked in the corner and labelled along the bottom - an outline on its own was
 not enough to find among thirty tiles.
+
+The counter says the name and nothing else. The button under it carries the
+price, and a second line saying the same figure, or how far short of it you
+are, is the same sentence twice.
 
 The shop puts it on before it takes the money, and nothing on the shelf can be
 bought by tapping it. A tap tries a thing on: the tile goes gold side out and
@@ -332,7 +349,11 @@ breathing, still seeing stars, because a card that holds for as long as you
 take to decide should not be a photograph. It used to be a screen shake and
 then, half a second later, a picture.
 
-Uninsured, the offer is under it. The bill is a quarter of the till, minimum a fiver, and
+Uninsured, the offer is under it - and only the offer. What the week was worth
+is not on that card: a figure in red at the top and a price on the button below
+it is two numbers about different things at the moment you are being asked to
+decide between them. The week's takings get their line on the stone afterwards,
+where there is nothing else to read. The bill is a quarter of the till, minimum a fiver, and
 it hurts on purpose - but the dog you have spent a month dressing up
 is the dog that comes back, bandaged, keeping its name, its breed and every hat
 you ever bought it. That card waits to be dismissed: the week's takings can run
@@ -364,6 +385,16 @@ wardrobe - the collar and the hat were bought and paid for and nobody is
 burying those, but a replacement that looked exactly like the one you just
 buried made it read as a respawn rather than a loss. It runs at the same speed,
 as all twelve of them do.
+
+The demonstration is the first Monday of a shop and no other. Making it wait
+for the countdown once was not the same as showing it once: the drawing asked
+what day of the week it was and nothing else, so the dashed line and SWIPE TO
+CUT went on turning up under every Monday's three-two-one for as long as you
+played. It has its own flag now, separate from the pause, because the pause
+ends when the count starts and the line should stay up through it.
+
+The version is out the back and nowhere else. It used to sit in the corner of
+every screen including the one you play on.
 
 ## His drawings
 

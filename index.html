@@ -453,8 +453,6 @@ body.waiting #hud { display: none; }
              color: var(--cream); line-height: 1.2; }
 #tryon .does { display: block; font-size: 11.5px; font-weight: 700; line-height: 1.35;
                opacity: .75; margin-top: 2px; }
-#tryon .cost { display: block; font-size: 11px; font-weight: 900; letter-spacing: .1em;
-               text-transform: uppercase; opacity: .65; margin-top: 3px; }
 #tryon .pair { display: flex; gap: 8px; width: 100%; }
 #tryon .pair .btn { margin-top: 10px; font-size: 16px; padding: 11px 6px; }
 #tryon .no { flex: 1; background: transparent; color: var(--cream);
@@ -542,6 +540,9 @@ body.waiting #hud { display: none; }
 #card.vet #vet-pay, #card.vet #vet-no { display: block; }
 #card.vet #ribbon { background: #7a5c1c; }
 #card.vet #rating, #card.hurt #rating { font-size: 15px; }
+/* the only number on this card is the one on the button */
+#card.vet #score { display: none; }
+#card.vet #rating { font-size: 18px; margin-top: 2px; }
 #card.timed .btn { display: none; }
 #card.timed .inner { cursor: pointer; }
 #cardtime i { display: block; height: 100%; background: rgba(176,58,37,.55);
@@ -576,9 +577,6 @@ body.waiting #hud { display: none; }
     30%, 50%, 70% { transform: translate3d(-11px, 2px, 0); }
     40%, 60% { transform: translate3d(11px, -1px, 0); }
 }
-#version { position: absolute; bottom: 7px; right: 10px; z-index: 3;
-           font-size: 9px; font-weight: 700; letter-spacing: .14em;
-           text-transform: uppercase; color: var(--cream); opacity: .22; }
 
 @media (max-height: 700px) {
     #butcher { width: min(56vw, 216px); }
@@ -749,12 +747,12 @@ body.waiting #hud { display: none; }
         </div>
     </div>
 
-    <div id="version">v1</div>
 </div>
 
 <script>
-const APP_VERSION = 'v49';
-document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
+const APP_VERSION = 'v53';
+/* It used to sit in the corner of every screen. It lives out the back now,
+   which is where you go when you want to know it. */
 
 /* ============================================================
    SOUND
@@ -1148,6 +1146,51 @@ const CHEER = [, , 'DOUBLE', 'TREBLE', 'FOUR AT ONCE', 'FIVE AT ONCE', 'SIX AT O
    dead - it turns round and goes after the bone, which is a few seconds of it
    walking away from the string and giving back everything it had climbed. */
 const TOY_S = 3.2, LAD_Q = 74;
+/* It saunters across the window and the dog forgets what it was doing. It does
+   not walk off with the ground the dog had made, the way the bone does - it is
+   a couple of seconds of standing still, once a day, and that is all. */
+const CAT_S = 2.4, STARE_S = 1.6;
+let cat = null;
+const miaow = () => safely(t => {
+    tone(t, { freq: 620, to: 900, dur: .16, type: 'sawtooth', vol: .09 });
+    tone(t, { freq: 900, to: 540, dur: .3, type: 'sawtooth', vol: .07, at: .14 });
+});
+function sendCat() {
+    if (!live || !armed) return;
+    const [, dy] = dogAt();
+    cat = { t0: now(), y: clamp(dy + 70, 140, H - 40), dir: Math.random() < .5 ? 1 : -1 };
+    dog.stare = STARE_S;
+    miaow();
+}
+function drawCat(ms) {
+    if (!cat) return;
+    const e = (ms - cat.t0) / (CAT_S * 1000);
+    if (e >= 1) { cat = null; return; }
+    const x = cat.dir > 0 ? -60 + e * (W + 120) : W + 60 - e * (W + 120);
+    const step = Math.sin(e * 46);
+    ctx.save();
+    ctx.translate(x, cat.y + Math.abs(step) * 2);
+    ctx.scale(cat.dir * 1.35, 1.35);          // big enough to be worth stopping for
+    const ink = '#2f2b35', lit = '#454050';
+    const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
+    ctx.save();                                       // the tail, up and curling
+    ctx.strokeStyle = ink; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-24, -4);
+    ctx.quadraticCurveTo(-46, -8 + step * 4, -40, -36 + step * 5);
+    ctx.stroke();
+    ctx.restore();
+    for (const [lx, ph] of [[-15, 0], [-8, 2.1], [12, 1], [19, 3.2]])   // legs
+        blob(ink, () => ctx.roundRect(lx - 3, 6, 6, 16 + Math.sin(e * 46 + ph) * 4, 3));
+    blob(ink, () => ctx.ellipse(0, -2, 26, 14, 0, 0, Math.PI * 2));      // body
+    blob(lit, () => ctx.ellipse(-2, -8, 20, 6, 0, 0, Math.PI * 2));
+    blob(ink, () => ctx.ellipse(24, -12, 12, 11, 0, 0, Math.PI * 2));    // head
+    for (const sx of [-1, 1])                                           // ears
+        blob(ink, () => { const ex = 24 + sx * 6;
+            ctx.moveTo(ex - 5, -20); ctx.lineTo(ex + 2, -32); ctx.lineTo(ex + 6, -18); });
+    blob('#e8d46a', () => ctx.ellipse(29, -13, 2.6, 3.2, 0, 0, Math.PI * 2));
+    ctx.restore();
+}
 let toyDay = 0, toyFly = null;
 const squeak = () => safely(t => {
     tone(t, { freq: 900, to: 1900, dur: .13, type: 'square', vol: .12 });
@@ -1512,6 +1555,10 @@ function chompPose(e) {
 }
 function dogStep(dt) {
     if (!dog.going) return;
+    if (dog.stare > 0) {                                // watching the cat go by
+        dog.stare -= dt;
+        return;
+    }
     if (dog.toy > 0) {                                  // off after the bone
         dog.toy -= dt;
         /* It gives back the ground it has made and waits at the bottom. A cap
@@ -1617,7 +1664,7 @@ function showHud() {
 }
 function startRound(n) {
     if (n > DAYS.length) return endWeek();       // there is no seventh day
-    round = n; live = true; tallying = false; teaching = false;
+    round = n; live = true; tallying = false; teaching = false; demoWeek = false;
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(teachT); clearTimeout(holdT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
@@ -1633,8 +1680,8 @@ function startRound(n) {
        second and a bit, which is one cut if you are quick and none if you
        are admiring the string. */
     dog.s = string.len + dog.speed * 1.25; dog.going = false;
-    dog.chomp = 0; dog.keen = 0; dog.grabX = null; dog.toy = 0;
-    toyFly = null;
+    dog.chomp = 0; dog.keen = 0; dog.grabX = null; dog.toy = 0; dog.stare = 0;
+    toyFly = null; cat = null;
     // a week picks its own day for it, and Monday is as likely as Saturday
     if (n === 1) toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
     roundT0 = now();
@@ -1647,7 +1694,7 @@ function startRound(n) {
        something you learned a month ago. Start again from nothing brings it
        back, because that is a new shop and possibly a new person. */
     if (n === 1 && !save.taught) {
-        teaching = true;
+        teaching = true; demoWeek = true;
         save.taught = true; putSave();     // once ever, not once a week
         teachT = setTimeout(beginCount, TEACH_MS);
     }
@@ -1690,6 +1737,9 @@ function countdown(n) {
         // and on one day of the week the bone comes in, somewhere in the middle
         if (n === toyDay) countT.push(setTimeout(throwToy,
             string.len / dog.speed * (250 + Math.random() * 400)));
+        // the cat, meanwhile, walks past every day
+        if (running('cat')) countT.push(setTimeout(sendCat,
+            string.len / dog.speed * (200 + Math.random() * 450)));
         /* One steak a day from Tuesday, or two a day from Monday if the slab
            is stocked for it. They are spaced far enough apart that the second
            is never asking for the first one's airspace. */
@@ -1864,8 +1914,6 @@ function dogDown() {
     drawDowned(bg);                       // out cold, with the crosses for eyes
     document.getElementById('ribbon').textContent = 'OH DEAR';
     document.getElementById('ledger').innerHTML = '';
-    document.getElementById('score').innerHTML =
-        `${money2(gone)}<span class="pc">this week, gone</span>`;
     document.getElementById('rating').textContent = `${cast.dog.dog} is in a bad way`;
     /* The offer is made either way. A bill you cannot meet is worth seeing -
        it is the reason you are about to bury a dog - so the button carries the
@@ -1978,11 +2026,16 @@ function farewell(then) {
     };
     requestAnimationFrame(step);
 }
+/* The pose the hit left it in, carried on. The card used to draw it sitting up
+   straight and level, which after being knocked flat on the window behind it
+   reads as the dog getting back up again in the half second before the card
+   has finished fading in - the two are on screen together while it does. */
+const DOWN_TILT = .5;
 function drawDowned(g, ms) {
     g.save();
-    g.translate(165, 190 + Math.sin((ms || 0) / 480) * 3);
-    g.rotate(.14 + Math.sin((ms || 0) / 700) * .03);
-    drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: .3, mood: 'gone' }, 0, cast.dog);
+    g.translate(165, 196 + Math.sin((ms || 0) / 480) * 3);
+    g.rotate(DOWN_TILT + Math.sin((ms || 0) / 700) * .035);
+    drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: .55, mood: 'gone' }, 0, cast.dog);
     stars(g, ms || 0, -78, 36);
     g.restore();
 }
@@ -2559,6 +2612,11 @@ const KIT = [
     /* The most expensive thing in the shop, and the only one that is not
        about money at all. It does not make the dog harder to hit - it makes
        hitting it something you survive. The day still stops there. */
+    /* The bone is one big favour a week; the cat is a small one every day.
+       The dog does not give any ground back for a cat - it just stops dead and
+       watches it go, which is what a dog does. */
+    { id: 'cat',       kind: 'help',  name: 'A cat',            price: 48000,
+      why: 'One walks past every day. The dog stops to watch.' },
     { id: 'insure',    kind: 'help',  name: 'Dog insurance',    price: 120000,
       why: 'Cut the dog and it lives. The day ends there.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
@@ -3619,7 +3677,15 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
    and over until the dog is let off. It stops the moment the round is live,
    because by then you either have it or you have not. */
 const DEMO_CYCLE = 1600, DEMO_SWEEP = .5;
-const demoOn = () => live && !armed && round === 1 && string && !swipe;
+/* Only on the one Monday that is being taught. Making the demonstration wait
+   for the countdown once was not the same as showing it once: this asked the
+   day of the week and nothing else, so the dashed line and SWIPE TO CUT went
+   on turning up under every Monday's three-two-one for as long as you played.
+   It has to be its own flag rather than `teaching`, because `teaching` is
+   switched off the moment the count starts and the line should stay up
+   through it. */
+let demoWeek = false;
+const demoOn = () => demoWeek && live && !armed && string && !swipe;
 function drawDemo(ms) {
     /* The bottom twist, which frees the bottom sausage - the one nearest the
        dog, and so the one you actually want off first. Demonstrating a cut in
@@ -3768,6 +3834,7 @@ function draw() {
     drawSteak(ctx);
 
     drawToy(ms);
+    drawCat(ms);
     if (demoOn()) drawDemo(ms);
 
     // what that swipe was worth, said out loud
@@ -3806,13 +3873,16 @@ function draw() {
     }
 
     if (hit) {
-        const e = (ms - hit.t0) / HIT_MS;
-        if (e >= 1) hit = null;
-        else {
+        // it holds the pose it ended in rather than vanishing: the card lands
+        // on the same frame, and the branch below would put the dog back on
+        // its feet in the gap
+        const e = Math.min(1, (ms - hit.t0) / HIT_MS);
+        if (e >= 1) hit.settled = true;
+        {
             const knock = Math.sin(Math.min(1, e / .3) * Math.PI * .5) * 26;
             ctx.save();
             ctx.translate(hit.x + knock, hit.y + Math.pow(e, 2) * 40);
-            ctx.rotate(Math.sin(e * 8) * .3 * (1 - e) + e * .5);
+            ctx.rotate(Math.sin(e * 8) * .3 * (1 - e) + e * DOWN_TILT);
             const sq = e < .14 ? 1 + Math.sin(e / .14 * Math.PI) * .24 : 1;
             ctx.scale(sq, 2 - sq);
             drawDog(ctx, 0, 0, 1.02, { open: .55, mood: 'gone' }, 0, cast.dog);
@@ -3864,7 +3934,7 @@ function tick() {
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || steak || hit || demoOn() || !resting) raf = requestAnimationFrame(step);
+            || chewing || steak || (hit && !hit.settled) || cat || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -4043,6 +4113,24 @@ function drawTile(c, item) {
         g.restore();
         return;
     }
+    if (item.id === 'cat') {                          // sat down, looking at you
+        g.save();
+        g.translate(TILE_W / 2 + 6, TILE_H / 2 + 16);
+        g.scale(1.15, 1.15);
+        const ink = '#2f2b35';
+        const blob = (fill, path) => { g.beginPath(); path(); g.closePath(); g.fillStyle = fill; g.fill(); };
+        g.strokeStyle = ink; g.lineWidth = 6; g.lineCap = 'round';
+        g.beginPath(); g.moveTo(-10, 6); g.quadraticCurveTo(-30, 4, -26, -20); g.stroke();
+        blob(ink, () => { g.moveTo(-14, 8); g.quadraticCurveTo(-16, -18, 0, -18);
+                          g.quadraticCurveTo(14, -18, 12, 8); });
+        blob(ink, () => g.ellipse(2, -26, 13, 12, 0, 0, Math.PI * 2));
+        for (const sx of [-1, 1]) blob(ink, () => { const ex = 2 + sx * 7;
+            g.moveTo(ex - 5, -34); g.lineTo(ex + sx * 2, -46); g.lineTo(ex + 6, -32); });
+        for (const sx of [-1, 1])
+            blob('#e8d46a', () => g.ellipse(2 + sx * 5, -27, 2.8, 3.4, 0, 0, Math.PI * 2));
+        g.restore();
+        return;
+    }
     if (item.id === 'toy') {                          // the bone, off its string
         g.save();
         g.translate(TILE_W / 2, TILE_H / 2);
@@ -4068,9 +4156,29 @@ function drawTile(c, item) {
         g.restore();
         return;
     }
+    drawWorn(g, item);
+}
+/* Thirty tiles of the same dog in thirty hats is thirty pictures of a dog. His
+   accessories sheet had it right: the thing on a plain circle standing in for
+   the head, so what you are looking at is the hat. The circle is the skull the
+   item is placed against, so everything still lands where it lands on a real
+   one - hats on top, faces on the eye line, collars at the chin. */
+function drawWorn(g, item) {
     const B = cast.dog;
-    drawDog(g, TILE_W / 2, TILE_H * .60, .46 / B.k, { open: 0 }, 0, B,
-            { ...BARE, [item.kind]: item.id });
+    const mid = (-B.skullH + B.chin) / 2, r = (B.chin + B.skullH) * .46;
+    g.save();
+    /* Tall enough for a top hat above the circle and long enough for a cape
+       below it, since both are drawn from the same skull. */
+    g.translate(TILE_W / 2, TILE_H / 2 + 4);
+    g.scale(.46, .46);
+    g.translate(0, -mid);
+    g.lineJoin = 'round'; g.lineCap = 'round';
+    g.strokeStyle = 'rgba(253,247,232,.3)'; g.lineWidth = 3.5;
+    g.beginPath(); g.arc(0, mid, r, 0, Math.PI * 2); g.stroke();
+    if (item.kind === 'collar') drawCollar(g, B, item.id);
+    else drawKit(g, B, { hat: item.kind === 'hat' ? item.id : 'bare',
+                         face: item.kind === 'face' ? item.id : 'plain' });
+    g.restore();
 }
 function paintStore() {
     deal();
@@ -4114,39 +4222,6 @@ function paintStore() {
 /* A tile tap only ever tries a thing on. This is where it is bought, and it
    is impossible to do it by accident: the thing is named, priced and drawn
    on the dog, and there is a way out next to the way in. */
-/* On the counter the thing is shown on its own. Seeing it on the dog is what
-   the pinned preview at the top is for; down here you want to know what you
-   are being asked to pay for, which is the item and not the dog. */
-function drawItemOnly(c, item) {
-    const g = c.getContext('2d');
-    g.clearRect(0, 0, TILE_W, TILE_H);
-    // anything that is not worn is already drawn on its own on the shelf
-    if (!['knife', 'hat', 'face', 'collar'].includes(item.kind)) {
-        drawTile(c, item);
-        return;
-    }
-    if (item.kind === 'knife') {
-        g.save();
-        g.translate(TILE_W / 2, TILE_H / 2);
-        g.rotate(-.5);
-        drawKnife(g, 0, 0, 0, .72, item);
-        g.restore();
-        return;
-    }
-    const B = cast.dog;
-    const mid = item.kind === 'hat'  ? -B.skullH - 16
-              : item.kind === 'face' ? B.eyes[1]
-              :                        B.chin + 2;
-    g.save();
-    g.translate(TILE_W / 2, TILE_H / 2);
-    g.scale(.92, .92);
-    g.translate(0, -mid);
-    g.lineJoin = 'round'; g.lineCap = 'round';
-    if (item.kind === 'collar') drawCollar(g, B, item.id);
-    else drawKit(g, B, { hat: item.kind === 'hat' ? item.id : 'bare',
-                         face: item.kind === 'face' ? item.id : 'plain' });
-    g.restore();
-}
 function paintTryOn() {
     const bar = document.getElementById('tryon');
     if (!tryOn || owns(tryOn.id)) {
@@ -4160,7 +4235,6 @@ function paintTryOn() {
         `<span class="said">` +
         `<span class="nm">${tryOn.name}</span>` +
         (tryOn.why ? `<span class="does">${tryOn.why}</span>` : '') +
-        (can ? `<span class="cost">Yours for ${money0(tryOn.price)}</span>` : '') +
         `</span>` +
         `<span class="pair">` +
         `<button class="btn no" data-try="no">Put it back</button>` +
@@ -4168,7 +4242,7 @@ function paintTryOn() {
         `${can ? `Buy it &middot; ${money0(tryOn.price)}` : money0(tryOn.price)}</button></span>`;
     bar.hidden = false;
     storeEl.classList.add('trying');
-    drawItemOnly(bar.querySelector('canvas'), tryOn);
+    drawTile(bar.querySelector('canvas'), tryOn, false);
 }
 const till = () => safely(t => {
     tone(t, { freq: 1200, dur: .08, type: 'square', vol: .13 });
@@ -4237,9 +4311,8 @@ const setEl = document.getElementById('settings');
 function paintSettings() {
     document.getElementById('set-sound').textContent = soundOn ? 'On' : 'Off';
     document.getElementById('set-debug').textContent = save.debug ? 'On' : 'Off';
-    const line = `Butcher's Dog ${APP_VERSION}${save.debug ? ' \u00b7 debug' : ''}`;
-    document.getElementById('version').textContent = line;
-    document.getElementById('set-ver').textContent = line;
+    document.getElementById('set-ver').textContent =
+        `Butcher's Dog ${APP_VERSION}${save.debug ? ' \u00b7 debug' : ''}`;
 }
 document.getElementById('to-set').addEventListener('click', e => {
     e.stopPropagation();
@@ -4302,8 +4375,8 @@ wipeBtn.addEventListener('click', () => {
 function showShop() {
     money = 0; ledger = []; fed = 0;
     round = 0; live = false; armed = false; tallying = false; teaching = false;
-    dog.going = false; dog.chomp = 0; dog.toy = 0;
-    toyFly = null; toyDay = 0;
+    dog.going = false; dog.chomp = 0; dog.toy = 0; dog.stare = 0;
+    toyFly = null; toyDay = 0; cat = null; hit = null;
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT); clearTimeout(teachT);
     countT.forEach(clearTimeout); countT = [];
     tallyEl.classList.remove('on');
