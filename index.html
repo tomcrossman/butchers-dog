@@ -137,7 +137,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 /* nothing under the total on an ordinary week - but over a headstone the next
    dog has to be introduced */
 #rating { display: none; }
-#card.grave #rating, #card.vet #rating, #card.timed.hurt #rating { display: block; margin-top: 8px; }
+#card.grave #rating, #card.vet #rating, #card.hurt #rating { display: block; margin-top: 8px; }
 #card.grave #score { color: #5a564e; }
 #card.grave #ribbon { background: #4b4842; color: #efe7d4; }
 #mute {
@@ -541,7 +541,7 @@ body.waiting #hud { display: none; }
                       color: #b9b2a2; border-color: #2a2118; }
 #card.vet #vet-pay, #card.vet #vet-no { display: block; }
 #card.vet #ribbon { background: #7a5c1c; }
-#card.vet #rating, #card.timed.hurt #rating { font-size: 15px; }
+#card.vet #rating, #card.hurt #rating { font-size: 15px; }
 #card.timed .btn { display: none; }
 #card.timed .inner { cursor: pointer; }
 #cardtime i { display: block; height: 100%; background: rgba(176,58,37,.55);
@@ -753,7 +753,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v44';
+const APP_VERSION = 'v46';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1856,9 +1856,7 @@ function payVet() {
     document.getElementById('score').innerHTML =
         `${money2(vetOwed)}<span class="pc">at the vet&rsquo;s</span>`;
     document.getElementById('rating').textContent = `${cast.dog.dog} will be fine`;
-    card.className = 'timed hurt';
-    document.getElementById('cardtime').innerHTML = '<i></i>';
-    holdT = setTimeout(showShop, HOLD_MS);
+    card.className = 'hurt';
 }
 /* Or you do not pay, and then it is the stone. The floating off happens now
    rather than before the offer, because a dog that has already gone is not a

@@ -329,7 +329,9 @@ Cut the dog, uninsured, and it is out cold on the card with crosses for eyes
 and the offer under it. The bill is a quarter of the till, minimum a fiver, and
 it hurts on purpose - but the dog you have spent a month dressing up
 is the dog that comes back, bandaged, keeping its name, its breed and every hat
-you ever bought it.
+you ever bought it. That card waits to be dismissed: the week's takings can run
+themselves off because there is nothing on them to take in, but this one has
+the dog you just paid for on it.
 
 Below the minimum the same card comes up with the same figure, on a button that
 will not be pressed - a bill you cannot meet is the reason you are about to
