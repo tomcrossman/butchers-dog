@@ -534,6 +534,11 @@ body.waiting #hud { display: none; }
    result, so it is the one card with two different answers on it. */
 #vet-pay, #vet-no { display: none; }
 #card.vet #again { display: none; }
+/* While it is on its way up there is nothing to read and nothing to press, so
+   the ticket gets out of the way and leaves the window to it. */
+#card.going .inner { display: none; }
+#card #vet-pay.poor { background: linear-gradient(180deg, #4a4438, #3a3529);
+                      color: #b9b2a2; border-color: #2a2118; }
 #card.vet #vet-pay, #card.vet #vet-no { display: block; }
 #card.vet #ribbon { background: #7a5c1c; }
 #card.vet #rating, #card.timed.hurt #rating { font-size: 15px; }
@@ -748,7 +753,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v43';
+const APP_VERSION = 'v45';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1616,7 +1621,7 @@ function startRound(n) {
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(teachT); clearTimeout(holdT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
-    cutFx = []; mess = []; shouts = []; chewing = null; steak = null; ghost = null;
+    cutFx = []; mess = []; shouts = []; chewing = null; steak = null;
     swipe = null; blade = null;
     const D = DAYS[n - 1], count = makeString(n);
     roundMoney = 0; steaks = 0; pendingEnd = false;
@@ -1791,7 +1796,6 @@ const EPITAPH = ['Only wanted a sausage', 'A very good dog', 'Just doing the job
    is not a nice thing to have done, but it is not a grisly one either, and
    the headstone lands while it is still going up. */
 const GONE_MS = 1750;
-let ghost = null;
 /* Cutting the dog used to be the end of it: a stone, a new name on Monday, and
    nothing you could do about any of it. There is a vet now. The bill is a
    quarter of the till and it hurts on purpose, but the dog you have spent a
@@ -1820,16 +1824,21 @@ function dogDown() {
     const gone = money;
     money = 0; showHud();
     vetOwed = vetBill(); vetGone = gone;
-    if (save.bank < vetOwed) { letHimGo(gone); return; }   // nothing to decide
+    const afford = save.bank >= vetOwed;
     const bg = document.getElementById('butcher').getContext('2d');
     bg.clearRect(0, 0, 330, 300);
-    drawPatient(bg);
+    drawDowned(bg);                       // out cold, with the crosses for eyes
     document.getElementById('ribbon').textContent = 'OH DEAR';
     document.getElementById('ledger').innerHTML = '';
     document.getElementById('score').innerHTML =
         `${money2(gone)}<span class="pc">this week, gone</span>`;
-    document.getElementById('rating').textContent = `${cast.dog.dog} can be put right`;
-    document.getElementById('vet-pay').innerHTML = `Vet&rsquo;s fees &middot; ${money2(vetOwed)}`;
+    document.getElementById('rating').textContent = `${cast.dog.dog} is in a bad way`;
+    /* The offer is made either way. A bill you cannot meet is worth seeing -
+       it is the reason you are about to bury a dog - so the button carries the
+       figure and will not be pressed, rather than never appearing. */
+    const pay = document.getElementById('vet-pay');
+    pay.innerHTML = `Vet&rsquo;s fees &middot; ${money2(vetOwed)}`;
+    pay.classList.toggle('poor', !afford);
     card.className = 'vet';
     settleT = setTimeout(() => { card.hidden = false; jingleLose(); }, 420);
 }
@@ -1854,11 +1863,8 @@ function payVet() {
 /* Or you do not pay, and then it is the stone. The floating off happens now
    rather than before the offer, because a dog that has already gone is not a
    dog anybody is being asked about. */
-function letHimGo(gone) {
-    card.hidden = true;
-    const [gx, gy] = dogAt();
-    ghost = { x: gx, y: gy, t0: now() };
-    tick();
+function letHimGo(gone) { farewell(() => showGrave(gone)); }
+function showGrave(gone) {
     const bg = document.getElementById('butcher').getContext('2d');
     bg.clearRect(0, 0, 330, 300);
     drawGrave(bg, cast.dog.dog, pick(EPITAPH));
@@ -1881,11 +1887,62 @@ function letHimGo(gone) {
     putSave();
     document.getElementById('rating').textContent = `${save.dogName} starts on Monday`;
     card.className = 'grave';
-    settleT = setTimeout(() => { card.hidden = false; jingleLose(); }, GONE_MS - 260);
+    card.hidden = false;
 }
 /* The patient: the same dog, sorry for itself, with a bandage round its head
    and one over an eye. Drawn on top rather than through drawKit, because this
    is not something it owns. */
+/* It used to float off the top of the shop floor: the card came down, the
+   week stopped, and then you were looking at an empty window again for a
+   second and a half before the stone arrived. It happens on the card now,
+   where you already are. */
+function farewell(then) {
+    const g = document.getElementById('butcher').getContext('2d');
+    const t0 = now();
+    card.classList.add('going');
+    const step = () => {
+        const e = (now() - t0) / GONE_MS;
+        g.clearRect(0, 0, 330, 300);
+        if (e >= 1) { card.classList.remove('going'); then(); return; }
+        const rise = e < .16 ? 0 : Math.pow((e - .16) / .84, 1.4);
+        g.save();
+        g.globalAlpha = Math.max(0, 1 - Math.pow(e, 2.4));
+        g.translate(165, 190 - rise * 300);
+        g.rotate(Math.sin(e * 7) * .18);
+        const sq = e < .16 ? 1 + Math.sin(e / .16 * Math.PI) * .16 : 1;
+        g.scale(sq * (1 - rise * .35), (2 - sq) * (1 - rise * .35));
+        if (e > .14) {                                  // a halo, and the wings
+            g.save();
+            g.globalAlpha = Math.min(1, (e - .14) * 6);
+            g.strokeStyle = '#f0d484'; g.lineWidth = 5;
+            g.beginPath(); g.ellipse(0, -74, 26, 8, 0, 0, Math.PI * 2); g.stroke();
+            const flap = Math.sin(now() / 90) * .3;
+            for (const sx of [-1, 1]) {
+                g.save();
+                g.translate(sx * 48, -6);
+                g.rotate(sx * (.5 + flap));
+                g.beginPath();
+                g.moveTo(0, 0);
+                g.quadraticCurveTo(sx * 30, -30, sx * 54, -8);
+                g.quadraticCurveTo(sx * 34, 4, 0, 14);
+                g.closePath();
+                g.fillStyle = '#fdf7e8'; g.fill();
+                g.restore();
+            }
+            g.restore();
+        }
+        drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: 0, mood: 'gone' }, 0, cast.dog);
+        g.restore();
+        requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+}
+function drawDowned(g) {
+    g.save();
+    g.translate(165, 190);
+    drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: 0, mood: 'gone' }, 0, cast.dog);
+    g.restore();
+}
 function drawPatient(g) {
     g.save();
     g.translate(165, 190);
@@ -3696,53 +3753,7 @@ function draw() {
         ctx.restore();
     }
 
-    if (ghost) {
-        const e = (ms - ghost.t0) / GONE_MS;
-        if (e >= 1) ghost = null;
-        else {
-            const rise = e < .16 ? 0 : Math.pow((e - .16) / .84, 1.4);
-            const gy = ghost.y - rise * (ghost.y + 120);
-            ctx.save();
-            ctx.globalAlpha = Math.max(0, 1 - Math.pow(e, 2.4));
-            ctx.translate(ghost.x, gy);
-            ctx.rotate(Math.sin(e * 7) * .18);
-            const sq = e < .16 ? 1 + Math.sin(e / .16 * Math.PI) * .16 : 1;
-            ctx.scale(sq * (1 - rise * .35), (2 - sq) * (1 - rise * .35));
-            // a halo, and the pair of wings that go with it
-            if (e > .14) {
-                ctx.save();
-                ctx.globalAlpha = Math.min(1, (e - .14) * 6);
-                ctx.strokeStyle = '#f0d484'; ctx.lineWidth = 5;
-                ctx.beginPath(); ctx.ellipse(0, -74, 26, 8, 0, 0, Math.PI * 2); ctx.stroke();
-                const flap = Math.sin(ms / 90) * .3;
-                for (const sx of [-1, 1]) {
-                    ctx.save();
-                    ctx.translate(sx * 48, -6);
-                    ctx.rotate(sx * (.5 + flap));
-                    ctx.beginPath();
-                    ctx.moveTo(0, 0);
-                    ctx.quadraticCurveTo(sx * 30, -30, sx * 54, -8);
-                    ctx.quadraticCurveTo(sx * 34, 4, 0, 14);
-                    ctx.closePath();
-                    ctx.fillStyle = '#fdf7e8'; ctx.fill();
-                    ctx.restore();
-                }
-                ctx.restore();
-            }
-            drawDog(ctx, 0, 0, 1.02, { open: 0, mood: 'gone' }, 0, cast.dog);
-            ctx.restore();
-            // the stroke that did it, flashing white for a moment
-            if (e < .22) {
-                ctx.save();
-                ctx.globalAlpha = 1 - e / .22;
-                ctx.strokeStyle = '#fff6dd'; ctx.lineWidth = 5; ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(ghost.x - 90, ghost.y - 18); ctx.lineTo(ghost.x + 90, ghost.y + 18);
-                ctx.stroke();
-                ctx.restore();
-            }
-        }
-    } else if (dog.going || dog.s <= string.len + 80) {
+    if (dog.going || dog.s <= string.len + 80) {
         const [x, y] = dogAt();
         const pose = dog.chomp > 0 ? chompPose(1 - dog.chomp / CHOMP)
                                    : { open: 0, reach: 0, tilt: 0, squash: 0 };
@@ -3765,7 +3776,7 @@ function tick() {
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || steak || ghost || demoOn() || !resting) raf = requestAnimationFrame(step);
+            || chewing || steak || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -4236,6 +4247,7 @@ card.addEventListener('click', () => {
 });
 document.getElementById('vet-pay').addEventListener('click', e => {
     e.stopPropagation();
+    if (save.bank < vetOwed) { buzz(); return; }
     payVet();
 });
 document.getElementById('vet-no').addEventListener('click', e => {

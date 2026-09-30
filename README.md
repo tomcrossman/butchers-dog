@@ -325,13 +325,24 @@ Both ways out of Saturday go through the same door: the tap that skips the
 tally used to ask for a seventh day, which does not exist, and froze the week
 where it stood.
 
-Cut the dog, uninsured, and there is a vet. The bill is a quarter of the till, minimum a
-fiver, and it hurts on purpose - but the dog you have spent a month dressing up
+Cut the dog, uninsured, and it is out cold on the card with crosses for eyes
+and the offer under it. The bill is a quarter of the till, minimum a fiver, and
+it hurts on purpose - but the dog you have spent a month dressing up
 is the dog that comes back, bandaged, keeping its name, its breed and every hat
-you ever bought it. Below the minimum there is nothing to decide, so nothing is
-offered.
+you ever bought it.
 
-Let him go instead and you lose the week's takings, which are spent on the
+Below the minimum the same card comes up with the same figure, on a button that
+will not be pressed - a bill you cannot meet is the reason you are about to
+bury a dog, and worth seeing.
+
+Let him go and it goes off to wherever they go, halo and wings and spinning
+gently and getting smaller, on the card you are already looking at. It used to
+hide the ticket, animate on the window behind it and bring the ticket back,
+which is a second and a half of looking at a shop with nothing in it in the
+middle of the one moment that is meant to land. The wings are saved for the
+going: cut the dog and it is knocked out, not dead.
+
+You lose the week's takings, which are spent on the
 funeral, and the stone has one button on it: back to the shop, to meet whoever
 turns up on Monday. A new dog with a new name, a different breed and the same
 wardrobe - the collar and the hat were bought and paid for and nobody is
