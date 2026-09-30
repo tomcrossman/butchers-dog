@@ -184,6 +184,12 @@ The till buys things, and the things are the point. It is called Upgrades on
 the door and in the ledger, because the shop in this game is the one with the
 sausages in the window.
 
+**On the block**, the knives, is not decoration either. Each one has an edge:
+how many points it takes off the bar for a perfect cut, from nothing on the
+butcher's own knife up to six on the shears. Same rule as the rest of the shop
+- it does not slow the dog down or make the string easier, it pays you more for
+a thing you are already trying to do.
+
 **On the rail** is the shelf that changes what you are cutting rather than what
 the dog is wearing. None of it makes the dog slower or the cutting easier - it
 makes the same work worth more, which is the only kind of advantage this shop
@@ -202,11 +208,12 @@ sells.
   mouth.
 
 **Once a week** is the shelf the butcher uses himself. A squeaky bone, two
-hundred and forty: a gold button appears on the HUD the moment the day starts,
-and throwing it sends the dog back down to the bottom of the string after it.
-It is a week and not a day - spending it on Monday because Monday looked hairy
-is the decision, and there is no second one - so the button is there until it
-is thrown and then gone until next Monday.
+hundred and forty: on one day of the week - the week picks it, and Monday is as
+likely as Saturday - somebody lobs the bone in at a moment nobody was waiting
+for, and the dog turns round and goes after it, giving back every inch it had
+climbed. It was a button on the HUD first. The whole input of this game is a
+swipe, and a second kind of tap in the middle of a five-second day was one
+thing too many to be holding.
 
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
@@ -215,9 +222,14 @@ trying to impress. He is a spare pair of hands, not a better player than you.
 
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
-rather than Worn or Wear. They get two to a row and a line under each saying
-what they do, on the shelf and again on the counter, because a hat is a hat and
-needs no caption but a sawdust floor does. Every shelf runs cheapest first.
+rather than Worn or Wear. A line under each says what it does, on the shelf and
+again on the counter, because a hat is a hat and needs no caption but a sawdust
+floor does. A hat you already own says nothing at all: no price is the word, and
+thirty tiles reading Wear was thirty times the same word.
+
+The shop is two rooms behind two tabs, **The shop** and **The dog**, with tiles
+two to a row. Seven shelves in one column was a scroll nobody reached the bottom
+of, and the tiles were smaller than a thumb. Every shelf runs cheapest first.
 
 A knife for yourself - the butcher's own, a boning knife, a cleaver or a pair
 of shears - and then everything the dog can be got into: flat caps, beanies,
@@ -302,8 +314,15 @@ Both ways out of Saturday go through the same door: the tap that skips the
 tally used to ask for a seventh day, which does not exist, and froze the week
 where it stood.
 
-Kill the dog and you lose the week's takings, which are spent on the funeral. A
-new dog turns up on Monday with a new name, a different breed and the same
+Cut the dog and there is a vet. The bill is a quarter of the till, minimum a
+fiver, and it hurts on purpose - but the dog you have spent a month dressing up
+is the dog that comes back, bandaged, keeping its name, its breed and every hat
+you ever bought it. Below the minimum there is nothing to decide, so nothing is
+offered.
+
+Let him go instead and you lose the week's takings, which are spent on the
+funeral, and the stone has one button on it: back to the shop, to meet whoever
+turns up on Monday. A new dog with a new name, a different breed and the same
 wardrobe - the collar and the hat were bought and paid for and nobody is
 burying those, but a replacement that looked exactly like the one you just
 buried made it read as a respawn rather than a loss. It runs at the same speed,
