@@ -403,6 +403,29 @@ ends when the count starts and the line should stay up through it.
 The version is out the back and nowhere else. It used to sit in the corner of
 every screen including the one you play on.
 
+## After hours
+
+Get through a day without the dog taking a single one off you and there is a
+minute of something else before the next day starts. It is the one condition in
+the game that was already named - the tally says *The dog got nothing* - and it
+cannot be fluked: it means every sausage on that string went in the window.
+
+Three of them, one picked at random, nine seconds each, and whatever they make
+goes on the week:
+
+- **Cash only.** A jar you slide along the bottom and coins coming down at it.
+  Twenty pence a coin.
+- **Sauce on.** One pass of ketchup down a hot dog. What it pays is how much of
+  the bun you covered and how straight you kept it, both - so a quick scribble
+  down the middle is worth less than one careful stroke. Up to two sixty.
+- **On the barbecue.** Five sausages cooking at their own speeds. Tap one while
+  it is done and it is forty-five pence; tap it early, or leave it until it is
+  black, and it is nothing.
+
+They run on the same canvas the day is played on. A second canvas means a
+second copy of everything that makes this one fit a phone, and by the time they
+start the day is over and nothing else is drawing.
+
 ## The noise
 
 All of it is synthesised - there is not a recording in the project.
