@@ -147,7 +147,7 @@ Behind the counter: Reg, Sid, Pearl, Wally, Doreen or Mo, in a boater or a flat
 cap or a white peaked hat. Over their head, a proper shopfront - a dark fascia
 board that throws a shadow on the tiles, the name signwritten in gold with
 FAMILY BUTCHER under it, and a scalloped awning below in the butcher's own
-apron colour, so the shop belongs to him. The sign used to be the same green as
+apron colour, so the shop belongs to whoever is behind the counter. The sign used to be the same green as
 the wall behind it, which made it a plaque drawn onto the tiles rather than a
 board in front of them. What the shop is called changes every week - A Cut Above, Beef Encounter, Meat Expectations,
 Fillet of Soul, Cleaver Girl, Much Ado About Mutton, Sir Loin of Beef, Rack &
@@ -333,11 +333,14 @@ you ever bought it. That card waits to be dismissed: the week's takings can run
 themselves off because there is nothing on them to take in, but this one has
 the dog you just paid for on it.
 
+Nothing on that card has a pronoun on it - half the dogs are called Bess or
+Nell, and two of the butchers are Pearl and Doreen.
+
 Below the minimum the same card comes up with the same figure, on a button that
 will not be pressed - a bill you cannot meet is the reason you are about to
 bury a dog, and worth seeing.
 
-Let him go and it goes off to wherever they go, halo and wings and spinning
+Say goodbye and it goes off to wherever they go, halo and wings and spinning
 gently and getting smaller, on the card you are already looking at. It used to
 hide the ticket, animate on the window behind it and bring the ticket back,
 which is a second and a half of looking at a shop with nothing in it in the

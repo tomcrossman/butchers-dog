@@ -744,7 +744,7 @@ body.waiting #hud { display: none; }
             <p id="rating">Butchered</p>
             <button class="btn" id="again">Back to the shop</button>
             <button class="btn" id="vet-pay">Vet&rsquo;s fees</button>
-            <button class="btn ghost" id="vet-no">Let him go</button>
+            <button class="btn ghost" id="vet-no">Say goodbye</button>
             <div id="cardtime"></div>
         </div>
     </div>
@@ -753,7 +753,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v46';
+const APP_VERSION = 'v47';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1764,7 +1764,7 @@ function endWeek() {
     // holding the takings up last week leaves the arm behind if it is not
     // wiped first - drawButcher paints, it does not clear
     /* The two of them, and a good week for one is a bad week for the other:
-       a man with his takings over his head next to a dog that has had nothing
+       the butcher with the takings held up next to a dog that has had nothing
        all week, or a dog that has never eaten better next to a man who has. */
     const bg = document.getElementById('butcher').getContext('2d');
     bg.clearRect(0, 0, 330, 300);
@@ -3226,12 +3226,12 @@ function drawKnife(ctx, x, y, ang, k, K) {
 
 /* ---- the man whose shop it is -------------------------------------------
    White coat, striped apron, a hat of some sort and, more often than not, a
-   moustache. There are two of him: the one holding a fistful of notes up
-   where everyone can see it, and the one with his hands empty and his
+   moustache. There are two of them: the one holding a fistful of notes up
+   where everyone can see it, and the one stood there empty-handed with the
    shoulders down. Which one you get is whether the week beat the best week.
 
-   The head sits high enough to leave room under whatever is on his lip for a
-   mouth, which is the whole difference between the two of him. The neck is
+   The head sits high enough to leave room under whatever is on the lip for a
+   mouth, which is the whole difference between the two of them. The neck is
    drawn before the coat, or it paints over its own collar. */
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
@@ -3309,7 +3309,7 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
         blob('#2a201a', () => ctx.ellipse(sx * 15, -114, 4.4, happy ? 3.4 : 4.8, 0, 0, Math.PI * 2));
         blob(B.hair, () => {
             /* Wide apart either way. Brows that nearly meet read as one V
-               across the middle of his face, which is a scowl whichever way
+               across the middle of the face, which is a scowl whichever way
                up the two halves of it are. */
             if (happy) {
                 ctx.moveTo(sx * 12, -129); ctx.quadraticCurveTo(sx * 22, -137, sx * 32, -131);
@@ -3321,7 +3321,7 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
         });
     }
     blob(SKIN_D, () => ctx.ellipse(0, -100, 8, 7, 0, 0, Math.PI * 2));
-    // the mouth first, because whatever is on his lip sits over the top of it
+    // the mouth first, because whatever is on the lip sits over the top of it
     if (happy) {
         blob('#7a3628', () => ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2));
         ctx.save();
@@ -4065,7 +4065,7 @@ document.getElementById('play').addEventListener('click', e => {
    trade line under the name in the way every shop sign ever painted has one,
    and a striped awning underneath, which is the single strongest thing you
    can draw that says shop. The awning takes the butcher's own apron colour,
-   so the shop belongs to him. */
+   so the shop belongs to whoever is behind the counter. */
 function drawFascia(g, name, apron) {
     const x0 = 6, x1 = 334, y0 = 6, y1 = 62;
     g.save();
@@ -4095,7 +4095,7 @@ function drawFascia(g, name, apron) {
     for (let i = 0; i < 1; i++) g.fillText('F A M I L Y   B U T C H E R', 0, 0);
     g.restore();
 
-    // the awning: stripes in his own apron, and a scalloped edge on the bottom
+    // the awning: stripes off the apron behind the counter, scalloped at the bottom
     const ay = y1, ah = 26, scallop = 11, n = Math.round((x1 - x0) / (scallop * 2));
     g.save();
     g.shadowColor = 'rgba(0,0,0,.42)'; g.shadowBlur = 10; g.shadowOffsetY = 6;
@@ -4125,7 +4125,7 @@ function drawShopfront() {
     drawFascia(g, cast.shop, cast.butcher.apron);
     drawButcher(g, true, { cx: 120, cy: 320, k: .64, holds: 'knife' });
     drawDog(g, 264, 332, .76 / cast.dog.k, { open: 0 }, 0, cast.dog);
-    // the knife is in his hand and the dog is stood next to him, so the line
+    // the knife is in hand and the dog is stood alongside, so the line
     // only has to introduce the two of them
     document.getElementById('cast-line').innerHTML =
         `${cast.butcher.name} and ${cast.dog.dog} the ${cast.dog.name}`;
