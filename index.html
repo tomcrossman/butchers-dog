@@ -266,6 +266,9 @@ body.waiting #hud { display: none; }
 }
 #setup[hidden], #store[hidden], #settings[hidden] { display: none; }
 #settings { justify-content: center; }
+#settings .ver { margin-top: 22px; font-size: 10px; font-weight: 700;
+                 letter-spacing: .16em; text-transform: uppercase;
+                 color: var(--cream); opacity: .3; }
 #settings .note { max-width: 320px; margin: 10px 0 0; font-size: 11px; font-weight: 700;
                   line-height: 1.5; opacity: .55; }
 /* One way out of a screen that fills the window, in the corner every phone
@@ -713,6 +716,7 @@ body.waiting #hud { display: none; }
         <p class="note" id="debug-note">Debug hands you every upgrade for nothing,
             so you can switch them on and see what they do.</p>
         <button class="wipe" id="wipe">Start again from nothing</button>
+        <div class="ver" id="set-ver">v1</div>
     </div>
 
     <div id="card" hidden>
@@ -733,7 +737,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v30';
+const APP_VERSION = 'v31';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -3863,8 +3867,9 @@ const setEl = document.getElementById('settings');
 function paintSettings() {
     document.getElementById('set-sound').textContent = soundOn ? 'On' : 'Off';
     document.getElementById('set-debug').textContent = save.debug ? 'On' : 'Off';
-    document.getElementById('version').textContent =
-        `Butcher's Dog ${APP_VERSION}${save.debug ? ' \u00b7 debug' : ''}`;
+    const line = `Butcher's Dog ${APP_VERSION}${save.debug ? ' \u00b7 debug' : ''}`;
+    document.getElementById('version').textContent = line;
+    document.getElementById('set-ver').textContent = line;
 }
 document.getElementById('to-set').addEventListener('click', e => {
     e.stopPropagation();
