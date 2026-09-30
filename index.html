@@ -737,7 +737,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v34';
+const APP_VERSION = 'v36';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1601,8 +1601,8 @@ function showHud() {
 }
 function startRound(n) {
     if (n > DAYS.length) return endWeek();       // there is no seventh day
-    round = n; live = true; tallying = false;
-    clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT);
+    round = n; live = true; tallying = false; teaching = false;
+    clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(teachT); clearTimeout(holdT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
     cutFx = []; mess = []; shouts = []; chewing = null; steak = null; ghost = null;
@@ -1624,11 +1624,17 @@ function startRound(n) {
     roundT0 = now();
     armed = false;
     showHud();
-    /* Monday gets a few seconds of the demonstration before the count starts,
-       because one and a bit sweeps under a running clock is not long enough to
-       take in. A tap gets on with it, so it is patient the first time and out
-       of the way every time after that. */
-    if (n === 1) { teaching = true; teachT = setTimeout(beginCount, TEACH_MS); }
+    /* The very first Monday of a shop gets a few seconds of the demonstration
+       before the count starts, because one and a bit sweeps under a running
+       clock is not long enough to take in. Once. Somebody on their fifth week
+       knows how to swipe, and being shown again every Monday is being told
+       something you learned a month ago. Start again from nothing brings it
+       back, because that is a new shop and possibly a new person. */
+    if (n === 1 && !save.taught) {
+        teaching = true;
+        save.taught = true; putSave();     // once ever, not once a week
+        teachT = setTimeout(beginCount, TEACH_MS);
+    }
     else countdown(n);
     tick();
 }
@@ -2459,6 +2465,7 @@ const FRESH = () => ({
        at once. They live in their own list for that reason. */
     on: [],
     debug: false,
+    taught: false,
     worn: { knife: 'blade', hat: 'bare', face: 'plain', collar: 'spiked' },
 });
 let save = FRESH(), started = false;
