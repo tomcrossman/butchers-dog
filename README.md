@@ -272,7 +272,9 @@ hats is thirty pictures of a dog. The circle is the skull the item is placed
 against, so everything still lands where it lands on a real one - hats on top,
 faces on the eye line, collars at the chin - and Nothing on its head is an
 empty circle, which is exactly right. The counter at the bottom draws the same
-thing; seeing it on the dog is what the pinned preview at the top is for.
+item without the circle - there is one thing on the screen down there and its
+name beside it - and seeing it on the dog is what the pinned preview at the top
+is for.
 
 The dog is pinned to the top of the shop and does not scroll away with the
 first shelf, so whatever you try goes on in front of you without scrolling back

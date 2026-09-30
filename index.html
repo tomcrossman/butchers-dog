@@ -252,7 +252,7 @@ body.waiting #hud { display: none; }
 #bank-line b { font-size: 27px; text-shadow: 0 3px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
-#setup, #store, #settings {
+#setup, #store, #settings, #confirm {
     position: absolute; inset: 0; z-index: 13; overflow-y: auto;
     /* safe centring: a shelf taller than the window centres its own top off
        the screen, and no amount of scrolling gets it back */
@@ -266,8 +266,16 @@ body.waiting #hud { display: none; }
         linear-gradient(180deg, #1c4a39 0%, #16402f 60%, #102b21 100%);
     animation: introIn .3s ease-out both;
 }
-#setup[hidden], #store[hidden], #settings[hidden] { display: none; }
-#settings { justify-content: center; }
+#setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden] { display: none; }
+#settings, #confirm { justify-content: center; }
+/* The one screen in the game that can undo a month, so it gets a whole screen
+   and says what it will take rather than a red line that asks twice. */
+#confirm { z-index: 14; }
+#confirm .note { max-width: 320px; margin: 4px 0 18px; font-size: 12px; font-weight: 700;
+                 line-height: 1.6; opacity: .7; }
+#confirm .btn { width: 100%; max-width: 280px; }
+.btn.wipe-yes { background: linear-gradient(180deg, #d8503a, var(--danger));
+                color: #fff3e8; border-color: #2a2118; }
 #settings .ver { margin-top: 22px; font-size: 10px; font-weight: 700;
                  letter-spacing: .16em; text-transform: uppercase;
                  color: var(--cream); opacity: .3; }
@@ -293,7 +301,7 @@ body.waiting #hud { display: none; }
 }
 #to-set svg { width: 100%; height: 100%; fill: var(--cream); }
 #to-set:active { opacity: .7; }
-#setup h2, #settings h2 {
+#setup h2, #settings h2, #confirm h2 {
     margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
     font-size: 30px; color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.4);
 }
@@ -729,8 +737,16 @@ body.waiting #hud { display: none; }
         </div>
         <p class="note" id="debug-note">Debug hands you every upgrade for nothing,
             so you can switch them on and see what they do.</p>
-        <button class="wipe" id="wipe">Start again from nothing</button>
+        <button class="wipe" id="wipe">Reset game</button>
         <div class="ver" id="set-ver">v1</div>
+    </div>
+
+    <div id="confirm" hidden>
+        <h2>Reset game</h2>
+        <p class="note">This clears the till, the wardrobe, the name over the
+            window and every week you have played. There is no getting it back.</p>
+        <button class="btn wipe-yes" id="wipe-yes">Yes, wipe it</button>
+        <button class="btn ghost" id="wipe-no">Keep my shop</button>
     </div>
 
     <div id="card" hidden>
@@ -750,7 +766,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v52';
+const APP_VERSION = 'v54';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2573,7 +2589,7 @@ const KIT = [
     { id: 'cat',       kind: 'help',  name: 'A cat',            price: 48000,
       why: 'One walks past every day. The dog stops to watch.' },
     { id: 'insure',    kind: 'help',  name: 'Dog insurance',    price: 120000,
-      why: 'Cut the dog and it lives. The day ends there.' },
+      why: 'The dog is immune to your cuts. The day still ends.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -3804,9 +3820,16 @@ function drawPreview(id, w, h, withMan) {
         drawDog(g, w * .77, h * .80, .58 / cast.dog.k, { open: 0 }, 0, cast.dog, cast.kit);
     } else {
         drawDog(g, w / 2, h * .66, .66 / cast.dog.k, { open: 0 }, 0, cast.dog, previewKit());
-        g.save();                                       // and whatever is on the block
-        g.translate(w / 2 + 64, h - 22);
-        g.rotate(-.34);
+        /* Stood beside the dog rather than laid across it: the blade reaches
+           back from where it is placed, so anywhere near the middle it lies
+           over the collar - which is the one thing on the dog you may have
+           just bought. */
+        g.save();
+        /* Measured rather than nudged: at this angle the knife's ink runs 39
+           left and 61 down from where it is placed, and the dog's stops at
+           x=158 - so 206 clears it and everything stays on the canvas. */
+        g.translate(206, 40);
+        g.rotate(-1.12);
         drawKnife(g, 0, 0, 0, .46, previewKnife());
         g.restore();
     }
@@ -3893,7 +3916,7 @@ function drawBlanket(g, cx, cy, k, ang, plain) {
     g.restore();
     g.restore();
 }
-function drawTile(c, item) {
+function drawTile(c, item, circle = true) {
     const g = c.getContext('2d');
     g.clearRect(0, 0, TILE_W, TILE_H);
     if (item.kind === 'line') {
@@ -3985,14 +4008,14 @@ function drawTile(c, item) {
         g.restore();
         return;
     }
-    drawWorn(g, item);
+    drawWorn(g, item, circle);
 }
 /* Thirty tiles of the same dog in thirty hats is thirty pictures of a dog. His
    accessories sheet had it right: the thing on a plain circle standing in for
    the head, so what you are looking at is the hat. The circle is the skull the
    item is placed against, so everything still lands where it lands on a real
    one - hats on top, faces on the eye line, collars at the chin. */
-function drawWorn(g, item) {
+function drawWorn(g, item, circle) {
     const B = cast.dog;
     const mid = (-B.skullH + B.chin) / 2, r = (B.chin + B.skullH) * .46;
     g.save();
@@ -4002,8 +4025,13 @@ function drawWorn(g, item) {
     g.scale(.46, .46);
     g.translate(0, -mid);
     g.lineJoin = 'round'; g.lineCap = 'round';
-    g.strokeStyle = 'rgba(253,247,232,.3)'; g.lineWidth = 3.5;
-    g.beginPath(); g.arc(0, mid, r, 0, Math.PI * 2); g.stroke();
+    /* The circle is what makes a rack of hats readable at a glance. On the
+       counter there is one thing on the screen and its name beside it, so it
+       is the item and nothing else. */
+    if (circle) {
+        g.strokeStyle = 'rgba(253,247,232,.3)'; g.lineWidth = 3.5;
+        g.beginPath(); g.arc(0, mid, r, 0, Math.PI * 2); g.stroke();
+    }
     if (item.kind === 'collar') drawCollar(g, B, item.id);
     else drawKit(g, B, { hat: item.kind === 'hat' ? item.id : 'bare',
                          face: item.kind === 'face' ? item.id : 'plain' });
@@ -4071,7 +4099,7 @@ function paintTryOn() {
         `${can ? `Buy it &middot; ${money0(tryOn.price)}` : money0(tryOn.price)}</button></span>`;
     bar.hidden = false;
     storeEl.classList.add('trying');
-    drawTile(bar.querySelector('canvas'), tryOn);
+    drawTile(bar.querySelector('canvas'), tryOn, false);
 }
 const till = () => safely(t => {
     tone(t, { freq: 1200, dur: .08, type: 'square', vol: .13 });
@@ -4185,21 +4213,26 @@ document.getElementById('store-done').addEventListener('click', () => {
     drawShopfront();
     showBank();
 });
-let wipeArmed = false;
-const wipeBtn = document.getElementById('wipe');
-wipeBtn.addEventListener('click', () => {
-    if (!wipeArmed) {
-        wipeArmed = true;
-        wipeBtn.textContent = 'Sure? Everything goes.';
-        setTimeout(() => { wipeArmed = false; wipeBtn.textContent = 'Start again from nothing'; }, 4000);
-        return;
-    }
+const confirmEl = document.getElementById('confirm');
+document.getElementById('wipe').addEventListener('click', () => {
+    confirmEl.hidden = false;
+});
+document.getElementById('wipe-no').addEventListener('click', () => {
+    confirmEl.hidden = true;
+    plop(1);
+});
+document.getElementById('wipe-yes').addEventListener('click', () => {
+    confirmEl.hidden = true;
+    doWipe();
+});
+function doWipe() {
     try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* never mind */ }
     save = FRESH(); started = false;
     putSave();
+    paintSettings();
     setEl.hidden = true;
     openSetup();
-});
+}
 
 function showShop() {
     money = 0; ledger = []; fed = 0;
