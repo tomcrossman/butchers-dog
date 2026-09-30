@@ -365,6 +365,16 @@ burying those, but a replacement that looked exactly like the one you just
 buried made it read as a respawn rather than a loss. It runs at the same speed,
 as all twelve of them do.
 
+The demonstration is the first Monday of a shop and no other. Making it wait
+for the countdown once was not the same as showing it once: the drawing asked
+what day of the week it was and nothing else, so the dashed line and SWIPE TO
+CUT went on turning up under every Monday's three-two-one for as long as you
+played. It has its own flag now, separate from the pause, because the pause
+ends when the count starts and the line should stay up through it.
+
+The version is out the back and nowhere else. It used to sit in the corner of
+every screen including the one you play on.
+
 ## The noise
 
 All of it is synthesised - there is not a recording in the project.

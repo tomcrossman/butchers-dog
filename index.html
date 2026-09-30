@@ -576,9 +576,6 @@ body.waiting #hud { display: none; }
     30%, 50%, 70% { transform: translate3d(-11px, 2px, 0); }
     40%, 60% { transform: translate3d(11px, -1px, 0); }
 }
-#version { position: absolute; bottom: 7px; right: 10px; z-index: 3;
-           font-size: 9px; font-weight: 700; letter-spacing: .14em;
-           text-transform: uppercase; color: var(--cream); opacity: .22; }
 
 @media (max-height: 700px) {
     #butcher { width: min(56vw, 216px); }
@@ -749,12 +746,12 @@ body.waiting #hud { display: none; }
         </div>
     </div>
 
-    <div id="version">v1</div>
 </div>
 
 <script>
-const APP_VERSION = 'v48';
-document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
+const APP_VERSION = 'v50';
+/* It used to sit in the corner of every screen. It lives out the back now,
+   which is where you go when you want to know it. */
 
 /* ============================================================
    SOUND
@@ -1148,6 +1145,51 @@ const CHEER = [, , 'DOUBLE', 'TREBLE', 'FOUR AT ONCE', 'FIVE AT ONCE', 'SIX AT O
    dead - it turns round and goes after the bone, which is a few seconds of it
    walking away from the string and giving back everything it had climbed. */
 const TOY_S = 3.2, LAD_Q = 74;
+/* It saunters across the window and the dog forgets what it was doing. It does
+   not walk off with the ground the dog had made, the way the bone does - it is
+   a couple of seconds of standing still, once a day, and that is all. */
+const CAT_S = 2.4, STARE_S = 1.6;
+let cat = null;
+const miaow = () => safely(t => {
+    tone(t, { freq: 620, to: 900, dur: .16, type: 'sawtooth', vol: .09 });
+    tone(t, { freq: 900, to: 540, dur: .3, type: 'sawtooth', vol: .07, at: .14 });
+});
+function sendCat() {
+    if (!live || !armed) return;
+    const [, dy] = dogAt();
+    cat = { t0: now(), y: clamp(dy + 70, 140, H - 40), dir: Math.random() < .5 ? 1 : -1 };
+    dog.stare = STARE_S;
+    miaow();
+}
+function drawCat(ms) {
+    if (!cat) return;
+    const e = (ms - cat.t0) / (CAT_S * 1000);
+    if (e >= 1) { cat = null; return; }
+    const x = cat.dir > 0 ? -60 + e * (W + 120) : W + 60 - e * (W + 120);
+    const step = Math.sin(e * 46);
+    ctx.save();
+    ctx.translate(x, cat.y + Math.abs(step) * 2);
+    ctx.scale(cat.dir * 1.35, 1.35);          // big enough to be worth stopping for
+    const ink = '#2f2b35', lit = '#454050';
+    const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
+    ctx.save();                                       // the tail, up and curling
+    ctx.strokeStyle = ink; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-24, -4);
+    ctx.quadraticCurveTo(-46, -8 + step * 4, -40, -36 + step * 5);
+    ctx.stroke();
+    ctx.restore();
+    for (const [lx, ph] of [[-15, 0], [-8, 2.1], [12, 1], [19, 3.2]])   // legs
+        blob(ink, () => ctx.roundRect(lx - 3, 6, 6, 16 + Math.sin(e * 46 + ph) * 4, 3));
+    blob(ink, () => ctx.ellipse(0, -2, 26, 14, 0, 0, Math.PI * 2));      // body
+    blob(lit, () => ctx.ellipse(-2, -8, 20, 6, 0, 0, Math.PI * 2));
+    blob(ink, () => ctx.ellipse(24, -12, 12, 11, 0, 0, Math.PI * 2));    // head
+    for (const sx of [-1, 1])                                           // ears
+        blob(ink, () => { const ex = 24 + sx * 6;
+            ctx.moveTo(ex - 5, -20); ctx.lineTo(ex + 2, -32); ctx.lineTo(ex + 6, -18); });
+    blob('#e8d46a', () => ctx.ellipse(29, -13, 2.6, 3.2, 0, 0, Math.PI * 2));
+    ctx.restore();
+}
 let toyDay = 0, toyFly = null;
 const squeak = () => safely(t => {
     tone(t, { freq: 900, to: 1900, dur: .13, type: 'square', vol: .12 });
@@ -1512,6 +1554,10 @@ function chompPose(e) {
 }
 function dogStep(dt) {
     if (!dog.going) return;
+    if (dog.stare > 0) {                                // watching the cat go by
+        dog.stare -= dt;
+        return;
+    }
     if (dog.toy > 0) {                                  // off after the bone
         dog.toy -= dt;
         /* It gives back the ground it has made and waits at the bottom. A cap
@@ -1617,7 +1663,7 @@ function showHud() {
 }
 function startRound(n) {
     if (n > DAYS.length) return endWeek();       // there is no seventh day
-    round = n; live = true; tallying = false; teaching = false;
+    round = n; live = true; tallying = false; teaching = false; demoWeek = false;
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(teachT); clearTimeout(holdT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
@@ -1633,8 +1679,8 @@ function startRound(n) {
        second and a bit, which is one cut if you are quick and none if you
        are admiring the string. */
     dog.s = string.len + dog.speed * 1.25; dog.going = false;
-    dog.chomp = 0; dog.keen = 0; dog.grabX = null; dog.toy = 0;
-    toyFly = null;
+    dog.chomp = 0; dog.keen = 0; dog.grabX = null; dog.toy = 0; dog.stare = 0;
+    toyFly = null; cat = null;
     // a week picks its own day for it, and Monday is as likely as Saturday
     if (n === 1) toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
     roundT0 = now();
@@ -1647,7 +1693,7 @@ function startRound(n) {
        something you learned a month ago. Start again from nothing brings it
        back, because that is a new shop and possibly a new person. */
     if (n === 1 && !save.taught) {
-        teaching = true;
+        teaching = true; demoWeek = true;
         save.taught = true; putSave();     // once ever, not once a week
         teachT = setTimeout(beginCount, TEACH_MS);
     }
@@ -1690,6 +1736,9 @@ function countdown(n) {
         // and on one day of the week the bone comes in, somewhere in the middle
         if (n === toyDay) countT.push(setTimeout(throwToy,
             string.len / dog.speed * (250 + Math.random() * 400)));
+        // the cat, meanwhile, walks past every day
+        if (running('cat')) countT.push(setTimeout(sendCat,
+            string.len / dog.speed * (200 + Math.random() * 450)));
         /* One steak a day from Tuesday, or two a day from Monday if the slab
            is stocked for it. They are spaced far enough apart that the second
            is never asking for the first one's airspace. */
@@ -2514,6 +2563,11 @@ const KIT = [
     /* The most expensive thing in the shop, and the only one that is not
        about money at all. It does not make the dog harder to hit - it makes
        hitting it something you survive. The day still stops there. */
+    /* The bone is one big favour a week; the cat is a small one every day.
+       The dog does not give any ground back for a cat - it just stops dead and
+       watches it go, which is what a dog does. */
+    { id: 'cat',       kind: 'help',  name: 'A cat',            price: 48000,
+      why: 'One walks past every day. The dog stops to watch.' },
     { id: 'insure',    kind: 'help',  name: 'Dog insurance',    price: 120000,
       why: 'Cut the dog and it lives. The day ends there.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
@@ -3444,7 +3498,15 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
    and over until the dog is let off. It stops the moment the round is live,
    because by then you either have it or you have not. */
 const DEMO_CYCLE = 1600, DEMO_SWEEP = .5;
-const demoOn = () => live && !armed && round === 1 && string && !swipe;
+/* Only on the one Monday that is being taught. Making the demonstration wait
+   for the countdown once was not the same as showing it once: this asked the
+   day of the week and nothing else, so the dashed line and SWIPE TO CUT went
+   on turning up under every Monday's three-two-one for as long as you played.
+   It has to be its own flag rather than `teaching`, because `teaching` is
+   switched off the moment the count starts and the line should stay up
+   through it. */
+let demoWeek = false;
+const demoOn = () => demoWeek && live && !armed && string && !swipe;
 function drawDemo(ms) {
     /* The bottom twist, which frees the bottom sausage - the one nearest the
        dog, and so the one you actually want off first. Demonstrating a cut in
@@ -3593,6 +3655,7 @@ function draw() {
     drawSteak(ctx);
 
     drawToy(ms);
+    drawCat(ms);
     if (demoOn()) drawDemo(ms);
 
     // what that swipe was worth, said out loud
@@ -3689,7 +3752,7 @@ function tick() {
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || steak || hit || demoOn() || !resting) raf = requestAnimationFrame(step);
+            || chewing || steak || hit || cat || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -3868,6 +3931,24 @@ function drawTile(c, item) {
         g.restore();
         return;
     }
+    if (item.id === 'cat') {                          // sat down, looking at you
+        g.save();
+        g.translate(TILE_W / 2 + 6, TILE_H / 2 + 16);
+        g.scale(1.15, 1.15);
+        const ink = '#2f2b35';
+        const blob = (fill, path) => { g.beginPath(); path(); g.closePath(); g.fillStyle = fill; g.fill(); };
+        g.strokeStyle = ink; g.lineWidth = 6; g.lineCap = 'round';
+        g.beginPath(); g.moveTo(-10, 6); g.quadraticCurveTo(-30, 4, -26, -20); g.stroke();
+        blob(ink, () => { g.moveTo(-14, 8); g.quadraticCurveTo(-16, -18, 0, -18);
+                          g.quadraticCurveTo(14, -18, 12, 8); });
+        blob(ink, () => g.ellipse(2, -26, 13, 12, 0, 0, Math.PI * 2));
+        for (const sx of [-1, 1]) blob(ink, () => { const ex = 2 + sx * 7;
+            g.moveTo(ex - 5, -34); g.lineTo(ex + sx * 2, -46); g.lineTo(ex + 6, -32); });
+        for (const sx of [-1, 1])
+            blob('#e8d46a', () => g.ellipse(2 + sx * 5, -27, 2.8, 3.4, 0, 0, Math.PI * 2));
+        g.restore();
+        return;
+    }
     if (item.id === 'toy') {                          // the bone, off its string
         g.save();
         g.translate(TILE_W / 2, TILE_H / 2);
@@ -4029,9 +4110,8 @@ const setEl = document.getElementById('settings');
 function paintSettings() {
     document.getElementById('set-sound').textContent = soundOn ? 'On' : 'Off';
     document.getElementById('set-debug').textContent = save.debug ? 'On' : 'Off';
-    const line = `Butcher's Dog ${APP_VERSION}${save.debug ? ' \u00b7 debug' : ''}`;
-    document.getElementById('version').textContent = line;
-    document.getElementById('set-ver').textContent = line;
+    document.getElementById('set-ver').textContent =
+        `Butcher's Dog ${APP_VERSION}${save.debug ? ' \u00b7 debug' : ''}`;
 }
 document.getElementById('to-set').addEventListener('click', e => {
     e.stopPropagation();
@@ -4094,8 +4174,8 @@ wipeBtn.addEventListener('click', () => {
 function showShop() {
     money = 0; ledger = []; fed = 0;
     round = 0; live = false; armed = false; tallying = false; teaching = false;
-    dog.going = false; dog.chomp = 0; dog.toy = 0;
-    toyFly = null; toyDay = 0;
+    dog.going = false; dog.chomp = 0; dog.toy = 0; dog.stare = 0;
+    toyFly = null; toyDay = 0; cat = null;
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT); clearTimeout(teachT);
     countT.forEach(clearTimeout); countT = [];
     tallyEl.classList.remove('on');
