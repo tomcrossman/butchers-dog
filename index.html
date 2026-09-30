@@ -137,7 +137,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 /* nothing under the total on an ordinary week - but over a headstone the next
    dog has to be introduced */
 #rating { display: none; }
-#card.grave #rating, #card.vet #rating, #card.timed.hurt #rating { display: block; margin-top: 8px; }
+#card.grave #rating, #card.vet #rating, #card.hurt #rating { display: block; margin-top: 8px; }
 #card.grave #score { color: #5a564e; }
 #card.grave #ribbon { background: #4b4842; color: #efe7d4; }
 #mute {
@@ -541,7 +541,7 @@ body.waiting #hud { display: none; }
                       color: #b9b2a2; border-color: #2a2118; }
 #card.vet #vet-pay, #card.vet #vet-no { display: block; }
 #card.vet #ribbon { background: #7a5c1c; }
-#card.vet #rating, #card.timed.hurt #rating { font-size: 15px; }
+#card.vet #rating, #card.hurt #rating { font-size: 15px; }
 #card.timed .btn { display: none; }
 #card.timed .inner { cursor: pointer; }
 #cardtime i { display: block; height: 100%; background: rgba(176,58,37,.55);
@@ -744,7 +744,7 @@ body.waiting #hud { display: none; }
             <p id="rating">Butchered</p>
             <button class="btn" id="again">Back to the shop</button>
             <button class="btn" id="vet-pay">Vet&rsquo;s fees</button>
-            <button class="btn ghost" id="vet-no">Let him go</button>
+            <button class="btn ghost" id="vet-no">Say goodbye</button>
             <div id="cardtime"></div>
         </div>
     </div>
@@ -753,7 +753,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v45';
+const APP_VERSION = 'v49';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1621,7 +1621,7 @@ function startRound(n) {
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(teachT); clearTimeout(holdT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
-    cutFx = []; mess = []; shouts = []; chewing = null; steak = null;
+    cutFx = []; mess = []; shouts = []; chewing = null; steak = null; hit = null;
     swipe = null; blade = null;
     const D = DAYS[n - 1], count = makeString(n);
     roundMoney = 0; steaks = 0; pendingEnd = false;
@@ -1764,7 +1764,7 @@ function endWeek() {
     // holding the takings up last week leaves the arm behind if it is not
     // wiped first - drawButcher paints, it does not clear
     /* The two of them, and a good week for one is a bad week for the other:
-       a man with his takings over his head next to a dog that has had nothing
+       the butcher with the takings held up next to a dog that has had nothing
        all week, or a dog that has never eaten better next to a man who has. */
     const bg = document.getElementById('butcher').getContext('2d');
     bg.clearRect(0, 0, 330, 300);
@@ -1795,7 +1795,34 @@ const EPITAPH = ['Only wanted a sausage', 'A very good dog', 'Just doing the job
    top of the window with a halo on, spinning gently and getting smaller. It
    is not a nice thing to have done, but it is not a grisly one either, and
    the headstone lands while it is still going up. */
-const GONE_MS = 1750;
+const GONE_MS = 1750, HIT_MS = 560;
+let hit = null;
+/* A five-pointed star, for the ones that go round its head. Drawn rather than
+   typed because a text glyph in the middle of a canvas full of hand-built
+   shapes looks exactly like a text glyph. */
+function star(g, x, y, r, rot, fill) {
+    g.save();
+    g.translate(x, y);
+    g.rotate(rot);
+    g.beginPath();
+    for (let i = 0; i < 10; i++) {
+        const a = i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * .44 : r;
+        i ? g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr)
+          : g.moveTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    g.closePath();
+    g.fillStyle = fill; g.fill();
+    g.restore();
+}
+// the three that circle a head that has been caught by something
+function stars(g, ms, top, spread) {
+    for (let i = 0; i < 3; i++) {
+        const a = ms / 420 + i * Math.PI * 2 / 3;
+        const x = Math.cos(a) * spread, z = Math.sin(a);
+        star(g, x, top + z * 5, 7 + z * 2.5, ms / 300 + i,
+             `rgba(240,212,132,${.55 + .45 * (z + 1) / 2})`);
+    }
+}
 /* Cutting the dog used to be the end of it: a stone, a new name on Monday, and
    nothing you could do about any of it. There is a vet now. The bill is a
    quarter of the till and it hurts on purpose, but the dog you have spent a
@@ -1811,6 +1838,13 @@ function dogDown() {
     clearTimeout(tallyT);
     tallyEl.classList.remove('on');
     jolt(); yelpBad();
+    /* The cut used to be a screen shake and then, nearly half a second later,
+       a card. Nothing happened to the dog at all. It gets the moment now: the
+       stroke flashes white across it, it takes the hit sideways, and it sags
+       with three stars going round its head. */
+    const [hx, hy] = dogAt();
+    hit = { x: hx, y: hy, t0: now() };
+    tick();
     /* Insured. It is hurt and the day is over, but it is not dead, there is
        no bill and the week carries on with everything taken so far. */
     if (running('insure')) {
@@ -1840,7 +1874,7 @@ function dogDown() {
     pay.innerHTML = `Vet&rsquo;s fees &middot; ${money2(vetOwed)}`;
     pay.classList.toggle('poor', !afford);
     card.className = 'vet';
-    settleT = setTimeout(() => { card.hidden = false; jingleLose(); }, 420);
+    settleT = setTimeout(() => { card.hidden = false; jingleLose(); dazed(); }, HIT_MS);
 }
 /* Paid up. The week is still a write-off - the money went on the funeral it
    did not end up needing - but the dog keeps its name, its breed and every
@@ -1856,9 +1890,7 @@ function payVet() {
     document.getElementById('score').innerHTML =
         `${money2(vetOwed)}<span class="pc">at the vet&rsquo;s</span>`;
     document.getElementById('rating').textContent = `${cast.dog.dog} will be fine`;
-    card.className = 'timed hurt';
-    document.getElementById('cardtime').innerHTML = '<i></i>';
-    holdT = setTimeout(showShop, HOLD_MS);
+    card.className = 'hurt';
 }
 /* Or you do not pay, and then it is the stone. The floating off happens now
    rather than before the offer, because a dog that has already gone is not a
@@ -1906,11 +1938,20 @@ function farewell(then) {
         if (e >= 1) { card.classList.remove('going'); then(); return; }
         const rise = e < .16 ? 0 : Math.pow((e - .16) / .84, 1.4);
         g.save();
-        g.globalAlpha = Math.max(0, 1 - Math.pow(e, 2.4));
-        g.translate(165, 190 - rise * 300);
+        /* Going into the distance is a shrink, not a fade. It used to lose
+           most of its colour while it was still nearly full size, which reads
+           as dissolving into the wall rather than flying off - so it holds its
+           own until the very end and gets small instead. */
+        g.globalAlpha = Math.max(0, 1 - Math.pow(e, 6));
+        /* It has 300 pixels of card to go up and no more. Fly it any further
+           than that and it leaves through the top at nearly full size, which
+           is not distance, it is a clipped edge. It drifts up a third of the
+           way and does the rest by getting small. */
+        g.translate(165, 190 - rise * 150);
         g.rotate(Math.sin(e * 7) * .18);
         const sq = e < .16 ? 1 + Math.sin(e / .16 * Math.PI) * .16 : 1;
-        g.scale(sq * (1 - rise * .35), (2 - sq) * (1 - rise * .35));
+        const away = 1 - rise * .92;
+        g.scale(sq * away, (2 - sq) * away);
         if (e > .14) {                                  // a halo, and the wings
             g.save();
             g.globalAlpha = Math.min(1, (e - .14) * 6);
@@ -1937,11 +1978,22 @@ function farewell(then) {
     };
     requestAnimationFrame(step);
 }
-function drawDowned(g) {
+function drawDowned(g, ms) {
     g.save();
-    g.translate(165, 190);
-    drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: 0, mood: 'gone' }, 0, cast.dog);
+    g.translate(165, 190 + Math.sin((ms || 0) / 480) * 3);
+    g.rotate(.14 + Math.sin((ms || 0) / 700) * .03);
+    drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: .3, mood: 'gone' }, 0, cast.dog);
+    stars(g, ms || 0, -78, 36);
     g.restore();
+}
+/* The card is a held note, not a photograph: it goes on being knocked out
+   while you decide, and stops the moment the card becomes something else. */
+function dazed() {
+    if (card.className !== 'vet' || card.hidden) return;
+    const g = document.getElementById('butcher').getContext('2d');
+    g.clearRect(0, 0, 330, 300);
+    drawDowned(g, now());
+    requestAnimationFrame(dazed);
 }
 function drawPatient(g) {
     g.save();
@@ -3403,12 +3455,12 @@ function drawKnife(ctx, x, y, ang, k, K) {
 
 /* ---- the man whose shop it is -------------------------------------------
    White coat, striped apron, a hat of some sort and, more often than not, a
-   moustache. There are two of him: the one holding a fistful of notes up
-   where everyone can see it, and the one with his hands empty and his
+   moustache. There are two of them: the one holding a fistful of notes up
+   where everyone can see it, and the one stood there empty-handed with the
    shoulders down. Which one you get is whether the week beat the best week.
 
-   The head sits high enough to leave room under whatever is on his lip for a
-   mouth, which is the whole difference between the two of him. The neck is
+   The head sits high enough to leave room under whatever is on the lip for a
+   mouth, which is the whole difference between the two of them. The neck is
    drawn before the coat, or it paints over its own collar. */
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
@@ -3486,7 +3538,7 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
         blob('#2a201a', () => ctx.ellipse(sx * 15, -114, 4.4, happy ? 3.4 : 4.8, 0, 0, Math.PI * 2));
         blob(B.hair, () => {
             /* Wide apart either way. Brows that nearly meet read as one V
-               across the middle of his face, which is a scowl whichever way
+               across the middle of the face, which is a scowl whichever way
                up the two halves of it are. */
             if (happy) {
                 ctx.moveTo(sx * 12, -129); ctx.quadraticCurveTo(sx * 22, -137, sx * 32, -131);
@@ -3498,7 +3550,7 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
         });
     }
     blob(SKIN_D, () => ctx.ellipse(0, -100, 8, 7, 0, 0, Math.PI * 2));
-    // the mouth first, because whatever is on his lip sits over the top of it
+    // the mouth first, because whatever is on the lip sits over the top of it
     if (happy) {
         blob('#7a3628', () => ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2));
         ctx.save();
@@ -3753,7 +3805,43 @@ function draw() {
         ctx.restore();
     }
 
-    if (dog.going || dog.s <= string.len + 80) {
+    if (hit) {
+        const e = (ms - hit.t0) / HIT_MS;
+        if (e >= 1) hit = null;
+        else {
+            const knock = Math.sin(Math.min(1, e / .3) * Math.PI * .5) * 26;
+            ctx.save();
+            ctx.translate(hit.x + knock, hit.y + Math.pow(e, 2) * 40);
+            ctx.rotate(Math.sin(e * 8) * .3 * (1 - e) + e * .5);
+            const sq = e < .14 ? 1 + Math.sin(e / .14 * Math.PI) * .24 : 1;
+            ctx.scale(sq, 2 - sq);
+            drawDog(ctx, 0, 0, 1.02, { open: .55, mood: 'gone' }, 0, cast.dog);
+            if (e > .28) stars(ctx, ms, -64, 30);
+            ctx.restore();
+            if (e < .34) {                          // what the stroke left behind
+                ctx.save();
+                ctx.globalAlpha = 1 - e / .34;
+                ctx.strokeStyle = '#fff6dd'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(hit.x - 96, hit.y - 20); ctx.lineTo(hit.x + 96, hit.y + 20);
+                ctx.stroke();
+                ctx.restore();
+            }
+            if (e < .42) {                          // and the bang it went off with
+                ctx.save();
+                ctx.globalAlpha = (1 - e / .42) * .9;
+                ctx.strokeStyle = '#ffd873'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+                for (let i = 0; i < 9; i++) {
+                    const a = i / 9 * Math.PI * 2 + .3, r0 = 34 + e * 150, r1 = r0 + 26;
+                    ctx.beginPath();
+                    ctx.moveTo(hit.x + Math.cos(a) * r0, hit.y + Math.sin(a) * r0);
+                    ctx.lineTo(hit.x + Math.cos(a) * r1, hit.y + Math.sin(a) * r1);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+    } else if (dog.going || dog.s <= string.len + 80) {
         const [x, y] = dogAt();
         const pose = dog.chomp > 0 ? chompPose(1 - dog.chomp / CHOMP)
                                    : { open: 0, reach: 0, tilt: 0, squash: 0 };
@@ -3776,7 +3864,7 @@ function tick() {
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || steak || demoOn() || !resting) raf = requestAnimationFrame(step);
+            || chewing || steak || hit || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -4275,7 +4363,7 @@ document.getElementById('play').addEventListener('click', e => {
    trade line under the name in the way every shop sign ever painted has one,
    and a striped awning underneath, which is the single strongest thing you
    can draw that says shop. The awning takes the butcher's own apron colour,
-   so the shop belongs to him. */
+   so the shop belongs to whoever is behind the counter. */
 function drawFascia(g, name, apron) {
     const x0 = 6, x1 = 334, y0 = 6, y1 = 62;
     g.save();
@@ -4305,7 +4393,7 @@ function drawFascia(g, name, apron) {
     for (let i = 0; i < 1; i++) g.fillText('F A M I L Y   B U T C H E R', 0, 0);
     g.restore();
 
-    // the awning: stripes in his own apron, and a scalloped edge on the bottom
+    // the awning: stripes off the apron behind the counter, scalloped at the bottom
     const ay = y1, ah = 26, scallop = 11, n = Math.round((x1 - x0) / (scallop * 2));
     g.save();
     g.shadowColor = 'rgba(0,0,0,.42)'; g.shadowBlur = 10; g.shadowOffsetY = 6;
@@ -4335,7 +4423,7 @@ function drawShopfront() {
     drawFascia(g, cast.shop, cast.butcher.apron);
     drawButcher(g, true, { cx: 120, cy: 320, k: .64, holds: 'knife' });
     drawDog(g, 264, 332, .76 / cast.dog.k, { open: 0 }, 0, cast.dog);
-    // the knife is in his hand and the dog is stood next to him, so the line
+    // the knife is in hand and the dog is stood alongside, so the line
     // only has to introduce the two of them
     document.getElementById('cast-line').innerHTML =
         `${cast.butcher.name} and ${cast.dog.dog} the ${cast.dog.name}`;
