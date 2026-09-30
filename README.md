@@ -281,7 +281,9 @@ reason, it is saved with everything else, and while it is on the version label
 in the corner says so.
 
 The shop has no heading and no way out at the bottom of a long scroll: it is a
-close cross in the corner, like everything else on a phone.
+close cross in the corner, like everything else on a phone. What is pinned at
+the top instead is the dog itself, its name and the till - the three things you
+are spending against.
 
 Saturday night is a receipt and not a verdict: the six days, what each one
 took, the total and what is in the till. There is nothing on it to press - the

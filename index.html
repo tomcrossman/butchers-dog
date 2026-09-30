@@ -329,7 +329,7 @@ body.waiting #hud { display: none; }
     position: sticky; top: 0; z-index: 2;
     align-self: stretch; width: auto; margin: 0 -18px;   /* out past the gutters */
     display: flex; flex-direction: column; align-items: center;
-    padding: 10px 0 8px;
+    padding: 5px 0 7px;
     background: linear-gradient(180deg, #1f4f3c, #17402f);
 }
 #stock-head::after {                                  /* it casts onto the shelves */
@@ -337,8 +337,10 @@ body.waiting #hud { display: none; }
     pointer-events: none;
     background: linear-gradient(180deg, rgba(10,28,21,.5), rgba(10,28,21,0));
 }
-#stock-head .bank { margin-top: 2px; }
-#stock-dog { width: min(42vw, 166px); height: auto; margin-top: 2px; }
+#stock-head .who { font-family: var(--font-display); font-size: 19px; color: var(--cream);
+                   line-height: 1; margin-top: 1px; }
+#stock-head .bank { margin-top: 5px; }
+#stock-dog { width: min(42vw, 166px); height: auto; margin-top: 0; }
 /* One panel, four lines in it, hairlines between. Four separate boxes read as
    four separate questions; this reads as the one form it is. */
 .rows {
@@ -690,7 +692,8 @@ body.waiting #hud { display: none; }
     <div id="store" hidden>
         <button class="shut" id="store-done" aria-label="Close">&times;</button>
         <div id="stock-head">
-            <canvas id="stock-dog" width="230" height="142"></canvas>
+            <canvas id="stock-dog" width="230" height="118"></canvas>
+            <div class="who" id="stock-who">Nipper</div>
             <div class="bank" id="store-bank">In the till: <b>&pound;0.00</b></div>
         </div>
         <div id="stock"></div>
@@ -732,7 +735,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v28';
+const APP_VERSION = 'v29';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -3507,7 +3510,7 @@ function drawPreview(id, w, h, withMan) {
         drawButcher(g, true, { cx: w * .33, cy: h * .84, k: .54, holds: 'knife' });
         drawDog(g, w * .77, h * .80, .58 / cast.dog.k, { open: 0 }, 0, cast.dog, cast.kit);
     } else {
-        drawDog(g, w / 2, h * .60, .68 / cast.dog.k, { open: 0 }, 0, cast.dog, previewKit());
+        drawDog(g, w / 2, h * .66, .66 / cast.dog.k, { open: 0 }, 0, cast.dog, previewKit());
         g.save();                                       // and whatever is on the block
         g.translate(w / 2 + 64, h - 22);
         g.rotate(-.34);
@@ -3638,7 +3641,7 @@ function drawTile(c, item) {
         return;
     }
     if (item.kind === 'hand') {                       // and the lad himself
-        drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 13, k: .26, holds: 'knife' });
+        drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 18, k: .23, holds: 'knife' });
         return;
     }
     if (item.kind === 'knife') {
@@ -3656,7 +3659,8 @@ function drawTile(c, item) {
 function paintStore() {
     deal();
     showBank();
-    drawPreview('stock-dog', 230, 142, false);
+    drawPreview('stock-dog', 230, 118, false);
+    document.getElementById('stock-who').textContent = cast.dog.dog;
     document.getElementById('stock').innerHTML = KINDS.map(({ kind, label }) => {
         const shopUp = SWITCHED.includes(kind);
         // cheapest first on every shelf, so the shop reads as a price list
