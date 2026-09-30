@@ -213,7 +213,10 @@ sells.
 hundred and forty: on one day of the week - the week picks it, and Monday is as
 likely as Saturday - somebody lobs the bone in at a moment nobody was waiting
 for, and the dog turns round and goes after it, giving back every inch it had
-climbed. It was a button on the HUD first. The whole input of this game is a
+climbed. It comes in across the whole window, big and slow enough to be seen
+doing it - it used to be lobbed up from the bottom right in a third of a
+second, small, landing where the knife already sits, which is the one corner of
+the screen nobody is watching. It was a button on the HUD first. The whole input of this game is a
 swipe, and a second kind of tap in the middle of a five-second day was one
 thing too many to be holding.
 

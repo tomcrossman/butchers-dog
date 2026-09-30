@@ -1219,14 +1219,62 @@ const squeak = () => safely(t => {
 function throwToy() {
     if (!live || !armed) return;
     toyDay = 0;                                   // and that is the week's one
-    /* It lands by the dog, but the dog spends half the day below the bottom
-       of the window and a bone thrown off the screen is a bone nobody saw. */
+    /* It comes in across the whole window like the cat does. It used to be
+       lobbed up from the bottom right in a third of a second, small, landing
+       where the knife already sits - which is the one corner of the screen
+       nobody is watching. It arrives from the left now, big, and takes long
+       enough to be seen doing it. */
     const [dx, dy] = dogAt();
-    toyFly = { t0: now(), x0: W - 44, y0: H - 40,
-               x1: clamp(dx + 46, 40, W - 40), y1: Math.min(dy + 30, H - 52) };
+    toyFly = { t0: now(), x0: -60, y0: H * .52,
+               x1: clamp(dx + 52, 46, W - 46), y1: Math.min(dy + 30, H - 56) };
     dog.toy = TOY_S;
     dog.chomp = 0;
     squeak();
+}
+const TOY_FLY = 640, TOY_K = 1.6;
+function drawToy(ms) {
+    if (!toyFly && !(dog.toy > 0)) return;
+    let x, y, spin = 0, land = 1;
+    if (toyFly) {
+        const e = Math.min(1, (ms - toyFly.t0) / TOY_FLY);
+        x = toyFly.x0 + (toyFly.x1 - toyFly.x0) * e;
+        y = toyFly.y0 + (toyFly.y1 - toyFly.y0) * e - Math.sin(e * Math.PI) * 150;
+        spin = e * 13;
+        land = e;
+        if (e >= 1) { toyFly = null; x = undefined; }
+    }
+    if (x === undefined) {
+        if (!(dog.toy > 0)) return;
+        const [dx, dy] = dogAt();
+        x = clamp(dx + 52, 46, W - 46); y = Math.min(dy + 30, H - 56);
+        // it does not lie there dead still: a squeaky bone gets nudged about
+        spin = .35 + Math.sin(ms / 190) * .12;
+    }
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(spin);
+    ctx.scale(TOY_K, TOY_K);
+    ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 9; ctx.shadowOffsetY = 5;
+    ctx.fillStyle = '#f3e9d6';
+    ctx.beginPath(); ctx.roundRect(-13, -5, 26, 10, 5); ctx.fill();
+    for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
+        ctx.beginPath(); ctx.ellipse(sx * 14, sy * 6, 7, 6.5, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+    if (land >= 1 && dog.toy > TOY_S - .34) {     // the puff where it landed
+        const e = (TOY_S - dog.toy) / .34;
+        ctx.save();
+        ctx.globalAlpha = (1 - e) * .8;
+        ctx.strokeStyle = '#fff6dd'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+        for (let i = 0; i < 7; i++) {
+            const a = i / 7 * Math.PI * 2, r0 = 26 + e * 44;
+            ctx.beginPath();
+            ctx.moveTo(x + Math.cos(a) * r0, y + Math.sin(a) * r0 * .6);
+            ctx.lineTo(x + Math.cos(a) * (r0 + 16), y + Math.sin(a) * (r0 + 16) * .6);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
 }
 /* The lad is not a better player than you, he is a spare pair of hands: one
    link off the bottom of the string, halfway through the day, at the quality
@@ -1237,31 +1285,6 @@ function ladCut() {
         const p = pieceAt(string.twists[k]);
         if (p && p.from <= k && p.to > k) { splitAt(p, k, LAD_Q); return; }
     }
-}
-function drawToy(ms) {
-    if (!toyFly && !(dog.toy > 0)) return;
-    let x, y, spin = ms / 90;
-    if (toyFly) {
-        const e = Math.min(1, (ms - toyFly.t0) / 340);
-        x = toyFly.x0 + (toyFly.x1 - toyFly.x0) * e;
-        y = toyFly.y0 + (toyFly.y1 - toyFly.y0) * e - Math.sin(e * Math.PI) * 90;
-        if (e >= 1) { toyFly = null; x = undefined; }
-    }
-    if (x === undefined) {
-        if (!(dog.toy > 0)) return;
-        const [dx, dy] = dogAt();
-        x = clamp(dx + 46, 40, W - 40); y = Math.min(dy + 30, H - 52); spin = 0;
-    }
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(spin + .4);
-    ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
-    ctx.fillStyle = '#f3e9d6';
-    ctx.beginPath(); ctx.roundRect(-13, -5, 26, 10, 5); ctx.fill();
-    for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
-        ctx.beginPath(); ctx.ellipse(sx * 14, sy * 6, 7, 6.5, 0, 0, Math.PI * 2); ctx.fill();
-    }
-    ctx.restore();
 }
 /* Where its head is on the page, and how big, so everything that needs to
    know can ask - the blade, the steak, and the drawing. The lunge is in here
