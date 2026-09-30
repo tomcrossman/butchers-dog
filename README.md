@@ -447,8 +447,12 @@ problems in one, because the grab happened in silence and the week was counting
 a thing the day was not. Missing a steak costs you three thirty and a keener
 dog, which is punishment enough for it, and it is half luck anyway: a steak
 that comes down while the dog is already at the top of the string was never
-yours. It says THE DOG GOT IT when it goes now, the day's tally says
-`steak gone` under the takings, and the week does not count it.
+yours. The week does not count it, and the day's tally says `steak gone` under
+the takings so you know it happened. It shouted THE DOG GOT IT over the grab
+for one version, which is a red label in the middle of the window about
+something you can no longer do anything about - the snarl and the steak
+vanishing are the event, and the tally is twenty seconds later with nothing
+else on the screen to read.
 
 And **without the dog taking one**, not without a bad cut: the flag it asked went false on `lost`, and
 `lost` counts a sausage you halved yourself as well as one the dog got. So

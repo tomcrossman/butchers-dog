@@ -777,7 +777,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v70';
+const APP_VERSION = 'v71';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1395,9 +1395,13 @@ function steakStep(dt) {
                thirty and a keener dog, which is punishment enough for it, and
                it is half luck anyway - a steak that comes down when the dog is
                already at the top of the string was never yours. The hour after
-               closing is about the string. */
-            shouts.push({ text: 'THE DOG GOT IT', x: steak.x, y: steak.y - 24,
-                          t0: now(), bad: true });
+               closing is about the string.
+
+               It said THE DOG GOT IT over the grab for one version, which is a
+               red label in the middle of the window about something you can no
+               longer do anything about. The snarl and the steak vanishing are
+               the event; the day's tally says `steak gone` twenty seconds
+               later, when there is nothing else on the screen to read. */
             steak = null;
             stole++; dog.keen++; dog.chomp = CHOMP;
             snarl(); jolt(); settleUp();
