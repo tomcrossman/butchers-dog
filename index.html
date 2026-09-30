@@ -1601,8 +1601,8 @@ function showHud() {
 }
 function startRound(n) {
     if (n > DAYS.length) return endWeek();       // there is no seventh day
-    round = n; live = true; tallying = false;
-    clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT);
+    round = n; live = true; tallying = false; teaching = false;
+    clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(teachT); clearTimeout(holdT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
     cutFx = []; mess = []; shouts = []; chewing = null; steak = null; ghost = null;
