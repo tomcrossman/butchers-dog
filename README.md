@@ -162,13 +162,26 @@ All three are stood on the shopfront before you open up, and every new week is
 dealt there rather than behind your back: finishing a week takes you back to
 the shop window to meet the next lot.
 
+They are drawn as big as the window will hold them. There were ninety-odd dead
+pixels between the awning and his hat, and the canvas stopped at its own three
+hundred and forty rather than filling what it was given, so a phone showed two
+small figures with a green wall round them.
+
 **You can pet the dog.** Tap it in the window and it ducks under the hand,
 rocks its head twice and gets hearts, and a soft thump goes off under two notes
 climbing - the only cheerful noise in a game otherwise made of blades and
 teeth. Tap it again while it is going and it tops the same animation up rather
-than starting a second one. It costs nothing, changes nothing and is not for
-sale, and it is only here: the window is the one screen in this game with no
-clock on it, which is the whole reason a thing like this fits on it.
+than starting a second one.
+
+**And you can wind the butcher.** Tap him and he folds over it, the knife hand
+drops, his eyes screw shut, his mouth goes to an O, three stars go round the
+boater and he straightens back up - pivoted on his boots rather than his
+middle, because a man bending at the waist does not slide across the floor. It
+is about as far as a game where you are the one holding the knife ought to go.
+
+Neither costs anything, changes anything or is for sale, and neither is
+anywhere else: the window is the one screen in this game with no clock on it,
+which is the whole reason things like this fit on it.
 
 ## The till
 
@@ -503,6 +516,12 @@ twenty-two pounds, about a third on top of a perfect week.
 They run on the same canvas the day is played on. A second canvas means a
 second copy of everything that makes this one fit a phone, and by the time they
 start the day is over and nothing else is drawing.
+
+Saturday's hands straight to the takings. The week's card takes half a second
+to arrive, and clearing the game away first put the shop floor - an empty rail
+and a dog stood at the bottom of it - on the screen for that half second,
+between the barbecue and the total. It stays up until the card is over it,
+which is a thing the card does anyway.
 
 ## His drawings
 

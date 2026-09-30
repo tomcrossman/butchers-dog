@@ -120,7 +120,9 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 /* Both dimensions auto with a cap on each: the ratio is kept and it fits
    inside whichever of the two runs out first, which is the height on a phone
    and the width on a short wide one. */
-#shopfront { width: auto; height: auto; max-width: min(94vw, 386px); max-height: 48vh;
+/* Width first, so it fills what it is given rather than stopping at the 340
+   pixels the canvas happens to be; the height cap takes over on a short one. */
+#shopfront { width: min(94vw, 386px); height: auto; max-height: 52vh;
              animation: butcherIn .6s cubic-bezier(.2, 1.5, .4, 1) both; }
 /* the week's takings, day by day */
 #ledger { width: 100%; border-collapse: collapse; margin: 4px 0 10px;
@@ -777,7 +779,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v71';
+const APP_VERSION = 'v72';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1956,6 +1958,7 @@ function endWeek() {
     drawDog(bg, 258, 218, .66 / cast.dog.k,
             { open: good ? 0 : .72, mood: good ? 'glum' : 'chuffed' }, 0, cast.dog);
     settleT = setTimeout(() => {
+        mini = null;                     // whatever was under the card, it is gone
         card.hidden = false;
         drawerShut();
         holdT = setTimeout(showShop, HOLD_MS);
@@ -2339,7 +2342,15 @@ function endMini() {
     // the total on Saturday's card already has this in it, so the card needs a
     // line for it or the six days above it do not add up to the number
     miniTook = { name: mini.name, won: mini.won };
-    setTimeout(() => { mini = null; afterMini(); }, 900);
+    /* The week's card takes half a second to arrive, and clearing this first
+       put the shop floor - an empty rail and a dog stood at the bottom of it -
+       on the screen for that half second, between the barbecue and the
+       takings. On the last day it stays up until the card is over it, which is
+       a thing the card does anyway, and the card clears it. */
+    setTimeout(() => {
+        if (round < DAYS.length) mini = null;
+        afterMini();
+    }, 900);
 }
 /* Priced against a day rather than against nothing. A clean day is four to
    fifteen pounds for about five seconds of cutting; these were one thirty-five
@@ -4042,7 +4053,8 @@ function drawKnife(ctx, x, y, ang, k, K) {
    The head sits high enough to leave room under whatever is on the lip for a
    mouth, which is the whole difference between the two of them. The neck is
    drawn before the coat, or it paints over its own collar. */
-function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null } = {}) {
+function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null,
+                                   winded = false } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
     ctx.save();
     ctx.translate(cx, cy);
@@ -4115,7 +4127,13 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     for (const sx of [-1, 1])                               // ruddy from the cold room
         blob('rgba(211,109,78,.42)', () => ctx.ellipse(sx * 27, -96, 13, 9, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1]) {
-        blob('#2a201a', () => ctx.ellipse(sx * 15, -114, 4.4, happy ? 3.4 : 4.8, 0, 0, Math.PI * 2));
+        /* Screwed shut rather than crossed out: crosses are for the dog, and
+           the dog's crosses mean something a great deal worse than this. */
+        if (winded) blob('#2a201a', () => {
+            ctx.moveTo(sx * 8, -119); ctx.lineTo(sx * 22, -114); ctx.lineTo(sx * 8, -109);
+            ctx.lineTo(sx * 13, -114);
+        });
+        else blob('#2a201a', () => ctx.ellipse(sx * 15, -114, 4.4, happy ? 3.4 : 4.8, 0, 0, Math.PI * 2));
         blob(B.hair, () => {
             /* Wide apart either way. Brows that nearly meet read as one V
                across the middle of the face, which is a scowl whichever way
@@ -4131,7 +4149,9 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     }
     blob(SKIN_D, () => ctx.ellipse(0, -100, 8, 7, 0, 0, Math.PI * 2));
     // the mouth first, because whatever is on the lip sits over the top of it
-    if (happy) {
+    if (winded) {                                    // the noise a man makes: oof
+        blob('#7a3628', () => ctx.ellipse(0, -72, 11, 13, 0, 0, Math.PI * 2));
+    } else if (happy) {
         blob('#7a3628', () => ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2));
         ctx.save();
         ctx.beginPath(); ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2); ctx.clip();
@@ -5073,15 +5093,17 @@ function drawFascia(g, name, apron) {
 /* Where it stands, where the hand lands and where the hearts come off it. The
    ink of the dog on this canvas runs 213-314 across and 296-391 down, which is
    what the circle is cut to - the butcher is at 120 and must stay out of it. */
-const DOG_AT = [264, 332], PET_AT = [264, 344], PET_R = 62, PET_MS = 1250;
+const DOG_AT = [268, 320], PET_AT = [268, 336], PET_R = 74, PET_MS = 1250;
+// where he stands, and the box you have to hit to catch him with one
+const BUT_AT = [112, 312], OOF_BOX = [54, 152, 174, 400];
 let petting = null, petRaf = 0;
 function petDog() {
     const t = now();
     // a second tap while it is going tops it up rather than starting again
     petting = { t0: t, hearts: (petting ? petting.hearts : []) };
     for (let i = 0; i < 3; i++)
-        petting.hearts.push({ x: DOG_AT[0] + (Math.random() - .5) * 40,
-                              y: 300 + Math.random() * 12,
+        petting.hearts.push({ x: DOG_AT[0] + (Math.random() - .5) * 46,
+                              y: 272 + Math.random() * 12,
                               t0: t + i * 130, drift: (Math.random() - .5) * 34,
                               r: 7 + Math.random() * 4 });
     aww();
@@ -5114,11 +5136,68 @@ function heart(g, x, y, r, a) {
     g.fill();
     g.restore();
 }
+/* ---- and winding the butcher ------------------------------------------
+   The dog gets patted; he gets one in the ribs. He folds over it, the knife
+   hand comes down, the face screws up, three stars go round his hat and he
+   straightens back up - which is about as far as a game where you are the one
+   holding the knife should go. Pivoted on his boots rather than his middle,
+   because a man bending at the waist does not slide across the floor. */
+const OOF_MS = 900;
+let oofT0 = 0, oofRaf = 0;
+function windButcher() {
+    oofT0 = now();
+    oof();
+    if (!oofRaf) oofRaf = requestAnimationFrame(oofStep);
+}
+function oofStep() {
+    oofRaf = 0;
+    if (!oofT0) return;
+    if (now() - oofT0 > OOF_MS) { oofT0 = 0; drawShopfront(); return; }
+    drawShopfront();
+    oofRaf = requestAnimationFrame(oofStep);
+}
+const oof = () => safely(t => {
+    sweep(t, { from: 1600, to: 300, q: 1.2, dur: .16, vol: .3 });          // the thump
+    tone(t, { freq: 150, to: 62, dur: .16, type: 'square', vol: .2 });
+    tone(t, { freq: 300, to: 148, dur: .3, type: 'sawtooth', vol: .1, at: .06 });  // and him
+    hiss(t, { hp: 300, lp: 2400, dur: .34, vol: .1, at: .08 });
+});
 function drawShopfront() {
     const c = document.getElementById('shopfront'), g = c.getContext('2d');
     g.clearRect(0, 0, 340, 400);
     drawFascia(g, cast.shop, cast.butcher.apron);
-    drawButcher(g, true, { cx: 120, cy: 320, k: .64, holds: 'knife' });
+    /* There were ninety-odd dead pixels between the awning and his hat, so
+       both of them have grown into it. They stand on the same line at the
+       bottom of the canvas and the gap between them is what is left. */
+    if (!oofT0) {
+        drawButcher(g, true, { cx: 112, cy: 312, k: .88, holds: 'knife' });
+    } else {
+        /* It lands in a tenth of a second and comes back out over the rest,
+           and the face and the dropped arm go with the fold rather than
+           outlasting it, so he is upright and cheerful again by the end. */
+        const e = (now() - oofT0) / OOF_MS;
+        const fold = e < .12 ? e / .12 : Math.pow(1 - (e - .12) / .88, 2.2);
+        g.save();
+        g.translate(BUT_AT[0], BUT_AT[1] + 96 * .88);     // pivot on his boots
+        g.rotate(fold * .30);
+        g.scale(1 + fold * .07, 1 - fold * .11);
+        /* The face and the dropped arm come back together, and a quarter of
+           the way out rather than at the end: he is still leaning a few
+           degrees when he is himself again, which is a man straightening up.
+           Held to the last frame it was a pop from glum and empty-handed to
+           beaming with the knife back over his head. */
+        const sore = fold > .25;
+        drawButcher(g, !sore, { cx: 0, cy: -96 * .88, k: .88,
+                                holds: sore ? 'none' : 'knife', winded: sore });
+        g.restore();
+        if (fold > .1) {
+            g.save();
+            g.globalAlpha = Math.min(1, fold * 2);
+            g.translate(BUT_AT[0] + 18, BUT_AT[1] - 152 * .88);
+            stars(g, now(), 0, 26);
+            g.restore();
+        }
+    }
     /* Being patted: it ducks and comes back up twice, rocking its head as it
        goes, and settles. All three run off the same number and all three fade
        out on the same one, so a tap half a second in tops up one animation
@@ -5131,7 +5210,7 @@ function drawShopfront() {
                  tilt: Math.sin(e * Math.PI * 4.6) * .14 * fade,
                  reach: -Math.abs(Math.sin(e * Math.PI * 2.4)) * 5 * fade };
     }
-    drawDog(g, DOG_AT[0], DOG_AT[1], .76 / cast.dog.k, pose, ms, cast.dog);
+    drawDog(g, DOG_AT[0], DOG_AT[1], .96 / cast.dog.k, pose, ms, cast.dog);
     if (petting) for (const h of petting.hearts) {
         const e = (now() - h.t0) / 1150;
         if (e < 0 || e > 1) continue;
@@ -5157,7 +5236,9 @@ document.getElementById('shopfront').addEventListener('pointerdown', e => {
     // the canvas is 340 by 400 however wide it happens to be drawn
     const r = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width * 340, y = (e.clientY - r.top) / r.height * 400;
-    if (Math.hypot(x - PET_AT[0], y - PET_AT[1]) <= PET_R) petDog();
+    if (Math.hypot(x - PET_AT[0], y - PET_AT[1]) <= PET_R) return petDog();
+    const [bx0, by0, bx1, by1] = OOF_BOX;
+    if (x >= bx0 && x <= bx1 && y >= by0 && y <= by1) windButcher();
 });
 /* Boot: whatever was saved, or a stranger who has to pick a shop first. */
 loadSave();
