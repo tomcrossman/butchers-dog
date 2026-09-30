@@ -762,7 +762,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v73';
+const APP_VERSION = 'v74';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1183,10 +1183,16 @@ const miaow = () => safely(t => {
     tone(t, { freq: 620, to: 900, dur: .16, type: 'sawtooth', vol: .09 });
     tone(t, { freq: 900, to: 540, dur: .3, type: 'sawtooth', vol: .07, at: .14 });
 });
+/* Along the bottom of the window, every time. It used to walk past seventy
+   pixels under wherever the dog happened to be, which put it halfway up the
+   tiles on a Monday and off the bottom edge on a Saturday - a cat that turns
+   up at a different height every day reads as a thing the game is doing to
+   you rather than a cat. A cat walks on the floor. The floor is the bottom of
+   the window, and its paws land on it: the drawing runs 26 below its own
+   origin and is on at 1.35, which is the 44. */
 function sendCat() {
     if (!live || !armed) return;
-    const [, dy] = dogAt();
-    cat = { t0: now(), y: clamp(dy + 70, 140, H - 40), dir: Math.random() < .5 ? 1 : -1 };
+    cat = { t0: now(), y: H - 44, dir: Math.random() < .5 ? 1 : -1 };
     dog.stare = STARE_S;
     miaow();
 }
@@ -1725,9 +1731,18 @@ const DROP_CHANCE = .28, DROP_Q = 50;
 const PUD_SHARE = .15, PUD_Q = 78;
 const poshLink = i => !!(string.posh && string.posh[i]);
 const pudLink = i => !!(string.pud && string.pud[i]);
-const money2 = p => '£' + (p / 100).toFixed(2);
+/* A till that has been open a year is reading four figures, and £1027.05 is a
+   number you have to count the digits of. Grouped by hand rather than through
+   toLocaleString, which would hand a phone set to another country its own
+   idea of what a pound looks like - this shop is in England and its signs are
+   painted, not translated. */
+const commas = n => n.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const money2 = p => {
+    const v = (p / 100).toFixed(2), dot = v.indexOf('.');
+    return '£' + commas(v.slice(0, dot)) + v.slice(dot);
+};
 // on a tile there is no room for two noughts nobody reads
-const money0 = p => p % 100 === 0 ? '£' + (p / 100) : money2(p);
+const money0 = p => p % 100 === 0 ? '£' + commas(String(p / 100)) : money2(p);
 
 let round = 0, live = false, armed = false, tallying = false, roundT0 = 0;
 let money = 0, roundMoney = 0, ledger = [], steaks = 0;

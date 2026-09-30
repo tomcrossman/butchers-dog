@@ -187,6 +187,12 @@ which is the whole reason things like this fit on it.
 
 There is no pass mark, and nothing to lose but money.
 
+Over a thousand it is grouped: £1,027.05 rather than £1027.05, which is a
+number you have to count the digits of. Grouped by hand rather than through
+`toLocaleString`, which would hand a phone set to another country its own idea
+of what a pound looks like - this shop is in England and its signs are painted,
+not translated.
+
 A sausage sells for what it looks like it is worth: a clean cut through the
 middle of a twist leaves two tidy ends and it goes in the window at £1.65; a
 scrappy one still sells, to somebody, for 95p. A cut dead through the middle
@@ -272,8 +278,12 @@ no new dog on Monday - the week carries on with everything taken so far. It
 does not make the dog harder to hit; it makes hitting it something you survive.
 
 **A cat**, four hundred and eighty, is the small favour to the bone's big one:
-one walks past every day at a moment nobody picked, and the dog stops dead to
-watch it go. It hands back none of the ground it has made - it just stands
+one walks along the floor every day at a moment nobody picked, and the dog
+stops dead to watch it go. Along the floor every time - it used to walk past
+seventy pixels under wherever the dog happened to be, which put it halfway up
+the tiles on a Monday and off the bottom edge on a Saturday, and a cat that
+turns up at a different height every day reads as a thing the game is doing to
+you rather than as a cat. It hands back none of the ground it has made - it just stands
 there for a second and a half, which is what a dog does.
 
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
