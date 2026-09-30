@@ -215,7 +215,12 @@ climbed. It was a button on the HUD first. The whole input of this game is a
 swipe, and a second kind of tap in the middle of a five-second day was one
 thing too many to be holding.
 
-**Insured** is the most expensive thing in the shop and the only one that is
+**A bit of help** is the bone, the apprentice and the insurance on one shelf.
+They were a heading each over a single tile, which is three headings over three
+things that are all the same thing anyway: somebody or something else taking a
+bit of the week off you.
+
+**Dog insurance** is the most expensive thing in the shop and the only one that is
 not about money. Twelve hundred pounds, and cutting the dog stops being the end
 of it: it is hurt, the day ends there, and it lives. No vet, no bill, no stone,
 no new dog on Monday - the week carries on with everything taken so far. It
@@ -350,8 +355,10 @@ They do not all have the same opinion, though. Which way the bar tilts is the
 whole expression, and every breed has its own: down at the middle is cross, up
 at the middle is worried, level is a dog thinking about nothing at all, and
 level and high is one that is pleased to see you. The Dachshund and the Corgi
-are pleased, the Labrador and the Great Dane are worried, the Bulldog and the
-Staffie are cross, and the pug is thinking about nothing at all - which also
+are pleased, the Labrador and the Great Dane are worried, the Staffie and the
+Hellhound are cross, the Bulldog is a soft daft thing with a light level brow
+rather than the thug the first pass made of it, and the pug is thinking about
+nothing at all - which also
 gets it a smooth top, because a coat with no fur to stand up should not have
 spikes on it.
 

@@ -740,7 +740,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v39';
+const APP_VERSION = 'v41';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -2230,7 +2230,7 @@ const TIERS = [
     { name: 'Bulldog',    k: 1, speed: 1,
       coat: '#efe3ca', lit: '#fdf7e8', shade: '#d5c6a6', muzzle: '#fdf7e8',
       ear: 'fold', earCol: '#b9a98c', skullW: 38, skullH: 40, jawW: 56, jawY: 20,
-      chin: 45, snout: [31, 20, 12], eyes: [21, -13, 5.4], brow: 1, tongue: 1, look: 'cross' },
+      chin: 45, snout: [31, 20, 12], eyes: [21, -13, 5.4], brow: .3, tongue: 1, look: 'flat' },
     { name: 'Staffie',    k: 1.04, speed: 1.06,
       coat: '#6b5340', lit: '#85694f', shade: '#4a3728', muzzle: '#8d7157',
       ear: 'fold', earCol: '#513d2d', skullW: 36, skullH: 40, jawW: 50, jawY: 20,
@@ -2435,14 +2435,14 @@ const KIT = [
       why: 'Two steaks a day, and from Monday.' },
     { id: 'sawdust',   kind: 'line',  name: 'Sawdust floor',     price: 22000,
       why: 'The dog drops one in four. You sell them anyway.' },
-    { id: 'toy',       kind: 'skill', name: 'Squeaky bone',     price: 24000,
+    { id: 'toy',       kind: 'help',  name: 'Squeaky bone',     price: 24000,
       why: 'One day a week the dog goes after the bone instead.' },
-    { id: 'apprentice', kind: 'hand',  name: 'An apprentice',    price: 32000,
+    { id: 'apprentice', kind: 'help',  name: 'An apprentice',    price: 32000,
       why: 'Cuts one link a day, about halfway through.' },
     /* The most expensive thing in the shop, and the only one that is not
        about money at all. It does not make the dog harder to hit - it makes
        hitting it something you survive. The day still stops there. */
-    { id: 'insure',    kind: 'care',  name: 'Dog insurance',    price: 120000,
+    { id: 'insure',    kind: 'help',  name: 'Dog insurance',    price: 120000,
       why: 'Cut the dog and it lives. The day ends there.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
@@ -2460,9 +2460,10 @@ const itemById = id => STOCK.find(i => i.id === id);
 const KINDS = [
     { kind: 'line',   label: 'On the rail',   tab: 'shop' },
     { kind: 'knife',  label: 'On the block',  tab: 'shop' },
-    { kind: 'skill',  label: 'Once a week',   tab: 'shop' },
-    { kind: 'hand',   label: 'On the payroll', tab: 'shop' },
-    { kind: 'care',   label: 'Insured',       tab: 'shop' },
+    /* The bone, the lad and the insurance were a shelf each, which is three
+       headings over three tiles. They are all the same thing anyway: somebody
+       or something else taking a bit of the week off you. */
+    { kind: 'help',   label: 'A bit of help', tab: 'shop' },
     { kind: 'hat',    label: 'Headwear',      tab: 'dog' },
     { kind: 'face',   label: 'Facewear',      tab: 'dog' },
     { kind: 'collar', label: 'Collars',       tab: 'dog' },
@@ -2508,7 +2509,7 @@ function putSave() {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* never mind */ }
 }
 // the shelves you switch rather than wear
-const SWITCHED = ['line', 'skill', 'hand', 'care'];
+const SWITCHED = ['line', 'help'];
 /* Debug hands you the whole shop for nothing. It is a switch in the back room
    rather than a build flag, because the thing worth testing is what the
    upgrades do in a real week, and that means playing one. */
@@ -3913,7 +3914,7 @@ function drawTile(c, item) {
         }
         return;
     }
-    if (item.kind === 'care') {                       // a plaster, on its own
+    if (item.id === 'insure') {                       // a plaster, on its own
         g.save();
         g.translate(TILE_W / 2, TILE_H / 2);
         g.rotate(-.42);
@@ -3933,7 +3934,7 @@ function drawTile(c, item) {
         g.restore();
         return;
     }
-    if (item.kind === 'skill') {                      // the bone, off its string
+    if (item.id === 'toy') {                          // the bone, off its string
         g.save();
         g.translate(TILE_W / 2, TILE_H / 2);
         g.rotate(-.34); g.scale(1.5, 1.5);
@@ -3946,7 +3947,7 @@ function drawTile(c, item) {
         g.restore();
         return;
     }
-    if (item.kind === 'hand') {                       // and the lad himself
+    if (item.id === 'apprentice') {                   // and the lad himself
         drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 18, k: .23, holds: 'knife' });
         return;
     }
@@ -4010,7 +4011,8 @@ function paintStore() {
 function drawItemOnly(c, item) {
     const g = c.getContext('2d');
     g.clearRect(0, 0, TILE_W, TILE_H);
-    if (item.kind === 'line' || item.kind === 'skill' || item.kind === 'hand') {
+    // anything that is not worn is already drawn on its own on the shelf
+    if (!['knife', 'hat', 'face', 'collar'].includes(item.kind)) {
         drawTile(c, item);
         return;
     }
