@@ -275,7 +275,7 @@ again on the counter, because a hat is a hat and needs no caption but a sawdust
 floor does. A hat you already own says nothing at all: no price is the word, and
 thirty tiles reading Wear was thirty times the same word.
 
-The shop is two rooms behind two tabs, **The shop** and **The dog**, with tiles
+The shop is two rooms behind two tabs, **The shop** and **The pooch**, with tiles
 two to a row. Seven shelves in one column was a scroll nobody reached the bottom
 of, and the tiles were smaller than a thumb. Every shelf runs cheapest first.
 

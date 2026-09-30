@@ -777,7 +777,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v68';
+const APP_VERSION = 'v69';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1408,7 +1408,10 @@ function hitSteak(sw) {
 function sliceSteak() {
     money += STEAK_PAY; roundMoney += STEAK_PAY; steaks++;
     showHud();
-    shouts.push({ text: 'PRIME CUT', x: steak.x, y: steak.y - 26, t0: now() });
+    // same rule as PERFECT: the figure rides on the word rather than sitting
+    // under it, because two labels over one cut read as two payments
+    shouts.push({ text: `PRIME CUT +${money0(STEAK_PAY)}`,
+                  x: steak.x, y: steak.y - 26, t0: now() });
     steak.bits = [-1, 1].map(sx => ({ x: steak.x, y: steak.y, vx: sx * 150, vy: -120,
                                       ang: steak.ang, spin: sx * 5, sx }));
     steak.t0 = now();
@@ -3118,7 +3121,8 @@ const KINDS = [
     { kind: 'face',   label: 'Facewear',      tab: 'dog' },
     { kind: 'collar', label: 'Collars',       tab: 'dog' },
 ];
-const TABS = [{ id: 'shop', label: 'The shop' }, { id: 'dog', label: 'The dog' }];
+// the id stays 'dog' - it is in nobody's save, but it is in every KINDS row
+const TABS = [{ id: 'shop', label: 'The shop' }, { id: 'dog', label: 'The pooch' }];
 let shelfTab = 'shop';
 
 /* ---- the save ------------------------------------------------------------
