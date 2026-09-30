@@ -777,7 +777,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v69';
+const APP_VERSION = 'v70';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1078,7 +1078,10 @@ function at(s) {
 /* A piece is a run of sausages still joined together. Cutting a twist splits
    a piece in two; a piece of one sausage is off the string and yours. The
    dog eats whatever piece it reaches, one sausage at a time. */
-let pieces = [], loose = [], saved = 0, lost = 0;
+/* `lost` is everything that did not get sold, the dog's share and the ones
+   you halved with a bad cut alike. `ate` is the dog's share of it on its own,
+   which is a different number and the one the week is judged on. */
+let pieces = [], loose = [], saved = 0, lost = 0, ate = 0, stole = 0;
 const TWIST = 15;               // how much of the string a twist takes up
 
 function layout() {
@@ -1122,7 +1125,7 @@ function makeString(day) {
         }
         for (const i of idx.slice(0, want)) string.pud[i] = true;
     }
-    loose = []; saved = 0; lost = 0;
+    loose = []; saved = 0; lost = 0; ate = 0; stole = 0;
     return n;
 }
 // the arc range a run of sausages covers, twists and all
@@ -1383,8 +1386,20 @@ function steakStep(dt) {
         if (steak.y > dy - dr * .5) {
             chewing = { x: steak.x, y: steak.y, ang: steak.ang, len: 30, kind: 'steak', t0: now() };
             dog.grabX = steak.x;
+            /* It used to go on the same tally as the sausages, so a week where
+               the dog took one steak and not a single link came up on Saturday
+               as a week the dog had had something off you - after six days of
+               the game telling you it had not. Two problems in one: the grab
+               happened in silence, and the week was counting a thing the day
+               was not. A steak is not on the rail. Missing one costs you three
+               thirty and a keener dog, which is punishment enough for it, and
+               it is half luck anyway - a steak that comes down when the dog is
+               already at the top of the string was never yours. The hour after
+               closing is about the string. */
+            shouts.push({ text: 'THE DOG GOT IT', x: steak.x, y: steak.y - 24,
+                          t0: now(), bad: true });
             steak = null;
-            fed++; dog.keen++; dog.chomp = CHOMP;
+            stole++; dog.keen++; dog.chomp = CHOMP;
             snarl(); jolt(); settleUp();
             return;
         }
@@ -1686,7 +1701,7 @@ function dogStep(dt) {
                          tx: 48 + ((saved - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
             spat ? yuck() : plop(saved);
         } else {
-            lost++; fed++;
+            lost++; fed++; ate++;
             const rp = document.getElementById('roundplate');
             rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
         }
@@ -1856,11 +1871,19 @@ function endRound() {
     if (!live) return;
     live = false; armed = false; dog.going = false; teaching = false;
     countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
-    ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, steaks });
+    ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, ate, steaks });
     tallying = true;
+    /* Which of the three lines it gets is the dog's doing, not yours: THE DOG
+       GOT NOTHING over a day where it got one, because you had also halved one
+       yourself, is the game arguing with itself. And the bottom line names the
+       dog's share out loud, so the week's card is never the first you hear of
+       it. */
     tallyEl.innerHTML = `<span class="n">${money2(roundMoney)}</span>` +
-        `<span class="l">${pick(lost === 0 ? CLEAN : saved ? THROUGH : MISSED)}</span>` +
-        `<span class="b">${saved} sold</span>`;
+        `<span class="l">${pick(ate ? (saved ? THROUGH : MISSED)
+                                     : stole ? STOLEN : CLEAN)}</span>` +
+        `<span class="b">${saved} sold` +
+        `${ate ? ` &middot; dog got ${ate}` : ''}` +
+        `${stole ? ' &middot; steak gone' : ''}</span>`;
     tallyEl.classList.add('on');
     jingleUp();
     tallyT = setTimeout(nextRound, 1500);
@@ -1882,10 +1905,10 @@ function lastLine() {
         return `<tr class="extra won"><td class="d">After hours</td>` +
                `<td class="w">${miniTook.name}</td>` +
                `<td class="m">+ ${money2(miniTook.won)}</td></tr>`;
-    const ate = fed;                     // what the dog got, not what you spoiled
-    if (!ate) return '';                 // a clean week with no hour is not a thing
+    const off = fed;                     // off the rail, not the ones you spoiled
+    if (!off) return '';                 // a clean week with no hour is not a thing
     return `<tr class="extra ate"><td class="d">The dog</td>` +
-           `<td class="w" colspan="2">Got <b>${ate}</b>. ` +
+           `<td class="w" colspan="2">Got <b>${off}</b>. ` +
            `A week it gets none buys an hour after closing.</td></tr>`;
 }
 function endWeek() {
@@ -1910,7 +1933,8 @@ function endWeek() {
         `<tr class="${r.took === top && top > 0 ? 'best' : ''}">` +
         `<td class="d">${r.day.short}</td>` +
         `<td class="w">${r.sold} sold` +
-        `${r.steaks ? ` &middot; ${r.steaks} steak${r.steaks > 1 ? 's' : ''}` : ''}</td>` +
+        `${r.steaks ? ` &middot; ${r.steaks} steak${r.steaks > 1 ? 's' : ''}` : ''}` +
+        `${r.ate ? ` &middot; dog got ${r.ate}` : ''}</td>` +
         `<td class="m">${money2(r.took)}</td></tr>`).join('') + lastLine();
     document.getElementById('score').innerHTML =
         `${money2(money)}<span class="pc">banked &middot; ${money2(save.bank)} in the till</span>`;
@@ -2567,6 +2591,11 @@ const jingleUp = () => safely(t => {
 
 const CLEAN = ['Not one lost', 'The whole string', 'Clean sweep', 'The dog got nothing',
                'Every last one', 'Immaculate'];
+/* A day where the string held and the steak did not. Half of CLEAN says the
+   dog got nothing, which over a dog with a steak in its mouth is the game
+   arguing with itself again - so it gets its own six. */
+const STOLEN = ['Only the steak went', 'Not a link lost', 'The string held',
+                'Nothing off the rail', 'It settled for the steak', 'The rail is clear'];
 const THROUGH = ['Through', 'That will do', 'Enough for the window', 'Good enough',
                  'The dog ate the difference', 'Counter-ready'];
 const MISSED = ['The dog ate well', 'Nothing for the window', 'All of that was dog food',

@@ -437,8 +437,20 @@ every screen including the one you play on.
 ## After hours
 
 Get through a whole week without the dog taking a single one off you and there
-is a minute of something else before the takings are counted. **Without the dog
-taking one**, not without a bad cut: the flag it asked went false on `lost`, and
+is a minute of something else before the takings are counted. **A single one off
+the rail**, which is narrower than it sounds and was wrong twice.
+
+It counted the steak, and the steak is not on the rail. A week where the dog
+took one steak and not a single link came up on Saturday as a week the dog had
+had something off you, after six days of the game saying it had not - two
+problems in one, because the grab happened in silence and the week was counting
+a thing the day was not. Missing a steak costs you three thirty and a keener
+dog, which is punishment enough for it, and it is half luck anyway: a steak
+that comes down while the dog is already at the top of the string was never
+yours. It says THE DOG GOT IT when it goes now, the day's tally says
+`steak gone` under the takings, and the week does not count it.
+
+And **without the dog taking one**, not without a bad cut: the flag it asked went false on `lost`, and
 `lost` counts a sausage you halved yourself as well as one the dog got. So
 spoiling a single link on Tuesday - the most ordinary mistake in the game - shut
 the hour off for the rest of the week, and it almost never opened. It asks what
