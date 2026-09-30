@@ -340,6 +340,15 @@ opinion. The tufts come off fixed fractions of the skull rather than a random
 number, so a Corgi is the same Corgi every time you look at it. It is one head
 shape and every one of the eighteen is drawn through it.
 
+They do not all have the same opinion, though. Which way the bar tilts is the
+whole expression, and every breed has its own: down at the middle is cross, up
+at the middle is worried, level is a dog thinking about nothing at all, and
+level and high is one that is pleased to see you. The Dachshund and the Corgi
+are pleased, the Labrador and the Great Dane are worried, the Bulldog and the
+Staffie are cross, and the pug is thinking about nothing at all - which also
+gets it a smooth top, because a coat with no fur to stand up should not have
+spikes on it.
+
 Six of them are his, added as three more tiers: **Redback**, the snarling dark
 red one off the scribbled background; **Spotter**, the sad spotted one;
 **Hellhound**, grey with eyes that are lit rather than painted; **Bruiser**,
