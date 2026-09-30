@@ -315,8 +315,8 @@ to roll if you cannot think of one - and that, the till and the wardrobe are
 saved. It is one object under one key.
 
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
-Start again from nothing - which asks twice before it wipes a month - and a
-debug switch that hands you the whole shop for free and turns every switchable
+Reset game - which takes a whole screen to say what it is about to take rather
+than a red line that asks twice - and a debug switch that hands you the whole shop for free and turns every switchable
 thing on, so an upgrade can be tested in a real week rather than argued about.
 It is a switch in the back room rather than a build flag for exactly that
 reason, it is saved with everything else, and while it is on the version label
