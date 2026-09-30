@@ -186,7 +186,9 @@ sausages in the window.
 
 **On the block**, the knives, is not decoration either. Each one has an edge:
 how many points it takes off the bar for a perfect cut, from nothing on the
-butcher's own knife up to six on the shears. Same rule as the rest of the shop
+butcher's own knife up to six on the cleaver, which is the top of the block -
+it is what a butcher reaches for when the job is serious, and shears are for
+poultry. Same rule as the rest of the shop
 - it does not slow the dog down or make the string easier, it pays you more for
 a thing you are already trying to do.
 
