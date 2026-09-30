@@ -272,7 +272,9 @@ hats is thirty pictures of a dog. The circle is the skull the item is placed
 against, so everything still lands where it lands on a real one - hats on top,
 faces on the eye line, collars at the chin - and Nothing on its head is an
 empty circle, which is exactly right. The counter at the bottom draws the same
-thing; seeing it on the dog is what the pinned preview at the top is for.
+item without the circle - there is one thing on the screen down there and its
+name beside it - and seeing it on the dog is what the pinned preview at the top
+is for.
 
 The dog is pinned to the top of the shop and does not scroll away with the
 first shelf, so whatever you try goes on in front of you without scrolling back
@@ -313,8 +315,8 @@ to roll if you cannot think of one - and that, the till and the wardrobe are
 saved. It is one object under one key.
 
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
-Start again from nothing - which asks twice before it wipes a month - and a
-debug switch that hands you the whole shop for free and turns every switchable
+Reset game - which takes a whole screen to say what it is about to take rather
+than a red line that asks twice - and a debug switch that hands you the whole shop for free and turns every switchable
 thing on, so an upgrade can be tested in a real week rather than argued about.
 It is a switch in the back room rather than a build flag for exactly that
 reason, it is saved with everything else, and while it is on the version label
