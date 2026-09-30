@@ -737,7 +737,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v33';
+const APP_VERSION = 'v34';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -2251,6 +2251,43 @@ const TIERS = [
       ear: 'drop', earCol: '#7c5c2c', skullW: 36, skullH: 44, jawW: 56, jawY: 22,
       chin: 50, snout: [32, 22, 16], eyes: [21, -15, 5.2], brow: .9, tongue: 1,
       mask: '#2e2520' },
+/* ---- and six he drew ---------------------------------------------------
+   Straight off his sheet: the snarling red one on the scribbled background,
+   the sad spotted one with the tag, the grey one with the red eyes, the tan
+   one with the underbite, the dark green pug and the red-and-green one with
+   the round cheeks. Same parameters as the other twelve, so they wear every
+   hat in the shop and run at exactly the same speed. */
+],[
+    { name: 'Redback',    k: 1.1, speed: 1,
+      coat: '#8e3020', lit: '#ad4128', shade: '#5c1c12', muzzle: '#4a1a12',
+      ear: 'drop', earCol: '#6a2216', skullW: 38, skullH: 44, jawW: 48, jawY: 18,
+      chin: 48, snout: [32, 23, 14], eyes: [20, -15, 4.6], brow: 1, tongue: 1,
+      mask: '#4a1a12' },
+    { name: 'Spotter',    k: 1.06, speed: 1,
+      coat: '#efe8d8', lit: '#fdf8ec', shade: '#c6bca6', muzzle: '#fdf8ec',
+      ear: 'drop', earCol: '#8e8676', skullW: 36, skullH: 42, jawW: 44, jawY: 18,
+      chin: 48, snout: [28, 21, 17], eyes: [18, -14, 5], brow: .7, tongue: 1,
+      patch: '#4a4640' },
+],[
+    { name: 'Hellhound',  k: 1.08, speed: 1,
+      coat: '#59565e', lit: '#726f79', shade: '#3a383f', muzzle: '#d8cfc0',
+      ear: 'fold', earCol: '#3a383f', skullW: 36, skullH: 42, jawW: 44, jawY: 18,
+      chin: 46, snout: [27, 20, 17], eyes: [19, -14, 5.4], brow: 1, tongue: .8,
+      iris: '#d81f1f', glow: true },
+    { name: 'Bruiser',    k: 1.14, speed: 1,
+      coat: '#e3c877', lit: '#f2dd9a', shade: '#b39d4c', muzzle: '#f4e8c4',
+      ear: 'prick', earCol: '#b39d4c', skullW: 38, skullH: 42, jawW: 48, jawY: 20,
+      chin: 48, snout: [30, 20, 16], eyes: [20, -13, 5], brow: 1, tongue: .9 },
+],[
+    { name: 'Midnight',   k: .92, speed: 1,
+      coat: '#1f3a30', lit: '#2d5044', shade: '#12241d', muzzle: '#6f7a72',
+      ear: 'fold', earCol: '#12241d', skullW: 36, skullH: 38, jawW: 40, jawY: 16,
+      chin: 42, snout: [26, 19, 15], eyes: [17, -12, 5.6], brow: .2, tongue: .9 },
+    { name: 'Punch',      k: 1.04, speed: 1,
+      coat: '#8e5a4a', lit: '#a86e5a', shade: '#5e392e', muzzle: '#f2e4c8',
+      ear: 'prick', earCol: '#3f5c3a', skullW: 36, skullH: 40, jawW: 44, jawY: 18,
+      chin: 46, snout: [28, 20, 16], eyes: [18, -13, 5], brow: .6, tongue: 1,
+      cheeks: '#c4322a' },
 ]];
 const DOG_NAMES = ['Alfie', 'Nipper', 'Winston', 'Duke', 'Bruno', 'Goliath', 'Bess',
                    'Tyke', 'Rex', 'Pip', 'Nell', 'Rolo', 'Hector', 'Barney', 'Dot',
@@ -2351,6 +2388,12 @@ const KIT = [
     { id: 'bearhood', kind: 'hat',    name: 'Teddy onesie',     price: 26000 },
     { id: 'capyhood', kind: 'hat',    name: 'Capybara onesie',  price: 30000 },
     { id: 'crown',    kind: 'hat',    name: 'Gold crown',       price: 45000 },
+    /* ---- off his accessories sheet ------------------------------------- */
+    { id: 'halo',     kind: 'hat',    name: 'Halo',             price: 6500 },
+    { id: 'cans',     kind: 'hat',    name: 'Headphones',       price: 8500 },
+    { id: 'fedora',   kind: 'hat',    name: 'Red fedora',       price: 13000 },
+    { id: 'sprout',   kind: 'hat',    name: 'Sprout',           price: 17000 },
+    { id: 'balloon',  kind: 'hat',    name: 'Balloon',          price: 24000 },
 
     { id: 'plain',    kind: 'face',   name: 'Nothing on its face', price: 0 },
     { id: 'specs',    kind: 'face',   name: 'Round glasses',    price: 2400 },
@@ -2362,6 +2405,8 @@ const KIT = [
     { id: 'monocle',  kind: 'face',   name: 'Monocle',          price: 14000 },
     { id: 'hero',     kind: 'face',   name: 'Superhero mask',   price: 20000 },
     { id: 'skullmask',kind: 'face',   name: 'Skull mask',       price: 32000 },
+    { id: 'googly',   kind: 'face',   name: 'Googly eyes',      price: 3000 },
+    { id: 'inteeth',  kind: 'face',   name: 'Blade in its teeth', price: 11500 },
 
     /* The first upgrade that changes what hangs on the rail rather than what
        sits on the dog. It does not make the dog slower or the cutting easier -
@@ -2383,6 +2428,8 @@ const KIT = [
     { id: 'skullcol', kind: 'collar', name: 'Skull collar',     price: 8500 },
     { id: 'cape',     kind: 'collar', name: 'Superhero cape',   price: 18000 },
     { id: 'goldcol',  kind: 'collar', name: 'Gold collar',      price: 28000 },
+    { id: 'pearls',   kind: 'collar', name: 'Pearls',           price: 6000 },
+    { id: 'gloves',   kind: 'collar', name: 'Boxing gloves',    price: 12000 },
 ];
 const STOCK = KNIVES.concat(KIT);
 const itemById = id => STOCK.find(i => i.id === id);
@@ -2471,6 +2518,23 @@ function drawKit(ctx, B, kit, glum) {
     const T = -B.skullH, W2 = B.skullW;               // top of the head, half its width
 
     switch (kit.face) {
+    case 'googly':
+        for (const sx of [-1, 1]) {
+            blob('#fdfaf2', () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2] + 7, 0, Math.PI * 2));
+            // the pupils never agree with each other, which is the whole joke
+            blob('#1a1720', () => ctx.arc(sx * B.eyes[0] + (sx > 0 ? 3 : -2),
+                                          B.eyes[1] + (sx > 0 ? -3 : 4), B.eyes[2] * .78, 0, Math.PI * 2));
+        }
+        break;
+    case 'inteeth':                                // a blade held in the teeth
+        ctx.save();
+        ctx.translate(-4, B.snout[2] + B.snout[1] * .62);
+        ctx.rotate(-.34);
+        blob('#7a3b22', () => { ctx.roundRect(-30, -3.5, 18, 7, 2); });
+        blob('#d9dde0', () => { ctx.moveTo(-13, -4); ctx.lineTo(24, -1.5); ctx.lineTo(-13, 4); });
+        blob('#f4f7f8', () => { ctx.moveTo(-13, -4); ctx.lineTo(22, -1.7); ctx.lineTo(-13, -1); });
+        ctx.restore();
+        break;
     case 'specs':
         ctx.strokeStyle = '#2a201a'; ctx.lineWidth = 3;
         for (const sx of [-1, 1]) {
@@ -2566,6 +2630,49 @@ function drawKit(ctx, B, kit, glum) {
     }
 
     switch (kit.hat) {
+    /* ---- off his accessories sheet ------------------------------------ */
+    case 'halo':
+        ctx.save();
+        ctx.shadowColor = 'rgba(240,212,132,.9)'; ctx.shadowBlur = 12;
+        ctx.strokeStyle = '#f0d484'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.ellipse(0, T - 30, 22, 7, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+        break;
+    case 'cans':                                   // headphones
+        ctx.strokeStyle = '#2b2730'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.arc(0, T + 6, W2 + 7, Math.PI * 1.08, Math.PI * 1.92); ctx.stroke();
+        for (const sx of [-1, 1]) {
+            blob('#c2453f', () => ctx.ellipse(sx * (W2 + 7), T + 12, 10, 12, 0, 0, Math.PI * 2));
+            blob('#8e2f2b', () => ctx.ellipse(sx * (W2 + 7), T + 12, 5, 6.5, 0, 0, Math.PI * 2));
+        }
+        break;
+    case 'fedora':
+        blob('#c2453f', () => ctx.ellipse(0, T - 4, W2 + 20, 9, 0, 0, Math.PI * 2));
+        blob('#a83a34', () => {
+            ctx.moveTo(-W2 + 2, T - 6); ctx.quadraticCurveTo(-W2 - 2, T - 34, 0, T - 33);
+            ctx.quadraticCurveTo(W2 + 2, T - 34, W2 - 2, T - 6);
+        });
+        blob('#f0d484', () => { ctx.rect(-W2 + 1, T - 14, (W2 - 1) * 2, 6); });
+        break;
+    case 'sprout':
+        ctx.strokeStyle = '#4a7a2e'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(0, T + 2); ctx.lineTo(0, T - 24); ctx.stroke();
+        for (const sx of [-1, 1]) blob('#5da33a', () => {
+            ctx.moveTo(0, T - 20);
+            ctx.quadraticCurveTo(sx * 20, T - 34, sx * 4, T - 40);
+            ctx.quadraticCurveTo(sx * 2, T - 28, 0, T - 20);
+        });
+        break;
+    case 'balloon':
+        ctx.strokeStyle = '#efe7d4'; ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(6, T + 2);
+        ctx.bezierCurveTo(14, T - 14, -2, T - 26, 8, T - 44);
+        ctx.stroke();
+        blob('#d8462f', () => ctx.ellipse(8, T - 62, 17, 20, 0, 0, Math.PI * 2));
+        blob('rgba(255,255,255,.35)', () => ctx.ellipse(1, T - 70, 5, 7, -.4, 0, Math.PI * 2));
+        blob('#a8332a', () => { ctx.moveTo(4, T - 43); ctx.lineTo(12, T - 43); ctx.lineTo(8, T - 36); });
+        break;
     case 'cap':
         blob('#6e6656', () => {
             ctx.moveTo(-W2 - 6, T + 8); ctx.quadraticCurveTo(-W2 - 6, T - 22, 2, T - 21);
@@ -2682,6 +2789,22 @@ function drawKit(ctx, B, kit, glum) {
             blob(skin, () => ctx.arc(sx * (W2 - 6), T - 22, 15, 0, Math.PI * 2));
             blob('#fdf7e8', () => ctx.arc(sx * (W2 - 6), T - 22, 9, 0, Math.PI * 2));
             blob('#201814', () => ctx.arc(sx * (W2 - 6), T - 22, 4.5, 0, Math.PI * 2));
+        } else if (kit.hat === 'capyhood') {
+            /* The capybara and the teddy were the same hood in two browns, which
+               is not two things. A capybara has small ears set high and close in,
+               and a blunt pale block of a muzzle - that is the whole animal. */
+            for (const sx of [-1, 1]) {
+                blob(dark, () => ctx.arc(sx * (W2 - 13), T - 26, 9, 0, Math.PI * 2));
+                blob(skin, () => ctx.arc(sx * (W2 - 13), T - 27, 5.5, 0, Math.PI * 2));
+            }
+            blob('#c8b08c', () => {                          // the blunt muzzle
+                const my = B.snout[2] - 2, mw = B.snout[0] * .86, mh = B.snout[1] * .8;
+                ctx.roundRect(-mw, my - mh, mw * 2, mh * 2, 9);
+            });
+            blob('#4a3a2c', () => {
+                const my = B.snout[2] - B.snout[1] * .6;
+                ctx.roundRect(-9, my - 5, 18, 10, 4);
+            });
         } else for (const sx of [-1, 1]) {
             blob(skin, () => ctx.arc(sx * (W2 - 2), T - 20, 14, 0, Math.PI * 2));
             blob(dark, () => ctx.arc(sx * (W2 - 2), T - 20, 7, 0, Math.PI * 2));
@@ -2702,6 +2825,105 @@ function drawKit(ctx, B, kit, glum) {
     }
 }
 
+/* Its own function so the shop can draw a collar with no dog under it. */
+function drawCollar(ctx, B, neck) {
+    const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
+    const band = fill => {
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 7;
+        blob(fill, () => {
+            ctx.moveTo(-B.jawW - 2, B.chin - 14); ctx.quadraticCurveTo(0, B.chin + 4, B.jawW + 2, B.chin - 14);
+            ctx.lineTo(B.jawW + 2, B.chin + 5); ctx.quadraticCurveTo(0, B.chin + 23, -B.jawW - 2, B.chin + 5);
+        });
+        ctx.restore();
+    };
+    const C = B.chin, JW = B.jawW;
+    if (neck === 'cape') {
+        blob('#8e2a1b', () => {                       // the lining, and then the cape
+            ctx.moveTo(-JW + 4, C - 8); ctx.quadraticCurveTo(-JW - 50, C + 34, -JW - 38, C + 84);
+            ctx.quadraticCurveTo(0, C + 62, JW + 38, C + 84);
+            ctx.quadraticCurveTo(JW + 50, C + 34, JW - 4, C - 8);
+        });
+        blob('#c23b26', () => {
+            ctx.moveTo(-JW + 4, C - 8); ctx.quadraticCurveTo(-JW - 42, C + 32, -JW - 30, C + 74);
+            ctx.quadraticCurveTo(0, C + 54, JW + 30, C + 74);
+            ctx.quadraticCurveTo(JW + 42, C + 32, JW - 4, C - 8);
+        });
+    }
+    switch (neck) {
+    case 'bow':
+        band('#2b2333');
+        blob('#b03a25', () => {
+            ctx.moveTo(0, C + 4);
+            ctx.lineTo(-21, C - 7); ctx.lineTo(-21, C + 17); ctx.lineTo(0, C + 4);
+            ctx.lineTo(21, C - 7); ctx.lineTo(21, C + 17);
+        });
+        blob('#7d2417', () => ctx.ellipse(0, C + 5, 5.5, 6.5, 0, 0, Math.PI * 2));
+        break;
+    case 'scarf':
+        band('#a8202a');
+        blob('#c8303a', () => {                       // the point of it hanging down
+            ctx.moveTo(-19, C + 3); ctx.lineTo(19, C + 3); ctx.lineTo(0, C + 42);
+        });
+        blob('rgba(255,255,255,.22)', () => {
+            ctx.moveTo(-9, C + 8); ctx.lineTo(1, C + 8); ctx.lineTo(-4, C + 24);
+        });
+        break;
+    case 'pearls':
+        band('#2b2333');
+        for (let i = -3; i <= 3; i++) {
+            const px = i * (JW * .27), py = C + 4 + (3 - Math.abs(i)) * 2.2;
+            blob('#f2ead6', () => ctx.ellipse(px, py, 5.4, 5.4, 0, 0, Math.PI * 2));
+            blob('rgba(255,255,255,.7)', () => ctx.ellipse(px - 1.6, py - 1.8, 1.8, 1.6, 0, 0, Math.PI * 2));
+        }
+        break;
+    case 'gloves':                                 // two of them, one each side
+        band('#2b2333');
+        for (const sx of [-1, 1]) {
+            blob('#2a7f9e', () => ctx.ellipse(sx * (JW + 14), C - 2, 13, 11, sx * .3, 0, Math.PI * 2));
+            blob('#2a7f9e', () => ctx.ellipse(sx * (JW + 4), C + 4, 7, 6, 0, 0, Math.PI * 2));
+            blob('rgba(255,255,255,.22)', () => ctx.ellipse(sx * (JW + 12), C - 6, 5, 3.5, sx * .3, 0, Math.PI * 2));
+        }
+        break;
+    case 'skullcol':
+        band('#1d1a22');
+        for (let i = -1; i <= 1; i++) {
+            const px = i * (JW * .54), py = C + 3 + (1 - Math.abs(i)) * 3.2;
+            blob('#efe7d4', () => ctx.ellipse(px, py, 6, 6.4, 0, 0, Math.PI * 2));
+            blob('#efe7d4', () => {
+                ctx.moveTo(px - 4.2, py + 3); ctx.lineTo(px + 4.2, py + 3);
+                ctx.lineTo(px + 3, py + 9.5); ctx.lineTo(px - 3, py + 9.5);
+            });
+            for (const sx of [-1, 1])
+                blob('#1d1a22', () => ctx.ellipse(px + sx * 2.5, py - .4, 1.8, 2.2, 0, 0, Math.PI * 2));
+        }
+        break;
+    case 'cape':
+        band('#2b2333');
+        for (const sx of [-1, 1]) {                   // the clasps that hold it on
+            blob('#e8c15a', () => ctx.ellipse(sx * (JW * .56), C + 3, 6.5, 7, 0, 0, Math.PI * 2));
+            blob('rgba(255,244,205,.5)', () => ctx.ellipse(sx * (JW * .56) - 1.6, C + 1, 2.6, 3, 0, 0, Math.PI * 2));
+        }
+        break;
+    case 'goldcol':
+        band('#b0821f');
+        blob('#e8c15a', () => {
+            ctx.moveTo(-JW - 2, C - 13); ctx.quadraticCurveTo(0, C + 5, JW + 2, C - 13);
+            ctx.lineTo(JW + 2, C - 5); ctx.quadraticCurveTo(0, C + 13, -JW - 2, C - 5);
+        });
+        blob('#c08f2a', () => ctx.ellipse(0, C + 20, 10, 11, 0, 0, Math.PI * 2));
+        blob('#f0d478', () => ctx.ellipse(0, C + 18.5, 8.5, 9.5, 0, 0, Math.PI * 2));
+        blob('rgba(140,100,20,.5)', () => ctx.ellipse(0, C + 19, 3.4, 4, 0, 0, Math.PI * 2));
+        break;
+    default:
+        band('#2b2333');
+        for (let i = -2; i <= 2; i++) {
+            const px = i * (JW * .38), py = C + 3 + (2 - Math.abs(i)) * 3.4;
+            blob('#dcab3e', () => { ctx.moveTo(px - 6, py + 4); ctx.lineTo(px, py - 8); ctx.lineTo(px + 6, py + 4); });
+            blob('rgba(255,244,205,.55)', () => { ctx.moveTo(px - 2.4, py + 2); ctx.lineTo(px, py - 7); ctx.lineTo(px + 1.4, py + 1); });
+        }
+    }
+}
 function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     B = B || (cast ? cast.dog : TIERS[2][0]);
     /* What it has on is part of what it is: unless a caller is deliberately
@@ -2748,86 +2970,7 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
        than with the rest of the kit because it goes on before the head does,
        and the cape goes on before the collar - there is nothing else in the
        wardrobe that has to sit behind the dog. */
-    const neck = (kit && kit.collar) || 'spiked';
-    const band = fill => {
-        ctx.save();
-        ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 7;
-        blob(fill, () => {
-            ctx.moveTo(-B.jawW - 2, B.chin - 14); ctx.quadraticCurveTo(0, B.chin + 4, B.jawW + 2, B.chin - 14);
-            ctx.lineTo(B.jawW + 2, B.chin + 5); ctx.quadraticCurveTo(0, B.chin + 23, -B.jawW - 2, B.chin + 5);
-        });
-        ctx.restore();
-    };
-    const C = B.chin, JW = B.jawW;
-    if (neck === 'cape') {
-        blob('#8e2a1b', () => {                       // the lining, and then the cape
-            ctx.moveTo(-JW + 4, C - 8); ctx.quadraticCurveTo(-JW - 50, C + 34, -JW - 38, C + 84);
-            ctx.quadraticCurveTo(0, C + 62, JW + 38, C + 84);
-            ctx.quadraticCurveTo(JW + 50, C + 34, JW - 4, C - 8);
-        });
-        blob('#c23b26', () => {
-            ctx.moveTo(-JW + 4, C - 8); ctx.quadraticCurveTo(-JW - 42, C + 32, -JW - 30, C + 74);
-            ctx.quadraticCurveTo(0, C + 54, JW + 30, C + 74);
-            ctx.quadraticCurveTo(JW + 42, C + 32, JW - 4, C - 8);
-        });
-    }
-    switch (neck) {
-    case 'bow':
-        band('#2b2333');
-        blob('#b03a25', () => {
-            ctx.moveTo(0, C + 4);
-            ctx.lineTo(-21, C - 7); ctx.lineTo(-21, C + 17); ctx.lineTo(0, C + 4);
-            ctx.lineTo(21, C - 7); ctx.lineTo(21, C + 17);
-        });
-        blob('#7d2417', () => ctx.ellipse(0, C + 5, 5.5, 6.5, 0, 0, Math.PI * 2));
-        break;
-    case 'scarf':
-        band('#a8202a');
-        blob('#c8303a', () => {                       // the point of it hanging down
-            ctx.moveTo(-19, C + 3); ctx.lineTo(19, C + 3); ctx.lineTo(0, C + 42);
-        });
-        blob('rgba(255,255,255,.22)', () => {
-            ctx.moveTo(-9, C + 8); ctx.lineTo(1, C + 8); ctx.lineTo(-4, C + 24);
-        });
-        break;
-    case 'skullcol':
-        band('#1d1a22');
-        for (let i = -1; i <= 1; i++) {
-            const px = i * (JW * .54), py = C + 3 + (1 - Math.abs(i)) * 3.2;
-            blob('#efe7d4', () => ctx.ellipse(px, py, 6, 6.4, 0, 0, Math.PI * 2));
-            blob('#efe7d4', () => {
-                ctx.moveTo(px - 4.2, py + 3); ctx.lineTo(px + 4.2, py + 3);
-                ctx.lineTo(px + 3, py + 9.5); ctx.lineTo(px - 3, py + 9.5);
-            });
-            for (const sx of [-1, 1])
-                blob('#1d1a22', () => ctx.ellipse(px + sx * 2.5, py - .4, 1.8, 2.2, 0, 0, Math.PI * 2));
-        }
-        break;
-    case 'cape':
-        band('#2b2333');
-        for (const sx of [-1, 1]) {                   // the clasps that hold it on
-            blob('#e8c15a', () => ctx.ellipse(sx * (JW * .56), C + 3, 6.5, 7, 0, 0, Math.PI * 2));
-            blob('rgba(255,244,205,.5)', () => ctx.ellipse(sx * (JW * .56) - 1.6, C + 1, 2.6, 3, 0, 0, Math.PI * 2));
-        }
-        break;
-    case 'goldcol':
-        band('#b0821f');
-        blob('#e8c15a', () => {
-            ctx.moveTo(-JW - 2, C - 13); ctx.quadraticCurveTo(0, C + 5, JW + 2, C - 13);
-            ctx.lineTo(JW + 2, C - 5); ctx.quadraticCurveTo(0, C + 13, -JW - 2, C - 5);
-        });
-        blob('#c08f2a', () => ctx.ellipse(0, C + 20, 10, 11, 0, 0, Math.PI * 2));
-        blob('#f0d478', () => ctx.ellipse(0, C + 18.5, 8.5, 9.5, 0, 0, Math.PI * 2));
-        blob('rgba(140,100,20,.5)', () => ctx.ellipse(0, C + 19, 3.4, 4, 0, 0, Math.PI * 2));
-        break;
-    default:
-        band('#2b2333');
-        for (let i = -2; i <= 2; i++) {
-            const px = i * (JW * .38), py = C + 3 + (2 - Math.abs(i)) * 3.4;
-            blob('#dcab3e', () => { ctx.moveTo(px - 6, py + 4); ctx.lineTo(px, py - 8); ctx.lineTo(px + 6, py + 4); });
-            blob('rgba(255,244,205,.55)', () => { ctx.moveTo(px - 2.4, py + 2); ctx.lineTo(px, py - 7); ctx.lineTo(px + 1.4, py + 1); });
-        }
-    }
+    drawCollar(ctx, B, (kit && kit.collar) || 'spiked');
     // ears: folded over, pricked up, or hanging down the side of the head
     for (const sx of [-1, 1]) {
         if (B.ear === 'prick') {
@@ -2871,6 +3014,9 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     if (B.patch) blob(B.patch, () => ctx.ellipse(-B.eyes[0] - 3, B.eyes[1] - 3, 15, 16, .2, 0, Math.PI * 2));
     if (B.points) for (const sx of [-1, 1])
         blob(B.points, () => ctx.ellipse(sx * B.eyes[0], B.eyes[1] - 9, 9, 5, 0, 0, Math.PI * 2));
+    // two round red cheeks, which is how he draws one that is pleased with itself
+    if (B.cheeks) for (const sx of [-1, 1])
+        blob(B.cheeks, () => ctx.ellipse(sx * (B.skullW - 7), B.eyes[1] + 16, 7.5, 6.5, 0, 0, Math.PI * 2));
     ctx.restore();
     // the brow, which is where a dog keeps its opinion
     if (B.brow > .05 || glum) for (const sx of [-1, 1]) {
@@ -2897,8 +3043,15 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
             ctx.moveTo(sx * B.eyes[0] - r, B.eyes[1] - r); ctx.lineTo(sx * B.eyes[0] + r, B.eyes[1] + r);
             ctx.moveTo(sx * B.eyes[0] + r, B.eyes[1] - r); ctx.lineTo(sx * B.eyes[0] - r, B.eyes[1] + r);
             ctx.stroke();
+        } else if (B.glow) {
+            // the one with the red eyes, which need to look lit rather than painted
+            ctx.save();
+            ctx.shadowColor = B.iris; ctx.shadowBlur = 14;
+            blob(B.iris, () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2], 0, Math.PI * 2));
+            ctx.restore();
+            blob('#ffb3b3', () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2] * .42, 0, Math.PI * 2));
         } else {
-            blob('#201814', () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2], 0, Math.PI * 2));
+            blob(B.iris || '#201814', () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2], 0, Math.PI * 2));
             blob('#fdf7e8', () => ctx.arc(sx * B.eyes[0] - B.eyes[2] * .35, B.eyes[1] - B.eyes[2] * .4, B.eyes[2] * .33, 0, Math.PI * 2));
         }
     }
@@ -3797,6 +3950,38 @@ function paintStore() {
 /* A tile tap only ever tries a thing on. This is where it is bought, and it
    is impossible to do it by accident: the thing is named, priced and drawn
    on the dog, and there is a way out next to the way in. */
+/* On the counter the thing is shown on its own. Seeing it on the dog is what
+   the pinned preview at the top is for; down here you want to know what you
+   are being asked to pay for, which is the item and not the dog. */
+function drawItemOnly(c, item) {
+    const g = c.getContext('2d');
+    g.clearRect(0, 0, TILE_W, TILE_H);
+    if (item.kind === 'line' || item.kind === 'skill' || item.kind === 'hand') {
+        drawTile(c, item);
+        return;
+    }
+    if (item.kind === 'knife') {
+        g.save();
+        g.translate(TILE_W / 2, TILE_H / 2);
+        g.rotate(-.5);
+        drawKnife(g, 0, 0, 0, .72, item);
+        g.restore();
+        return;
+    }
+    const B = cast.dog;
+    const mid = item.kind === 'hat'  ? -B.skullH - 16
+              : item.kind === 'face' ? B.eyes[1]
+              :                        B.chin + 2;
+    g.save();
+    g.translate(TILE_W / 2, TILE_H / 2);
+    g.scale(.92, .92);
+    g.translate(0, -mid);
+    g.lineJoin = 'round'; g.lineCap = 'round';
+    if (item.kind === 'collar') drawCollar(g, B, item.id);
+    else drawKit(g, B, { hat: item.kind === 'hat' ? item.id : 'bare',
+                         face: item.kind === 'face' ? item.id : 'plain' });
+    g.restore();
+}
 function paintTryOn() {
     const bar = document.getElementById('tryon');
     if (!tryOn || owns(tryOn.id)) {
@@ -3805,21 +3990,20 @@ function paintTryOn() {
         return;
     }
     const can = save.bank >= tryOn.price;
-    const short = tryOn.price - save.bank;
     bar.innerHTML =
         `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>` +
         `<span class="said">` +
         `<span class="nm">${tryOn.name}</span>` +
         (tryOn.why ? `<span class="does">${tryOn.why}</span>` : '') +
-        `<span class="cost">${can ? `Yours for ${money0(tryOn.price)}`
-                                  : `${money0(short)} short`}</span></span>` +
+        (can ? `<span class="cost">Yours for ${money0(tryOn.price)}</span>` : '') +
+        `</span>` +
         `<span class="pair">` +
         `<button class="btn no" data-try="no">Put it back</button>` +
         `<button class="btn yes${can ? '' : ' poor'}" data-try="yes">` +
         `${can ? `Buy it &middot; ${money0(tryOn.price)}` : 'Not enough'}</button></span>`;
     bar.hidden = false;
     storeEl.classList.add('trying');
-    drawTile(bar.querySelector('canvas'), tryOn);
+    drawItemOnly(bar.querySelector('canvas'), tryOn);
 }
 const till = () => safely(t => {
     tone(t, { freq: 1200, dur: .08, type: 'square', vol: .13 });

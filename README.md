@@ -328,6 +328,33 @@ burying those, but a replacement that looked exactly like the one you just
 buried made it read as a respawn rather than a loss. It runs at the same speed,
 as all twelve of them do.
 
+## His drawings
+
+He drew two sheets, DOGS and ACCESORIES, and all of it is in here.
+
+The dogs are drawn the way he draws them now: square heads, flat on top, with
+the fur going off them in spikes rather than easing into a curve, sides running
+nearly straight down to a heavy jaw, and brows that are thick straight bars
+rather than soft arcs. An arc reads as a raised eyebrow; a bar reads as an
+opinion. The tufts come off fixed fractions of the skull rather than a random
+number, so a Corgi is the same Corgi every time you look at it. It is one head
+shape and every one of the eighteen is drawn through it.
+
+Six of them are his, added as three more tiers: **Redback**, the snarling dark
+red one off the scribbled background; **Spotter**, the sad spotted one;
+**Hellhound**, grey with eyes that are lit rather than painted; **Bruiser**,
+tan with the underbite; **Midnight**, the dark green pug; and **Punch**, with
+the round red cheeks. Same parameters as the other twelve, so they wear every
+hat in the shop and run at exactly the same speed.
+
+Nine things off the accessories sheet: a **halo**, **headphones**, a **red
+fedora**, a **sprout**, a **balloon** on a string, **googly eyes** whose pupils
+never agree with each other, a **blade held in its teeth**, **pearls** and
+**boxing gloves**. The capybara onesie was rebuilt while he was looking: it and
+the teddy were the same hood in two browns, which is not two things, so the
+capybara got the small high ears and the blunt pale muzzle that are the whole
+animal.
+
 ## The noise
 
 All of it is synthesised - there is not a recording in the project.
