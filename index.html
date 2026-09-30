@@ -132,6 +132,23 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger td.m { text-align: right; font-family: var(--font-display); font-size: 15px; }
 #ledger tr.shut td { opacity: .35; }
 #ledger tr.best td.m { color: #1f7a3f; }
+/* The hour after closing is not one of the six days, so it does not get a day
+   row - it gets a line under the rule at the bottom, the way anything added on
+   after the week was counted would be written in. The same line says why there
+   was no hour after closing on the weeks there was not one, because a reward
+   you only ever see by accident is not a reward, it is a bug. */
+#ledger tr.extra td { border-bottom: none; border-top: 2px solid rgba(42,33,24,.22);
+                      padding-top: 5px; }
+#ledger tr.extra.won td { color: #1f7a3f; }
+#ledger tr.extra td.w { opacity: .66; }
+/* The dog's line is a footnote rather than a row of accounts - there is no
+   money in the right-hand column of it - so it runs across the two columns and
+   only the number is picked out. */
+#ledger tr.extra.ate td { opacity: .55; }
+#ledger tr.extra.ate td.d { white-space: nowrap; }
+#ledger tr.extra.ate td.w { opacity: .8; padding-left: 12px; }
+#ledger tr.extra.ate b { font-family: var(--font-display); font-weight: 400;
+                         font-size: 13px; }
 /* the week that ended with a stone in it has no ledger worth printing */
 #card.grave #ledger { display: none; }
 /* nothing under the total on an ordinary week - but over a headstone the next
@@ -409,21 +426,15 @@ body.waiting #hud { display: none; }
            line-height: 1.1; }
 .buy .tag { font-size: 8px; font-weight: 900; letter-spacing: .08em;
             text-transform: uppercase; line-height: 1.5; }
-/* What it has on now: filled in, gold all the way round, a tick in the corner
-   and its own gold strip along the bottom. An outline on its own was not
-   enough to tell it apart from the thirty tiles either side of it. */
+/* What it has on now: filled in, gold all the way round, and a tick in the
+   corner. There was a gold strip along the bottom of it as well, which was one
+   more thing saying the same thing as the tick above it. */
 .buy.worn {
     border-color: var(--gold);
     background: linear-gradient(180deg, #2f7351, #1e5039);
     box-shadow: inset 0 0 0 2px rgba(220,171,62,.3), 0 0 0 1px rgba(0,0,0,.25);
 }
-/* the gold strip runs to the edges only when there is nothing under it - a
-   tile with a line of description has the strip sitting inside it instead */
 .buy.worn .tag { color: #8fd6a2; }
-.buy.worn .tag:last-child {
-    width: calc(100% + 4px); margin: 2px -2px -4px; padding: 2px 0 3px;
-    background: var(--gold); color: #2a2118;
-}
 .buy.trying .why { color: #2a2118; opacity: .72; }
 .buy .tick {
     position: absolute; top: 3px; right: 3px; width: 15px; height: 15px;
@@ -766,7 +777,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v65';
+const APP_VERSION = 'v66';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1096,6 +1107,20 @@ function makeString(day) {
             [idx[i], idx[j]] = [idx[j], idx[i]];
         }
         for (const i of idx.slice(0, want)) string.posh[i] = true;
+    }
+    /* Black pudding, same idea: a share of the day rather than a coin flip,
+       so Tuesday is Tuesday. Never the last link on the string, because the
+       one at the bottom is the one the dog reaches first every single day and
+       a guaranteed refusal to open with is a different game. */
+    string.pud = new Array(n).fill(false);
+    if (running('pudding')) {
+        const want = Math.max(1, Math.round(n * PUD_SHARE));
+        const idx = [...Array(Math.max(1, n - 1)).keys()];
+        for (let i = idx.length - 1; i > 0; i--) {
+            const j = (Math.random() * (i + 1)) | 0;
+            [idx[i], idx[j]] = [idx[j], idx[i]];
+        }
+        for (const i of idx.slice(0, want)) string.pud[i] = true;
     }
     loose = []; saved = 0; lost = 0;
     return n;
@@ -1627,7 +1652,7 @@ function dogStep(dt) {
         const [mx, my] = at((s0 + s1) / 2);
         const [ax, ay, tx, ty] = at(s1);
         chewing = { x: mx, y: my, ang: Math.atan2(ay - my, ax - mx),
-                    len: Math.abs(s1 - s0) * .42, t0: now() };
+                    len: Math.abs(s1 - s0) * .42, t0: now(), from: k };
         if (k === p.from) pieces.splice(i, 1);
         else pieces.splice(i, 1, { from: p.from, to: k - 1 });
         snarl();
@@ -1635,16 +1660,24 @@ function dogStep(dt) {
            one in four of the ones it takes, and a dropped sausage is off the
            string and on the boards rather than in the dog. It pays a little
            under a cut one, because it has been in a dog's mouth. */
-        const dropped = running('sawdust') && Math.random() < DROP_CHANCE;
-        if (dropped) {
+        /* Two ways a link comes off the string and still gets sold. A black
+           pudding is the dog's mistake and costs it the same mouthful either
+           way; a dropped one is the sawdust floor doing its job. Neither
+           counts against the week, which is the whole point of both of them:
+           what the dog got is what you did not take, and it did not get
+           these. */
+        const spat = pudLink(k);
+        const dropped = !spat && running('sawdust') && Math.random() < DROP_CHANCE;
+        if (spat || dropped) {
             saved++;
-            const pay = priceOf(DROP_Q) * (poshLink(k) ? BLANKET_PAY : 1);
+            const q = spat ? PUD_Q : DROP_Q;
+            const pay = priceOf(q) * (poshLink(k) ? BLANKET_PAY : 1);
             money += pay; roundMoney += pay;
-            shouts.push({ text: `DROPPED ${money2(pay)}`, x: mx, y: my, t0: now(),
-                          small: true, rich: true });
-            loose.push({ x: mx, y: my, from: k, t0: now(), q: DROP_Q,
+            shouts.push({ text: `${spat ? 'SPAT IT OUT' : 'DROPPED'} ${money2(pay)}`,
+                          x: mx, y: my, t0: now(), small: true, rich: true });
+            loose.push({ x: mx, y: my, from: k, t0: now(), q,
                          tx: 48 + ((saved - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
-            plop(saved);
+            spat ? yuck() : plop(saved);
         } else {
             lost++; fed++;
             const rp = document.getElementById('roundplate');
@@ -1676,7 +1709,12 @@ const priceOf = q => Math.round((55 + 1.12 * q) / 5) * 5;      // pence, 95p to 
 const BLANKET_SHARE = .34, BLANKET_PAY = 2;
 // how often the dog fumbles one onto the sawdust, and what it fetches
 const DROP_CHANCE = .28, DROP_Q = 50;
+/* About one link in seven, and what a spat-out one fetches: a good deal more
+   than a dropped sausage, because a black pudding has a skin on it and the dog
+   only ever got as far as finding out what it was. */
+const PUD_SHARE = .15, PUD_Q = 78;
 const poshLink = i => !!(string.posh && string.posh[i]);
+const pudLink = i => !!(string.pud && string.pud[i]);
 const money2 = p => '£' + (p / 100).toFixed(2);
 // on a tile there is no room for two noughts nobody reads
 const money0 = p => p % 100 === 0 ? '£' + (p / 100) : money2(p);
@@ -1725,6 +1763,7 @@ function startRound(n) {
     if (n === 1) {
         toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
         weekClean = true;                              // until it is not
+        miniTook = null;                               // last week's is spent
     }
     roundT0 = now();
     armed = false;
@@ -1826,6 +1865,23 @@ function endRound() {
    shopfront anyway. A tap takes you there now rather than waiting. */
 const HOLD_MS = 5000;
 let holdT = 0;
+/* The last line of the week's takings, which is one of two things. Either the
+   hour after closing happened and here is what it came to - without it the six
+   days above do not add up to the number underneath them - or it did not, and
+   here is the one number that would have changed that. The dog getting a single
+   sausage on Tuesday is the difference, and a week is long enough that by
+   Saturday you have forgotten Tuesday happened. */
+function lastLine() {
+    if (miniTook)
+        return `<tr class="extra won"><td class="d">After hours</td>` +
+               `<td class="w">${miniTook.name}</td>` +
+               `<td class="m">+ ${money2(miniTook.won)}</td></tr>`;
+    const ate = ledger.reduce((t, r) => t + r.lost, 0);
+    if (!ate) return '';                 // a clean week with no hour is not a thing
+    return `<tr class="extra ate"><td class="d">The dog</td>` +
+           `<td class="w" colspan="2">Got <b>${ate}</b>. ` +
+           `A week it gets none buys an hour after closing.</td></tr>`;
+}
 function endWeek() {
     live = false; armed = false; tallying = false; dog.going = false; teaching = false;
     countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
@@ -1842,13 +1898,14 @@ function endWeek() {
        else. */
     const good = fed <= Math.floor(WEEK_TOTAL / 4);
     const top = Math.max(...ledger.map(r => r.took));
+
     document.getElementById('ribbon').textContent = 'WEEK’S TAKINGS';
     document.getElementById('ledger').innerHTML = ledger.map(r =>
         `<tr class="${r.took === top && top > 0 ? 'best' : ''}">` +
         `<td class="d">${r.day.short}</td>` +
         `<td class="w">${r.sold} sold` +
         `${r.steaks ? ` &middot; ${r.steaks} steak${r.steaks > 1 ? 's' : ''}` : ''}</td>` +
-        `<td class="m">${money2(r.took)}</td></tr>`).join('');
+        `<td class="m">${money2(r.took)}</td></tr>`).join('') + lastLine();
     document.getElementById('score').innerHTML =
         `${money2(money)}<span class="pc">banked &middot; ${money2(save.bank)} in the till</span>`;
     card.className = 'timed' + (good ? ' good' : '');
@@ -1998,10 +2055,17 @@ function showGrave(gone) {
     document.getElementById('score').innerHTML =
         `${money2(gone)}<span class="pc">${pick(SPENT)}</span>`;
     /* The week's money is gone and so is the dog. A new one turns up on
-       Monday with a new name and the same wardrobe, because the collar and
-       the hat were bought and paid for and nobody is burying those. */
+       Monday with a new name, and it turns up plain. Everything you bought is
+       still yours and still on its shelf - nobody is burying a gold collar -
+       but it was bought for a dog that is not here any more, and the hat off
+       the old one going straight onto the new one is not a thing anybody would
+       do. You dress this one yourself, which takes about four taps and is the
+       only funeral rite this game has. The knife stays on the block: that one
+       was always the butcher's. */
     const was = save.dogName;
     save.dogName = pick(DOG_NAMES.filter(n => n !== was));
+    for (const k of ['hat', 'face', 'collar'])
+        save.worn[k] = STOCK.find(i => i.kind === k).id;
     /* And it is not the same dog wearing a different name: the one on Monday
        is a different breed, because a replacement that looked identical to the
        one you just buried made the whole thing feel like a respawn. */
@@ -2207,6 +2271,8 @@ const MINIS = [
     { id: 'grill', name: 'On the barbecue', say: 'Tap them when they are done, not before' },
 ];
 let mini = null, weekClean = true;
+// what the hour after closing came to, kept until the week's card has shown it
+let miniTook = null;
 function startMini() {
     const M = pick(MINIS);
     mini = { id: M.id, name: M.name, say: M.say, t0: now(), won: 0, done: false };
@@ -2228,6 +2294,9 @@ function endMini() {
     if (!mini || mini.done) return;
     mini.done = true;
     money += mini.won; showHud();
+    // the total on Saturday's card already has this in it, so the card needs a
+    // line for it or the six days above it do not add up to the number
+    miniTook = { name: mini.name, won: mini.won };
     setTimeout(() => { mini = null; afterMini(); }, 900);
 }
 /* Priced against a day rather than against nothing. A clean day is four to
@@ -2444,15 +2513,40 @@ function drawMini(ms) {
     ctx.fillText(mini.name, W / 2, RAIL + 34);
     ctx.font = '900 13px Lato, sans-serif';
     ctx.fillStyle = 'rgba(253,247,232,.72)';
-    /* Why this is happening at all, for the first couple of seconds: it turns
-       up once in a very long while and a title nobody asked for needs a reason
-       under it before it needs an instruction. */
-    const why = !mini.done && now() - mini.t0 < 2200;
-    ctx.fillStyle = why ? '#9fe0b4' : 'rgba(253,247,232,.72)';
-    ctx.fillText(mini.done ? `${money2(mini.won)} on top`
-               : why ? 'A whole week and the dog got nothing' : mini.say, W / 2, RAIL + 62);
+    ctx.fillText(mini.done ? `${money2(mini.won)} on top` : mini.say, W / 2, RAIL + 62);
+    /* Why this is happening at all. It turns up once in a very long while and
+       there is nothing on the screen that explains itself, so the reason lands
+       across the middle first and gets out of the way: a whole week without
+       the dog taking one is what bought the hour, and you want to be told that
+       in the same breath as being shown the reward for it. */
+    const fl = (now() - mini.t0) / 1500;
+    if (fl < 1) {
+        ctx.globalAlpha = Math.min(1, (1 - fl) * 4, fl * 6);
+        ctx.translate(W / 2, H * .36);
+        const pop = fl < .2 ? 1.16 - fl / .2 * .16 : 1;   // it lands, rather than appears
+        ctx.scale(pop, pop);
+        ctx.fillStyle = 'rgba(10,28,21,.78)';
+        ctx.fillRect(-W, -40, W * 2, 82);
+        ctx.font = '400 34px \"Alfa Slab One\", Georgia, serif';
+        const fit = Math.min(1, (W - 28) / ctx.measureText('PERFECT WEEK').width);
+        ctx.save();
+        ctx.scale(fit, fit);
+        ctx.fillStyle = '#f0d484';
+        ctx.fillText('PERFECT WEEK', 0, -11 / fit);
+        ctx.restore();
+        ctx.font = '900 12px Lato, sans-serif';
+        ctx.fillStyle = '#9fe0b4';
+        ctx.fillText('SIX DAYS AND THE DOG GOT NOTHING', 0, 20);
+    }
     ctx.restore();
 }
+/* A dog that has just found out what is inside a black pudding: a short flat
+   splutter on the way down rather than the rising note a sale makes. */
+const yuck = () => safely(t => {
+    tone(t, { freq: 250, dur: .1, type: 'sawtooth', vol: .1 });
+    tone(t, { freq: 150, dur: .16, type: 'sawtooth', vol: .09, at: .07 });
+    hiss(t, { dur: .2, vol: .05, at: .05 });
+});
 const jingleUp = () => safely(t => {
     [523, 659, 784].forEach((f, i) => tone(t, { freq: f, dur: .2, type: 'triangle', vol: .15, at: i * .07 }));
 });
@@ -2550,8 +2644,17 @@ function widthAt(s, piece) {
     if (de < CAP) w = Math.min(w, FAT * Math.sqrt(Math.max(0, 1 - Math.pow(1 - de / CAP, 2))));
     return Math.max(.8, w);
 }
-function ribbon(piece) {
-    const [a, b] = spanOf(piece);
+/* Two things hang on this rail now, and they are the same shape. Rather than
+   a second set of drawing code they are the same four flat colours read out of
+   a different pot: body, the shade down one side, the light down the other and
+   the fat on top of that. */
+const MEAT = { body: '#c4472e', shade: '#8c2b1b', lit: '#dd6f4c', fat: '#ea8f6e' };
+const PUD  = { body: '#3d2724', shade: '#231412', lit: '#5d3c34', fat: '#7d5349' };
+const potFor = i => pudLink(i) ? PUD : MEAT;
+// a0/b0 asks for a stretch of the piece rather than all of it, which is how
+// one link inside a run gets painted a different colour to its neighbours
+function ribbon(piece, a0, b0) {
+    const [a, b] = a0 === undefined ? spanOf(piece) : [a0, b0];
     const step = 1.6, up = [], dn = [];
     for (let s = a; s <= b; s += step) {
         const [x, y, tx, ty] = at(s), w = widthAt(s, piece);
@@ -2582,14 +2685,30 @@ function drawPiece(piece, alpha = 1) {
     ctx.fillStyle = '#c4472e';
     ctx.fill();
     ctx.restore();
+    /* The body went on in one piece, because a run of sausages is one shape
+       and one fill. A black pudding in the middle of that run is the same
+       shape painted over again in the dark pot, up to the twist at each end -
+       no shadow on this pass, or every pudding would cast one onto the sausage
+       next to it. */
+    for (let i = piece.from; i <= piece.to; i++) {
+        if (!pudLink(i)) continue;
+        const s0 = i === 0 ? 0 : string.twists[i - 1];
+        const s1 = i === string.n - 1 ? string.len : string.twists[i];
+        const lo = Math.max(a, s0), hi = Math.min(b, s1);
+        if (hi - lo < 4) continue;
+        fillPoly(ctx, ribbon(piece, lo, hi));
+        ctx.fillStyle = PUD.body;
+        ctx.fill();
+    }
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     for (let i = piece.from; i <= piece.to; i++) {
+        const P = potFor(i);
         const s0 = i === 0 ? 0 : string.twists[i - 1];
         const s1 = i === string.n - 1 ? string.len : string.twists[i];
         const from = Math.max(a, s0) + 13, to = Math.min(b, s1) - 13;
         if (to - from < 10) continue;
-        for (const [off, col, wid] of [[.52, '#8c2b1b', .34], [-.50, '#dd6f4c', .30],
-                                       [-.56, '#ea8f6e', .13]]) {
+        for (const [off, col, wid] of [[.52, P.shade, .34], [-.50, P.lit, .30],
+                                       [-.56, P.fat, .13]]) {
             ctx.beginPath();
             for (let t = from; t <= to; t += 3) {
                 const [x, y, tx, ty] = at(t), w = widthAt(t, piece);
@@ -2599,6 +2718,28 @@ function drawPiece(piece, alpha = 1) {
             ctx.strokeStyle = col;
             ctx.lineWidth = Math.max(2, FAT * wid * 2);
             ctx.stroke();
+        }
+    }
+    /* What makes it read as black pudding from a foot away rather than as a
+       sausage in a bad light: the flecks of white fat through it. Placed off a
+       fixed stride along the link so they do not crawl about between frames,
+       and off the centre line by an amount that has nothing in common with the
+       stride, so they scatter instead of forming two neat rows. */
+    for (let i = piece.from; i <= piece.to; i++) {
+        if (!pudLink(i)) continue;
+        const s0 = i === 0 ? 0 : string.twists[i - 1];
+        const s1 = i === string.n - 1 ? string.len : string.twists[i];
+        const lo = Math.max(a, s0) + 9, hi = Math.min(b, s1) - 9;
+        ctx.fillStyle = '#cdbfa6';
+        for (let t = lo, j = 0; t <= hi; t += 4.4, j++) {
+            const [x, y, tx, ty] = at(t), w = widthAt(t, piece);
+            // a cheap hash rather than j modulo something: a modulo has a
+            // period, and a period against a fixed stride comes out as stripes
+            const rnd = k => { const v = Math.sin(j * 12.9898 + k * 78.233) * 43758.5; return v - Math.floor(v); };
+            const off = (rnd(1) - .5) * 1.34;
+            ctx.beginPath();
+            ctx.arc(x - ty * w * off, y + tx * w * off, 1.2 + rnd(2) * 1, 0, Math.PI * 2);
+            ctx.fill();
         }
     }
     /* A pig in a blanket is the same link with a rasher wound round it. Each
@@ -2921,6 +3062,13 @@ const KIT = [
       why: 'Two steaks a day, and from Monday.' },
     { id: 'sawdust',   kind: 'line',  name: 'Sawdust floor',     price: 22000,
       why: 'The dog drops one in four. You sell them anyway.' },
+    /* Every other thing on this shelf makes the string worth more. This one
+       makes part of it worth defending, which is new: the dog will take a
+       black pudding off the rail exactly once, and then it knows. It has cost
+       itself a mouthful and cost you nothing, and a day with three of them
+       hanging on it is a day the dog can go wrong on three times. */
+    { id: 'pudding',   kind: 'line',  name: 'Black pudding',     price: 38000,
+      why: 'A few a day. The dog spits them out. You sell them.' },
     { id: 'toy',       kind: 'help',  name: 'Squeaky bone',     price: 24000,
       why: 'One day a week the dog goes after the bone instead.' },
     { id: 'apprentice', kind: 'help',  name: 'An apprentice',    price: 32000,
@@ -3640,6 +3788,7 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
 
 function drawLoose(ms) {
     for (const l of loose) {
+        const P = potFor(l.from);
         const e = Math.min(1, (ms - l.t0) / 560);
         const ease = 1 - Math.pow(1 - e, 3);
         const x = l.x + (l.tx - l.x) * ease;
@@ -3651,7 +3800,7 @@ function drawLoose(ms) {
         ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
         ctx.beginPath();
         ctx.ellipse(0, 0, 15.5, 29, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#c4472e'; ctx.fill();
+        ctx.fillStyle = P.body; ctx.fill();
         ctx.shadowColor = 'transparent';
         // the shade is a crescent taken off the lit side rather than a second
         // blob dropped on top, which came out looking like a hole in it
@@ -3659,13 +3808,22 @@ function drawLoose(ms) {
         ctx.clip();
         ctx.beginPath();
         ctx.ellipse(11, 3, 9, 30, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#8c2b1b'; ctx.fill();
+        ctx.fillStyle = P.shade; ctx.fill();
         ctx.beginPath();
         ctx.ellipse(-5.5, -3, 4.2, 18, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#dd6f4c'; ctx.fill();
+        ctx.fillStyle = P.lit; ctx.fill();
         ctx.beginPath();
         ctx.ellipse(-6, -6, 1.8, 11, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#ea8f6e'; ctx.fill();
+        ctx.fillStyle = P.fat; ctx.fill();
+        if (P === PUD) {                       // the fat through it, on the hook too
+            ctx.fillStyle = '#d8cbb4';
+            for (let j = 0; j < 9; j++) {
+                const a = j * 2.399;
+                ctx.beginPath();
+                ctx.arc(Math.cos(a) * 7, Math.sin(a) * 19, 1.5 + (j % 3) * .4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
         ctx.restore();
         ctx.restore();
     }
@@ -4133,15 +4291,16 @@ function draw() {
                 steakShape(ctx, 0);
             } else {
                 ctx.beginPath();
+                const P = potFor(chewing.from);
                 ctx.ellipse(0, 0, chewing.len, FAT * .92, 0, 0, Math.PI * 2);
-                ctx.fillStyle = '#c4472e'; ctx.fill();
+                ctx.fillStyle = P.body; ctx.fill();
                 ctx.save(); ctx.clip();
                 ctx.beginPath();
                 ctx.ellipse(0, FAT * .6, chewing.len, FAT * .7, 0, 0, Math.PI * 2);
-                ctx.fillStyle = '#8c2b1b'; ctx.fill();
+                ctx.fillStyle = P.shade; ctx.fill();
                 ctx.beginPath();
                 ctx.ellipse(-chewing.len * .12, -FAT * .34, chewing.len * .6, FAT * .18, 0, 0, Math.PI * 2);
-                ctx.fillStyle = '#dd6f4c'; ctx.fill();
+                ctx.fillStyle = P.lit; ctx.fill();
                 ctx.restore();
             }
             ctx.restore();
@@ -4367,16 +4526,26 @@ const BARE = { hat: 'bare', face: 'plain', collar: 'spiked' };
 const TILE_W = 104, TILE_H = 92;
 /* One pig in a blanket, off the string and on its own, for the shelf. Same
    three bands and the same fat down the lit side as the ones on the rail. */
-function drawBlanket(g, cx, cy, k, ang, plain) {
+function drawBlanket(g, cx, cy, k, ang, plain, P = MEAT) {
     g.save();
     g.translate(cx, cy); g.rotate(ang); g.scale(k, k);
     const L = 34, R = 13;
     g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 8; g.shadowOffsetY = 4;
-    g.fillStyle = '#c4472e';
+    g.fillStyle = P.body;
     g.beginPath(); g.roundRect(-L, -R, L * 2, R * 2, R); g.fill();
     g.shadowColor = 'transparent';
-    g.fillStyle = '#dd6f4c';                              // the light down one side
+    g.fillStyle = P.lit;                                  // the light down one side
     g.beginPath(); g.roundRect(-L + 5, -R + 2.5, L * 2 - 10, R * .6, R * .3); g.fill();
+    if (P === PUD) {                                      // and the fat through it
+        g.fillStyle = '#d8cbb4';
+        for (let j = 0; j < 14; j++) {
+            const a = j * 2.399;
+            g.beginPath();
+            g.arc(Math.cos(a) * L * .72, Math.sin(a) * R * .52,
+                  1.6 + (j % 3) * .5, 0, Math.PI * 2);
+            g.fill();
+        }
+    }
     if (plain) { g.restore(); return; }                   // a bare link, for the floor
     g.save();                                             // and the rasher, inside the skin
     g.beginPath(); g.roundRect(-L, -R, L * 2, R * 2, R); g.clip();
@@ -4413,6 +4582,9 @@ function drawTile(c, item, circle = true) {
             g.globalAlpha = 1;
             g.restore();
             drawBlanket(g, TILE_W / 2, TILE_H / 2 - 2, .66, .16, true);
+        } else if (item.id === 'pudding') {
+            // one of them on its own, and a cut end to show it is not a sausage
+            drawBlanket(g, TILE_W / 2, TILE_H / 2, .82, -.36, true, PUD);
         } else {
             drawBlanket(g, TILE_W / 2, TILE_H / 2, .82, -.36);
         }

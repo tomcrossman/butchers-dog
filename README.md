@@ -208,6 +208,16 @@ sells.
   the ones it takes, and a sausage on clean boards is still a sausage: it goes
   on the hook and pays a little under a cut one, because it has been in a dog's
   mouth.
+- **Black pudding**, three hundred and eighty, and the only thing on this shelf
+  that is not about money. About one link in seven comes down the rail black
+  and flecked with white fat, and the dog will take one exactly once: it gets
+  the whole mouthful, finds out what is in it, spits it out, and the link goes
+  on the hook at a pound forty. It has cost the dog a bite and cost you
+  nothing, so a day with three of them hanging on it is a day the dog can go
+  wrong on three times. Never the last link on the string - the bottom one is
+  the one it reaches first every single day, and a guaranteed refusal to open
+  with is a different game. A spat-out link does not count against the week
+  either, which is the one place this shelf touches the hour after closing.
 
 **Once a week** is the shelf the butcher uses himself. A squeaky bone, two
 hundred and forty: on one day of the week - the week picks it, and Monday is as
@@ -283,9 +293,10 @@ is for.
 
 The dog is pinned to the top of the shop and does not scroll away with the
 first shelf, so whatever you try goes on in front of you without scrolling back
-up for a look. What it has on already is filled in, gold all the way round,
-ticked in the corner and labelled along the bottom - an outline on its own was
-not enough to find among thirty tiles.
+up for a look. What it has on already is filled in, gold all the way round
+and ticked in the corner - an outline on its own was not enough to find among
+thirty tiles. It had a gold strip along the bottom of it as well, which was one
+more thing saying what the tick above it had already said.
 
 The counter says the name and nothing else. The button under it carries the
 price, and a second line saying the same figure, or how far short of it you
@@ -387,11 +398,15 @@ going: cut the dog and it is knocked out, not dead.
 
 You lose the week's takings, which are spent on the
 funeral, and the stone has one button on it: back to the shop, to meet whoever
-turns up on Monday. A new dog with a new name, a different breed and the same
-wardrobe - the collar and the hat were bought and paid for and nobody is
-burying those, but a replacement that looked exactly like the one you just
-buried made it read as a respawn rather than a loss. It runs at the same speed,
-as all twelve of them do.
+turns up on Monday. A new dog with a new name, a different breed, and nothing on
+it. Everything you bought is still yours and still on its shelf - nobody is
+burying a gold collar - but it was bought for a dog that is not here any more,
+and the hat off the old one going straight onto the new one is not a thing
+anybody would do. You dress this one yourself, which takes about four taps and
+is the only funeral rite this game has. The knife stays on the block: that one
+was always the butcher's. A replacement that turned up in the dead one's
+clothes read as a respawn rather than a loss. It runs at the same speed, as all
+twelve of them do.
 
 The demonstration is the first Monday of a shop and no other. Making it wait
 for the countdown once was not the same as showing it once: the drawing asked
@@ -413,6 +428,19 @@ it cannot be fluked. One good Wednesday does not buy it.
 
 Three of them, one picked at random, nine seconds each, and it runs before the
 week is counted so whatever it makes is part of that week's takings.
+
+It says why it is happening. PERFECT WEEK lands across the middle of the screen
+for a second and a half as the thing opens, with SIX DAYS AND THE DOG GOT
+NOTHING under it, because a reward that turns up once in a very long while with
+no explanation attached reads as a glitch rather than a prize.
+
+And the week's takings account for it either way. The six day rows used not to
+add up to the number underneath them on the weeks this ran, so there is a line
+under the rule at the bottom: **After hours**, what it was, and what it came to,
+in green. On every other week the same line is the dog's - how many it got, and
+that a week where it gets none buys an hour after closing. Which is the other
+half of the same problem: a prize you only ever see by accident is not a prize,
+and neither is one you never find out you missed.
 
 They are priced against the week they are attached to. The first pass paid one
 thirty-five to two sixty for nine seconds, against a clean day worth four to
