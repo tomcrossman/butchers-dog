@@ -405,29 +405,31 @@ every screen including the one you play on.
 
 ## After hours
 
-Get through a day without the dog taking a single one off you and there is a
-minute of something else before the next day starts. It is the one condition in
-the game that was already named - the tally says *The dog got nothing* - and it
-cannot be fluked: it means every sausage on that string went in the window.
+Get through a whole week without the dog taking a single one off you and there
+is a minute of something else before the takings are counted. Thirty-nine
+sausages across six days, and the sixth is eleven of them with the dog coming
+at you at nearly twice Monday's speed - it is the rarest thing in this game and
+it cannot be fluked. One good Wednesday does not buy it.
 
-Three of them, one picked at random, nine seconds each, and whatever they make
-goes on the week. They are priced against a day rather than against nothing: a
-clean day is four to fifteen pounds for about five seconds of cutting, and the
-first pass at these paid one thirty-five to two sixty for nine, which is a
-tenth of the rate and makes stopping to do one a favour you are doing the game.
-Lowering what a sausage fetches would have meant re-pricing every shelf from
-eighteen pounds to twelve hundred, so the paying end moved instead. A good run
-at any of the three is now worth about what a good day is - eight to eleven
-pounds.
+Three of them, one picked at random, nine seconds each, and it runs before the
+week is counted so whatever it makes is part of that week's takings.
+
+They are priced against the week they are attached to. The first pass paid one
+thirty-five to two sixty for nine seconds, against a clean day worth four to
+fifteen pounds for about five seconds of cutting - a tenth of the rate, which
+makes stopping to play one a favour you are doing the game. Lowering what a
+sausage fetches would have meant re-pricing every shelf from eighteen pounds to
+twelve hundred, so the paying end moved instead: a good run is sixteen to
+twenty-two pounds, about a third on top of a perfect week.
 
 - **Cash only.** A jar you slide along the bottom and coins coming down at it.
-  Seventy pence a coin, and about seventeen come down.
+  A pound forty a coin, and about seventeen come down.
 - **Sauce on.** One pass of ketchup down a hot dog. What it pays is how much of
   the bun you covered and how straight you kept it, both - so a quick scribble
-  down the middle is worth less than one careful stroke. Up to ten pounds.
+  down the middle is worth less than one careful stroke. Up to twenty pounds.
 - **On the barbecue.** Five sausages cooking at their own speeds, steaming,
   spitting fat at the bars and hissing every half second. Tap one while it is
-  done and it is two twenty; tap it early, or leave it until it is black,
+  done and it is four forty; tap it early, or leave it until it is black,
   and it is nothing. A burnt one is scraped off after a second, and when the
   grill is empty the game is over whatever the clock says - there is nothing to
   watch on an empty barbecue.
