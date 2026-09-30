@@ -769,7 +769,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v57';
+const APP_VERSION = 'v60';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2181,8 +2181,216 @@ function nextRound() {
     tallying = false;
     clearTimeout(tallyT);
     tallyEl.classList.remove('on');
+    /* A day the dog got nothing off you is a day worth selling on. It is the
+       one condition in the game that is already named - the tally says The dog
+       got nothing - and it cannot be fluked: it means every sausage on that
+       string went in the window. */
+    if (lost === 0 && saved > 0) { startMini(); return; }
+    afterMini();
+}
+function afterMini() {
     if (round >= DAYS.length) { endWeek(); return; }
     startRound(round + 1);
+}
+
+/* ============================================================
+   AFTER HOURS
+   ============================================================
+   Three of them, on the same canvas the day is played on, because a second
+   canvas means a second copy of everything that makes this one fit a phone.
+   The day is over by the time they run, so nothing else is drawing. */
+const MINI_S = 9;
+const MINIS = [
+    { id: 'jar',  name: 'Cash only', say: 'Catch the coins' },
+    { id: 'sauce', name: 'Sauce on', say: 'Draw the ketchup down it' },
+    { id: 'grill', name: 'On the barbecue', say: 'Tap them when they are done, not before' },
+];
+let mini = null;
+function startMini() {
+    const M = pick(MINIS);
+    mini = { id: M.id, name: M.name, say: M.say, t0: now(), won: 0, done: false };
+    if (M.id === 'jar') {
+        mini.jar = W / 2; mini.coins = []; mini.next = 0;
+    } else if (M.id === 'sauce') {
+        mini.dogY = H * .54; mini.x0 = W * .18; mini.x1 = W * .82;
+        mini.paint = []; mini.drawing = false;
+    } else {
+        mini.bangers = [];
+        for (let i = 0; i < 5; i++)
+            mini.bangers.push({ x: W * (.5 + (i - 2) * .17), y: H * .52 + (i % 2) * 34,
+                                done: 0, ready: 2.4 + Math.random() * 3, gone: false, taken: false });
+    }
+    jingleUp();
+    tick();
+}
+function endMini() {
+    if (!mini || mini.done) return;
+    mini.done = true;
+    money += mini.won; showHud();
+    setTimeout(() => { mini = null; afterMini(); }, 900);
+}
+const COIN = 20, BANGER = 45, SAUCE_MAX = 260;
+const chink = () => safely(t => {
+    tone(t, { freq: 1760, dur: .1, type: 'triangle', vol: .12 });
+    tone(t, { freq: 2637, dur: .18, type: 'sine', vol: .07, at: .03 });
+});
+const miniLeft = () => Math.max(0, MINI_S - (now() - mini.t0) / 1000);
+function miniStep(dt) {
+    if (mini.done) return;
+    const left = miniLeft();
+    if (mini.id === 'jar') {
+        mini.next -= dt;
+        if (mini.next <= 0 && left > .6) {
+            mini.next = .34 + Math.random() * .3;
+            mini.coins.push({ x: 40 + Math.random() * (W - 80), y: -30,
+                              v: 300 + Math.random() * 190, spin: Math.random() * 6 });
+        }
+        const jarY = H - 120;
+        for (let i = mini.coins.length - 1; i >= 0; i--) {
+            const c = mini.coins[i];
+            c.y += c.v * dt;
+            if (c.y > jarY - 26 && c.y < jarY + 30 && Math.abs(c.x - mini.jar) < 52) {
+                mini.coins.splice(i, 1); mini.won += COIN; chink(); showHud(); continue;
+            }
+            if (c.y > H + 40) mini.coins.splice(i, 1);
+        }
+    } else if (mini.id === 'grill') {
+        for (const b of mini.bangers) {
+            if (b.taken) continue;
+            b.done += dt;
+            if (!b.gone && b.done > b.ready + 2.2) { b.gone = true; splat(); }
+        }
+    }
+    if (left <= 0) endMini();
+}
+function miniAt(x, y) {
+    if (mini.done) return;
+    if (mini.id === 'jar') { mini.jar = clamp(x, 56, W - 56); return; }
+    if (mini.id === 'sauce') {
+        // it only counts along the bun, and only going one way down it
+        if (Math.abs(y - mini.dogY) > 46) return;
+        const t = clamp((x - mini.x0) / (mini.x1 - mini.x0), 0, 1);
+        const miss = Math.abs(y - mini.dogY) / 46;
+        mini.paint.push({ t, y, miss });
+        return;
+    }
+    for (const b of mini.bangers) {                  // the grill: tap one
+        if (b.taken || Math.hypot(x - b.x, y - b.y) > 42) continue;
+        b.taken = true;
+        if (b.gone || b.done < b.ready) { buzz(); }
+        else { mini.won += BANGER; chink(); showHud(); }
+        return;
+    }
+}
+function miniUp() {
+    if (!mini || mini.done || mini.id !== 'sauce' || !mini.paint.length) return;
+    /* What a line of ketchup is worth: how much of the bun it covers and how
+       straight it was kept. Both, so a quick scribble down the middle is worth
+       less than one careful pass. */
+    const seen = new Set();
+    let miss = 0;
+    for (const p of mini.paint) { seen.add(Math.floor(p.t * 24)); miss += p.miss; }
+    const cover = seen.size / 24, neat = 1 - Math.min(1, miss / mini.paint.length * 1.6);
+    mini.won = Math.round(SAUCE_MAX * cover * (.45 + .55 * neat) / 5) * 5;
+    showHud();
+    endMini();
+}
+function drawMini(ms) {
+    const left = miniLeft(), e = 1 - left / MINI_S;
+    ctx.save();
+    if (mini.id === 'jar') {
+        for (const c of mini.coins) {                 // the coins
+            ctx.save();
+            ctx.translate(c.x, c.y);
+            ctx.rotate(c.spin + ms / 300);
+            ctx.fillStyle = '#c59430';
+            ctx.beginPath(); ctx.ellipse(0, 0, 17, 17, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#f0d484';
+            ctx.beginPath(); ctx.ellipse(0, 0, 13, 13, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#8a6417';
+            ctx.font = '900 16px Lato, sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('\u00a3', 0, 1);
+            ctx.restore();
+        }
+        const jy = H - 120;                           // and the jar
+        ctx.fillStyle = 'rgba(210,235,245,.30)';
+        ctx.beginPath();
+        ctx.moveTo(mini.jar - 46, jy - 18); ctx.lineTo(mini.jar + 46, jy - 18);
+        ctx.lineTo(mini.jar + 38, jy + 54); ctx.lineTo(mini.jar - 38, jy + 54);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#dcab3e';
+        ctx.beginPath(); ctx.roundRect(mini.jar - 52, jy - 26, 104, 12, 5); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,.22)';
+        ctx.beginPath(); ctx.roundRect(mini.jar - 38, jy - 10, 9, 56, 4); ctx.fill();
+    } else if (mini.id === 'sauce') {
+        const y = mini.dogY, x0 = mini.x0, x1 = mini.x1;
+        ctx.fillStyle = '#e8bd72';                    // the bun
+        ctx.beginPath(); ctx.roundRect(x0 - 18, y - 34, x1 - x0 + 36, 68, 34); ctx.fill();
+        ctx.fillStyle = '#d8a758';
+        ctx.beginPath(); ctx.roundRect(x0 - 12, y + 6, x1 - x0 + 24, 22, 12); ctx.fill();
+        ctx.fillStyle = '#b8552f';                    // the sausage in it
+        ctx.beginPath(); ctx.roundRect(x0 - 6, y - 20, x1 - x0 + 12, 34, 17); ctx.fill();
+        ctx.fillStyle = '#d0693c';
+        ctx.beginPath(); ctx.roundRect(x0, y - 16, x1 - x0, 12, 6); ctx.fill();
+        ctx.strokeStyle = '#c4231f'; ctx.lineWidth = 13;  // and whatever you have put on it
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.beginPath();
+        mini.paint.forEach((p, i) => {
+            const px = x0 + (x1 - x0) * p.t;
+            i ? ctx.lineTo(px, p.y) : ctx.moveTo(px, p.y);
+        });
+        ctx.stroke();
+    } else {
+        const gy = H * .52, gx0 = W * .08, gx1 = W * .92;   // something to cook on
+        ctx.fillStyle = '#2a2620';
+        ctx.beginPath(); ctx.roundRect(gx0 - 14, gy - 78, gx1 - gx0 + 28, 150, 16); ctx.fill();
+        ctx.fillStyle = '#c2442c';
+        for (let i = 0; i < 9; i++) {                        // the coals under it
+            const a2 = i * 2.1, cx = gx0 + (gx1 - gx0) * ((i * .37) % 1);
+            ctx.globalAlpha = .18 + .12 * Math.sin(ms / 300 + i);
+            ctx.beginPath(); ctx.ellipse(cx, gy + 40 + Math.sin(a2) * 14, 22, 9, 0, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = '#6e6a63'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+        for (let i = 0; i < 6; i++) {                        // and the bars
+            const y = gy - 58 + i * 24;
+            ctx.beginPath(); ctx.moveTo(gx0, y); ctx.lineTo(gx1, y); ctx.stroke();
+        }
+        for (const b of mini.bangers) {
+            if (b.taken) continue;
+            const burnt = b.gone, ready = !burnt && b.done >= b.ready;
+            ctx.save();
+            ctx.translate(b.x, b.y);
+            ctx.rotate(-.5);
+            ctx.fillStyle = burnt ? '#241f1c' : ready ? '#b8552f' : '#e08a70';
+            ctx.beginPath(); ctx.roundRect(-13, -40, 26, 80, 13); ctx.fill();
+            if (!burnt) {
+                ctx.fillStyle = ready ? '#d0693c' : '#efa892';
+                ctx.beginPath(); ctx.roundRect(-9, -32, 9, 62, 5); ctx.fill();
+            }
+            ctx.restore();
+            if (ready) {                              // the one thing you are looking for
+                ctx.strokeStyle = 'rgba(240,212,132,' + (.4 + .35 * Math.sin(ms / 160)) + ')';
+                ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.arc(b.x, b.y, 44, 0, Math.PI * 2); ctx.stroke();
+            }
+        }
+    }
+    // what this is and how long is left, in the language of the day plate
+    // under the HUD rather than behind it, which is where the day plate lives
+    ctx.fillStyle = 'rgba(12,32,24,.55)';
+    ctx.fillRect(0, RAIL + 4, W, 4);
+    ctx.fillStyle = '#dcab3e';
+    ctx.fillRect(0, RAIL + 4, W * left / MINI_S, 4);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '400 26px "Alfa Slab One", Georgia, serif';
+    ctx.fillStyle = '#f0d484';
+    ctx.fillText(mini.name, W / 2, RAIL + 34);
+    ctx.font = '900 13px Lato, sans-serif';
+    ctx.fillStyle = 'rgba(253,247,232,.72)';
+    ctx.fillText(mini.done ? `${money2(mini.won)} on top` : mini.say, W / 2, RAIL + 62);
+    ctx.restore();
 }
 const jingleUp = () => safely(t => {
     [523, 659, 784].forEach((f, i) => tone(t, { freq: f, dur: .2, type: 'triangle', vol: .15, at: i * .07 }));
@@ -2204,6 +2412,7 @@ const xy = e => {
     return [t.clientX - r.left, t.clientY - r.top];
 };
 function down(x, y) {
+    if (mini) { mini.drawing = true; miniAt(x, y); return; }
     if (tallying) return nextRound();
     if (teaching) return beginCount();           // seen enough, thank you
     if (!card.hidden || !live || !armed || showingIntro) return;
@@ -2215,6 +2424,7 @@ function down(x, y) {
    you let go, and the swipe was being checked against where it used to be,
    which is why catching one was very nearly impossible. */
 function move(x, y) {
+    if (mini) { if (mini.drawing) miniAt(x, y); return; }
     if (!swipe) return;
     const last = swipe[swipe.length - 1];
     if (Math.hypot(x - last[0], y - last[1]) < 3) return;
@@ -2224,6 +2434,7 @@ function move(x, y) {
     if (hitSteak(seg)) sliceSteak();
 }
 function up() {
+    if (mini) { mini.drawing = false; miniUp(); return; }
     if (!swipe) return;
     const s = swipe; swipe = null;
     if (s.length > 1) {
@@ -3784,6 +3995,7 @@ function drawDemo(ms) {
 function draw() {
     const ms = now();
     ctx.clearRect(0, 0, W, H);
+    if (mini) { drawMini(ms); return; }
     if (!string) return;
 
     /* The title page draws none of the shop: the shopfront canvas is the
@@ -3972,12 +4184,13 @@ function tick() {
         const ms = now();
         const dt = Math.min(.05, (ms - (lastMs || ms)) / 1000);
         lastMs = ms;
+        if (mini) miniStep(dt);
         dogStep(dt);
         steakStep(dt);
         knifeStep(dt);
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
-        if (live || loose.length || cutFx.length || mess.length || shouts.length
+        if (mini || live || loose.length || cutFx.length || mess.length || shouts.length
             || chewing || steak || (hit && !hit.settled) || cat || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
@@ -4214,27 +4427,45 @@ function drawTile(c, item, circle = true) {
    the head, so what you are looking at is the hat. The circle is the skull the
    item is placed against, so everything still lands where it lands on a real
    one - hats on top, faces on the eye line, collars at the chin. */
+const scratch = document.createElement('canvas');
 function drawWorn(g, item, circle) {
     const B = cast.dog;
     const mid = (-B.skullH + B.chin) / 2, r = (B.chin + B.skullH) * .46;
-    g.save();
     /* Tall enough for a top hat above the circle and long enough for a cape
        below it, since both are drawn from the same skull. */
-    g.translate(TILE_W / 2, TILE_H / 2 + 4);
-    g.scale(.46, .46);
-    g.translate(0, -mid);
-    g.lineJoin = 'round'; g.lineCap = 'round';
-    /* The circle is what makes a rack of hats readable at a glance. On the
-       counter there is one thing on the screen and its name beside it, so it
-       is the item and nothing else. */
-    if (circle) {
-        g.strokeStyle = 'rgba(253,247,232,.3)'; g.lineWidth = 3.5;
-        g.beginPath(); g.arc(0, mid, r, 0, Math.PI * 2); g.stroke();
-    }
-    if (item.kind === 'collar') drawCollar(g, B, item.id);
-    else drawKit(g, B, { hat: item.kind === 'hat' ? item.id : 'bare',
-                         face: item.kind === 'face' ? item.id : 'plain' });
-    g.restore();
+    const paint = (c, k) => {
+        c.save();
+        c.translate(TILE_W / 2, TILE_H / 2 + 4);
+        c.scale(k, k);
+        c.translate(0, -mid);
+        c.lineJoin = 'round'; c.lineCap = 'round';
+        if (circle) {
+            c.strokeStyle = 'rgba(253,247,232,.3)'; c.lineWidth = 3.5;
+            c.beginPath(); c.arc(0, mid, r, 0, Math.PI * 2); c.stroke();
+        }
+        if (item.kind === 'collar') drawCollar(c, B, item.id);
+        else drawKit(c, B, { hat: item.kind === 'hat' ? item.id : 'bare',
+                             face: item.kind === 'face' ? item.id : 'plain' });
+        c.restore();
+    };
+    /* The circle is what makes a rack of hats readable at a glance, and it is
+       also what holds the item in the middle of the tile - a hat sits at the
+       top of one because that is where a hat goes. Take the circle away and
+       there is nothing under it, so the thing hangs high in an empty box.
+       Without it the item is measured and put in the middle on its own. */
+    if (circle) { paint(g, .46); return; }
+    scratch.width = TILE_W; scratch.height = TILE_H;
+    const t = scratch.getContext('2d');
+    paint(t, .62);
+    const d = t.getImageData(0, 0, TILE_W, TILE_H).data;
+    let x0 = TILE_W, y0 = TILE_H, x1 = -1, y1 = -1;
+    for (let y = 0; y < TILE_H; y++) for (let x = 0; x < TILE_W; x++)
+        if (d[(y * TILE_W + x) * 4 + 3] > 8) {
+            if (x < x0) x0 = x; if (x > x1) x1 = x;
+            if (y < y0) y0 = y; if (y > y1) y1 = y;
+        }
+    if (x1 < 0) return;                                  // nothing on it at all
+    g.drawImage(scratch, TILE_W / 2 - (x0 + x1) / 2, TILE_H / 2 - (y0 + y1) / 2);
 }
 function paintStore() {
     deal();
