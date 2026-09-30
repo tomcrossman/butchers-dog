@@ -737,7 +737,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v36';
+const APP_VERSION = 'v37';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -2199,63 +2199,63 @@ const TIERS = [
     { name: 'Dachshund',  k: .74, speed: .80,
       coat: '#a55c28', lit: '#c47a3c', shade: '#743c15', muzzle: '#c8863f',
       ear: 'drop', earCol: '#77401a', skullW: 30, skullH: 40, jawW: 36, jawY: 16,
-      chin: 40, snout: [27, 17, 21], eyes: [16, -16, 4.8], brow: .3, tongue: .8 },
+      chin: 40, snout: [27, 17, 21], eyes: [16, -16, 4.8], brow: .3, tongue: .8, look: 'up' },
     { name: 'Corgi',      k: .78, speed: .84,
       coat: '#c98436', lit: '#e0a153', shade: '#94591c', muzzle: '#f3e6cf',
       ear: 'prick', earCol: '#9a6222', skullW: 32, skullH: 38, jawW: 38, jawY: 16,
-      chin: 40, snout: [25, 17, 19], eyes: [17, -15, 4.8], brow: .3, tongue: 1 },
+      chin: 40, snout: [25, 17, 19], eyes: [17, -15, 4.8], brow: .3, tongue: 1, look: 'up' },
 ],[
     { name: 'Jack Russell', k: .86, speed: .95,
       coat: '#f2e8d4', lit: '#fdf7e8', shade: '#cdbfa2', muzzle: '#fdf7e8',
       ear: 'fold', earCol: '#a8703a', skullW: 34, skullH: 40, jawW: 42, jawY: 18,
-      chin: 42, snout: [27, 20, 15], eyes: [18, -14, 5], brow: .5, tongue: 1,
+      chin: 42, snout: [27, 20, 15], eyes: [18, -14, 5], brow: .5, tongue: 1, look: 'cross',
       patch: '#a8703a' },
     { name: 'Fox Terrier', k: .90, speed: 1.0,
       coat: '#e8e0cc', lit: '#f8f2e2', shade: '#bdb096', muzzle: '#f8f2e2',
       ear: 'fold', earCol: '#4a3a2a', skullW: 32, skullH: 42, jawW: 40, jawY: 16,
-      chin: 44, snout: [26, 18, 18], eyes: [17, -16, 4.8], brow: .4, tongue: 1,
+      chin: 44, snout: [26, 18, 18], eyes: [17, -16, 4.8], brow: .4, tongue: 1, look: 'up',
       patch: '#4a3a2a' },
 ],[
     { name: 'Bulldog',    k: 1, speed: 1,
       coat: '#efe3ca', lit: '#fdf7e8', shade: '#d5c6a6', muzzle: '#fdf7e8',
       ear: 'fold', earCol: '#b9a98c', skullW: 38, skullH: 40, jawW: 56, jawY: 20,
-      chin: 45, snout: [31, 20, 12], eyes: [21, -13, 5.4], brow: 1, tongue: 1 },
+      chin: 45, snout: [31, 20, 12], eyes: [21, -13, 5.4], brow: 1, tongue: 1, look: 'cross' },
     { name: 'Staffie',    k: 1.04, speed: 1.06,
       coat: '#6b5340', lit: '#85694f', shade: '#4a3728', muzzle: '#8d7157',
       ear: 'fold', earCol: '#513d2d', skullW: 36, skullH: 40, jawW: 50, jawY: 20,
-      chin: 44, snout: [29, 19, 14], eyes: [20, -14, 5.2], brow: .9, tongue: 1,
+      chin: 44, snout: [29, 19, 14], eyes: [20, -14, 5.2], brow: .9, tongue: 1, look: 'cross',
       patch: '#f0e6d2' },
 ],[
     { name: 'Boxer',      k: 1.12, speed: 1.14,
       coat: '#c08240', lit: '#d79c58', shade: '#8c5a24', muzzle: '#3a2a22',
       ear: 'fold', earCol: '#8c5a24', skullW: 36, skullH: 42, jawW: 50, jawY: 20,
-      chin: 46, snout: [30, 21, 14], eyes: [20, -14, 5.2], brow: .8, tongue: 1,
+      chin: 46, snout: [30, 21, 14], eyes: [20, -14, 5.2], brow: .8, tongue: 1, look: 'cross',
       mask: '#3a2a22' },
     { name: 'Labrador',   k: 1.16, speed: 1.18,
       coat: '#d8b46e', lit: '#eccd8c', shade: '#a8853f', muzzle: '#e8c98a',
       ear: 'drop', earCol: '#b08c46', skullW: 34, skullH: 42, jawW: 44, jawY: 18,
-      chin: 48, snout: [28, 20, 19], eyes: [18, -16, 5], brow: .4, tongue: 1 },
+      chin: 48, snout: [28, 20, 19], eyes: [18, -16, 5], brow: .4, tongue: 1, look: 'soft' },
 ],[
     { name: 'Dobermann',  k: 1.2, speed: 1.3,
       coat: '#2f2622', lit: '#453832', shade: '#1d1715', muzzle: '#4a3c35',
       ear: 'prick', earCol: '#241d1a', skullW: 32, skullH: 44, jawW: 40, jawY: 18,
-      chin: 48, snout: [25, 20, 20], eyes: [17, -16, 4.8], brow: .4, tongue: 1,
+      chin: 48, snout: [25, 20, 20], eyes: [17, -16, 4.8], brow: .4, tongue: 1, look: 'cross',
       points: '#9a5a26' },
     { name: 'Alsatian',   k: 1.24, speed: 1.34,
       coat: '#8a6231', lit: '#a67a42', shade: '#5c3f1c', muzzle: '#2b211b',
       ear: 'prick', earCol: '#3b2c1d', skullW: 32, skullH: 44, jawW: 42, jawY: 18,
-      chin: 50, snout: [26, 19, 21], eyes: [17, -17, 4.8], brow: .5, tongue: 1,
+      chin: 50, snout: [26, 19, 21], eyes: [17, -17, 4.8], brow: .5, tongue: 1, look: 'cross',
       mask: '#2b211b' },
 ],[
     { name: 'Great Dane', k: 1.38, speed: 1.46,
       coat: '#6e6a63', lit: '#8a857c', shade: '#4b4842', muzzle: '#8a857c',
       ear: 'drop', earCol: '#4b4842', skullW: 34, skullH: 46, jawW: 46, jawY: 20,
-      chin: 50, snout: [28, 22, 18], eyes: [18, -16, 5], brow: .6, tongue: 1,
+      chin: 50, snout: [28, 22, 18], eyes: [18, -16, 5], brow: .6, tongue: 1, look: 'soft',
       mask: '#3b3833' },
     { name: 'Mastiff',    k: 1.42, speed: 1.5,
       coat: '#c49a5c', lit: '#dcb376', shade: '#906d36', muzzle: '#2e2520',
       ear: 'drop', earCol: '#7c5c2c', skullW: 36, skullH: 44, jawW: 56, jawY: 22,
-      chin: 50, snout: [32, 22, 16], eyes: [21, -15, 5.2], brow: .9, tongue: 1,
+      chin: 50, snout: [32, 22, 16], eyes: [21, -15, 5.2], brow: .9, tongue: 1, look: 'soft',
       mask: '#2e2520' },
 /* ---- and six he drew ---------------------------------------------------
    Straight off his sheet: the snarling red one on the scribbled background,
@@ -2267,32 +2267,32 @@ const TIERS = [
     { name: 'Redback',    k: 1.1, speed: 1,
       coat: '#8e3020', lit: '#ad4128', shade: '#5c1c12', muzzle: '#4a1a12',
       ear: 'drop', earCol: '#6a2216', skullW: 38, skullH: 44, jawW: 48, jawY: 18,
-      chin: 48, snout: [32, 23, 14], eyes: [20, -15, 4.6], brow: 1, tongue: 1,
+      chin: 48, snout: [32, 23, 14], eyes: [20, -15, 4.6], brow: 1, tongue: 1, look: 'cross',
       mask: '#4a1a12' },
     { name: 'Spotter',    k: 1.06, speed: 1,
       coat: '#efe8d8', lit: '#fdf8ec', shade: '#c6bca6', muzzle: '#fdf8ec',
       ear: 'drop', earCol: '#8e8676', skullW: 36, skullH: 42, jawW: 44, jawY: 18,
-      chin: 48, snout: [28, 21, 17], eyes: [18, -14, 5], brow: .7, tongue: 1,
+      chin: 48, snout: [28, 21, 17], eyes: [18, -14, 5], brow: .7, tongue: 1, look: 'soft',
       patch: '#4a4640' },
 ],[
     { name: 'Hellhound',  k: 1.08, speed: 1,
       coat: '#59565e', lit: '#726f79', shade: '#3a383f', muzzle: '#d8cfc0',
       ear: 'fold', earCol: '#3a383f', skullW: 36, skullH: 42, jawW: 44, jawY: 18,
-      chin: 46, snout: [27, 20, 17], eyes: [19, -14, 5.4], brow: 1, tongue: .8,
+      chin: 46, snout: [27, 20, 17], eyes: [19, -14, 5.4], brow: 1, tongue: .8, look: 'cross',
       iris: '#d81f1f', glow: true },
     { name: 'Bruiser',    k: 1.14, speed: 1,
       coat: '#e3c877', lit: '#f2dd9a', shade: '#b39d4c', muzzle: '#f4e8c4',
       ear: 'prick', earCol: '#b39d4c', skullW: 38, skullH: 42, jawW: 48, jawY: 20,
-      chin: 48, snout: [30, 20, 16], eyes: [20, -13, 5], brow: 1, tongue: .9 },
+      chin: 48, snout: [30, 20, 16], eyes: [20, -13, 5], brow: 1, tongue: .9, look: 'cross' },
 ],[
     { name: 'Midnight',   k: .92, speed: 1,
       coat: '#1f3a30', lit: '#2d5044', shade: '#12241d', muzzle: '#6f7a72',
       ear: 'fold', earCol: '#12241d', skullW: 36, skullH: 38, jawW: 40, jawY: 16,
-      chin: 42, snout: [26, 19, 15], eyes: [17, -12, 5.6], brow: .2, tongue: .9 },
+      chin: 42, snout: [26, 19, 15], eyes: [17, -12, 5.6], brow: .2, tongue: .9, look: 'flat', ruff: 0 },
     { name: 'Punch',      k: 1.04, speed: 1,
       coat: '#8e5a4a', lit: '#a86e5a', shade: '#5e392e', muzzle: '#f2e4c8',
       ear: 'prick', earCol: '#3f5c3a', skullW: 36, skullH: 40, jawW: 44, jawY: 18,
-      chin: 46, snout: [28, 20, 16], eyes: [18, -13, 5], brow: .6, tongue: 1,
+      chin: 46, snout: [28, 20, 16], eyes: [18, -13, 5], brow: .6, tongue: 1, look: 'up',
       cheeks: '#c4322a' },
 ]];
 const DOG_NAMES = ['Alfie', 'Nipper', 'Winston', 'Duke', 'Bruno', 'Goliath', 'Bess',
@@ -2952,7 +2952,7 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
        curve. The sides run nearly straight down to a heavy jaw. The tufts are
        laid out from fixed fractions rather than randomised, so a Corgi is the
        same Corgi every time you look at it. */
-    const TUFTS = 5, TUFT = 7;
+    const TUFTS = B.ruff === undefined ? 5 : B.ruff, TUFT = 7;
     const head = () => {
         const W = B.skullW, H = B.skullH;
         ctx.moveTo(-W - 1, B.jawY * .1);
@@ -2965,6 +2965,8 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
             ctx.lineTo((a + b) / 2 - (b - a) * .08, -H - TUFT);
             ctx.lineTo(b, -H + 1.5);
         }
+        // a coat with no fur to stand up gets a smooth top instead
+        if (!TUFTS) ctx.quadraticCurveTo(0, -H - 5, W * .86, -H + 1);
         ctx.quadraticCurveTo(W + 1, -H + 1, W + 1, -H + 8);
         ctx.lineTo(W + 1, B.jawY * .1);
         ctx.quadraticCurveTo(B.jawW + 3, B.jawY - 2, B.jawW, B.jawY + 5);
@@ -3029,16 +3031,17 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     if (B.brow > .05 || glum) for (const sx of [-1, 1]) {
         const bw = Math.max(.55, B.brow), e = B.eyes[1];
         /* Straight, heavy and angled, drawn as a bar with corners on it. An
-           arc reads as a raised eyebrow; a bar reads as an opinion. */
+           arc reads as a raised eyebrow; a bar reads as an opinion - but they
+           do not all have the same opinion. Which way the bar tilts is the
+           whole expression: down at the middle is cross, up at the middle is
+           worried, level is a dog thinking about nothing at all, and level and
+           high is one that is pleased to see you. */
+        const LOOK = { cross: [-8, -19], soft: [-21, -10], flat: [-15, -15], up: [-19, -19] };
         blob('rgba(46,36,26,' + (.6 + .4 * bw) + ')', () => {
             const t = 5 + 3 * bw;
-            if (glum) {          // inner ends up, which is the whole of a sulk
-                ctx.moveTo(sx * 5, e - 22); ctx.lineTo(sx * 35, e - 7);
-                ctx.lineTo(sx * 35, e - 7 + t); ctx.lineTo(sx * 5, e - 22 + t);
-            } else {
-                ctx.moveTo(sx * 5, e - 8); ctx.lineTo(sx * 35, e - 19);
-                ctx.lineTo(sx * 35, e - 19 + t); ctx.lineTo(sx * 5, e - 8 + t);
-            }
+            const [i, o] = glum ? [-22, -7] : LOOK[B.look || 'cross'];
+            ctx.moveTo(sx * 5, e + i); ctx.lineTo(sx * 35, e + o);
+            ctx.lineTo(sx * 35, e + o + t); ctx.lineTo(sx * 5, e + i + t);
         });
     }
     // eyes, or what a cartoon puts there instead when it is all over
