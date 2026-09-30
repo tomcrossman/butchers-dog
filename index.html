@@ -542,6 +542,9 @@ body.waiting #hud { display: none; }
 #card.vet #vet-pay, #card.vet #vet-no { display: block; }
 #card.vet #ribbon { background: #7a5c1c; }
 #card.vet #rating, #card.hurt #rating { font-size: 15px; }
+/* the only number on this card is the one on the button */
+#card.vet #score { display: none; }
+#card.vet #rating { font-size: 18px; margin-top: 2px; }
 #card.timed .btn { display: none; }
 #card.timed .inner { cursor: pointer; }
 #cardtime i { display: block; height: 100%; background: rgba(176,58,37,.55);
@@ -749,7 +752,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v50';
+const APP_VERSION = 'v51';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1913,8 +1916,6 @@ function dogDown() {
     drawDowned(bg);                       // out cold, with the crosses for eyes
     document.getElementById('ribbon').textContent = 'OH DEAR';
     document.getElementById('ledger').innerHTML = '';
-    document.getElementById('score').innerHTML =
-        `${money2(gone)}<span class="pc">this week, gone</span>`;
     document.getElementById('rating').textContent = `${cast.dog.dog} is in a bad way`;
     /* The offer is made either way. A bill you cannot meet is worth seeing -
        it is the reason you are about to bury a dog - so the button carries the

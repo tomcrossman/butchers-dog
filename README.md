@@ -215,7 +215,8 @@ climbed. It was a button on the HUD first. The whole input of this game is a
 swipe, and a second kind of tap in the middle of a five-second day was one
 thing too many to be holding.
 
-**A bit of help** is the bone, the apprentice and the insurance on one shelf.
+**A bit of help** is the bone, the cat, the apprentice and the insurance on one
+shelf.
 They were a heading each over a single tile, which is three headings over three
 things that are all the same thing anyway: somebody or something else taking a
 bit of the week off you.
@@ -225,6 +226,11 @@ not about money. Twelve hundred pounds, and cutting the dog stops being the end
 of it: it is hurt, the day ends there, and it lives. No vet, no bill, no stone,
 no new dog on Monday - the week carries on with everything taken so far. It
 does not make the dog harder to hit; it makes hitting it something you survive.
+
+**A cat**, four hundred and eighty, is the small favour to the bone's big one:
+one walks past every day at a moment nobody picked, and the dog stops dead to
+watch it go. It hands back none of the ground it has made - it just stands
+there for a second and a half, which is what a dog does.
 
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
@@ -332,7 +338,11 @@ breathing, still seeing stars, because a card that holds for as long as you
 take to decide should not be a photograph. It used to be a screen shake and
 then, half a second later, a picture.
 
-Uninsured, the offer is under it. The bill is a quarter of the till, minimum a fiver, and
+Uninsured, the offer is under it - and only the offer. What the week was worth
+is not on that card: a figure in red at the top and a price on the button below
+it is two numbers about different things at the moment you are being asked to
+decide between them. The week's takings get their line on the stone afterwards,
+where there is nothing else to read. The bill is a quarter of the till, minimum a fiver, and
 it hurts on purpose - but the dog you have spent a month dressing up
 is the dog that comes back, bandaged, keeping its name, its breed and every hat
 you ever bought it. That card waits to be dismissed: the week's takings can run
