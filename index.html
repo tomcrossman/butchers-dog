@@ -242,12 +242,14 @@ body.waiting #hud { display: none; }
     border-color: var(--gold-d); box-shadow: 0 3px 0 rgba(0,0,0,.4);
     font-size: 15px; padding: 9px; margin-top: 9px;
 }
-.bank { margin-top: 14px; font-size: 12px; font-weight: 700; letter-spacing: .12em;
-        text-transform: uppercase; opacity: .6; }
+.bank { display: flex; align-items: center; justify-content: center; gap: 7px;
+        margin-top: 14px; }
+.bank .ico { width: 17px; height: 17px; flex: none; fill: var(--gold); opacity: .55; }
 .bank b { font-family: var(--font-display); font-size: 17px; letter-spacing: .02em;
-          color: var(--gold); opacity: 1; margin-left: 5px; }
-#bank-line { margin-top: 12px; }
-#bank-line b { font-size: 27px; margin-left: 7px; text-shadow: 0 3px 0 rgba(0,0,0,.4); }
+          color: var(--gold); }
+#bank-line { margin-top: 12px; gap: 10px; }
+#bank-line .ico { width: 24px; height: 24px; }
+#bank-line b { font-size: 27px; text-shadow: 0 3px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
 #setup, #store, #settings {
@@ -600,6 +602,12 @@ body.waiting #hud { display: none; }
         <path d="M 8.6 6.6 H 10.2 V 8 H 8.6 Z"/><path d="M 3.8 9 H 5.4 V 10.4 H 3.8 Z"/>
         <path d="M 6.2 9 H 7.8 V 10.4 H 6.2 Z"/>
     </symbol>
+    <symbol id="i-cash" viewBox="0 0 14 14">
+        <path fill-rule="evenodd" d="M .4 2.6 H 13.6 V 11.4 H .4 Z
+                 M 2 4.2 V 9.8 H 12 V 4.2 Z"/>
+        <ellipse cx="7" cy="7" rx="2.6" ry="3.1"/>
+        <circle cx="3.4" cy="7" r=".9"/><circle cx="10.6" cy="7" r=".9"/>
+    </symbol>
     <symbol id="i-gear" viewBox="0 0 14 14">
         <path fill-rule="evenodd" d="M 6 .6 H 8 L 8.3 2.4 L 9.6 2.95 L 11.1 1.9 L 12.5 3.3
                  L 11.45 4.8 L 12 6.1 L 13.8 6.4 V 8.4 L 12 8.7 L 11.45 10 L 12.5 11.5
@@ -656,7 +664,7 @@ body.waiting #hud { display: none; }
         <div class="mid">
             <div class="rule"></div>
             <p id="cast-line">Six days. One string a day.</p>
-            <div class="bank" id="bank-line">In the till: <b>&pound;0.00</b></div>
+                <div class="bank" id="bank-line"></div>
         </div>
         </div>
         <div class="acts">
@@ -696,7 +704,7 @@ body.waiting #hud { display: none; }
         <div id="stock-head">
             <canvas id="stock-dog" width="230" height="118"></canvas>
             <div class="who" id="stock-who">Nipper</div>
-            <div class="bank" id="store-bank">In the till: <b>&pound;0.00</b></div>
+            <div class="bank" id="store-bank"></div>
             <div class="tabs" id="stock-tabs"></div>
         </div>
         <div id="stock"></div>
@@ -740,7 +748,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v40';
+const APP_VERSION = 'v42';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -3631,7 +3639,9 @@ function drawPreview(id, w, h, withMan) {
     }
 }
 function showBank() {
-    const t = `In the till: <b>${money2(save.bank)}</b>`;
+    /* The words were doing nothing the picture does not, and a label in front
+       of a number pushes the number off the middle of the screen. */
+    const t = `<svg class="ico"><use href="#i-cash"/></svg><b>${money2(save.bank)}</b>`;
     bankLine.innerHTML = t;
     document.getElementById('store-bank').innerHTML = t;
 }
