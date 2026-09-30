@@ -270,8 +270,18 @@ the room the title used to have and the till under it is the score.
 You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the game's own name, with a die
 to roll if you cannot think of one - and that, the till and the wardrobe are
-saved. It is one object under one key, and there is a
-Start again at the bottom of the shop that asks twice before it wipes it.
+saved. It is one object under one key.
+
+**Out the back** is the gear in the bottom corner of the shopfront: the sound,
+Start again from nothing - which asks twice before it wipes a month - and a
+debug switch that hands you the whole shop for free and turns every switchable
+thing on, so an upgrade can be tested in a real week rather than argued about.
+It is a switch in the back room rather than a build flag for exactly that
+reason, it is saved with everything else, and while it is on the version label
+in the corner says so.
+
+The shop has no heading and no way out at the bottom of a long scroll: it is a
+close cross in the corner, like everything else on a phone.
 
 Saturday night is a receipt and not a verdict: the six days, what each one
 took, the total and what is in the till. There is nothing on it to press - the

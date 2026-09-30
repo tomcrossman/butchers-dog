@@ -265,7 +265,7 @@ body.waiting #hud { display: none; }
 #bank-line b { font-size: 27px; margin-left: 7px; text-shadow: 0 3px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
-#setup, #store {
+#setup, #store, #settings {
     position: absolute; inset: 0; z-index: 13; overflow-y: auto;
     /* safe centring: a shelf taller than the window centres its own top off
        the screen, and no amount of scrolling gets it back */
@@ -279,8 +279,33 @@ body.waiting #hud { display: none; }
         linear-gradient(180deg, #1c4a39 0%, #16402f 60%, #102b21 100%);
     animation: introIn .3s ease-out both;
 }
-#setup[hidden], #store[hidden] { display: none; }
-#setup h2, #store h2 {
+#setup[hidden], #store[hidden], #settings[hidden] { display: none; }
+#settings { justify-content: center; }
+#settings .note { max-width: 320px; margin: 10px 0 0; font-size: 11px; font-weight: 700;
+                  line-height: 1.5; opacity: .55; }
+.nudge.wide { width: auto; padding: 5px 12px; font-size: 13px;
+              font-family: var(--font); font-weight: 900; letter-spacing: .06em; }
+/* One way out of a screen that fills the window, in the corner every phone
+   already looks at, above everything the screen scrolls. */
+.shut {
+    position: fixed; top: 10px; right: 10px; z-index: 15;
+    width: 38px; height: 38px; padding: 0; cursor: pointer; line-height: 1;
+    background: linear-gradient(180deg, #1a4636, #123327);
+    border: 2px solid var(--gold-d); border-radius: 3px;
+    font-family: var(--font); font-weight: 900; font-size: 22px; color: var(--gold);
+}
+.shut:active { transform: translateY(1px); }
+/* The door to the back room. Bottom left, opposite the version label: the top
+   right is the shop sign's and a gear sitting on the fascia looks like a bolt
+   that has come loose. */
+#to-set {
+    position: absolute; bottom: 4px; left: 6px; z-index: 2;
+    width: 36px; height: 36px; padding: 7px; cursor: pointer; line-height: 0;
+    background: none; border: none; opacity: .38;
+}
+#to-set svg { width: 100%; height: 100%; fill: var(--cream); }
+#to-set:active { opacity: .7; }
+#setup h2, #settings h2 {
     margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
     font-size: 30px; color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.4);
 }
@@ -301,6 +326,7 @@ body.waiting #hud { display: none; }
    first shelf: it is pinned to the top and every tile you try goes straight
    onto it, in view, without scrolling back up for a look. */
 #store { padding-top: 0; }
+#store, #settings { padding-right: 18px; }
 #stock-head {
     position: sticky; top: 0; z-index: 2;
     align-self: stretch; width: auto; margin: 0 -18px;   /* out past the gutters */
@@ -313,7 +339,6 @@ body.waiting #hud { display: none; }
     pointer-events: none;
     background: linear-gradient(180deg, rgba(10,28,21,.5), rgba(10,28,21,0));
 }
-#stock-head h2 { margin: 0; font-size: 24px; line-height: 1; }
 #stock-head .bank { margin-top: 2px; }
 #stock-dog { width: min(42vw, 166px); height: auto; margin-top: 2px; }
 /* One panel, four lines in it, hairlines between. Four separate boxes read as
@@ -570,6 +595,14 @@ body.waiting #hud { display: none; }
         <path d="M 8.6 6.6 H 10.2 V 8 H 8.6 Z"/><path d="M 3.8 9 H 5.4 V 10.4 H 3.8 Z"/>
         <path d="M 6.2 9 H 7.8 V 10.4 H 6.2 Z"/>
     </symbol>
+    <symbol id="i-gear" viewBox="0 0 14 14">
+        <path fill-rule="evenodd" d="M 6 .6 H 8 L 8.3 2.4 L 9.6 2.95 L 11.1 1.9 L 12.5 3.3
+                 L 11.45 4.8 L 12 6.1 L 13.8 6.4 V 8.4 L 12 8.7 L 11.45 10 L 12.5 11.5
+                 L 11.1 12.9 L 9.6 11.85 L 8.3 12.4 L 8 14.2 H 6 L 5.7 12.4 L 4.4 11.85
+                 L 2.9 12.9 L 1.5 11.5 L 2.55 10 L 2 8.7 L .2 8.4 V 6.4 L 2 6.1 L 2.55 4.8
+                 L 1.5 3.3 L 2.9 1.9 L 4.4 2.95 L 5.7 2.4 Z
+                 M 7 4.8 A 2.6 2.6 0 1 0 7 10 A 2.6 2.6 0 1 0 7 4.8 Z"/>
+    </symbol>
     <symbol id="i-bone" viewBox="0 0 14 14">
         <path d="M 4.4 5.6 H 9.6 V 8.4 H 4.4 Z"/>
         <circle cx="3.2" cy="5" r="2.1"/><circle cx="3.2" cy="9" r="2.1"/>
@@ -628,6 +661,9 @@ body.waiting #hud { display: none; }
             <button class="btn" id="play">Open up shop</button>
             <button class="btn ghost" id="to-shop">Upgrades</button>
         </div>
+        <button id="to-set" aria-label="Settings">
+            <svg viewBox="0 0 14 14"><use href="#i-gear"/></svg>
+        </button>
     </div>
 
     <div id="setup" hidden>
@@ -654,15 +690,29 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="store" hidden>
+        <button class="shut" id="store-done" aria-label="Close">&times;</button>
         <div id="stock-head">
-            <h2>Upgrades</h2>
             <canvas id="stock-dog" width="230" height="142"></canvas>
             <div class="bank" id="store-bank">In the till: <b>&pound;0.00</b></div>
         </div>
         <div id="stock"></div>
-        <button class="btn" id="store-done">Back to work</button>
-        <button class="wipe" id="wipe">Start again from nothing</button>
         <div id="tryon" hidden></div>
+    </div>
+
+    <div id="settings" hidden>
+        <button class="shut" id="set-done" aria-label="Close">&times;</button>
+        <h2>Out the back</h2>
+        <div class="rows">
+            <div class="row"><span class="lab">Sound</span>
+                <b id="set-sound">On</b>
+                <button class="nudge wide" id="set-mute">Change</button></div>
+            <div class="row"><span class="lab">Debug</span>
+                <b id="set-debug">Off</b>
+                <button class="nudge wide" id="set-debug-btn">Change</button></div>
+        </div>
+        <p class="note" id="debug-note">Debug hands you every upgrade for nothing,
+            so you can switch them on and see what they do.</p>
+        <button class="wipe" id="wipe">Start again from nothing</button>
     </div>
 
     <div id="card" hidden>
@@ -682,7 +732,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v26';
+const APP_VERSION = 'v27';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -2278,6 +2328,7 @@ const FRESH = () => ({
        switch the ones you have bought on and off, and any number can be on
        at once. They live in their own list for that reason. */
     on: [],
+    debug: false,
     worn: { knife: 'blade', hat: 'bare', face: 'plain', collar: 'spiked' },
 });
 let save = FRESH(), started = false;
@@ -2297,7 +2348,10 @@ function putSave() {
 }
 // the shelves you switch rather than wear
 const SWITCHED = ['line', 'skill', 'hand'];
-const owns = id => save.owned.includes(id);
+/* Debug hands you the whole shop for nothing. It is a switch in the back room
+   rather than a build flag, because the thing worth testing is what the
+   upgrades do in a real week, and that means playing one. */
+const owns = id => save.debug || save.owned.includes(id);
 const running = id => owns(id) && save.on.includes(id);
 const wearing = kind => itemById(save.worn[kind]) || STOCK.find(i => i.kind === kind);
 
@@ -3584,7 +3638,7 @@ function drawTile(c, item) {
         return;
     }
     if (item.kind === 'hand') {                       // and the lad himself
-        drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 7, k: .28, holds: 'knife' });
+        drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 13, k: .26, holds: 'knife' });
         return;
     }
     if (item.kind === 'knife') {
@@ -3708,6 +3762,49 @@ document.getElementById('tryon').addEventListener('click', e => {
     till(); putSave(); paintStore();
 });
 document.getElementById('to-shop').addEventListener('click', openStore);
+/* ---- out the back ------------------------------------------------------
+   Everything that is not shopping: the sound, the switch that unlocks the
+   shop for testing, and the one button in the game that can undo a month. */
+const setEl = document.getElementById('settings');
+function paintSettings() {
+    document.getElementById('set-sound').textContent = soundOn ? 'On' : 'Off';
+    document.getElementById('set-debug').textContent = save.debug ? 'On' : 'Off';
+    document.getElementById('version').textContent =
+        `Butcher's Dog ${APP_VERSION}${save.debug ? ' \u00b7 debug' : ''}`;
+}
+document.getElementById('to-set').addEventListener('click', e => {
+    e.stopPropagation();
+    startSession(); audioNow();
+    paintSettings();
+    setEl.hidden = false;
+});
+document.getElementById('set-done').addEventListener('click', () => {
+    setEl.hidden = true;
+    deal();
+    drawShopfront();
+    showBank();
+});
+document.getElementById('set-mute').addEventListener('click', () => {
+    muteBtn.click();
+    paintSettings();
+});
+document.getElementById('set-debug-btn').addEventListener('click', () => {
+    save.debug = !save.debug;
+    if (save.debug) {
+        // everything switchable comes on, so one tap is a week with the lot
+        for (const i of STOCK) if (SWITCHED.includes(i.kind) && !save.on.includes(i.id))
+            save.on.push(i.id);
+    } else {
+        // back to what was actually paid for, wearing something you still own
+        save.on = save.on.filter(id => save.owned.includes(id));
+        for (const k of ['knife', 'hat', 'face', 'collar'])
+            if (!save.owned.includes(save.worn[k]))
+                save.worn[k] = STOCK.find(i => i.kind === k).id;
+    }
+    putSave();
+    paintSettings();
+    plop(3);
+});
 document.getElementById('store-done').addEventListener('click', () => {
     tryOn = null;
     storeEl.hidden = true;
@@ -3727,7 +3824,7 @@ wipeBtn.addEventListener('click', () => {
     try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* never mind */ }
     save = FRESH(); started = false;
     putSave();
-    storeEl.hidden = true;
+    setEl.hidden = true;
     openSetup();
 });
 
@@ -3861,6 +3958,7 @@ function drawShopfront() {
 }
 /* Boot: whatever was saved, or a stranger who has to pick a shop first. */
 loadSave();
+paintSettings();                  // which also puts 'debug' on the version line
 deal();
 drawShopfront();
 fit();
