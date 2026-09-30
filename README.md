@@ -325,8 +325,14 @@ Both ways out of Saturday go through the same door: the tap that skips the
 tally used to ask for a seventh day, which does not exist, and froze the week
 where it stood.
 
-Cut the dog, uninsured, and it is out cold on the card with crosses for eyes
-and the offer under it. The bill is a quarter of the till, minimum a fiver, and
+Cut the dog and the stroke lands where it happened: a white slash across it, a
+ring of yellow going off, and the dog knocked sideways and down with three
+stars going round its head. Then the card, with it still out cold on it - still
+breathing, still seeing stars, because a card that holds for as long as you
+take to decide should not be a photograph. It used to be a screen shake and
+then, half a second later, a picture.
+
+Uninsured, the offer is under it. The bill is a quarter of the till, minimum a fiver, and
 it hurts on purpose - but the dog you have spent a month dressing up
 is the dog that comes back, bandaged, keeping its name, its breed and every hat
 you ever bought it. That card waits to be dismissed: the week's takings can run
@@ -341,7 +347,11 @@ will not be pressed - a bill you cannot meet is the reason you are about to
 bury a dog, and worth seeing.
 
 Say goodbye and it goes off to wherever they go, halo and wings and spinning
-gently and getting smaller, on the card you are already looking at. It used to
+gently, on the card you are already looking at. Going into the distance is a
+shrink, not a fade: it used to lose most of its colour at nearly full size,
+which reads as dissolving into the wall, and it had 300 pixels of card to climb
+and was given 360, so it left through the top still large. It drifts up a third
+of the way now and does the rest by getting small. It used to
 hide the ticket, animate on the window behind it and bring the ticket back,
 which is a second and a half of looking at a shop with nothing in it in the
 middle of the one moment that is meant to land. The wings are saved for the

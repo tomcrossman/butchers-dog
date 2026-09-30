@@ -753,7 +753,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v47';
+const APP_VERSION = 'v48';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -1621,7 +1621,7 @@ function startRound(n) {
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(teachT); clearTimeout(holdT);
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
-    cutFx = []; mess = []; shouts = []; chewing = null; steak = null;
+    cutFx = []; mess = []; shouts = []; chewing = null; steak = null; hit = null;
     swipe = null; blade = null;
     const D = DAYS[n - 1], count = makeString(n);
     roundMoney = 0; steaks = 0; pendingEnd = false;
@@ -1795,7 +1795,34 @@ const EPITAPH = ['Only wanted a sausage', 'A very good dog', 'Just doing the job
    top of the window with a halo on, spinning gently and getting smaller. It
    is not a nice thing to have done, but it is not a grisly one either, and
    the headstone lands while it is still going up. */
-const GONE_MS = 1750;
+const GONE_MS = 1750, HIT_MS = 560;
+let hit = null;
+/* A five-pointed star, for the ones that go round its head. Drawn rather than
+   typed because a text glyph in the middle of a canvas full of hand-built
+   shapes looks exactly like a text glyph. */
+function star(g, x, y, r, rot, fill) {
+    g.save();
+    g.translate(x, y);
+    g.rotate(rot);
+    g.beginPath();
+    for (let i = 0; i < 10; i++) {
+        const a = i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * .44 : r;
+        i ? g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr)
+          : g.moveTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    g.closePath();
+    g.fillStyle = fill; g.fill();
+    g.restore();
+}
+// the three that circle a head that has been caught by something
+function stars(g, ms, top, spread) {
+    for (let i = 0; i < 3; i++) {
+        const a = ms / 420 + i * Math.PI * 2 / 3;
+        const x = Math.cos(a) * spread, z = Math.sin(a);
+        star(g, x, top + z * 5, 7 + z * 2.5, ms / 300 + i,
+             `rgba(240,212,132,${.55 + .45 * (z + 1) / 2})`);
+    }
+}
 /* Cutting the dog used to be the end of it: a stone, a new name on Monday, and
    nothing you could do about any of it. There is a vet now. The bill is a
    quarter of the till and it hurts on purpose, but the dog you have spent a
@@ -1811,6 +1838,13 @@ function dogDown() {
     clearTimeout(tallyT);
     tallyEl.classList.remove('on');
     jolt(); yelpBad();
+    /* The cut used to be a screen shake and then, nearly half a second later,
+       a card. Nothing happened to the dog at all. It gets the moment now: the
+       stroke flashes white across it, it takes the hit sideways, and it sags
+       with three stars going round its head. */
+    const [hx, hy] = dogAt();
+    hit = { x: hx, y: hy, t0: now() };
+    tick();
     /* Insured. It is hurt and the day is over, but it is not dead, there is
        no bill and the week carries on with everything taken so far. */
     if (running('insure')) {
@@ -1840,7 +1874,7 @@ function dogDown() {
     pay.innerHTML = `Vet&rsquo;s fees &middot; ${money2(vetOwed)}`;
     pay.classList.toggle('poor', !afford);
     card.className = 'vet';
-    settleT = setTimeout(() => { card.hidden = false; jingleLose(); }, 420);
+    settleT = setTimeout(() => { card.hidden = false; jingleLose(); dazed(); }, HIT_MS);
 }
 /* Paid up. The week is still a write-off - the money went on the funeral it
    did not end up needing - but the dog keeps its name, its breed and every
@@ -1904,11 +1938,20 @@ function farewell(then) {
         if (e >= 1) { card.classList.remove('going'); then(); return; }
         const rise = e < .16 ? 0 : Math.pow((e - .16) / .84, 1.4);
         g.save();
-        g.globalAlpha = Math.max(0, 1 - Math.pow(e, 2.4));
-        g.translate(165, 190 - rise * 300);
+        /* Going into the distance is a shrink, not a fade. It used to lose
+           most of its colour while it was still nearly full size, which reads
+           as dissolving into the wall rather than flying off - so it holds its
+           own until the very end and gets small instead. */
+        g.globalAlpha = Math.max(0, 1 - Math.pow(e, 6));
+        /* It has 300 pixels of card to go up and no more. Fly it any further
+           than that and it leaves through the top at nearly full size, which
+           is not distance, it is a clipped edge. It drifts up a third of the
+           way and does the rest by getting small. */
+        g.translate(165, 190 - rise * 150);
         g.rotate(Math.sin(e * 7) * .18);
         const sq = e < .16 ? 1 + Math.sin(e / .16 * Math.PI) * .16 : 1;
-        g.scale(sq * (1 - rise * .35), (2 - sq) * (1 - rise * .35));
+        const away = 1 - rise * .92;
+        g.scale(sq * away, (2 - sq) * away);
         if (e > .14) {                                  // a halo, and the wings
             g.save();
             g.globalAlpha = Math.min(1, (e - .14) * 6);
@@ -1935,11 +1978,22 @@ function farewell(then) {
     };
     requestAnimationFrame(step);
 }
-function drawDowned(g) {
+function drawDowned(g, ms) {
     g.save();
-    g.translate(165, 190);
-    drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: 0, mood: 'gone' }, 0, cast.dog);
+    g.translate(165, 190 + Math.sin((ms || 0) / 480) * 3);
+    g.rotate(.14 + Math.sin((ms || 0) / 700) * .03);
+    drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: .3, mood: 'gone' }, 0, cast.dog);
+    stars(g, ms || 0, -78, 36);
     g.restore();
+}
+/* The card is a held note, not a photograph: it goes on being knocked out
+   while you decide, and stops the moment the card becomes something else. */
+function dazed() {
+    if (card.className !== 'vet' || card.hidden) return;
+    const g = document.getElementById('butcher').getContext('2d');
+    g.clearRect(0, 0, 330, 300);
+    drawDowned(g, now());
+    requestAnimationFrame(dazed);
 }
 function drawPatient(g) {
     g.save();
@@ -3576,7 +3630,43 @@ function draw() {
         ctx.restore();
     }
 
-    if (dog.going || dog.s <= string.len + 80) {
+    if (hit) {
+        const e = (ms - hit.t0) / HIT_MS;
+        if (e >= 1) hit = null;
+        else {
+            const knock = Math.sin(Math.min(1, e / .3) * Math.PI * .5) * 26;
+            ctx.save();
+            ctx.translate(hit.x + knock, hit.y + Math.pow(e, 2) * 40);
+            ctx.rotate(Math.sin(e * 8) * .3 * (1 - e) + e * .5);
+            const sq = e < .14 ? 1 + Math.sin(e / .14 * Math.PI) * .24 : 1;
+            ctx.scale(sq, 2 - sq);
+            drawDog(ctx, 0, 0, 1.02, { open: .55, mood: 'gone' }, 0, cast.dog);
+            if (e > .28) stars(ctx, ms, -64, 30);
+            ctx.restore();
+            if (e < .34) {                          // what the stroke left behind
+                ctx.save();
+                ctx.globalAlpha = 1 - e / .34;
+                ctx.strokeStyle = '#fff6dd'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(hit.x - 96, hit.y - 20); ctx.lineTo(hit.x + 96, hit.y + 20);
+                ctx.stroke();
+                ctx.restore();
+            }
+            if (e < .42) {                          // and the bang it went off with
+                ctx.save();
+                ctx.globalAlpha = (1 - e / .42) * .9;
+                ctx.strokeStyle = '#ffd873'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+                for (let i = 0; i < 9; i++) {
+                    const a = i / 9 * Math.PI * 2 + .3, r0 = 34 + e * 150, r1 = r0 + 26;
+                    ctx.beginPath();
+                    ctx.moveTo(hit.x + Math.cos(a) * r0, hit.y + Math.sin(a) * r0);
+                    ctx.lineTo(hit.x + Math.cos(a) * r1, hit.y + Math.sin(a) * r1);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+    } else if (dog.going || dog.s <= string.len + 80) {
         const [x, y] = dogAt();
         const pose = dog.chomp > 0 ? chompPose(1 - dog.chomp / CHOMP)
                                    : { open: 0, reach: 0, tilt: 0, squash: 0 };
@@ -3599,7 +3689,7 @@ function tick() {
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || steak || demoOn() || !resting) raf = requestAnimationFrame(step);
+            || chewing || steak || hit || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
