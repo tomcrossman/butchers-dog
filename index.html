@@ -762,7 +762,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v74';
+const APP_VERSION = 'v75';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1165,6 +1165,12 @@ const sausageAt = s => {
    the string. Spoil a sausage in the same swipe and it pays nothing, because
    then it was not a good line, it was a lucky one. */
 const CHEER = [, , 'DOUBLE', 'TREBLE', 'FOUR AT ONCE', 'FIVE AT ONCE', 'SIX AT ONCE'];
+/* What the count ends on. It was CUT! every single morning of every week, and
+   a word you have read four hundred times is a word you no longer read. They
+   all mean the same thing and they are all things a butcher would actually
+   say, which is the only test any of the writing in here has to pass. */
+const GO_WORDS = ['CUT!', 'SLICE!', 'BUTCHER!', 'CHOP!', 'CARVE!', 'TRIM!',
+                  'GO ON!', 'SERVE!', 'GET ON!', 'OPEN UP!'];
 
 /* ---- what the butcher does about it ------------------------------------
    Once a week somebody lobs the bone in, on a day nobody picked and at a
@@ -1343,6 +1349,7 @@ function hitDog(sw) {
    work for it. It is the only thing in the game that asks you to look away
    from the string, which is the whole reason it is there. */
 const STEAK_PAY = 330;
+const STEAK_FROM = 4;           // Thursday, until the slab is stocked
 let steak = null, steakT = 0;
 const incoming = () => safely(t => {
     tone(t, { freq: 1500, to: 620, dur: .45, type: 'triangle', vol: .09 });
@@ -1417,10 +1424,8 @@ function hitSteak(sw) {
 function sliceSteak() {
     money += STEAK_PAY; roundMoney += STEAK_PAY; steaks++;
     showHud();
-    // same rule as PERFECT: the figure rides on the word rather than sitting
-    // under it, because two labels over one cut read as two payments
-    shouts.push({ text: `PRIME CUT +${money0(STEAK_PAY)}`,
-                  x: steak.x, y: steak.y - 26, t0: now() });
+    // and the same rule as PERFECT: what you did, not what it paid
+    shouts.push({ text: 'PRIME CUT', x: steak.x, y: steak.y - 26, t0: now() });
     steak.bits = [-1, 1].map(sx => ({ x: steak.x, y: steak.y, vx: sx * 150, vy: -120,
                                       ang: steak.ang, spin: sx * 5, sx }));
     steak.t0 = now();
@@ -1559,10 +1564,13 @@ function splitAt(p, k, q) {
         money += PERFECT_PAY; roundMoney += PERFECT_PAY;
         showHud();
         const [px, py] = at(string.twists[k]);
-        // the bonus rides on the word rather than under it - two labels for
-        // one cut, one of them already saying £1, reads as two payments
-        shouts.push({ text: `PERFECT +${money0(PERFECT_PAY)}`,
-                      x: px, y: py - 30, t0: now(), gold: true });
+        /* No figure on it. The word is the thing you did - the one thing in
+           this game you can actually get better at - and the money for it is
+           in the till a tenth of a second later and on the day's takings
+           twenty seconds after that. A pound sign in the middle of the window
+           while the dog is halfway up the string is one more thing to read at
+           the only moment there is nothing spare to read it with. */
+        shouts.push({ text: 'PERFECT', x: px, y: py - 30, t0: now(), gold: true });
         ping();
     }
 }
@@ -1833,7 +1841,7 @@ function countdown(n) {
     countT.push(setTimeout(() => { if (round === n && live) { say('1'); beep(2); } }, 1240));
     countT.push(setTimeout(() => {
         if (round !== n || !live) return;
-        say('CUT!', 'go-word');
+        say(pick(GO_WORDS), 'go-word');
         armed = true;
         dog.going = true;
         woof();
@@ -1846,11 +1854,15 @@ function countdown(n) {
         // the cat, meanwhile, walks past every day
         if (running('cat')) countT.push(setTimeout(sendCat,
             string.len / dog.speed * (200 + Math.random() * 450)));
-        /* One steak a day from Tuesday, or two a day from Monday if the slab
-           is stocked for it. They are spaced far enough apart that the second
-           is never asking for the first one's airspace. */
+        /* One steak a day from Thursday, or two a day from Monday if the slab
+           is stocked for it: three a week against twelve. It was one a day from
+           Tuesday, so the shop was handing you five of them a week for nothing
+           and the slab was buying you seven more - which made the cheapest
+           thing on the rail a rounding error rather than the moment the shop
+           starts paying for itself. They are spaced far enough apart that the
+           second is never asking for the first one's airspace. */
         const more = running('moresteak');
-        if (n >= (more ? 1 : 2)) for (let d = 0; d < (more ? 2 : 1); d++)
+        if (n >= (more ? 1 : STEAK_FROM)) for (let d = 0; d < (more ? 2 : 1); d++)
             countT.push(setTimeout(() => {
                 if (round === n && live && !steak) dropSteak();
             }, 700 + Math.random() * 1400 + d * 2800));
@@ -2359,6 +2371,13 @@ function endMini() {
    about a third of a perfect week on top of it: sixteen to twenty-two pounds
    for a good run. */
 const COIN = 140, BANGER = 440, SAUCE_MAX = 2000;
+/* How long a banger is worth taking off for. It was two and a fifth seconds,
+   which is long enough to let all five come good and then take them off in one
+   sweep at the end - the whole game was a colour change you could answer at
+   your leisure. At one and a tenth you have to be watching the grill, which is
+   the only thing this one was ever about. The ring closes as the window does,
+   so it is a shorter window rather than a hidden one. */
+const READY_S = 1.1;
 // the bed of noise a grill makes, in half-second doses
 const sizzle = () => safely(t => {
     hiss(t, { hp: 2400, lp: 9000, dur: .34, vol: .05 });
@@ -2370,11 +2389,28 @@ const chink = () => safely(t => {
 });
 const miniLeft = () => Math.max(0, MINI_S - (now() - mini.t0) / 1000);
 function miniStep(dt) {
-    if (mini.done) return;
+    /* The clock stopping is not the coins stopping. When the time ran out
+       mid-air the last few hung exactly where they were for the nine hundred
+       milliseconds between the end of the game and the takings, which is the
+       one frame in here that looks broken rather than finished. They keep
+       falling. They are simply not worth anything any more, and nothing else
+       is coming down after them. */
+    if (mini.done) {
+        if (mini.id === 'jar') for (let i = mini.coins.length - 1; i >= 0; i--) {
+            const c = mini.coins[i];
+            c.y += c.v * dt;
+            if (c.y > H + 40) mini.coins.splice(i, 1);
+        }
+        return;
+    }
     const left = miniLeft();
     if (mini.id === 'jar') {
         mini.next -= dt;
-        if (mini.next <= 0 && left > .6) {
+        /* Nothing new in the last second and a bit. A coin that leaves the top
+           of the window with four tenths of a second on the clock was never
+           catchable, and a shower of those at the buzzer is a game asking you
+           to fail. */
+        if (mini.next <= 0 && left > 1.2) {
             mini.next = .34 + Math.random() * .3;
             mini.coins.push({ x: 40 + Math.random() * (W - 80), y: -30,
                               v: 300 + Math.random() * 190, spin: Math.random() * 6 });
@@ -2400,7 +2436,7 @@ function miniStep(dt) {
         for (const b of mini.bangers) {
             if (b.taken) continue;
             b.done += dt;
-            if (!b.gone && b.done > b.ready + 2.2) { b.gone = true; b.burnt = 0; splat(); }
+            if (!b.gone && b.done > b.ready + READY_S) { b.gone = true; b.burnt = 0; splat(); }
             // a burnt one is scraped off rather than left sitting there
             if (b.gone) { b.burnt += dt; if (b.burnt > 1.1) b.taken = true; }
         }
@@ -2545,9 +2581,12 @@ function drawMini(ms) {
             }
             ctx.globalAlpha = 1;
             if (ready) {                              // the one thing you are looking for
-                ctx.strokeStyle = 'rgba(240,212,132,' + (.4 + .35 * Math.sin(ms / 160)) + ')';
+                // and it closes in as the window does, so the second you have
+                // left is a thing you can see rather than one you have to feel
+                const left = Math.max(0, 1 - (b.done - b.ready) / READY_S);
+                ctx.strokeStyle = 'rgba(240,212,132,' + (.42 + .34 * Math.sin(ms / 130)) + ')';
                 ctx.lineWidth = 4;
-                ctx.beginPath(); ctx.arc(b.x, b.y, 44, 0, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(b.x, b.y, 25 + left * 21, 0, Math.PI * 2); ctx.stroke();
             }
         }
     }

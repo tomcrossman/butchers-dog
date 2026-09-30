@@ -113,6 +113,11 @@ always was.
 | Friday | 9 | |
 | Saturday | 11 | |
 
+The count ends on a different word every morning: CUT, SLICE, BUTCHER, CHOP,
+CARVE, TRIM, SERVE, GO ON, GET ON, OPEN UP. It was CUT every single day of
+every week, and a word you have read four hundred times is a word you no longer
+read.
+
 **Every week has the same thirty-nine sausages in it.** The till is the only
 score there is, so two weeks are only worth comparing if they were worth the
 same money to begin with - a week that happened to deal forty-one would beat a
@@ -195,18 +200,22 @@ not translated.
 
 A sausage sells for what it looks like it is worth: a clean cut through the
 middle of a twist leaves two tidy ends and it goes in the window at £1.65; a
-scrappy one still sells, to somebody, for 95p. A cut dead through the middle
-and square across it - which is the one thing in this game you can actually get
-better at - pays a pound on top and says PERFECT +£1 about it, on one
-line, because two labels over one cut read as two payments.
+scrappy one still sells, to somebody, for 95p. A cut dead through the middle and square across it - which is the one thing in
+this game you can actually get better at - pays a pound on top and says
+PERFECT about it.
 
-**The ordinary cuts say nothing.** What each one was worth used to go up over
-it, which on a Saturday is eleven small numbers over the top of the dog, the
+**No money goes up over the shop floor at all.** What each cut was worth used
+to, which on a Saturday is eleven small numbers over the top of the dog, the
 knife and whatever else the cut said about itself, at the exact moment you are
-trying to read the string. The till in the corner is already counting it and
-the day's total lands twenty seconds later with nothing else on the screen. Only
-the things that are not simply money still shout: PERFECT, a double, a greedy
-one, a prime cut, a link the dog dropped or spat out.
+trying to read the string. Taking the ordinary ones off left PERFECT +£1 and
+PRIME CUT +£3.30, which is still a pound sign in the middle of the window while
+the dog is halfway up the string. The words stayed and the figures went: what
+you did, not what it paid. The till in the corner is already counting it and
+the day's total lands twenty seconds later with nothing else on the screen.
+
+So the only things that ever appear over the window are the things that are not
+money: PERFECT, a double, a greedy one, a prime cut, a link the dog dropped or
+spat out.
 
 **The money is banked.** There is no best week and no high score: the week's
 takings go in the till and stay there, and what you did with the money is the
@@ -236,9 +245,13 @@ sells.
   day's links come with a rasher wound round them - three bands across the
   link, the fat running the length of the rasher rather than the length of the
   sausage - and they pay double.
-- **Steak on the slab**, a hundred and ninety. Two a day instead of one, and
-  from Monday rather than Tuesday. They are spaced far enough apart that the
-  second is never asking for the first one's airspace.
+- **Steak on the slab**, a hundred and ninety. Two a day from Monday, against
+  the one a day from Thursday a plain slab gives you: twelve a week against
+  three. It used to be one a day from Tuesday, so the shop handed you five a
+  week for nothing and the slab bought you seven more, which made the cheapest
+  thing on the rail a rounding error rather than the moment the shop starts
+  paying for itself. They are spaced far enough apart that the second is never
+  asking for the first one's airspace.
 - **Sawdust floor**, two hundred and twenty. The dog drops about one in four of
   the ones it takes, and a sausage on clean boards is still a sausage: it goes
   on the hook and pays a little under a cut one, because it has been in a dog's
@@ -526,14 +539,23 @@ twelve hundred, so the paying end moved instead: a good run is sixteen to
 twenty-two pounds, about a third on top of a perfect week.
 
 - **Cash only.** A jar you slide along the bottom and coins coming down at it.
-  A pound forty a coin, and about seventeen come down.
+  A pound forty a coin, and about sixteen come down. Nothing new drops in the
+  last second and a bit - a coin leaving the top of the window with four tenths
+  of a second on the clock was never catchable, and a shower of those at the
+  buzzer is a game asking you to fail - and the ones still in the air when the
+  time goes keep falling rather than hanging where they are, which is the one
+  frame in here that looked broken rather than finished.
 - **Sauce on.** One pass of ketchup down a hot dog. What it pays is how much of
   the bun you covered and how straight you kept it, both - so a quick scribble
   down the middle is worth less than one careful stroke. Up to twenty pounds.
 - **On the barbecue.** Five sausages cooking at their own speeds, steaming,
   spitting fat at the bars and hissing every half second. Tap one while it is
   done and it is four forty; tap it early, or leave it until it is black,
-  and it is nothing. A burnt one is scraped off after a second, and when the
+  and it is nothing. **The window is one and a tenth seconds.** It was two and
+  a fifth, which is long enough to let all five come good and then take them
+  off in one sweep at the end - the whole game was a colour change you could
+  answer at your leisure. The gold ring round a ready one closes in as its
+  window does, so it is a shorter window rather than a hidden one. A burnt one is scraped off after a second, and when the
   grill is empty the game is over whatever the clock says - there is nothing to
   watch on an empty barbecue.
 
