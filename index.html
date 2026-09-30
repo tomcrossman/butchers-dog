@@ -2718,14 +2718,30 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     ctx.rotate((pose.tilt || 0) + Math.sin(ms / 170) * .04);
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
+    /* The head, drawn the way a nine-year-old draws a dog: square, flat on
+       top, with the fur going off it in spikes rather than easing into a
+       curve. The sides run nearly straight down to a heavy jaw. The tufts are
+       laid out from fixed fractions rather than randomised, so a Corgi is the
+       same Corgi every time you look at it. */
+    const TUFTS = 5, TUFT = 7;
     const head = () => {
-        ctx.moveTo(-B.skullW, -B.skullH * .4);
-        ctx.quadraticCurveTo(-B.skullW + 2, -B.skullH, 0, -B.skullH);
-        ctx.quadraticCurveTo(B.skullW - 2, -B.skullH, B.skullW, -B.skullH * .4);
-        ctx.quadraticCurveTo(B.jawW + 4, -4, B.jawW, B.jawY);
-        ctx.quadraticCurveTo(B.jawW - 6, B.chin - 1, 0, B.chin);
-        ctx.quadraticCurveTo(-B.jawW + 6, B.chin - 1, -B.jawW, B.jawY);
-        ctx.quadraticCurveTo(-B.jawW - 4, -4, -B.skullW, -B.skullH * .4);
+        const W = B.skullW, H = B.skullH;
+        ctx.moveTo(-W - 1, B.jawY * .1);
+        ctx.lineTo(-W - 1, -H + 8);                    // straight down the side
+        ctx.quadraticCurveTo(-W - 1, -H + 1, -W * .86, -H + 1);
+        const span = W * 1.72;
+        for (let i = 0; i < TUFTS; i++) {             // and the fur off the top
+            const a = -W * .86 + span * i / TUFTS;
+            const b = -W * .86 + span * (i + 1) / TUFTS;
+            ctx.lineTo((a + b) / 2 - (b - a) * .08, -H - TUFT);
+            ctx.lineTo(b, -H + 1.5);
+        }
+        ctx.quadraticCurveTo(W + 1, -H + 1, W + 1, -H + 8);
+        ctx.lineTo(W + 1, B.jawY * .1);
+        ctx.quadraticCurveTo(B.jawW + 3, B.jawY - 2, B.jawW, B.jawY + 5);
+        ctx.quadraticCurveTo(B.jawW - 5, B.chin, 0, B.chin);
+        ctx.quadraticCurveTo(-B.jawW + 5, B.chin, -B.jawW, B.jawY + 5);
+        ctx.quadraticCurveTo(-B.jawW - 3, B.jawY - 2, -W - 1, B.jawY * .1);
     };
 
     /* The collar first, so the jowls hang over it. It is drawn here rather
@@ -2859,13 +2875,16 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     // the brow, which is where a dog keeps its opinion
     if (B.brow > .05 || glum) for (const sx of [-1, 1]) {
         const bw = Math.max(.55, B.brow), e = B.eyes[1];
-        blob('rgba(58,47,34,' + (.45 + .5 * bw) + ')', () => {
+        /* Straight, heavy and angled, drawn as a bar with corners on it. An
+           arc reads as a raised eyebrow; a bar reads as an opinion. */
+        blob('rgba(46,36,26,' + (.6 + .4 * bw) + ')', () => {
+            const t = 5 + 3 * bw;
             if (glum) {          // inner ends up, which is the whole of a sulk
-                ctx.moveTo(sx * 7, e - 21); ctx.quadraticCurveTo(sx * 21, e - 14, sx * 33, e - 5);
-                ctx.quadraticCurveTo(sx * 21, e - 10, sx * 7, e - 16);
+                ctx.moveTo(sx * 5, e - 22); ctx.lineTo(sx * 35, e - 7);
+                ctx.lineTo(sx * 35, e - 7 + t); ctx.lineTo(sx * 5, e - 22 + t);
             } else {
-                ctx.moveTo(sx * 6, e - 12); ctx.quadraticCurveTo(sx * 22, e - 20, sx * 34, e - 6);
-                ctx.quadraticCurveTo(sx * 22, e - 14, sx * 7, e - 8);
+                ctx.moveTo(sx * 5, e - 8); ctx.lineTo(sx * 35, e - 19);
+                ctx.lineTo(sx * 35, e - 19 + t); ctx.lineTo(sx * 5, e - 8 + t);
             }
         });
     }
