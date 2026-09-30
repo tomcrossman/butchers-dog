@@ -162,6 +162,14 @@ All three are stood on the shopfront before you open up, and every new week is
 dealt there rather than behind your back: finishing a week takes you back to
 the shop window to meet the next lot.
 
+**You can pet the dog.** Tap it in the window and it ducks under the hand,
+rocks its head twice and gets hearts, and a soft thump goes off under two notes
+climbing - the only cheerful noise in a game otherwise made of blades and
+teeth. Tap it again while it is going and it tops the same animation up rather
+than starting a second one. It costs nothing, changes nothing and is not for
+sale, and it is only here: the window is the one screen in this game with no
+clock on it, which is the whole reason a thing like this fits on it.
+
 ## The till
 
 There is no pass mark, and nothing to lose but money.
