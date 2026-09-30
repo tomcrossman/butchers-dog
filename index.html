@@ -777,7 +777,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v66';
+const APP_VERSION = 'v67';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1409,7 +1409,6 @@ function sliceSteak() {
     money += STEAK_PAY; roundMoney += STEAK_PAY; steaks++;
     showHud();
     shouts.push({ text: 'PRIME CUT', x: steak.x, y: steak.y - 26, t0: now() });
-    shouts.push({ text: money2(STEAK_PAY), x: steak.x, y: steak.y + 10, t0: now(), small: true });
     steak.bits = [-1, 1].map(sx => ({ x: steak.x, y: steak.y, vx: sx * 150, vy: -120,
                                       ang: steak.ang, spin: sx * 5, sx }));
     steak.t0 = now();
@@ -1566,11 +1565,16 @@ function free(bit, q) {
     const [a, b] = spanOf(bit);
     const [x, y] = at((a + b) / 2);
     saved++;
-    const posh = poshLink(bit.from);
-    const p = priceOf(q) * (posh ? BLANKET_PAY : 1);
+    const p = priceOf(q) * (poshLink(bit.from) ? BLANKET_PAY : 1);
     money += p; roundMoney += p;
     showHud();
-    shouts.push({ text: money2(p), x, y, t0: now(), small: true, rich: posh });
+    /* What every single cut was worth used to go up over the cut. Eleven of
+       them on a Saturday, over the top of the dog and the knife and whatever
+       else the cut said about itself, is a screen full of small numbers at the
+       exact moment you are trying to read the string. The till in the corner is
+       already counting it, and the day's total lands twenty seconds later with
+       nothing else on the screen. Only the things that are not simply money
+       still shout: PERFECT, a double, a greedy one, a prime cut. */
     loose.push({ x, y, from: bit.from, t0: now(), q,
                  tx: 48 + ((saved - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
     plop(saved);
@@ -1673,7 +1677,7 @@ function dogStep(dt) {
             const q = spat ? PUD_Q : DROP_Q;
             const pay = priceOf(q) * (poshLink(k) ? BLANKET_PAY : 1);
             money += pay; roundMoney += pay;
-            shouts.push({ text: `${spat ? 'SPAT IT OUT' : 'DROPPED'} ${money2(pay)}`,
+            shouts.push({ text: spat ? 'SPAT IT OUT' : 'DROPPED',
                           x: mx, y: my, t0: now(), small: true, rich: true });
             loose.push({ x: mx, y: my, from: k, t0: now(), q,
                          tx: 48 + ((saved - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
@@ -1762,7 +1766,7 @@ function startRound(n) {
     // a week picks its own day for it, and Monday is as likely as Saturday
     if (n === 1) {
         toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
-        weekClean = true;                              // until it is not
+        fed = 0;                                       // a week starts owing nothing
         miniTook = null;                               // last week's is spent
     }
     roundT0 = now();
@@ -1849,7 +1853,6 @@ function endRound() {
     if (!live) return;
     live = false; armed = false; dog.going = false; teaching = false;
     countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
-    if (lost > 0) weekClean = false;
     ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, steaks });
     tallying = true;
     tallyEl.innerHTML = `<span class="n">${money2(roundMoney)}</span>` +
@@ -1876,7 +1879,7 @@ function lastLine() {
         return `<tr class="extra won"><td class="d">After hours</td>` +
                `<td class="w">${miniTook.name}</td>` +
                `<td class="m">+ ${money2(miniTook.won)}</td></tr>`;
-    const ate = ledger.reduce((t, r) => t + r.lost, 0);
+    const ate = fed;                     // what the dog got, not what you spoiled
     if (!ate) return '';                 // a clean week with no hour is not a thing
     return `<tr class="extra ate"><td class="d">The dog</td>` +
            `<td class="w" colspan="2">Got <b>${ate}</b>. ` +
@@ -2249,8 +2252,16 @@ function nextRound() {
     /* A whole week without the dog getting a single one is the rarest thing in
        this game: thirty-nine sausages across six days, and the sixth is eleven
        of them with the dog coming at you at nearly twice Monday's speed. That
-       is what buys the hour after closing, not one good Wednesday. */
-    if (round >= DAYS.length && weekClean) { startMini(); return; }
+       is what buys the hour after closing, not one good Wednesday.
+
+       It asked a flag that went false on `lost`, and `lost` counts a sausage
+       you halved with a bad cut as well as one the dog took. So spoiling a
+       single link on Tuesday - which is the most ordinary mistake in the game -
+       shut the hour off for the week, and it almost never opened. What the
+       hour is for is the dog going hungry, and the count of what the dog has
+       had off you is `fed`, which is the number the whole week is already
+       judged on. */
+    if (round >= DAYS.length && fed === 0) { startMini(); return; }
     afterMini();
 }
 function afterMini() {
@@ -2270,7 +2281,7 @@ const MINIS = [
     { id: 'sauce', name: 'Sauce on', say: 'Draw the ketchup down it' },
     { id: 'grill', name: 'On the barbecue', say: 'Tap them when they are done, not before' },
 ];
-let mini = null, weekClean = true;
+let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
 let miniTook = null;
 function startMini() {

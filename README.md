@@ -173,6 +173,14 @@ and square across it - which is the one thing in this game you can actually get
 better at - pays a pound on top and says PERFECT +£1 about it, on one
 line, because two labels over one cut read as two payments.
 
+**The ordinary cuts say nothing.** What each one was worth used to go up over
+it, which on a Saturday is eleven small numbers over the top of the dog, the
+knife and whatever else the cut said about itself, at the exact moment you are
+trying to read the string. The till in the corner is already counting it and
+the day's total lands twenty seconds later with nothing else on the screen. Only
+the things that are not simply money still shout: PERFECT, a double, a greedy
+one, a prime cut, a link the dog dropped or spat out.
+
 **The money is banked.** There is no best week and no high score: the week's
 takings go in the till and stay there, and what you did with the money is the
 score. A week always runs Monday to Saturday, and what the dog gets is simply
@@ -421,7 +429,13 @@ every screen including the one you play on.
 ## After hours
 
 Get through a whole week without the dog taking a single one off you and there
-is a minute of something else before the takings are counted. Thirty-nine
+is a minute of something else before the takings are counted. **Without the dog
+taking one**, not without a bad cut: the flag it asked went false on `lost`, and
+`lost` counts a sausage you halved yourself as well as one the dog got. So
+spoiling a single link on Tuesday - the most ordinary mistake in the game - shut
+the hour off for the rest of the week, and it almost never opened. It asks what
+the dog has had off you now, which is the number the whole week is already
+judged on. Thirty-nine
 sausages across six days, and the sixth is eleven of them with the dog coming
 at you at nearly twice Monday's speed - it is the rarest thing in this game and
 it cannot be fluked. One good Wednesday does not buy it.
