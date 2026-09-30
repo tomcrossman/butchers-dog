@@ -263,15 +263,26 @@ at the same speed, because the day the kit changes the odds is the day you are
 buying your way past the dog rather than getting better at getting past it.
 
 Nothing on the shelves is named. Every item is a square tile with the thing
-itself drawn in it - the hat on the dog's own head, the knife on its own - four
-to a row, because seventeen hats written out is seventeen words to read and a
-rack of pictures is one glance.
+itself drawn in it, because seventeen hats written out is seventeen words to
+read and a rack of pictures is one glance.
+
+The wearables are drawn the way his accessories sheet drew them: the item on a
+plain circle standing in for the head. Thirty tiles of the same dog in thirty
+hats is thirty pictures of a dog. The circle is the skull the item is placed
+against, so everything still lands where it lands on a real one - hats on top,
+faces on the eye line, collars at the chin - and Nothing on its head is an
+empty circle, which is exactly right. The counter at the bottom draws the same
+thing; seeing it on the dog is what the pinned preview at the top is for.
 
 The dog is pinned to the top of the shop and does not scroll away with the
 first shelf, so whatever you try goes on in front of you without scrolling back
 up for a look. What it has on already is filled in, gold all the way round,
 ticked in the corner and labelled along the bottom - an outline on its own was
 not enough to find among thirty tiles.
+
+The counter says the name and nothing else. The button under it carries the
+price, and a second line saying the same figure, or how far short of it you
+are, is the same sentence twice.
 
 The shop puts it on before it takes the money, and nothing on the shelf can be
 bought by tapping it. A tap tries a thing on: the tile goes gold side out and

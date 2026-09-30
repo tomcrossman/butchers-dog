@@ -453,8 +453,6 @@ body.waiting #hud { display: none; }
              color: var(--cream); line-height: 1.2; }
 #tryon .does { display: block; font-size: 11.5px; font-weight: 700; line-height: 1.35;
                opacity: .75; margin-top: 2px; }
-#tryon .cost { display: block; font-size: 11px; font-weight: 900; letter-spacing: .1em;
-               text-transform: uppercase; opacity: .65; margin-top: 3px; }
 #tryon .pair { display: flex; gap: 8px; width: 100%; }
 #tryon .pair .btn { margin-top: 10px; font-size: 16px; padding: 11px 6px; }
 #tryon .no { flex: 1; background: transparent; color: var(--cream);
@@ -752,7 +750,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v51';
+const APP_VERSION = 'v52';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2028,11 +2026,16 @@ function farewell(then) {
     };
     requestAnimationFrame(step);
 }
+/* The pose the hit left it in, carried on. The card used to draw it sitting up
+   straight and level, which after being knocked flat on the window behind it
+   reads as the dog getting back up again in the half second before the card
+   has finished fading in - the two are on screen together while it does. */
+const DOWN_TILT = .5;
 function drawDowned(g, ms) {
     g.save();
-    g.translate(165, 190 + Math.sin((ms || 0) / 480) * 3);
-    g.rotate(.14 + Math.sin((ms || 0) / 700) * .03);
-    drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: .3, mood: 'gone' }, 0, cast.dog);
+    g.translate(165, 196 + Math.sin((ms || 0) / 480) * 3);
+    g.rotate(DOWN_TILT + Math.sin((ms || 0) / 700) * .035);
+    drawDog(g, 0, 0, 1.15 / cast.dog.k, { open: .55, mood: 'gone' }, 0, cast.dog);
     stars(g, ms || 0, -78, 36);
     g.restore();
 }
@@ -2906,37 +2909,9 @@ function drawKit(ctx, B, kit, glum) {
     }
 }
 
-function drawDog(ctx, x, y, k, pose, ms, B, kit) {
-    B = B || (cast ? cast.dog : TIERS[2][0]);
-    /* What it has on is part of what it is: unless a caller is deliberately
-       showing something else (the shop, trying a hat on), the dog wears what
-       is in the save. This used to be left undefined, so the only dog in the
-       game wearing the shopping was the one in the window. */
-    if (kit === undefined) kit = cast ? cast.kit : null;
-    const o = pose.open, sq = pose.squash || 0;
-    // how it feels about the week, which is the opposite of how he feels
-    const glum = pose.mood === 'glum', gone = pose.mood === 'gone';
-    ctx.save();
-    ctx.translate(x, y - (pose.reach || 0));
-    ctx.scale(k * B.k * (1 + sq * .07), k * B.k * (1 - sq * .05));
-    ctx.rotate((pose.tilt || 0) + Math.sin(ms / 170) * .04);
-    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+/* Its own function so the shop can draw a collar with no dog under it. */
+function drawCollar(ctx, B, neck) {
     const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
-    const head = () => {
-        ctx.moveTo(-B.skullW, -B.skullH * .4);
-        ctx.quadraticCurveTo(-B.skullW + 2, -B.skullH, 0, -B.skullH);
-        ctx.quadraticCurveTo(B.skullW - 2, -B.skullH, B.skullW, -B.skullH * .4);
-        ctx.quadraticCurveTo(B.jawW + 4, -4, B.jawW, B.jawY);
-        ctx.quadraticCurveTo(B.jawW - 6, B.chin - 1, 0, B.chin);
-        ctx.quadraticCurveTo(-B.jawW + 6, B.chin - 1, -B.jawW, B.jawY);
-        ctx.quadraticCurveTo(-B.jawW - 4, -4, -B.skullW, -B.skullH * .4);
-    };
-
-    /* The collar first, so the jowls hang over it. It is drawn here rather
-       than with the rest of the kit because it goes on before the head does,
-       and the cape goes on before the collar - there is nothing else in the
-       wardrobe that has to sit behind the dog. */
-    const neck = (kit && kit.collar) || 'spiked';
     const band = fill => {
         ctx.save();
         ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 7;
@@ -3016,6 +2991,38 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
             blob('rgba(255,244,205,.55)', () => { ctx.moveTo(px - 2.4, py + 2); ctx.lineTo(px, py - 7); ctx.lineTo(px + 1.4, py + 1); });
         }
     }
+}
+function drawDog(ctx, x, y, k, pose, ms, B, kit) {
+    B = B || (cast ? cast.dog : TIERS[2][0]);
+    /* What it has on is part of what it is: unless a caller is deliberately
+       showing something else (the shop, trying a hat on), the dog wears what
+       is in the save. This used to be left undefined, so the only dog in the
+       game wearing the shopping was the one in the window. */
+    if (kit === undefined) kit = cast ? cast.kit : null;
+    const o = pose.open, sq = pose.squash || 0;
+    // how it feels about the week, which is the opposite of how he feels
+    const glum = pose.mood === 'glum', gone = pose.mood === 'gone';
+    ctx.save();
+    ctx.translate(x, y - (pose.reach || 0));
+    ctx.scale(k * B.k * (1 + sq * .07), k * B.k * (1 - sq * .05));
+    ctx.rotate((pose.tilt || 0) + Math.sin(ms / 170) * .04);
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
+    const head = () => {
+        ctx.moveTo(-B.skullW, -B.skullH * .4);
+        ctx.quadraticCurveTo(-B.skullW + 2, -B.skullH, 0, -B.skullH);
+        ctx.quadraticCurveTo(B.skullW - 2, -B.skullH, B.skullW, -B.skullH * .4);
+        ctx.quadraticCurveTo(B.jawW + 4, -4, B.jawW, B.jawY);
+        ctx.quadraticCurveTo(B.jawW - 6, B.chin - 1, 0, B.chin);
+        ctx.quadraticCurveTo(-B.jawW + 6, B.chin - 1, -B.jawW, B.jawY);
+        ctx.quadraticCurveTo(-B.jawW - 4, -4, -B.skullW, -B.skullH * .4);
+    };
+
+    /* The collar first, so the jowls hang over it. It is drawn here rather
+       than with the rest of the kit because it goes on before the head does,
+       and the cape goes on before the collar - there is nothing else in the
+       wardrobe that has to sit behind the dog. */
+    drawCollar(ctx, B, (kit && kit.collar) || 'spiked');
     // ears: folded over, pricked up, or hanging down the side of the head
     for (const sx of [-1, 1]) {
         if (B.ear === 'prick') {
@@ -3695,13 +3702,16 @@ function draw() {
     }
 
     if (hit) {
-        const e = (ms - hit.t0) / HIT_MS;
-        if (e >= 1) hit = null;
-        else {
+        // it holds the pose it ended in rather than vanishing: the card lands
+        // on the same frame, and the branch below would put the dog back on
+        // its feet in the gap
+        const e = Math.min(1, (ms - hit.t0) / HIT_MS);
+        if (e >= 1) hit.settled = true;
+        {
             const knock = Math.sin(Math.min(1, e / .3) * Math.PI * .5) * 26;
             ctx.save();
             ctx.translate(hit.x + knock, hit.y + Math.pow(e, 2) * 40);
-            ctx.rotate(Math.sin(e * 8) * .3 * (1 - e) + e * .5);
+            ctx.rotate(Math.sin(e * 8) * .3 * (1 - e) + e * DOWN_TILT);
             const sq = e < .14 ? 1 + Math.sin(e / .14 * Math.PI) * .24 : 1;
             ctx.scale(sq, 2 - sq);
             drawDog(ctx, 0, 0, 1.02, { open: .55, mood: 'gone' }, 0, cast.dog);
@@ -3753,7 +3763,7 @@ function tick() {
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || steak || hit || cat || demoOn() || !resting) raf = requestAnimationFrame(step);
+            || chewing || steak || (hit && !hit.settled) || cat || demoOn() || !resting) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -3975,9 +3985,29 @@ function drawTile(c, item) {
         g.restore();
         return;
     }
+    drawWorn(g, item);
+}
+/* Thirty tiles of the same dog in thirty hats is thirty pictures of a dog. His
+   accessories sheet had it right: the thing on a plain circle standing in for
+   the head, so what you are looking at is the hat. The circle is the skull the
+   item is placed against, so everything still lands where it lands on a real
+   one - hats on top, faces on the eye line, collars at the chin. */
+function drawWorn(g, item) {
     const B = cast.dog;
-    drawDog(g, TILE_W / 2, TILE_H * .60, .46 / B.k, { open: 0 }, 0, B,
-            { ...BARE, [item.kind]: item.id });
+    const mid = (-B.skullH + B.chin) / 2, r = (B.chin + B.skullH) * .46;
+    g.save();
+    /* Tall enough for a top hat above the circle and long enough for a cape
+       below it, since both are drawn from the same skull. */
+    g.translate(TILE_W / 2, TILE_H / 2 + 4);
+    g.scale(.46, .46);
+    g.translate(0, -mid);
+    g.lineJoin = 'round'; g.lineCap = 'round';
+    g.strokeStyle = 'rgba(253,247,232,.3)'; g.lineWidth = 3.5;
+    g.beginPath(); g.arc(0, mid, r, 0, Math.PI * 2); g.stroke();
+    if (item.kind === 'collar') drawCollar(g, B, item.id);
+    else drawKit(g, B, { hat: item.kind === 'hat' ? item.id : 'bare',
+                         face: item.kind === 'face' ? item.id : 'plain' });
+    g.restore();
 }
 function paintStore() {
     deal();
@@ -4034,7 +4064,6 @@ function paintTryOn() {
         `<span class="said">` +
         `<span class="nm">${tryOn.name}</span>` +
         (tryOn.why ? `<span class="does">${tryOn.why}</span>` : '') +
-        (can ? `<span class="cost">Yours for ${money0(tryOn.price)}</span>` : '') +
         `</span>` +
         `<span class="pair">` +
         `<button class="btn no" data-try="no">Put it back</button>` +
@@ -4176,7 +4205,7 @@ function showShop() {
     money = 0; ledger = []; fed = 0;
     round = 0; live = false; armed = false; tallying = false; teaching = false;
     dog.going = false; dog.chomp = 0; dog.toy = 0; dog.stare = 0;
-    toyFly = null; toyDay = 0; cat = null;
+    toyFly = null; toyDay = 0; cat = null; hit = null;
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT); clearTimeout(teachT);
     countT.forEach(clearTimeout); countT = [];
     tallyEl.classList.remove('on');
