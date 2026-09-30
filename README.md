@@ -411,16 +411,26 @@ the game that was already named - the tally says *The dog got nothing* - and it
 cannot be fluked: it means every sausage on that string went in the window.
 
 Three of them, one picked at random, nine seconds each, and whatever they make
-goes on the week:
+goes on the week. They are priced against a day rather than against nothing: a
+clean day is four to fifteen pounds for about five seconds of cutting, and the
+first pass at these paid one thirty-five to two sixty for nine, which is a
+tenth of the rate and makes stopping to do one a favour you are doing the game.
+Lowering what a sausage fetches would have meant re-pricing every shelf from
+eighteen pounds to twelve hundred, so the paying end moved instead. A good run
+at any of the three is now worth about what a good day is - eight to eleven
+pounds.
 
 - **Cash only.** A jar you slide along the bottom and coins coming down at it.
-  Twenty pence a coin.
+  Seventy pence a coin, and about seventeen come down.
 - **Sauce on.** One pass of ketchup down a hot dog. What it pays is how much of
   the bun you covered and how straight you kept it, both - so a quick scribble
-  down the middle is worth less than one careful stroke. Up to two sixty.
-- **On the barbecue.** Five sausages cooking at their own speeds. Tap one while
-  it is done and it is forty-five pence; tap it early, or leave it until it is
-  black, and it is nothing.
+  down the middle is worth less than one careful stroke. Up to ten pounds.
+- **On the barbecue.** Five sausages cooking at their own speeds, steaming,
+  spitting fat at the bars and hissing every half second. Tap one while it is
+  done and it is two twenty; tap it early, or leave it until it is black,
+  and it is nothing. A burnt one is scraped off after a second, and when the
+  grill is empty the game is over whatever the clock says - there is nothing to
+  watch on an empty barbecue.
 
 They run on the same canvas the day is played on. A second canvas means a
 second copy of everything that makes this one fit a phone, and by the time they

@@ -766,7 +766,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v62';
+const APP_VERSION = 'v64';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2226,7 +2226,19 @@ function endMini() {
     money += mini.won; showHud();
     setTimeout(() => { mini = null; afterMini(); }, 900);
 }
-const COIN = 20, BANGER = 45, SAUCE_MAX = 260;
+/* Priced against a day rather than against nothing. A clean day is four to
+   fifteen pounds for about five seconds of cutting; these were one thirty-five
+   to two sixty for nine, which is a tenth of the rate and makes stopping to do
+   one a favour you are doing the game. Lowering what a sausage fetches would
+   have meant re-pricing every shelf from eighteen pounds to twelve hundred, so
+   the paying end moved instead: a good run at any of the three is now worth
+   about what a good day is. */
+const COIN = 70, BANGER = 220, SAUCE_MAX = 1000;
+// the bed of noise a grill makes, in half-second doses
+const sizzle = () => safely(t => {
+    hiss(t, { hp: 2400, lp: 9000, dur: .34, vol: .05 });
+    hiss(t, { hp: 5200, dur: .2, vol: .03, at: .06 });
+});
 const chink = () => safely(t => {
     tone(t, { freq: 1760, dur: .1, type: 'triangle', vol: .12 });
     tone(t, { freq: 2637, dur: .18, type: 'sine', vol: .07, at: .03 });
@@ -2252,11 +2264,23 @@ function miniStep(dt) {
             if (c.y > H + 40) mini.coins.splice(i, 1);
         }
     } else if (mini.id === 'grill') {
+        /* A grill makes a noise. It is the only thing on the screen, so it
+           gets one - a quiet hiss every half second rather than one long
+           sample, because there are no samples in this game. */
+        mini.sizz = (mini.sizz || 0) - dt;
+        if (mini.sizz <= 0) {
+            mini.sizz = .42 + Math.random() * .2;
+            sizzle();
+        }
         for (const b of mini.bangers) {
             if (b.taken) continue;
             b.done += dt;
-            if (!b.gone && b.done > b.ready + 2.2) { b.gone = true; splat(); }
+            if (!b.gone && b.done > b.ready + 2.2) { b.gone = true; b.burnt = 0; splat(); }
+            // a burnt one is scraped off rather than left sitting there
+            if (b.gone) { b.burnt += dt; if (b.burnt > 1.1) b.taken = true; }
         }
+        // nothing left to cook is the end of it, whatever the clock says
+        if (mini.bangers.every(b => b.taken)) { endMini(); return; }
     }
     if (left <= 0) endMini();
 }
@@ -2286,7 +2310,9 @@ function miniUp() {
        less than one careful pass. */
     const seen = new Set();
     let miss = 0;
-    for (const p of mini.paint) { seen.add(Math.floor(p.t * 24)); miss += p.miss; }
+    // t reaches exactly 1 at the far end, which is a twenty-fifth bucket out
+    // of twenty-four - and a maximum you can go over is not a maximum
+    for (const p of mini.paint) { seen.add(Math.min(23, Math.floor(p.t * 24))); miss += p.miss; }
     const cover = seen.size / 24, neat = 1 - Math.min(1, miss / mini.paint.length * 1.6);
     mini.won = Math.round(SAUCE_MAX * cover * (.45 + .55 * neat) / 5) * 5;
     showHud();
@@ -2367,6 +2393,32 @@ function drawMini(ms) {
                 ctx.beginPath(); ctx.roundRect(-9, -32, 9, 62, 5); ctx.fill();
             }
             ctx.restore();
+            /* The sizzle: steam off every one that is cooking, thicker and
+               darker once it has caught, and a few sparks off the bars. All of
+               it worked out from the clock and the sausage's own position, so
+               there is nothing to keep between frames. */
+            const heat = burnt ? 1 : Math.min(1, b.done / b.ready);
+            for (let w = 0; w < 4; w++) {
+                const t = ((ms / (burnt ? 900 : 1300)) + w * .25 + b.x * .01) % 1;
+                const wx = b.x + Math.sin(t * 5 + w * 2 + b.x) * (7 + t * 16);
+                const wy = b.y - 26 - t * 66;
+                ctx.globalAlpha = (1 - t) * (burnt ? .5 : .1 + .3 * heat);
+                ctx.fillStyle = burnt ? '#2a2620' : '#fdf7e8';
+                ctx.beginPath();
+                ctx.ellipse(wx, wy, 5 + t * 12, 4 + t * 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+            if (!burnt) for (let k = 0; k < 3; k++) {     // fat spitting off the bars
+                const t = ((ms / 520) + k * .33 + b.y * .02) % 1;
+                ctx.globalAlpha = (1 - t) * .7 * heat;
+                ctx.fillStyle = '#ffe9a8';
+                ctx.beginPath();
+                ctx.arc(b.x + Math.cos(k * 2.4 + b.x) * (14 + t * 22),
+                        b.y + 18 - t * 26, 2.2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
             if (ready) {                              // the one thing you are looking for
                 ctx.strokeStyle = 'rgba(240,212,132,' + (.4 + .35 * Math.sin(ms / 160)) + ')';
                 ctx.lineWidth = 4;
