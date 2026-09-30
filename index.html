@@ -283,8 +283,6 @@ body.waiting #hud { display: none; }
 #settings { justify-content: center; }
 #settings .note { max-width: 320px; margin: 10px 0 0; font-size: 11px; font-weight: 700;
                   line-height: 1.5; opacity: .55; }
-.nudge.wide { width: auto; padding: 5px 12px; font-size: 13px;
-              font-family: var(--font); font-weight: 900; letter-spacing: .06em; }
 /* One way out of a screen that fills the window, in the corner every phone
    already looks at, above everything the screen scrolls. */
 .shut {
@@ -704,11 +702,13 @@ body.waiting #hud { display: none; }
         <h2>Out the back</h2>
         <div class="rows">
             <div class="row"><span class="lab">Sound</span>
+                <button class="nudge" data-flip="sound">&lsaquo;</button>
                 <b id="set-sound">On</b>
-                <button class="nudge wide" id="set-mute">Change</button></div>
+                <button class="nudge" data-flip="sound">&rsaquo;</button></div>
             <div class="row"><span class="lab">Debug</span>
+                <button class="nudge" data-flip="debug">&lsaquo;</button>
                 <b id="set-debug">Off</b>
-                <button class="nudge wide" id="set-debug-btn">Change</button></div>
+                <button class="nudge" data-flip="debug">&rsaquo;</button></div>
         </div>
         <p class="note" id="debug-note">Debug hands you every upgrade for nothing,
             so you can switch them on and see what they do.</p>
@@ -732,7 +732,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v27';
+const APP_VERSION = 'v28';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -3784,11 +3784,13 @@ document.getElementById('set-done').addEventListener('click', () => {
     drawShopfront();
     showBank();
 });
-document.getElementById('set-mute').addEventListener('click', () => {
-    muteBtn.click();
-    paintSettings();
-});
-document.getElementById('set-debug-btn').addEventListener('click', () => {
+/* Two states each, so both arrows do the same thing - they are there because
+   this is the row the setup screen already taught, not because there is a
+   third option off to the right. */
+document.querySelectorAll('.nudge[data-flip]').forEach(btn =>
+    btn.addEventListener('click', () => flip(btn.dataset.flip)));
+function flip(what) {
+    if (what === 'sound') { muteBtn.click(); paintSettings(); return; }
     save.debug = !save.debug;
     if (save.debug) {
         // everything switchable comes on, so one tap is a week with the lot
@@ -3804,7 +3806,7 @@ document.getElementById('set-debug-btn').addEventListener('click', () => {
     putSave();
     paintSettings();
     plop(3);
-});
+}
 document.getElementById('store-done').addEventListener('click', () => {
     tryOn = null;
     storeEl.hidden = true;
