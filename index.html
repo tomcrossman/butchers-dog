@@ -737,7 +737,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v32';
+const APP_VERSION = 'v33';
 document.getElementById('version').textContent = `Butcher's Dog ${APP_VERSION}`;
 
 /* ============================================================
@@ -3775,9 +3775,11 @@ function paintStore() {
             const canAfford = save.bank >= i.price;
             const cls = trying ? 'buy trying' : on ? 'buy worn' : got ? 'buy got'
                       : canAfford ? 'buy' : 'buy poor';
+            // the tick in the corner already says it is on the dog; a word
+            // under it as well is the same thing said twice
             const tag = trying ? `<span class="tag">Trying</span>`
                       : on ? `<span class="tick">&#10003;</span>` +
-                             `<span class="tag">${shopUp ? 'On' : 'Worn'}</span>`
+                             `<span class="tag">${shopUp ? 'On' : '&nbsp;'}</span>`
                       // owning a hat needs no word on it: no price is the word
                       : got ? `<span class="tag">${shopUp ? 'Off' : '&nbsp;'}</span>`
                       : `<span class="pr">${money0(i.price)}</span>`;
