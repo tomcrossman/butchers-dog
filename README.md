@@ -547,7 +547,17 @@ twenty-two pounds, about a third on top of a perfect week.
   frame in here that looked broken rather than finished.
 - **Sauce on.** One pass of ketchup down a hot dog. What it pays is how much of
   the bun you covered and how straight you kept it, both - so a quick scribble
-  down the middle is worth less than one careful stroke. Up to twenty pounds.
+  down the middle is worth less than one careful stroke. Up to twenty pounds,
+  and **four and a half seconds**, not nine. The other two are nine seconds of
+  things coming at you; this one is a single stroke, and nine seconds to draw
+  one line is nine seconds to draw it as slowly and as carefully as you like,
+  which is a drawing exercise rather than a game. The four and a half start
+  when your finger lands on the bun rather than when the game opens - PERFECT
+  WEEK is across the middle of the screen for the first second and a half, and
+  a clock you spend a third of under a banner is not a clock, it is a tax - and
+  if nobody picks the bottle up it starts without them. A clock that runs out
+  mid-stroke pays for the half a line that is on there, rather than for
+  nothing: the line used to be scored only when you lifted.
 - **On the barbecue.** Five sausages cooking at their own speeds, steaming,
   spitting fat at the bars and hissing every half second. Tap one while it is
   done and it is four forty; tap it early, or leave it until it is black,

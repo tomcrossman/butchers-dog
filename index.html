@@ -762,7 +762,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v75';
+const APP_VERSION = 'v76';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2318,10 +2318,22 @@ function afterMini() {
    Three of them, on the same canvas the day is played on, because a second
    canvas means a second copy of everything that makes this one fit a phone.
    The day is over by the time they run, so nothing else is drawing. */
+/* Nine seconds each, except the ketchup. The other two are nine seconds of
+   things happening at you; that one is a single stroke, and nine seconds to
+   draw one line is nine seconds to draw it as slowly and as carefully as you
+   like, which is a drawing exercise rather than a game. Four and a half is
+   enough for one confident pass and not enough to inch down it.
+
+   And its four and a half start when your finger lands on the bun rather than
+   when the game opens, because PERFECT WEEK is across the middle of the screen
+   for the first second and a half, and a clock you spend a third of under a
+   banner is not a clock, it is a tax. The other two are nine seconds of things
+   coming at you and want no such grace. If nobody picks the bottle up, it
+   starts without them. */
 const MINI_S = 9;
 const MINIS = [
     { id: 'jar',  name: 'Cash only', say: 'Catch the coins' },
-    { id: 'sauce', name: 'Sauce on', say: 'Draw the ketchup down it' },
+    { id: 'sauce', name: 'Sauce on', say: 'Draw the ketchup down it', secs: 4.5 },
     { id: 'grill', name: 'On the barbecue', say: 'Tap them when they are done, not before' },
 ];
 let mini = null;
@@ -2329,12 +2341,13 @@ let mini = null;
 let miniTook = null;
 function startMini() {
     const M = pick(MINIS);
-    mini = { id: M.id, name: M.name, say: M.say, t0: now(), won: 0, done: false };
+    mini = { id: M.id, name: M.name, say: M.say, secs: M.secs || MINI_S,
+             t0: now(), won: 0, done: false };
     if (M.id === 'jar') {
         mini.jar = W / 2; mini.coins = []; mini.next = 0;
     } else if (M.id === 'sauce') {
         mini.dogY = H * .54; mini.x0 = W * .18; mini.x1 = W * .82;
-        mini.paint = []; mini.drawing = false;
+        mini.paint = []; mini.drawing = false; mini.begun = false;
     } else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
@@ -2346,6 +2359,10 @@ function startMini() {
 }
 function endMini() {
     if (!mini || mini.done) return;
+    /* The clock going while a finger is still on the bun used to end it at
+       nothing, because the line was only ever scored when you lifted. Half a
+       line is half a line: it gets counted for what is on there. */
+    if (mini.id === 'sauce' && !mini.won) sauceScore();
     mini.done = true;
     money += mini.won; showHud();
     // the total on Saturday's card already has this in it, so the card needs a
@@ -2371,6 +2388,7 @@ function endMini() {
    about a third of a perfect week on top of it: sixteen to twenty-two pounds
    for a good run. */
 const COIN = 140, BANGER = 440, SAUCE_MAX = 2000;
+const SAUCE_WAIT = 2600;        // the longest the ketchup will wait to be picked up
 /* How long a banger is worth taking off for. It was two and a fifth seconds,
    which is long enough to let all five come good and then take them off in one
    sweep at the end - the whole game was a colour change you could answer at
@@ -2387,7 +2405,8 @@ const chink = () => safely(t => {
     tone(t, { freq: 1760, dur: .1, type: 'triangle', vol: .12 });
     tone(t, { freq: 2637, dur: .18, type: 'sine', vol: .07, at: .03 });
 });
-const miniLeft = () => Math.max(0, MINI_S - (now() - mini.t0) / 1000);
+const miniLeft = () => mini.begun === false ? mini.secs
+                     : Math.max(0, mini.secs - (now() - mini.t0) / 1000);
 function miniStep(dt) {
     /* The clock stopping is not the coins stopping. When the time ran out
        mid-air the last few hung exactly where they were for the nine hundred
@@ -2402,6 +2421,9 @@ function miniStep(dt) {
             if (c.y > H + 40) mini.coins.splice(i, 1);
         }
         return;
+    }
+    if (mini.begun === false && now() - mini.t0 > SAUCE_WAIT) {
+        mini.begun = true; mini.t0 = now();       // nobody picked it up
     }
     const left = miniLeft();
     if (mini.id === 'jar') {
@@ -2451,6 +2473,7 @@ function miniAt(x, y) {
     if (mini.id === 'sauce') {
         // it only counts along the bun, and only going one way down it
         if (Math.abs(y - mini.dogY) > 46) return;
+        if (!mini.begun) { mini.begun = true; mini.t0 = now(); }
         const t = clamp((x - mini.x0) / (mini.x1 - mini.x0), 0, 1);
         const miss = Math.abs(y - mini.dogY) / 46;
         mini.paint.push({ t, y, miss });
@@ -2464,11 +2487,11 @@ function miniAt(x, y) {
         return;
     }
 }
-function miniUp() {
-    if (!mini || mini.done || mini.id !== 'sauce' || !mini.paint.length) return;
-    /* What a line of ketchup is worth: how much of the bun it covers and how
-       straight it was kept. Both, so a quick scribble down the middle is worth
-       less than one careful pass. */
+/* What a line of ketchup is worth: how much of the bun it covers and how
+   straight it was kept. Both, so a quick scribble down the middle is worth
+   less than one careful pass. */
+function sauceScore() {
+    if (!mini || !mini.paint || !mini.paint.length) return;
     const seen = new Set();
     let miss = 0;
     // t reaches exactly 1 at the far end, which is a twenty-fifth bucket out
@@ -2477,10 +2500,14 @@ function miniUp() {
     const cover = seen.size / 24, neat = 1 - Math.min(1, miss / mini.paint.length * 1.6);
     mini.won = Math.round(SAUCE_MAX * cover * (.45 + .55 * neat) / 5) * 5;
     showHud();
+}
+function miniUp() {
+    if (!mini || mini.done || mini.id !== 'sauce' || !mini.paint.length) return;
+    sauceScore();
     endMini();
 }
 function drawMini(ms) {
-    const left = miniLeft(), e = 1 - left / MINI_S;
+    const left = miniLeft(), e = 1 - left / mini.secs;
     ctx.save();
     if (mini.id === 'jar') {
         for (const c of mini.coins) {                 // the coins
@@ -2595,7 +2622,7 @@ function drawMini(ms) {
     ctx.fillStyle = 'rgba(12,32,24,.55)';
     ctx.fillRect(0, RAIL + 4, W, 4);
     ctx.fillStyle = '#dcab3e';
-    ctx.fillRect(0, RAIL + 4, W * left / MINI_S, 4);
+    ctx.fillRect(0, RAIL + 4, W * left / mini.secs, 4);
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.font = '400 26px "Alfa Slab One", Georgia, serif';
     ctx.fillStyle = '#f0d484';
