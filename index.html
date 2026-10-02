@@ -700,7 +700,10 @@ body.waiting #hud { display: none; }
 #setup .btn { box-shadow: 0 4px 0 rgba(0,0,0,.35), 0 8px 16px rgba(28,20,14,.4); }
 #setup .row input { background: rgba(0,0,0,.34); }
 #preview { margin-top: 2px; }
-#preview { width: min(76vw, 300px); height: auto; }
+/* The two of them are what you are choosing, so they get the room: they were
+   small enough on this screen to be a decoration rather than the thing the
+   four lines underneath are about. */
+#preview { width: min(94vw, 368px); height: auto; }
 /* The dog is the whole point of the shop, so it does not scroll away with the
    first shelf: it is pinned to the top and every tile you try goes straight
    onto it, in view, without scrolling back up for a look. */
@@ -1483,7 +1486,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v115';
+const APP_VERSION = 'v116';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -7035,35 +7038,36 @@ function drawSignBoard() {
     const IRON = '#231f1c', IRON_H = '#4a443d';
     const RING = '400 15px "Staatliches", "Alfa Slab One", Georgia, serif';
 
-    /* ---- the bracket. Bolted to the wall down one side, an arm out of it
-       over the board, a scroll under the arm carrying it and a spear on the
-       end. A bar across the top with no wall to come out of is scaffolding;
-       this is the thing a hanging sign actually hangs off. ---- */
-    const ay = 24, px = 24;
+    /* ---- the bracket. An iron rail across the wall, bolted to it through a
+       plate at each end, a scroll under each plate carrying the weight, and
+       the board hanging off the middle of it on two chains. A bracket out of
+       one side leaves the arm ending in mid-air and the sign hanging off to
+       one side of everything else on the screen; this is fixed at both ends
+       and the sign is under the middle of it. ---- */
+    const ay = 24, span = 148;
     g.lineCap = 'round'; g.lineJoin = 'round';
-    g.fillStyle = IRON;
-    g.beginPath(); g.roundRect(px - 7.5, ay - 19, 15, 46, 3); g.fill();
-    g.fillStyle = IRON_H;                               // two bolts through it
-    g.beginPath(); g.arc(px, ay - 12, 2.6, 0, TAU); g.fill();
-    g.beginPath(); g.arc(px, ay + 20, 2.6, 0, TAU); g.fill();
     g.strokeStyle = IRON; g.lineWidth = 7;
-    g.beginPath(); g.moveTo(px, ay); g.lineTo(cx + 82, ay); g.stroke();
-    g.beginPath();                                      // the spear on the end
-    g.moveTo(cx + 80, ay - 10); g.lineTo(cx + 94, ay);
-    g.lineTo(cx + 80, ay + 10); g.lineTo(cx + 72, ay); g.closePath();
-    g.fillStyle = IRON; g.fill();
-    g.strokeStyle = IRON; g.lineWidth = 3.4;            // the brace under the arm
-    g.beginPath();
-    g.moveTo(px + 1, ay + 31);
-    g.bezierCurveTo(px + 30, ay + 29, px + 48, ay + 14, px + 56, ay + 2);
-    g.stroke();
-    g.beginPath();                                      // and a curl off it
-    g.moveTo(px + 22, ay + 28);
-    g.bezierCurveTo(px + 9, ay + 33, px + 15, ay + 48, px + 29, ay + 43);
-    g.bezierCurveTo(px + 39, ay + 39, px + 34, ay + 29, px + 27, ay + 33);
-    g.stroke();
+    g.beginPath(); g.moveTo(cx - span, ay); g.lineTo(cx + span, ay); g.stroke();
+    for (const sx of [-1, 1]) {
+        const bx = cx + sx * span;
+        g.fillStyle = IRON;                             // the plate on the wall
+        g.beginPath(); g.roundRect(bx - 7.5, ay - 20, 15, 48, 3); g.fill();
+        g.fillStyle = IRON_H;                           // two bolts through it
+        g.beginPath(); g.arc(bx, ay - 13, 2.6, 0, TAU); g.fill();
+        g.beginPath(); g.arc(bx, ay + 21, 2.6, 0, TAU); g.fill();
+        g.strokeStyle = IRON; g.lineWidth = 3.4;        // the brace under it
+        g.beginPath();
+        g.moveTo(bx + sx * 1, ay + 32);
+        g.bezierCurveTo(bx - sx * 26, ay + 30, bx - sx * 42, ay + 15, bx - sx * 49, ay + 2);
+        g.stroke();
+        g.beginPath();                                  // and a curl off it
+        g.moveTo(bx - sx * 18, ay + 29);
+        g.bezierCurveTo(bx - sx * 6, ay + 34, bx - sx * 12, ay + 48, bx - sx * 25, ay + 43);
+        g.bezierCurveTo(bx - sx * 34, ay + 39, bx - sx * 30, ay + 30, bx - sx * 23, ay + 34);
+        g.stroke();
+    }
     g.fillStyle = 'rgba(255,255,255,.1)';               // the light along the top
-    g.fillRect(px, ay - 3.2, cx + 78 - px, 1.6);
+    g.fillRect(cx - span, ay - 3.2, span * 2, 1.6);
     for (const sx of [-1, 1]) {                         // two chains down to it
         const lx = cx + sx * 58;
         g.strokeStyle = IRON; g.lineWidth = 3.4;
@@ -7078,15 +7082,22 @@ function drawSignBoard() {
        a drawn-on disc cannot do - you can see the brick through the letters. ---- */
     g.save();
     g.shadowColor = 'rgba(30,16,10,.55)'; g.shadowBlur = 9; g.shadowOffsetY = 5;
+    g.fillStyle = IRON;
+    /* One band the whole way round with the words cut out of it, not two arcs
+       with the ring showing between them: a band that stops halfway reads as a
+       piece that has broken off. */
+    g.beginPath();
+    g.arc(cx, cy, R, 0, TAU);
+    g.arc(cx, cy, R - 26, TAU, 0, true);
+    g.closePath(); g.fill();
+    g.lineWidth = 3;                                    // and the hoop inside it
     g.strokeStyle = IRON;
-    g.lineWidth = 10;                                   // the ring itself
-    g.beginPath(); g.arc(cx, cy, R - 5, 0, TAU); g.stroke();
-    g.lineWidth = 2.2;                                  // and the hoop inside it
-    g.beginPath(); g.arc(cx, cy, R - 19, 0, TAU); g.stroke();
+    g.beginPath(); g.arc(cx, cy, R - 33, 0, TAU); g.stroke();
+    g.restore();
 
     g.textAlign = 'center'; g.textBaseline = 'middle';
     /* Type set round the ring. Nothing in CSS does this, which is most of the
-       reason the sign is drawn. */
+       reason the sign is drawn at all. */
     const arc = (text, radius, mid, top, font) => {
         g.font = font;
         const chars = [...text];
@@ -7104,32 +7115,26 @@ function drawSignBoard() {
             a0 += step;
         }
     };
-    /* A solid band top and bottom with the words cut out of them. Letters
-       standing free on the ring itself get swallowed by it - they are the
-       same iron sat on the same line - and a band is what holds the ring
-       together on every one of these anyway. */
-    g.fillStyle = IRON;
-    for (const [a0, a1] of [[Math.PI * 1.17, Math.PI * 1.83], [Math.PI * .17, Math.PI * .83]]) {
-        g.beginPath();
-        g.arc(cx, cy, R - 6, a0, a1);
-        g.arc(cx, cy, R - 31, a1, a0, true);
-        g.closePath(); g.fill();
+    g.save();
+    g.globalCompositeOperation = 'destination-out';
+    g.fillStyle = '#000';
+    arc('QUALITY MEATS', R - 13, -Math.PI / 2, true, RING);
+    arc('EST. 2026', R - 13, Math.PI / 2, false, RING);
+    for (const sx of [-1, 1]) {                         // a diamond between them
+        g.save(); g.translate(cx + sx * (R - 13), cy); g.rotate(Math.PI / 4);
+        g.fillRect(-3.2, -3.2, 6.4, 6.4); g.restore();
     }
     g.restore();
 
-    g.save();
-    g.globalCompositeOperation = 'destination-out';
-    g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillStyle = '#000';
-    arc('QUALITY MEATS', R - 18.5, -Math.PI / 2, true, RING);
-    arc('EST. 2026', R - 18.5, Math.PI / 2, false, RING);
-    g.restore();
-
-    /* ---- and the name standing in the middle of it ---- */
+    /* ---- and the name, welded to a bar across the middle. Letters floating
+       loose inside a ring is a sign that has not been made: a cutout hangs
+       off something, so there is a bar for it to hang off. ---- */
     g.save();
     g.shadowColor = 'rgba(30,16,10,.5)'; g.shadowBlur = 7; g.shadowOffsetY = 4;
     g.fillStyle = IRON;
     g.textAlign = 'center'; g.textBaseline = 'middle';
+    const bar = R - 33;
+    g.fillRect(cx - bar, cy - 3, bar * 2, 4.4);
     const paint = (text, y, size, room) => {
         g.font = `400 ${size}px "Staatliches", "Alfa Slab One", Georgia, serif`;
         const w = g.measureText(text).width;
@@ -7139,10 +7144,9 @@ function drawSignBoard() {
         g.fillText(text, 0, 0);
         g.restore();
     };
-    paint('BUTCHER\u2019S', -32, 34, (R - 17) * 2);
-    paint('DOG', 24, 40, (R - 30) * 2);
-    /* A bone either side of a rule, which is what the pigs are doing on
-       everybody else's. */
+    paint('BUTCHER\u2019S', -21, 34, (R - 38) * 2);
+    paint('DOG', 23, 40, (R - 52) * 2);
+    /* A bone at each end of the bar, where everybody else puts a pig. */
     const bone = (bx, by, k) => {
         g.save(); g.translate(bx, by); g.scale(k, k);
         g.beginPath(); g.rect(-5, -1.6, 10, 3.2);
@@ -7150,8 +7154,7 @@ function drawSignBoard() {
         g.arc(5.6, -2.6, 2.5, 0, TAU); g.arc(5.6, 2.6, 2.5, 0, TAU);
         g.fill(); g.restore();
     };
-    g.fillRect(cx - 19, cy - 6.6, 38, 2.2);
-    bone(cx - 34, cy - 5.5, .92); bone(cx + 34, cy - 5.5, .92);
+    bone(cx - bar + 11, cy - .8, 1); bone(cx + bar - 11, cy - .8, 1);
     g.restore();
 }
 function drawPreview(id, w, h, withMan) {

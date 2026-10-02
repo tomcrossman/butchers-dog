@@ -768,16 +768,22 @@ a grid all the way up the wall. They were whitewashed, which is a dairy or a
 fishmonger; a butcher's is on a red brick corner.
 
 **The sign is cut out of iron and hung off a bracket**, which is what a shop
-that has been there a hundred years has over its door. There is a plate bolted
-to the brickwork, an arm out of it with a scroll under it carrying the weight
-and a spear on the end, two chains, and a round board swinging off them. It is
-drawn rather than built out of divs for two reasons: the lettering goes round
-the ring, and nothing in CSS sets type on a circle; and it is a **cutout** -
-the ring, the bands and the letters are the only iron there is, and the brick
-shows through everywhere else. The band top and bottom is solid with QUALITY
-MEATS and EST. 2026 knocked out of it, because letters standing free on the
-ring get swallowed by it, and a band is what holds one of these together
-anyway. A bone either side of the rule, where everyone else puts a pig.
+that has been there a hundred years has over its door. An iron rail across the
+wall, bolted through a plate at each end with a scroll under each one carrying
+the weight, two chains off the middle of it and a round board swinging under
+them. A bracket out of one side was tried first: it leaves the arm ending in
+mid-air and the sign hanging off to one side of everything else on the screen.
+
+It is drawn rather than built out of divs for two reasons: the lettering goes
+round the ring, and nothing in CSS sets type on a circle; and it is a
+**cutout** - the ring, the bar and the letters are the only iron there is, and
+the brick shows through everywhere else. One band the whole way round with
+QUALITY MEATS and EST. 2026 knocked out of it, not two arcs with the ring
+showing between them, because a band that stops halfway reads as a piece that
+has broken off. And the name is welded to a bar across the middle with a bone
+at each end of it, where everybody else puts a pig: letters floating loose
+inside a ring is a sign nobody has made, because a cutout has to hang off
+something.
 
 The name is in **Staatliches**, bold condensed caps, which is what is actually
 painted on a butcher's: MEATS, FINEST CUTS, BUTCHERSON, PREMIUM QUALITY. A
@@ -788,6 +794,10 @@ lines the way a sign like that is set.
 The game's name is on the setup screen and nowhere else: once the shop is
 yours, the sign over the window is the one that matters, so the shopfront gets
 the room the title used to have and the till under it is the score.
+
+The two of them are stood under the sign at a size you can actually see them
+at - they are what you are choosing, and small enough they were a decoration
+rather than the thing the four lines underneath are about.
 
 You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the sign, with a die to roll if
