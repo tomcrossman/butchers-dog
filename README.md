@@ -169,9 +169,10 @@ the shop window to meet the next lot.
 
 The name under them and the money under that are set large - they are the two
 things on that screen you actually read, and they were at thirteen and
-twenty-seven pixels against a three-hundred-pixel shopfront. The money is the
-width of the window now rather than a fixed size, so five figures on a small
-phone still fits.
+twenty-seven pixels against a three-hundred-pixel shopfront. Eighteen and
+fifty-eight now. The money is the width of the window rather than a fixed size,
+so it fits whatever the till holds: measured at 320, 390 and 430 with a hundred
+and twenty-three thousand in it, and it stays inside the line on all three.
 
 **The week's takings go in in front of you.** Come back to the window after a
 week and a till turns up beside the number, the drawer goes, five notes arc
@@ -515,7 +516,7 @@ phone.
 
 A butcher's shop has rosettes on the wall. Not points, not a score, not a
 percentage - prize cards from shows nobody else remembers, pinned up and left
-there. So that is what these are. **Thirty-four of them**, and they buy
+there. So that is what these are. **Thirty-five of them**, and they buy
 nothing and unlock nothing: the whole reward is that the window fills up and
 the next person who looks at your shop can see what it has done.
 
@@ -550,9 +551,11 @@ rather than a weekend. An ordinary first week gives nothing at all. A flawless
 one gives three, and all three are hard.
 
 What they are for: five weeks in the shop and fifty-two. Ten things bought and
-paid for. Twenty-five perfect cuts, a hundred, and five hundred. Three twists
-in one swipe ten times - and four in one swipe once, which the board tells you
-to try on a Saturday, because a straight line through two twists tops out at
+paid for. Twenty-five perfect cuts, a hundred, and five hundred. Two twists in
+one swipe ten times, because two is a thing you will do by accident on a wavy
+Friday; three in one swipe once, because three is a line you have to go and
+find; and four in one swipe once, which the board tells you to try on a
+Saturday, because a straight line through two twists tops out at
 three anywhere from Monday to Friday and at five on a Saturday, measured over a
 hundred and twenty deals of each. A week the dog got nothing, ten of those, ten
 hours after closing, all three of its games, and a barbecue with nothing black
@@ -567,8 +570,11 @@ day. Fifty steaks taken out of the air - three a week off a plain slab and
 twelve off a stocked one, and only the ones you get the blade to before the
 floor or the dog does. A week without halving one yourself. Ten weeks with the same dog. The
 bone, the cat and the lad all at once. Watching the dog find out what is in a
-black pudding. And **two** nobody would go looking for, which stay dots on the
-board until they happen. They are both the butcher: one in the ribs folds a man
+black pudding. And **two** nobody would go looking for, which sit on the board
+as `? ? ?` with a line of their own apiece - *Nobody has bothered the butcher
+yet today*, and under it *And there is somewhere worse than that*. A locked row
+that says nothing at all is a thing to look up; one that says the wrong amount
+is a thing to go and try. They are both the butcher: one in the ribs folds a man
 forwards, and one lower down does not - he goes up on his toes with his knees
 together and stays there, stars going round the boater twice as fast and an
 octave above his own voice. That is the entire joke and about as far as it

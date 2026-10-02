@@ -240,8 +240,8 @@ body.waiting #hud { display: none; }
     width: 132px; height: 2px; margin: 16px 0 12px;
     background: linear-gradient(90deg, transparent, var(--gold-d), transparent);
 }
-#intro p { margin: 0; max-width: 330px; font-size: 15px; font-weight: 700;
-           line-height: 1.55; letter-spacing: .03em; opacity: .8; }
+#intro p { margin: 0; max-width: 340px; font-size: 18px; font-weight: 700;
+           line-height: 1.45; letter-spacing: .02em; opacity: .82; }
 /* The sign, the two of them and the till belong together - they are one thing
    being shown - and the buttons are the footer. Two blocks, not five. */
 #intro .top, #intro .mid, #intro .acts {
@@ -293,8 +293,8 @@ body.waiting #hud { display: none; }
 /* The one number on that screen, so it gets the room. Tied to the width of
    the window rather than fixed, because a till in five figures at a flat
    forty-six pixels runs off the side of a small phone. */
-#bank-line b { font-size: clamp(32px, 11.5vw, 46px); line-height: 1;
-               text-shadow: 0 3px 0 rgba(0,0,0,.4); }
+#bank-line b { font-size: clamp(36px, 14vw, 58px); line-height: 1;
+               text-shadow: 0 4px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
 #setup, #store, #settings, #confirm {
@@ -854,7 +854,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v82';
+const APP_VERSION = 'v84';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1621,8 +1621,9 @@ function cut(swipe) {
             const push = (hits - 1) * dog.speed * .55 * (.55 + avg / 220);
             dog.s = Math.min(string.len + 70, dog.s + push);
             dog.chomp = 0;
-            if (hits >= 3) save.tally.trebles++;
-            if (save.tally.trebles >= 10) award('three');
+            save.tally.doubles++;
+            if (save.tally.doubles >= 10) award('two');
+            if (hits >= 3) { save.tally.trebles++; award('three'); }
             if (hits >= 4) award('four');
             shouts.push({ text: CHEER[Math.min(hits, 6)] || `${hits} AT ONCE`,
                           x: mid.x, y: mid.y, t0: now() });
@@ -1709,7 +1710,7 @@ function ruin(p, k, x, y) {
     if (k < p.to) out.push({ from: k + 1, to: p.to });
     pieces.splice(i, 1, ...out);
     for (const bit of out) if (bit.from === bit.to) free(bit, 45);
-    lost++; spoiled++; showHud();
+    lost++; botched++; showHud();
     mess.push({ x, y, t0: now() });
     squelch();
     jolt();
@@ -1723,8 +1724,11 @@ function ruin(p, k, x, y) {
    ============================================================ */
 const dog = { s: 1e5, speed: 0, going: false, chomp: 0, keen: 0, grabX: null };
 let fed = 0;                        // how many it has had off you this week
-// what you did to the string yourself this week, and how well, today
-let spoiled = 0, perfectToday = 0;
+/* What you did to the string yourself this week, and how well, today. Named
+   `botched` rather than `spoiled` because the swipe scorer keeps a local
+   `spoiled` of its own for the one stroke, and two counters a scroll apart
+   with the same name is a bug waiting to be written. */
+let botched = 0, perfectToday = 0;
 /* Getting one is the only thing the dog ever does, so it is worth the frames.
    It gapes on the way up, snaps at a third of the way through - which is when
    the sausage actually arrives in its mouth and the screen jolts - and then
@@ -1900,7 +1904,7 @@ function startRound(n) {
     if (n === 1) {
         toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
         fed = 0;                                       // a week starts owing nothing
-        spoiled = 0;                                   // and having spoiled nothing
+        botched = 0;                                   // and having spoiled nothing
         miniTook = null;                               // last week's is spent
     }
     roundT0 = now();
@@ -2045,7 +2049,7 @@ function endWeek() {
     save.bank += money; save.weeks++;
     save.tally.loyal++;
     if (!fed) save.tally.clean++;
-    if (!spoiled) award('nowt');
+    if (!botched) award('nowt');
     if (money >= 12000) award('bigweek');
     putSave();
     sweep();
@@ -3383,7 +3387,8 @@ const FRESH = () => ({
     /* The wall. `got` is which rosettes are on it; `tally` is the handful of
        running counts that no other part of the game had a reason to keep. */
     got: [],
-    tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0, trebles: 0, hours: 0, steaks: 0 },
+    tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0, trebles: 0, doubles: 0,
+             hours: 0, steaks: 0 },
 });
 let save = FRESH(), started = false;
 function loadSave() {
@@ -3452,7 +3457,11 @@ const ROSETTES = [
     { id: 'dead',    silk: 'gold',   name: 'Dead Centre',    why: 'Twenty-five perfect cuts.' },
     { id: 'fifty',   silk: 'gold',   name: 'A Hundred of Them', why: 'A hundred perfect cuts, all told.' },
     { id: 'fivehun', silk: 'gold',   name: 'Five Hundred',   why: 'Five hundred perfect cuts. Keep going.' },
-    { id: 'three',   silk: 'red',    name: 'Three in One',   why: 'Three twists in a single swipe, ten times.' },
+    /* Two in a swipe is a thing you will do by accident on a wavy Friday, so
+       it is the one that wants doing ten times. Three is a line you have to go
+       and find, and once is a feat. */
+    { id: 'two',     silk: 'red',    name: 'Two in One',     why: 'Two twists in a single swipe, ten times.' },
+    { id: 'three',   silk: 'red',    name: 'Three in One',   why: 'Three twists in a single swipe.' },
     /* Measured rather than hoped for: a straight line through two twists, over
        a hundred and twenty deals of each day, tops out at three anywhere from
        Monday to Friday and at five on a Saturday. Four is a Saturday job and
@@ -3497,10 +3506,15 @@ const ROSETTES = [
     { id: 'crew',    silk: 'purple', name: 'A Full Crew',     why: 'The bone, the cat and the lad, all at once.' },
     { id: 'pudding', silk: 'slate',  name: 'It Won’t Touch It', why: 'Watch the dog spit out a black pudding.' },
 
+    /* The two hidden ones. A locked row that says nothing at all is a thing to
+       look up; one that says the wrong amount is a thing to go and try. They
+       get a line each, and the two lines read as a pair in the order they sit
+       on the board. */
     { id: 'oof',     silk: 'blue',   name: 'Mind the Ribs',  why: 'Catch the butcher one in the window.',
-      secret: true },
+      secret: true, tease: 'Nobody has bothered the butcher yet today.' },
     { id: 'sausage', silk: 'pink',   name: 'Mind the Sausage',
-      why: 'Catch him somewhere a good deal worse.', secret: true },
+      why: 'Catch him somewhere a good deal worse.',
+      secret: true, tease: 'And there is somewhere worse than that.' },
 
     /* The one at the end of the row, and the only one that is about the wall
        itself. A champion rosette is two tiers of silk rather than one, so this
@@ -3563,7 +3577,10 @@ function sweep(quiet) {
     if (save.weeks >= 5) give('week');
     if (save.tally.perfect >= 25) give('dead');
     if (save.tally.perfect >= 500) give('fivehun');
-    if (save.tally.trebles >= 10) give('three');
+    // trebles is what the old count was kept under; ten of those is plainly
+    // ten doubles as well, so a wall swept in from before does not lose it
+    if (save.tally.doubles >= 10 || save.tally.trebles >= 10) give('two');
+    if (save.tally.trebles >= 1) give('three');
     if (save.tally.steaks >= 50) give('steaks');
     if (save.weeks >= 52) give('year');
     if (save.bank >= 10000) give('hundred');
@@ -5252,8 +5269,8 @@ function paintWall() {
         const hide = ro.secret && !got;
         return `<div class="pin${got ? ' up' : ''}">` +
                `<canvas width="56" height="68" data-pin="${ro.id}"></canvas>` +
-               `<span><span class="n">${hide ? '&bull; &bull; &bull;' : ro.name}</span>` +
-               `<span class="w">${hide ? 'Something nobody would go looking for.' : ro.why}</span>` +
+               `<span><span class="n">${hide ? '? ? ?' : ro.name}</span>` +
+               `<span class="w">${hide ? ro.tease : ro.why}</span>` +
                `</span></div>`;
     }).join('');
     document.getElementById('stock').innerHTML =
