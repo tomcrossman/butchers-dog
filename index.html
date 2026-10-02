@@ -710,8 +710,8 @@ body.waiting #hud { display: none; }
    its own fit it inside the two of them and keep it the shape it is - and the
    height is a share of this screen rather than of the window, so it is a
    share of what is actually left after the notch and the home bar. */
-#setup #signboard { max-width: min(84vw, 330px); max-height: 32%;
-                    width: auto; height: auto; margin: 2px 0 2px; }
+#setup #signboard { max-width: min(92vw, 352px); max-height: 38%;
+                    width: auto; height: auto; margin: 0 0 2px; }
 #setup .rows {
     background: linear-gradient(180deg, #3a2615, #24170c);
     box-shadow: 0 9px 20px rgba(28,20,14,.5), inset 0 1px 0 rgba(255,240,214,.09);
@@ -726,14 +726,19 @@ body.waiting #hud { display: none; }
 /* A short phone gets the same four things, smaller. Scrolling a title screen
    to find the button that starts the game is not a title screen. */
 @media (max-height: 700px) {
-    #setup #signboard { max-height: 29%; margin: 0; }
-    #preview { max-height: 21%; }
+    #setup #signboard { max-height: 34%; margin: 0; }
+    #preview { max-height: 19%; }
     #setup .row { padding: 7px 14px; }
     #setup .row b { font-size: 18px; }
     #setup .row input { font-size: 17px; padding: 4px 8px; }
-    #setup .nudge { font-size: 20px; }
+    #setup .nudge svg { width: 15px; height: 15px; }
     #setup .btn { padding: 11px; font-size: 18px; margin-top: 9px; }
     #setup { padding: 12px 18px; }
+}
+@media (max-height: 560px) {
+    #setup #signboard { max-height: 30%; }
+    #preview { max-height: 17%; }
+    #setup .row { padding: 5px 13px; }
 }
 /* The form butts straight onto the bottom of them. There is nothing to pull
    it up over - the apron and the dog are drawn to the very bottom edge of that
@@ -742,7 +747,7 @@ body.waiting #hud { display: none; }
 /* The two of them are what you are choosing, so they get the room: they were
    small enough on this screen to be a decoration rather than the thing the
    four lines underneath are about. */
-#preview { max-width: min(94vw, 368px); max-height: 23%; width: auto; height: auto; }
+#preview { max-width: min(94vw, 368px); max-height: 21%; width: auto; height: auto; }
 /* The dog is the whole point of the shop, so it does not scroll away with the
    first shelf: it is pinned to the top and every tile you try goes straight
    onto it, in view, without scrolling back up for a look. */
@@ -818,7 +823,7 @@ body.waiting #hud { display: none; }
 .row .lab { flex: none; width: 76px; text-align: left; font-size: 11px; font-weight: 900;
             letter-spacing: .1em; text-transform: uppercase; opacity: .55; }
 .row b { flex: 1; font-family: var(--font-display); font-weight: 400; font-size: 20px;
-         color: var(--cream); letter-spacing: .02em; }
+         line-height: 1; color: var(--cream); letter-spacing: .02em; }
 /* Cut into the plate: no line round it, just the shadow of an edge. */
 .row input {
     flex: 1; min-width: 0; background: rgba(0,0,0,.3); color: var(--cream);
@@ -831,12 +836,14 @@ body.waiting #hud { display: none; }
     outline: none;
     box-shadow: inset 0 2px 4px rgba(0,0,0,.45), inset 0 0 0 1.5px var(--gold);
 }
+/* Centred on the word, not on a line box: everything on one of these is a
+   drawn shape, so it sits where it is put. */
 .nudge {
-    flex: none; width: 32px; padding: 5px 0; cursor: pointer;
+    flex: none; width: 32px; height: 30px; padding: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
     background: none; color: var(--gold); border: 0; opacity: .68;
-    font-family: var(--font); font-size: 23px; line-height: 1;
 }
-.nudge svg { width: 17px; height: 17px; fill: currentColor; vertical-align: -3px; }
+.nudge svg { width: 17px; height: 17px; fill: currentColor; display: block; }
 .nudge:active { opacity: 1; transform: translateY(1px); }
 #stock { width: 100%; max-width: 330px; margin: 8px 0 4px; }
 .shelf { margin-bottom: 10px; }
@@ -1428,6 +1435,15 @@ body.waiting #hud { display: none; }
         <ellipse cx="5.2" cy="2.4" rx="1.7" ry="2.1"/>
         <ellipse cx="8.8" cy="2.4" rx="1.7" ry="2.1"/>
     </symbol>
+    <!-- The arrows either side of a choice. Drawn, not typed: the display
+         face has no such character, so they came off the body font and sat a
+         couple of pixels under a row of caps that has none. -->
+    <symbol id="i-prev" viewBox="0 0 14 14">
+        <path d="M 9 2.2 L 3.8 7 L 9 11.8 L 10.8 10.2 L 7.4 7 L 10.8 3.8 Z"/>
+    </symbol>
+    <symbol id="i-next" viewBox="0 0 14 14">
+        <path d="M 5 2.2 L 10.2 7 L 5 11.8 L 3.2 10.2 L 6.6 7 L 3.2 3.8 Z"/>
+    </symbol>
     <symbol id="i-dice" viewBox="0 0 14 14">
         <path d="M 3 1.2 H 11 A 1.8 1.8 0 0 1 12.8 3 V 11 A 1.8 1.8 0 0 1 11 12.8
                  H 3 A 1.8 1.8 0 0 1 1.2 11 V 3 A 1.8 1.8 0 0 1 3 1.2 Z"
@@ -1482,17 +1498,17 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="setup" hidden>
-        <canvas id="signboard" width="340" height="348"></canvas>
+        <canvas id="signboard" width="340" height="372"></canvas>
         <canvas id="preview" width="330" height="196"></canvas>
         <div class="rows">
             <div class="row"><span class="lab">Butcher</span>
-                <button class="nudge" data-pick="butcher" data-step="-1">&lsaquo;</button>
+                <button class="nudge" data-pick="butcher" data-step="-1"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
                 <b id="pick-butcher">Reg</b>
-                <button class="nudge" data-pick="butcher" data-step="1">&rsaquo;</button></div>
+                <button class="nudge" data-pick="butcher" data-step="1"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
             <div class="row"><span class="lab">Dog breed</span>
-                <button class="nudge" data-pick="dog" data-step="-1">&lsaquo;</button>
+                <button class="nudge" data-pick="dog" data-step="-1"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
                 <b id="pick-dog">Bulldog</b>
-                <button class="nudge" data-pick="dog" data-step="1">&rsaquo;</button></div>
+                <button class="nudge" data-pick="dog" data-step="1"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
             <div class="row"><span class="lab">Dog name</span>
                 <input id="in-dog" maxlength="12" autocomplete="off" spellcheck="false">
                 <button class="nudge" id="roll-dog" aria-label="Another name"><svg viewBox="0 0 14 14"><use href="#i-dice"/></svg></button></div>
@@ -1518,13 +1534,13 @@ body.waiting #hud { display: none; }
         <h2>Out the back</h2>
         <div class="rows">
             <div class="row"><span class="lab">Sound</span>
-                <button class="nudge" data-flip="sound">&lsaquo;</button>
+                <button class="nudge" data-flip="sound"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
                 <b id="set-sound">On</b>
-                <button class="nudge" data-flip="sound">&rsaquo;</button></div>
+                <button class="nudge" data-flip="sound"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
             <div class="row"><span class="lab">Debug</span>
-                <button class="nudge" data-flip="debug">&lsaquo;</button>
+                <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
                 <b id="set-debug">Off</b>
-                <button class="nudge" data-flip="debug">&rsaquo;</button></div>
+                <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
         </div>
         <p class="note" id="debug-note">Debug hands you every upgrade for nothing,
             so you can switch them on and see what they do.</p>
@@ -1572,7 +1588,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v118';
+const APP_VERSION = 'v119';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2281,6 +2297,14 @@ function dogAt() {
    is drawn as, because this ends the week on the spot and a near miss should
    be a near miss - but it is squarely in the way of the last twist on the
    string, which is exactly where the tempting cut is. */
+/* The dog is on the string, and so is the sausage it is about to take. A
+   circle round where it is standing therefore reaches up the string into the
+   link you are trying to cut off in front of it, and the last few at the
+   bottom of a string could not be cut at all without ending the day on them.
+   It reaches half as far up as it does down now: come into the dog and you
+   have cut the dog; pass across the sausage over its nose and you have cut the
+   sausage, which is what you were aiming at. */
+const DOG_UP = .5;
 function hitDog(sw) {
     if (!dog.going || dog.chomp > 0) return false;
     const [cx, cy, r0] = dogAt(), r = r0 * .66;
@@ -2290,7 +2314,9 @@ function hitDog(sw) {
         const len2 = dx * dx + dy * dy;
         let t = len2 ? ((cx - ax) * dx + (cy - ay) * dy) / len2 : 0;
         t = clamp(t, 0, 1);
-        if (Math.hypot(ax + dx * t - cx, ay + dy * t - cy) <= r) return true;
+        const px = ax + dx * t, py = ay + dy * t;
+        const oy = py < cy ? (py - cy) / DOG_UP : py - cy;
+        if (Math.hypot(px - cx, oy) <= r) return true;
     }
     return false;
 }
@@ -3065,7 +3091,7 @@ function endWeek() {
     /* The two of them, and a good week for one is a bad week for the other:
        the butcher with the takings held up next to a dog that has had nothing
        all week, or a dog that has never eaten better next to a man who has. */
-    const bg = document.getElementById('butcher').getContext('2d');
+    const bg = sharp(document.getElementById('butcher'), 330, 300);
     bg.clearRect(0, 0, 330, 300);
     // and it is not Reg holding the takings up with that head on, it is AI Reg
     drawButcher(bg, good, { cx: 112, cy: 202, bot: running('robot') });
@@ -3076,7 +3102,7 @@ function endWeek() {
         card.hidden = false;
         drawerShut();
         holdT = setTimeout(showShop, HOLD_MS);
-    }, 520);
+    }, 420);
 }
 /* You were aiming for the sausages. The week stops there and nothing is
    banked - a fail state with no cost is not one - and the dog gets a stone
@@ -3160,7 +3186,7 @@ function dogDown() {
     money = 0; showHud();
     vetOwed = vetBill(); vetGone = gone;
     const afford = save.bank >= vetOwed;
-    const bg = document.getElementById('butcher').getContext('2d');
+    const bg = sharp(document.getElementById('butcher'), 330, 300);
     bg.clearRect(0, 0, 330, 300);
     drawDowned(bg);                       // out cold, with the crosses for eyes
     document.getElementById('ribbon').textContent = 'OH DEAR';
@@ -3183,7 +3209,7 @@ function payVet() {
     award('vet');
     putSave();
     till();
-    const bg = document.getElementById('butcher').getContext('2d');
+    const bg = sharp(document.getElementById('butcher'), 330, 300);
     bg.clearRect(0, 0, 330, 300);
     drawPatient(bg);
     document.getElementById('ribbon').textContent = 'PATCHED UP';
@@ -3199,7 +3225,7 @@ function letHimGo(gone) { farewell(() => showGrave(gone)); }
 function showGrave(gone) {
     award('grave');
     save.tally.loyal = 0;             // whoever turns up Monday starts at nothing
-    const bg = document.getElementById('butcher').getContext('2d');
+    const bg = sharp(document.getElementById('butcher'), 330, 300);
     bg.clearRect(0, 0, 330, 300);
     drawGrave(bg, cast.dog.dog, pick(EPITAPH));
     document.getElementById('ribbon').textContent = 'OH DEAR';
@@ -3238,7 +3264,7 @@ function showGrave(gone) {
    second and a half before the stone arrived. It happens on the card now,
    where you already are. */
 function farewell(then) {
-    const g = document.getElementById('butcher').getContext('2d');
+    const g = sharp(document.getElementById('butcher'), 330, 300);
     const t0 = now();
     card.classList.add('going');
     const step = () => {
@@ -3304,7 +3330,7 @@ function drawDowned(g, ms) {
    while you decide, and stops the moment the card becomes something else. */
 function dazed() {
     if (card.className !== 'vet' || card.hidden) return;
-    const g = document.getElementById('butcher').getContext('2d');
+    const g = sharp(document.getElementById('butcher'), 330, 300);
     g.clearRect(0, 0, 330, 300);
     drawDowned(g, now());
     requestAnimationFrame(dazed);
@@ -3499,7 +3525,7 @@ function endMini() {
         if (mini && mini.lone) { mini = null; showShop(); return; }
         if (round < DAYS.length) mini = null;
         afterMini();
-    }, 900);
+    }, 340);   /* and the card is another 420 behind it, over the top of this */
 }
 /* Priced against a day rather than against nothing. A clean day is four to
    fifteen pounds for about five seconds of cutting; these were one thirty-five
@@ -7117,10 +7143,10 @@ function brickTile() {
 function drawSignBoard() {
     const c = document.getElementById('signboard');
     if (!c) return;
-    const g = c.getContext('2d');
-    const W = c.width, H = c.height, TAU = Math.PI * 2;
+    const W = 340, H = 372, TAU = Math.PI * 2;
+    const g = sharp(c, W, H);
     g.clearRect(0, 0, W, H);
-    const cx = W / 2, R = 114, cy = H - R - 14;
+    const cx = W / 2, R = 126, cy = H - R - 14;
     const IRON = '#231f1c', IRON_H = '#4a443d';
     const RING = '400 15px "Staatliches", "Alfa Slab One", Georgia, serif';
 
@@ -7130,7 +7156,7 @@ function drawSignBoard() {
        one side leaves the arm ending in mid-air and the sign hanging off to
        one side of everything else on the screen; this is fixed at both ends
        and the sign is under the middle of it. ---- */
-    const ay = 24, span = 148;
+    const ay = 24, span = 150;
     g.lineCap = 'round'; g.lineJoin = 'round';
     g.strokeStyle = IRON; g.lineWidth = 7;
     g.beginPath(); g.moveTo(cx - span, ay); g.lineTo(cx + span, ay); g.stroke();
@@ -7160,7 +7186,7 @@ function drawSignBoard() {
         /* Down onto the ring, not down to near it. The ring is a circle, so
            where the chain meets it is further down than the top of it. */
         const reach = cy - Math.sqrt(R * R - 58 * 58) + 10;
-        const n = Math.max(2, Math.round((reach - (ay + 13)) / 21));
+        const n = Math.max(2, Math.ceil((reach - (ay + 13)) / 21));
         for (let i = 0; i < n; i++) {
             g.beginPath(); g.ellipse(lx, ay + 13 + i * 21, 5, 11, 0, 0, TAU); g.stroke();
         }
@@ -7277,7 +7303,7 @@ function drawSignBoard() {
 function drawPreview(id, w, h, withMan) {
     const c = document.getElementById(id);
     if (!c) return;
-    const g = c.getContext('2d');
+    const g = sharp(c, w, h);
     g.clearRect(0, 0, w, h);
     if (withMan) {
         drawButcher(g, true, { cx: w * .33, cy: h * .84, k: .54, holds: 'knife' });
@@ -7399,9 +7425,13 @@ function paintSetup() {
     document.getElementById('pick-dog').textContent = breedList()[breedIndex()].name;
     drawPreview('preview', 330, 196, true);
 }
-/* The webfont decides how wide every one of those words is, so the sign is
-   painted again once it has actually arrived. */
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawSignBoard());
+/* The webfont decides how wide every one of those words is, so anything with
+   words painted into a canvas is painted again once it has actually arrived.
+   On a cold load both of these go up in Georgia otherwise. */
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => {
+    drawSignBoard();
+    if (document.getElementById('shopfront')) drawShopfront();
+});
 function openSetup() {
     document.getElementById('in-dog').value = save.dogName;
     document.getElementById('in-shop').value = save.shop;
@@ -7474,7 +7504,7 @@ function drawBlanket(g, cx, cy, k, ang, plain, P = MEAT) {
     g.restore();
 }
 function drawTile(c, item, circle = true, k0 = .46) {
-    const g = c.getContext('2d');
+    const g = sharp(c, TILE_W, TILE_H);
     g.clearRect(0, 0, TILE_W, TILE_H);
     if (item.kind === 'line') {
         if (item.id === 'moresteak') {
@@ -8009,7 +8039,7 @@ function doWipe() {
    else. */
 const themeMeta = document.querySelector('meta[name="theme-color"]');
 const theme = c => { if (themeMeta && themeMeta.content !== c) themeMeta.content = c; };
-const FASCIA = '#241a16', TILE = '#235c46';
+const FASCIA = '#241a16', TILE = '#235c46', WALL_RED = '#a2583f';
 
 function showShop() {
     theme(FASCIA);
@@ -8515,8 +8545,22 @@ const ouch = () => safely(t => {
     tone(t, { freq: 1180, to: 980, dur: .5, type: 'triangle', vol: .11, at: .2 });
     tone(t, { freq: 1772, to: 1470, dur: .5, type: 'sine', vol: .04, at: .2 });
 });
+/* A canvas three hundred and forty across, blown up to fill a four hundred
+   and thirty pixel window on a three-times screen, is being drawn at about a
+   quarter of the resolution the screen has got - which is exactly as blurry as
+   that sounds. The backing store is sized to what it will actually be shown
+   at; the drawing keeps its own coordinates and knows nothing about it. */
+function sharp(c, w, h) {
+    const S = Math.max(1, Math.min(3.5,
+        Math.min(3, window.devicePixelRatio || 1) * Math.max(1, (c.clientWidth || w) / w)));
+    const bw = Math.round(w * S), bh = Math.round(h * S);
+    if (c.width !== bw || c.height !== bh) { c.width = bw; c.height = bh; }
+    const g = c.getContext('2d');
+    g.setTransform(S, 0, 0, S, 0, 0);
+    return g;
+}
 function drawShopfront() {
-    const c = document.getElementById('shopfront'), g = c.getContext('2d');
+    const c = document.getElementById('shopfront'), g = sharp(c, 340, 400);
     g.clearRect(0, 0, 340, 400);
     drawRoom(g);
     drawFascia(g, cast.shop, cast.butcher.apron);
@@ -8671,7 +8715,9 @@ fit();
 makeString(1);
 dog.s = string.len + 64;          // waiting at the bottom of the title page
 draw();
-theme(started ? FASCIA : TILE);   // whatever is at the top of the screen on boot
+/* Whatever is at the top of the screen on boot - and before there is a shop
+   that is the brick wall the sign hangs on, not the tiles you play against. */
+theme(started ? FASCIA : WALL_RED);
 if (!started) openSetup();
 </script>
 </body>

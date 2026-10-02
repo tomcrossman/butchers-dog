@@ -867,6 +867,23 @@ and the bell. A shelf whose only sign you have spent two hundred pounds is
 that a word has changed from a price to Purchased is a shelf that has not
 noticed.
 
+**The dog is cut when the blade goes into it, not when it passes over its
+head.** The dog climbs the string, so it is on the string, and so is the
+sausage it is about to take: a circle round where it stands reaches up into the
+link you are trying to cut off in front of it, and the last few at the bottom
+could not be cut at all without ending the day on them. Its reach up the string
+is half its reach down now. Come into it and you have cut the dog; pass across
+the sausage over its nose and you have cut the sausage, which is what you were
+aiming at.
+
+**The canvases are drawn at the resolution the screen has got.** A shopfront
+three hundred and forty across, blown up to fill a four hundred and thirty
+pixel window on a three-times screen, is being drawn at about a quarter of the
+screen's resolution - which is exactly as blurry as that sounds. The backing
+store is sized to what the thing will actually be shown at and the drawing
+keeps its own coordinates, so nothing in it had to change. The sign, the two of
+them on the setup screen, the shelf tiles and the week's card all got it.
+
 **Out the back is a back room.** The same brickwork the front of the building
 is made of, one bulb over the door and nothing on the walls, with the version
 screwed to the bottom of it rather than floating under whatever the last thing
