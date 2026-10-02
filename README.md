@@ -167,6 +167,12 @@ All three are stood on the shopfront before you open up, and every new week is
 dealt there rather than behind your back: finishing a week takes you back to
 the shop window to meet the next lot.
 
+The name under them and the money under that are set large - they are the two
+things on that screen you actually read, and they were at thirteen and
+twenty-seven pixels against a three-hundred-pixel shopfront. The money has a
+till beside it rather than a banknote, because the money in this game goes in a
+till: a sign on top, a keypad knocked out of the body and the drawer under it.
+
 They are drawn as big as the window will hold them. There were ninety-odd dead
 pixels between the awning and his hat, and the canvas stopped at its own three
 hundred and forty rather than filling what it was given, so a phone showed two
@@ -181,8 +187,12 @@ than starting a second one.
 **And you can wind the butcher.** Tap him and he folds over it, the knife hand
 drops, his eyes screw shut, his mouth goes to an O, three stars go round the
 boater and he straightens back up - pivoted on his boots rather than his
-middle, because a man bending at the waist does not slide across the floor. It
-is about as far as a game where you are the one holding the knife ought to go.
+middle, because a man bending at the waist does not slide across the floor.
+
+There is a smaller box inside that one, down where the apron does the most
+work, and it does not fold him forwards at all: he goes up on his toes with his
+knees together, shivering, the stars going round twice as fast and a man an
+octave above his own voice. Both are rosettes and both are secret.
 
 Neither costs anything, changes anything or is for sale, and neither is
 anywhere else: the window is the one screen in this game with no clock on it,
@@ -494,9 +504,13 @@ the next person who looks at your shop can see what it has done.
 
 They go up under the awning, behind the butcher and the dog, because that is
 where a butcher puts them and because the wall is the one part of that window
-with nothing on it. The row tightens as it fills and past fourteen the oldest
-come down - the full board is in the shop, under **The wall**, and a window is
-a window rather than an archive.
+with nothing on it. Twelve to a row and as many rows as it takes - the lot is
+three rows, and the lower two go behind the two of them, which is what a wall
+of rosettes with the staff stood in front of it looks like. Every row starts at
+the same edge rather than centring on its own width: a short second row centred
+lands square on the butcher's hat and reads as a wonky pyramid. The full board,
+with the ones you have not won and what they want, is in the shop under **The
+wall**.
 
 One landing drops a ticket in from under the rail in the same hand as the
 week's takings, with a bell over it. It reports, it does not ask: nothing to
@@ -508,17 +522,49 @@ A rosette is two ribbon tails, a ring of twelve pleats and a button. Twelve,
 because eight reads as a cog and twenty reads as a circle. It is drawn like
 everything else in here and it works at nine pixels and at ninety.
 
-What they are for: opening up, a week's work, spending some of it. A perfect
-cut and fifty of them. Two, three and four twists in one swipe. A week the dog
-got nothing, five of those, the hour after closing, all three of its games, and
-a barbecue with nothing black on it. A hundred pounds, a thousand, ten
-thousand, and sixty in one week. The vet's bill paid, a dog buried, twenty pats,
-and a dog in a bought hat, face and collar at once. Every knife, everything on
-the rail, and every single thing in the shop. Selling a whole string in a day,
-and doing it on a Saturday. Six perfect cuts in a day. A week without halving
-one yourself. Fifty-two weeks, ten of them with the same dog. The bone, the cat
-and the lad all at once. Watching the dog find out what is in a black pudding.
-And one nobody would go looking for, which stays dots until it happens.
+**These are for a shop that has been open a while, not for a first run.**
+The first pass gave one for getting through a day, one for a single perfect
+cut, one for buying anything at all, one for taking two twists in a swipe, one
+for playing one game after hours and one for selling out a Monday's four links.
+All of those happen in week one whether you meant them or not, and five
+rosettes in your first six days is a welcome mat rather than a prize. Every one
+of them is a count now, and the counts go far enough that a wall takes a year
+rather than a weekend. An ordinary first week gives nothing at all. A flawless
+one gives three, and all three are hard.
+
+What they are for: five weeks in the shop and fifty-two. Ten things bought and
+paid for. Twenty-five perfect cuts, a hundred, and five hundred. Three twists
+in one swipe ten times - and four in one swipe once, which the board tells you
+to try on a Saturday, because a straight line through two twists tops out at
+three anywhere from Monday to Friday and at five on a Saturday, measured over a
+hundred and twenty deals of each. A week the dog got nothing, ten of those, ten
+hours after closing, all three of its games, and a barbecue with nothing black
+on it. A hundred pounds, a thousand, five thousand, and a hundred and twenty in one week - a shop with the rail stocked,
+the slab stocked and an hour after closing clears a hundred and thirty, and
+sixty was a middling Tuesday-to-Saturday. The
+vet's bill paid, a dog buried, fifty pats, and a dog in a bought hat, face and
+collar at once. Every knife, everything on the rail, and every single thing in
+the shop. Selling every link on a Saturday - eleven of them against a dog at
+nearly twice Monday's speed, which Monday's four is not. Six perfect cuts in a
+day. A week without halving one yourself. Ten weeks with the same dog. The
+bone, the cat and the lad all at once. Watching the dog find out what is in a
+black pudding. And **two** nobody would go looking for, which stay dots on the
+board until they happen. They are both the butcher: one in the ribs folds a man
+forwards, and one lower down does not - he goes up on his toes with his knees
+together and stays there, stars going round the boater twice as fast and an
+octave above his own voice. That is the entire joke and about as far as it
+needs to go.
+
+Last of all, **Butcher of the Year**: every other rosette on the wall. A
+champion rosette at a county show is two tiers of silk rather than one, so that
+is how it is drawn, and it hangs bigger than the rest of the row. That is the
+whole of its reward and quite enough. It is the one rosette that is about the
+wall rather than about the shop, and the one that needs both secrets found -
+which by then are the only things left on the board, and the board will have
+told you there are two.
+
+What that comes to, played out: nothing in an ordinary first week, three in a
+flawless one, four by week five, nine by week twenty and twenty by week sixty.
 
 The board shows the unwon ones and what they want, because a locked row that
 will not say what it is is a thing to look up rather than a thing to go and do.

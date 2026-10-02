@@ -240,8 +240,8 @@ body.waiting #hud { display: none; }
     width: 132px; height: 2px; margin: 16px 0 12px;
     background: linear-gradient(90deg, transparent, var(--gold-d), transparent);
 }
-#intro p { margin: 0; max-width: 330px; font-size: 13px; font-weight: 700;
-           line-height: 1.6; letter-spacing: .04em; opacity: .74; }
+#intro p { margin: 0; max-width: 330px; font-size: 15px; font-weight: 700;
+           line-height: 1.55; letter-spacing: .03em; opacity: .8; }
 /* The sign, the two of them and the till belong together - they are one thing
    being shown - and the buttons are the footer. Two blocks, not five. */
 #intro .top, #intro .mid, #intro .acts {
@@ -259,9 +259,9 @@ body.waiting #hud { display: none; }
 .bank .ico { width: 17px; height: 17px; flex: none; fill: var(--gold); opacity: .55; }
 .bank b { font-family: var(--font-display); font-size: 17px; letter-spacing: .02em;
           color: var(--gold); }
-#bank-line { margin-top: 12px; gap: 10px; }
-#bank-line .ico { width: 24px; height: 24px; }
-#bank-line b { font-size: 27px; text-shadow: 0 3px 0 rgba(0,0,0,.4); }
+#bank-line { margin-top: 13px; gap: 11px; }
+#bank-line .ico { width: 31px; height: 31px; opacity: .72; }
+#bank-line b { font-size: 34px; text-shadow: 0 3px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
 #setup, #store, #settings, #confirm {
@@ -662,6 +662,19 @@ body.waiting #hud { display: none; }
         <path d="M 8.6 6.6 H 10.2 V 8 H 8.6 Z"/><path d="M 3.8 9 H 5.4 V 10.4 H 3.8 Z"/>
         <path d="M 6.2 9 H 7.8 V 10.4 H 6.2 Z"/>
     </symbol>
+    <!-- The shop till: a sign on top, a keypad knocked out of the body and
+         the drawer under it. What the money in this game actually sits in. -->
+    <symbol id="i-till" viewBox="0 0 14 14">
+        <path fill-rule="evenodd" d="M 3.6 .3 H 10.4 V 4.3 H 3.6 Z
+                 M 5.1 1.5 V 3.1 H 8.9 V 1.5 Z"/>
+        <path d="M 6.3 4.3 H 7.7 V 5.5 H 6.3 Z"/>
+        <path fill-rule="evenodd" d="M .7 5.5 H 13.3 V 13.5 H .7 Z
+                 M 2.3 9.5 V 11.9 H 11.7 V 9.5 Z
+                 M 4 6.6 A .85 .85 0 1 0 4.01 6.6 Z
+                 M 7 6.6 A .85 .85 0 1 0 7.01 6.6 Z
+                 M 10 6.6 A .85 .85 0 1 0 10.01 6.6 Z"/>
+        <path d="M 5.7 10.3 H 8.3 V 11.1 H 5.7 Z"/>
+    </symbol>
     <symbol id="i-cash" viewBox="0 0 14 14">
         <path fill-rule="evenodd" d="M .4 2.6 H 13.6 V 11.4 H .4 Z
                  M 2 4.2 V 9.8 H 12 V 4.2 Z"/>
@@ -808,7 +821,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v77';
+const APP_VERSION = 'v80';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1573,7 +1586,9 @@ function cut(swipe) {
             const push = (hits - 1) * dog.speed * .55 * (.55 + avg / 220);
             dog.s = Math.min(string.len + 70, dog.s + push);
             dog.chomp = 0;
-            award(hits === 2 ? 'two' : hits === 3 ? 'three' : 'four');
+            if (hits >= 3) save.tally.trebles++;
+            if (save.tally.trebles >= 10) award('three');
+            if (hits >= 4) award('four');
             shouts.push({ text: CHEER[Math.min(hits, 6)] || `${hits} AT ONCE`,
                           x: mid.x, y: mid.y, t0: now() });
             fanfare(hits);
@@ -1619,9 +1634,10 @@ function splitAt(p, k, q) {
            the only moment there is nothing spare to read it with. */
         shouts.push({ text: 'PERFECT', x: px, y: py - 30, t0: now(), gold: true });
         save.tally.perfect++; perfectToday++;
-        award('dead');
         if (perfectToday >= 6) award('six');
-        if (save.tally.perfect >= 50) award('fifty');
+        if (save.tally.perfect >= 25) award('dead');
+        if (save.tally.perfect >= 100) award('fifty');
+        if (save.tally.perfect >= 500) award('fivehun');
         ping();
     }
 }
@@ -1940,11 +1956,9 @@ function endRound() {
     if (!live) return;
     live = false; armed = false; dog.going = false; teaching = false;
     countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
-    award('open');
-    if (saved === string.n) {
-        award('sweep');
-        if (round === DAYS.length) award('saturday');
-    }
+    // every link off a Saturday string, which is eleven of them against a dog
+    // at nearly twice Monday's speed. Monday's four is not the same feat.
+    if (saved === string.n && round === DAYS.length) award('saturday');
     ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, ate, steaks });
     tallying = true;
     /* Which of the three lines it gets is the dog's doing, not yours: THE DOG
@@ -1996,7 +2010,7 @@ function endWeek() {
     save.tally.loyal++;
     if (!fed) save.tally.clean++;
     if (!spoiled) award('nowt');
-    if (money >= 6000) award('bigweek');
+    if (money >= 12000) award('bigweek');
     putSave();
     sweep();
     /* Nothing here is measured against another week. What the art is allowed
@@ -2431,6 +2445,7 @@ function endMini() {
        line is half a line: it gets counted for what is on there. */
     if (mini.id === 'sauce' && !mini.won) sauceScore();
     mini.done = true;
+    save.tally.hours++;
     if (!save.tally.minis.includes(mini.id)) save.tally.minis.push(mini.id);
     if (mini.id === 'grill' && mini.bangers.every(b => !b.gone)) award('noburn');
     money += mini.won; showHud();
@@ -3326,7 +3341,7 @@ const FRESH = () => ({
     /* The wall. `got` is which rosettes are on it; `tally` is the handful of
        running counts that no other part of the game had a reason to keep. */
     got: [],
-    tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0 },
+    tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0, trebles: 0, hours: 0 },
 });
 let save = FRESH(), started = false;
 function loadSave() {
@@ -3336,6 +3351,9 @@ function loadSave() {
             save = Object.assign(FRESH(), JSON.parse(raw));
             // a shop from before the wall existed has neither of these
             if (!Array.isArray(save.got)) save.got = [];
+            // three of them were given away too cheaply and have been taken off
+            // the board; a shop that holds one should not be counted out of 33
+            save.got = save.got.filter(id => ROSETTES.some(r => r.id === id));
             save.tally = Object.assign(FRESH().tally, save.tally || {});
             if (!Array.isArray(save.tally.minis)) save.tally.minis = [];
             // the chef's hat used to share an id with the butcher's knife
@@ -3379,38 +3397,53 @@ const SILK = {
     slate:  ['#6e6a63', '#403d38'],
 };
 const ROSETTES = [
-    { id: 'open',    silk: 'brass',  name: 'Opening Time',   why: 'Get through your first day.' },
-    { id: 'week',    silk: 'brass',  name: 'A Week’s Work',  why: 'Monday to Saturday, all six.' },
-    { id: 'buy',     silk: 'brass',  name: 'Spending It',    why: 'Buy something with the takings.' },
+    /* These are for a shop that has been open a while, not for a first run.
+       Anything that lands the first time you do an ordinary thing - get
+       through a day, land one perfect cut, buy one hat, take two twists in a
+       swipe, play one game after hours - is a welcome mat rather than a prize,
+       and five of those in your first six days is worth nothing at all. Every
+       one of them is a count now, and the counts go up far enough that a wall
+       takes a year rather than a weekend. */
+    { id: 'week',    silk: 'brass',  name: 'Five Weeks In',  why: 'Five weeks in the same shop.' },
+    { id: 'buy',     silk: 'brass',  name: 'Stocked Up',     why: 'Ten things bought and paid for.' },
 
-    { id: 'dead',    silk: 'gold',   name: 'Dead Centre',    why: 'One perfect cut.' },
-    { id: 'fifty',   silk: 'gold',   name: 'Fifty of Them',  why: 'Fifty perfect cuts, all told.' },
-    { id: 'two',     silk: 'red',    name: 'Two in One',     why: 'Two twists in a single swipe.' },
-    { id: 'three',   silk: 'red',    name: 'Three in One',   why: 'Three twists in a single swipe.' },
-    { id: 'four',    silk: 'red',    name: 'A Proper Butcher', why: 'Four or more in one swipe.' },
+    { id: 'dead',    silk: 'gold',   name: 'Dead Centre',    why: 'Twenty-five perfect cuts.' },
+    { id: 'fifty',   silk: 'gold',   name: 'A Hundred of Them', why: 'A hundred perfect cuts, all told.' },
+    { id: 'fivehun', silk: 'gold',   name: 'Five Hundred',   why: 'Five hundred perfect cuts. Keep going.' },
+    { id: 'three',   silk: 'red',    name: 'Three in One',   why: 'Three twists in a single swipe, ten times.' },
+    /* Measured rather than hoped for: a straight line through two twists, over
+       a hundred and twenty deals of each day, tops out at three anywhere from
+       Monday to Friday and at five on a Saturday. Four is a Saturday job and
+       the board says so, because a rosette nobody can work out how to get is
+       not hard, it is broken. */
+    { id: 'four',    silk: 'red',    name: 'A Proper Butcher',
+      why: 'Four or more in one swipe. You will want a Saturday.' },
 
     { id: 'clean',   silk: 'green',  name: 'Not One Lost',   why: 'A whole week the dog got nothing.' },
-    { id: 'clean5',  silk: 'green',  name: 'Five Clean Weeks', why: 'And four more like it.' },
-    { id: 'after',   silk: 'green',  name: 'After Hours',    why: 'Stay behind for the hour a clean week buys.' },
+    { id: 'clean5',  silk: 'green',  name: 'Ten Clean Weeks', why: 'And nine more like it.' },
+    { id: 'after',   silk: 'green',  name: 'After Hours',    why: 'Ten hours after closing, which is ten clean weeks’ worth.' },
     { id: 'three3',  silk: 'green',  name: 'All Three',      why: 'Play all three of the after-hours games.' },
     { id: 'noburn',  silk: 'red',    name: 'Nothing Burnt',  why: 'Five off the barbecue and not one black.' },
 
     { id: 'hundred', silk: 'brass',  name: 'A Hundred Pounds', why: 'A hundred in the till.' },
     { id: 'grand',   silk: 'brass',  name: 'A Thousand',     why: 'A thousand in the till.' },
-    { id: 'tenk',    silk: 'gold',   name: 'Ten Thousand',   why: 'Ten thousand in the till.' },
-    { id: 'bigweek', silk: 'gold',   name: 'A Very Good Week', why: 'Sixty pounds in six days.' },
+    { id: 'tenk',    silk: 'gold',   name: 'Five Thousand',  why: 'Five thousand in the till.' },
+    /* Sixty was a middling week with two upgrades on. A shop with the rail
+       stocked, the slab stocked and an hour after closing clears a hundred and
+       thirty, so this wants most of that. */
+    { id: 'bigweek', silk: 'gold',   name: 'A Very Good Week',
+      why: 'A hundred and twenty pounds in six days.' },
 
     { id: 'vet',     silk: 'pink',   name: 'The Vet’s Bill', why: 'Pay it rather than say goodbye.' },
     { id: 'grave',   silk: 'slate',  name: 'A Very Good Dog', why: 'Bury one. You will.' },
-    { id: 'pats',    silk: 'pink',   name: 'Good Boy',       why: 'Pat the dog twenty times.' },
+    { id: 'pats',    silk: 'pink',   name: 'Good Boy',       why: 'Pat the dog fifty times.' },
     { id: 'dressed', silk: 'purple', name: 'Done Up',        why: 'Hat, face and collar, all bought and on.' },
 
     { id: 'block',   silk: 'steel',  name: 'The Whole Block', why: 'Every knife on the block.' },
     { id: 'rail',    silk: 'red',    name: 'Fully Stocked',  why: 'Everything there is for the rail.' },
     { id: 'lot',     silk: 'gold',   name: 'A Cut Above',    why: 'Every single thing in the shop.' },
 
-    { id: 'sweep',   silk: 'green',  name: 'A Clean Sweep',  why: 'Sell every link on the string in a day.' },
-    { id: 'saturday',silk: 'gold',   name: 'Saturday Night',  why: 'Do it on a Saturday. Eleven of them.' },
+    { id: 'saturday',silk: 'gold',   name: 'Saturday Night',  why: 'Sell every link on a Saturday. Eleven of them.' },
     { id: 'six',     silk: 'gold',   name: 'Six of the Best', why: 'Six perfect cuts in one day.' },
     { id: 'nowt',    silk: 'green',  name: 'Nothing Wasted',  why: 'A week without halving a single one yourself.' },
     { id: 'year',    silk: 'gold',   name: 'A Full Year',     why: 'Fifty-two weeks in the same shop.' },
@@ -3420,6 +3453,15 @@ const ROSETTES = [
 
     { id: 'oof',     silk: 'blue',   name: 'Mind the Ribs',  why: 'Catch the butcher one in the window.',
       secret: true },
+    { id: 'sausage', silk: 'pink',   name: 'Mind the Sausage',
+      why: 'Catch him somewhere a good deal worse.', secret: true },
+
+    /* The one at the end of the row, and the only one that is about the wall
+       itself. A champion rosette is two tiers of silk rather than one, so this
+       one is drawn that way and hangs bigger than the rest of them - which is
+       the whole of its reward, and quite enough. */
+    { id: 'best',    silk: 'gold',   name: 'Butcher of the Year',
+      why: 'Every other rosette on this wall.', grand: true },
 ];
 const rosetteById = id => ROSETTES.find(r => r.id === id);
 const won = id => save.got.includes(id);
@@ -3439,7 +3481,7 @@ function nextGong() {
         `<span class="n">${ro.name}</span>` +
         `<span class="w">${ro.why}</span></span>`;
     const g = el.querySelector('canvas').getContext('2d');
-    drawRosette(g, 38, 34, 26, ro.silk);
+    drawRosette(g, 38, 34, ro.grand ? 19 : 26, ro.silk, false, ro.grand);
     el.hidden = false;
     el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
     ding();
@@ -3472,24 +3514,25 @@ function sweep(quiet) {
        that has done sixty weeks plainly got through a Monday. The counts imply
        the rosettes underneath them, so a wall swept in from an old save does
        not have holes in it that cannot be gone back and filled. */
-    if (save.weeks >= 1) { give('open'); give('week'); }
-    if (save.tally.perfect >= 1) give('dead');
+    if (save.weeks >= 5) give('week');
+    if (save.tally.perfect >= 25) give('dead');
+    if (save.tally.perfect >= 500) give('fivehun');
+    if (save.tally.trebles >= 10) give('three');
     if (save.weeks >= 52) give('year');
-    if (save.tally.minis.includes('grill')) give('after');
     if (save.bank >= 10000) give('hundred');
     if (save.bank >= 100000) give('grand');
-    if (save.bank >= 1000000) give('tenk');
-    if (save.tally.perfect >= 50) give('fifty');
+    if (save.bank >= 500000) give('tenk');
+    if (save.tally.perfect >= 100) give('fifty');
     if (save.tally.clean >= 1) give('clean');
-    if (save.tally.clean >= 5) give('clean5');
-    if (save.tally.pats >= 20) give('pats');
+    if (save.tally.clean >= 10) give('clean5');
+    if (save.tally.pats >= 50) give('pats');
     if (save.tally.loyal >= 10) give('loyal');
-    if (save.tally.minis.length >= 1) give('after');
+    if (save.tally.hours >= 10) give('after');
     if (save.tally.minis.length >= 3) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');
     // the shelves, counted off what is actually on them rather than a number
     const bought = STOCK.filter(i => i.price > 0);
-    if (bought.some(i => save.owned.includes(i.id))) give('buy');
+    if (bought.filter(i => save.owned.includes(i.id)).length >= 10) give('buy');
     const all = k => bought.filter(i => i.kind === k).every(i => save.owned.includes(i.id));
     if (all('knife')) give('block');
     if (all('line')) give('rail');
@@ -3497,6 +3540,8 @@ function sweep(quiet) {
     // dressed up: a bought one on its head, its face and its neck at once
     const paid = k => { const i = itemById(save.worn[k]); return i && i.price > 0; };
     if (paid('hat') && paid('face') && paid('collar')) give('dressed');
+    // and last of all, the one for having all the others
+    if (ROSETTES.every(r => r.grand || save.got.includes(r.id))) give('best');
 }
 /* Debug hands you the whole shop for nothing. It is a switch in the back room
    rather than a build flag, because the thing worth testing is what the
@@ -4827,7 +4872,7 @@ function drawPreview(id, w, h, withMan) {
 function showBank() {
     /* The words were doing nothing the picture does not, and a label in front
        of a number pushes the number off the middle of the screen. */
-    const t = `<svg class="ico"><use href="#i-cash"/></svg><b>${money2(save.bank)}</b>`;
+    const t = `<svg class="ico"><use href="#i-till"/></svg><b>${money2(save.bank)}</b>`;
     bankLine.innerHTML = t;
     document.getElementById('store-bank').innerHTML = t;
 }
@@ -5117,7 +5162,8 @@ function paintWall() {
         `<div class="pins">${rows}</div></div>`;
     document.querySelectorAll('#stock canvas[data-pin]').forEach(c => {
         const ro = rosetteById(c.dataset.pin);
-        drawRosette(c.getContext('2d'), 28, 25, 20, ro.silk, !won(ro.id));
+        drawRosette(c.getContext('2d'), 28, 25, ro.grand ? 15 : 20, ro.silk,
+                    !won(ro.id), ro.grand);
     });
 }
 /* A tile tap only ever tries a thing on. This is where it is bought, and it
@@ -5401,7 +5447,7 @@ function drawFascia(g, name, apron) {
    the middle of it. Twelve pleats, because eight reads as a cog and twenty
    reads as a circle. Drawn rather than photographed like everything else in
    here, and it works at nine pixels and at ninety. */
-function drawRosette(g, x, y, r, silk, dull) {
+function drawRosette(g, x, y, r, silk, dull, grand) {
     const [pale, deep] = dull ? ['#3b5a4c', '#2d473c'] : SILK[silk] || SILK.gold;
     g.save();
     g.translate(x, y);
@@ -5413,15 +5459,25 @@ function drawRosette(g, x, y, r, silk, dull) {
         g.lineTo(sx * r * .20, r * 1.95);
         g.closePath(); g.fill();
     }
-    g.beginPath();                                        // the pleats
-    const N = 12;
-    for (let i = 0; i <= N * 2; i++) {
-        const a = i * Math.PI / N - Math.PI / 2, rr = i % 2 ? r * .72 : r;
-        const px = Math.cos(a) * rr, py = Math.sin(a) * rr;
-        i ? g.lineTo(px, py) : g.moveTo(px, py);
+    const pleats = (rr0, fill) => {
+        g.beginPath();
+        const N = 12;
+        for (let i = 0; i <= N * 2; i++) {
+            const a = i * Math.PI / N - Math.PI / 2, rr = i % 2 ? rr0 * .72 : rr0;
+            const px = Math.cos(a) * rr, py = Math.sin(a) * rr;
+            i ? g.lineTo(px, py) : g.moveTo(px, py);
+        }
+        g.closePath();
+        g.fillStyle = fill; g.fill();
+    };
+    // a champion rosette is two tiers of silk, the under one turned half a
+    // pleat so the points show through between the ones on top
+    if (grand) {
+        g.save(); g.rotate(Math.PI / 12);
+        pleats(r * 1.34, deep);
+        g.restore();
     }
-    g.closePath();
-    g.fillStyle = pale; g.fill();
+    pleats(r, pale);
     g.beginPath(); g.arc(0, 0, r * .46, 0, Math.PI * 2);  // and the button
     g.fillStyle = deep; g.fill();
     g.beginPath(); g.arc(0, -r * .06, r * .26, 0, Math.PI * 2);
@@ -5441,6 +5497,10 @@ function drawRosette(g, x, y, r, silk, dull) {
 const DOG_AT = [268, 320], PET_AT = [268, 336], PET_R = 74, PET_MS = 1250;
 // where he stands, and the box you have to hit to catch him with one
 const BUT_AT = [112, 312], OOF_BOX = [54, 152, 174, 400];
+/* And a smaller one inside it, down where the apron does the most work. He is
+   drawn from his own middle at nine tenths scale, and the bit in question runs
+   from about forty to ninety below that. */
+const GROIN_BOX = [90, 346, 134, 396];
 let petting = null, petRaf = 0;
 function petDog() {
     const t = now();
@@ -5453,7 +5513,7 @@ function petDog() {
                               r: 7 + Math.random() * 4 });
     aww();
     save.tally.pats++;
-    if (save.tally.pats >= 20) { award('pats'); } else putSave();
+    if (save.tally.pats >= 50) { award('pats'); } else putSave();
     if (!petRaf) petRaf = requestAnimationFrame(petStep);
 }
 function petStep() {
@@ -5490,11 +5550,15 @@ function heart(g, x, y, r, a) {
    holding the knife should go. Pivoted on his boots rather than his middle,
    because a man bending at the waist does not slide across the floor. */
 const OOF_MS = 900;
-let oofT0 = 0, oofRaf = 0;
-function windButcher() {
+let oofT0 = 0, oofRaf = 0, oofKind = 'ribs';
+function windButcher(kind) {
+    oofKind = kind || 'ribs';
     oofT0 = now();
-    oof();
-    award('oof');
+    /* One in the ribs folds a man forwards. The other does not: he goes up on
+       his toes with his knees together and stays there, which is the entire
+       joke and about as far as it needs to go. */
+    if (oofKind === 'groin') { ouch(); award('sausage'); }
+    else { oof(); award('oof'); }
     if (!oofRaf) oofRaf = requestAnimationFrame(oofStep);
 }
 function oofStep() {
@@ -5510,6 +5574,13 @@ const oof = () => safely(t => {
     tone(t, { freq: 300, to: 148, dur: .3, type: 'sawtooth', vol: .1, at: .06 });  // and him
     hiss(t, { hp: 300, lp: 2400, dur: .34, vol: .1, at: .08 });
 });
+// the other one. A small dull knock and then a man an octave above his own
+const ouch = () => safely(t => {
+    sweep(t, { from: 900, to: 260, q: 1.4, dur: .1, vol: .22 });
+    tone(t, { freq: 740, to: 1180, dur: .18, type: 'triangle', vol: .14, at: .04 });
+    tone(t, { freq: 1180, to: 980, dur: .5, type: 'triangle', vol: .11, at: .2 });
+    tone(t, { freq: 1772, to: 1470, dur: .5, type: 'sine', vol: .04, at: .2 });
+});
 function drawShopfront() {
     const c = document.getElementById('shopfront'), g = c.getContext('2d');
     g.clearRect(0, 0, 340, 400);
@@ -5520,12 +5591,25 @@ function drawShopfront() {
        tightens as it fills, and past fourteen the oldest come down - the full
        board is in the shop, and a window is a window, not an archive. */
     if (save.got.length) {
-        const up = save.got.slice(-14);
-        const gap = Math.min(30, 300 / up.length);
+        /* It wraps rather than throwing the old ones away. Twelve to a row and
+           as many rows as it takes: the lot is thirty-two, which is three rows,
+           and the lower ones go behind the two of them - which is what a wall
+           of rosettes with the staff stood in front of it looks like, and the
+           ends of every row are in the clear either way. */
+        const up = save.got, per = 12;
+        const gap = Math.min(30, 300 / Math.min(up.length, per));
         const r = Math.min(12, gap * .42);
+        /* Every row starts at the same edge rather than centring on its own
+           width. A short second row centred lands square on the butcher's hat
+           and reads as a wonky pyramid; lined up under the first it reads as a
+           wall with somebody stood in front of part of it, which is what it
+           is. */
+        const x0 = 170 - (Math.min(up.length, per) - 1) / 2 * gap;
         up.forEach((id, i) => {
             const ro = rosetteById(id);
-            if (ro) drawRosette(g, 170 + (i - (up.length - 1) / 2) * gap, 130, r, ro.silk);
+            if (!ro) return;
+            drawRosette(g, x0 + (i % per) * gap, 130 + ((i / per) | 0) * 24,
+                        ro.grand ? r * 1.3 : r, ro.silk, false, ro.grand);
         });
     }
     /* There were ninety-odd dead pixels between the awning and his hat, so
@@ -5539,10 +5623,18 @@ function drawShopfront() {
            outlasting it, so he is upright and cheerful again by the end. */
         const e = (now() - oofT0) / OOF_MS;
         const fold = e < .12 ? e / .12 : Math.pow(1 - (e - .12) / .88, 2.2);
+        const low = oofKind === 'groin';
         g.save();
         g.translate(BUT_AT[0], BUT_AT[1] + 96 * .88);     // pivot on his boots
-        g.rotate(fold * .30);
-        g.scale(1 + fold * .07, 1 - fold * .11);
+        if (low) {
+            // up on the toes, knees together, and a shiver he cannot help
+            g.translate(Math.sin(now() / 42) * fold * 2.5, -fold * 13);
+            g.rotate(fold * .05);
+            g.scale(1 - fold * .13, 1 + fold * .05);
+        } else {
+            g.rotate(fold * .30);
+            g.scale(1 + fold * .07, 1 - fold * .11);
+        }
         /* The face and the dropped arm come back together, and a quarter of
            the way out rather than at the end: he is still leaning a few
            degrees when he is himself again, which is a man straightening up.
@@ -5555,8 +5647,9 @@ function drawShopfront() {
         if (fold > .1) {
             g.save();
             g.globalAlpha = Math.min(1, fold * 2);
-            g.translate(BUT_AT[0] + 18, BUT_AT[1] - 152 * .88);
-            stars(g, now(), 0, 26);
+            // they go round faster on that one, and higher up
+            g.translate(BUT_AT[0] + 18, BUT_AT[1] - (low ? 166 : 152) * .88);
+            stars(g, now() * (low ? 1.9 : 1), 0, low ? 20 : 26);
             g.restore();
         }
     }
@@ -5599,8 +5692,10 @@ document.getElementById('shopfront').addEventListener('pointerdown', e => {
     const r = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width * 340, y = (e.clientY - r.top) / r.height * 400;
     if (Math.hypot(x - PET_AT[0], y - PET_AT[1]) <= PET_R) return petDog();
+    const [gx0, gy0, gx1, gy1] = GROIN_BOX;
+    if (x >= gx0 && x <= gx1 && y >= gy0 && y <= gy1) return windButcher('groin');
     const [bx0, by0, bx1, by1] = OOF_BOX;
-    if (x >= bx0 && x <= bx1 && y >= by0 && y <= by1) windButcher();
+    if (x >= bx0 && x <= bx1 && y >= by0 && y <= by1) windButcher('ribs');
 });
 /* Boot: whatever was saved, or a stranger who has to pick a shop first. */
 loadSave();
