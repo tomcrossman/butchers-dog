@@ -296,24 +296,11 @@ body.waiting #hud { display: none; }
     animation: noteOut .95s cubic-bezier(.3,.75,.45,1) var(--d) both;
 }
 @keyframes noteOut {
-    0%   { transform: translate(6px, 2px) scale(.35) rotate(0deg); opacity: 0; }
-    14%  { opacity: 1; }
-    62%  { transform: translate(calc(var(--dx) * .55), -26px) scale(1.05) rotate(var(--r));
-           opacity: 1; }
-    100% { transform: translate(var(--dx), 0) scale(.45) rotate(var(--r)); opacity: 0; }
+    0%   { transform: translate(0, 42px) scale(.5) rotate(0deg); opacity: 0; }
+    18%  { opacity: 1; }
+    100% { transform: translate(var(--dx), -6px) scale(1.05) rotate(var(--r)); opacity: 0; }
 }
-#bank-line .till {
-    position: absolute; top: 50%; width: 38px; height: 38px; margin-top: -19px;
-    fill: var(--gold); pointer-events: none;
-    animation: tillIn 1.9s cubic-bezier(.3,1.5,.5,1) both;
-}
-@keyframes tillIn {
-    0%   { transform: translateY(8px) scale(.4); opacity: 0; }
-    12%  { transform: translateY(-5px) scale(1.14); opacity: .78; }
-    22%  { transform: none; opacity: .78; }
-    72%  { transform: none; opacity: .78; }
-    100% { transform: translateY(4px) scale(.8); opacity: 0; }
-}
+
 #bank-line .ico { width: 38px; height: 38px; opacity: .72; }
 /* The one number on that screen, so it gets the room. Tied to the width of
    the window rather than fixed, because a till in five figures at a flat
@@ -926,7 +913,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v91';
+const APP_VERSION = 'v93';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1412,9 +1399,10 @@ function throwToy() {
        where the knife already sits - which is the one corner of the screen
        nobody is watching. It arrives from the left now, big, and takes long
        enough to be seen doing it. */
-    const [dx, dy] = dogAt();
+    // thrown at where its mouth is, because that is where it is going to end up
+    const [dx, dy, dr] = dogAt();
     toyFly = { t0: now(), x0: -60, y0: H * .52,
-               x1: clamp(dx + 52, 46, W - 46), y1: Math.min(dy + 30, H - 56) };
+               x1: clamp(dx, 46, W - 46), y1: Math.min(dy + dr * .46, H - 40) };
     dog.toy = TOY_S;
     dog.chomp = 0;
     squeak();
@@ -1433,10 +1421,13 @@ function drawToy(ms) {
     }
     if (x === undefined) {
         if (!(dog.toy > 0)) return;
-        const [dx, dy] = dogAt();
-        x = clamp(dx + 52, 46, W - 46); y = Math.min(dy + 30, H - 56);
-        // it does not lie there dead still: a squeaky bone gets nudged about
-        spin = .35 + Math.sin(ms / 190) * .12;
+        /* In its mouth, not on the floor beside it. It catches the thing and
+           carries it off down the string, which is the only reason it is
+           walking away from your sausages, and a bone lying on the tiles next
+           to a dog that is leaving does not say that at all. */
+        const [dx, dy, dr] = dogAt();
+        x = dx; y = dy + dr * .46;
+        spin = .18 + Math.sin(ms / 130) * .16;     // worried about in the teeth
     }
     ctx.save();
     ctx.translate(x, y);
@@ -2684,7 +2675,13 @@ function startMini() {
     if (M.id === 'jar') {
         mini.jar = W / 2; mini.coins = []; mini.next = 0;
     } else if (M.id === 'sauce') {
-        mini.dogY = H * .54; mini.x0 = W * .18; mini.x1 = W * .82;
+        /* A straight line down a straight bun is a ruler exercise. This one
+           lies at an angle and bows, differently every time, so the stroke is
+           a shape to follow rather than a distance to cover - and the margin
+           either side of it is tight enough that following it is the job. */
+        mini.dogY = H * .54; mini.x0 = W * .16; mini.x1 = W * .84;
+        mini.tilt = (Math.random() - .5) * 150;
+        mini.bow = (Math.random() < .5 ? -1 : 1) * (34 + Math.random() * 46);
         mini.paint = []; mini.drawing = false; mini.begun = false;
     } else if (M.id === 'ninja') {
         mini.fly = []; mini.bits = []; mini.next = .35; mini.swipe = []; mini.hit = 0;
@@ -2718,6 +2715,9 @@ function endMini() {
        takings. On the last day it stays up until the card is over it, which is
        a thing the card does anyway, and the card clears it. */
     setTimeout(() => {
+        /* One opened from the back room belongs to nothing: it was not a week
+           and it does not become one. Straight back to the shopfront. */
+        if (mini && mini.lone) { mini = null; showShop(); return; }
         if (round < DAYS.length) mini = null;
         afterMini();
     }, 900);
@@ -2737,6 +2737,10 @@ const COIN = 140, BANGER = 440, SAUCE_MAX = 2000;
    pays the way the rail pays it. */
 const KATANA = 150, KATANA_RUN = 110;
 const SAUCE_WAIT = 2600;        // the longest the ketchup will wait to be picked up
+// how far off the middle of the bun still counts, and the width of the bun
+const SAUCE_TOL = 30;
+// where the middle of the bun is at a given fraction along it
+const bunY = t => mini.dogY + (t - .5) * mini.tilt + Math.sin(t * Math.PI) * mini.bow;
 /* How long a banger is worth taking off for. It was two and a fifth seconds,
    which is long enough to let all five come good and then take them off in one
    sweep at the end - the whole game was a colour change you could answer at
@@ -2896,12 +2900,12 @@ function miniAt(x, y) {
         return;
     }
     if (mini.id === 'sauce') {
-        // it only counts along the bun, and only going one way down it
-        if (Math.abs(y - mini.dogY) > 46) return;
-        if (!mini.begun) { mini.begun = true; mini.t0 = now(); }
+        // it only counts along the bun, and the bun is not a straight line
         const t = clamp((x - mini.x0) / (mini.x1 - mini.x0), 0, 1);
-        const miss = Math.abs(y - mini.dogY) / 46;
-        mini.paint.push({ t, y, miss });
+        const off = Math.abs(y - bunY(t));
+        if (off > SAUCE_TOL + 24) return;            // right off it: nothing lands
+        if (!mini.begun) { mini.begun = true; mini.t0 = now(); }
+        mini.paint.push({ t, y, miss: Math.min(1, off / SAUCE_TOL) });
         return;
     }
     for (const b of mini.bangers) {                  // the grill: tap one
@@ -3015,17 +3019,23 @@ function drawMini(ms) {
         ctx.fillStyle = 'rgba(255,255,255,.22)';
         ctx.beginPath(); ctx.roundRect(mini.jar - 38, jy - 10, 9, 56, 4); ctx.fill();
     } else if (mini.id === 'sauce') {
-        const y = mini.dogY, x0 = mini.x0, x1 = mini.x1;
-        ctx.fillStyle = '#e8bd72';                    // the bun
-        ctx.beginPath(); ctx.roundRect(x0 - 18, y - 34, x1 - x0 + 36, 68, 34); ctx.fill();
-        ctx.fillStyle = '#d8a758';
-        ctx.beginPath(); ctx.roundRect(x0 - 12, y + 6, x1 - x0 + 24, 22, 12); ctx.fill();
-        ctx.fillStyle = '#b8552f';                    // the sausage in it
-        ctx.beginPath(); ctx.roundRect(x0 - 6, y - 20, x1 - x0 + 12, 34, 17); ctx.fill();
-        ctx.fillStyle = '#d0693c';
-        ctx.beginPath(); ctx.roundRect(x0, y - 16, x1 - x0, 12, 6); ctx.fill();
-        ctx.strokeStyle = '#c4231f'; ctx.lineWidth = 13;  // and whatever you have put on it
+        /* The bun is a stroked line now rather than a rounded rectangle,
+           because it bends - the bread, the cut face, the sausage and the lit
+           side of the sausage are the same curve stroked four times at
+           decreasing widths, which is how everything in this game is drawn. */
+        const x0 = mini.x0, x1 = mini.x1;
+        const lay = () => {
+            ctx.beginPath();
+            for (let t = 0; t <= 1.0001; t += .02) {
+                const px = x0 + (x1 - x0) * t;
+                t ? ctx.lineTo(px, bunY(t)) : ctx.moveTo(px, bunY(t));
+            }
+        };
         ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        for (const [col, w] of [['#e8bd72', 68], ['#c98f45', 46], ['#b8552f', 34], ['#d0693c', 13]]) {
+            lay(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.stroke();
+        }
+        ctx.strokeStyle = '#c4231f'; ctx.lineWidth = 13;  // and whatever you have put on it
         ctx.beginPath();
         mini.paint.forEach((p, i) => {
             const px = x0 + (x1 - x0) * p.t;
@@ -5286,7 +5296,6 @@ function draw() {
 
     drawSteak(ctx);
 
-    drawToy(ms);
     drawBot(ms);
     drawCat(ms);
     if (demoOn()) drawDemo(ms);
@@ -5367,10 +5376,14 @@ function draw() {
         }
     } else if (dog.going || dog.s <= string.len + 80) {
         const [x, y] = dogAt();
+        /* With the bone in its teeth the jaw is open round it, and it has it
+           by then rather than while the thing is still in the air. */
         const pose = dog.chomp > 0 ? chompPose(1 - dog.chomp / CHOMP)
-                                   : { open: 0, reach: 0, tilt: 0, squash: 0 };
+                   : (dog.toy > 0 && !toyFly) ? { open: .5, reach: 0, tilt: 0, squash: 0 }
+                   : { open: 0, reach: 0, tilt: 0, squash: 0 };
         drawDog(ctx, x, y, 1.02, pose, ms, breedFor());
     }
+    drawToy(ms);                      // over the dog, because it is in its mouth
 
     }
 
@@ -5454,36 +5467,27 @@ function payIn(from, to) {
     const line = document.getElementById('bank-line');
     const b = line.querySelector('b');
     if (!b) return;
-    /* The till is only here for this. It is laid in absolutely, to the left of
-       the number, so putting it there does not shove the number off centre
-       halfway through its own count. */
+    /* No till beside it. A five-figure number and a till on the same line is
+       wider than a phone, and the till was the thing that went over the edge.
+       The notes come up out of the bottom of the number instead, which is
+       where money goes when it is being put away. */
     const lr = line.getBoundingClientRect(), br = b.getBoundingClientRect();
-    const tillX = br.left - lr.left - 52;
-    const till$ = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    till$.setAttribute('class', 'till');
-    till$.setAttribute('viewBox', '0 0 14 14');
-    till$.innerHTML = '<use href="#i-till"/>';
-    till$.style.left = tillX + 'px';
-    line.appendChild(till$);
-    setTimeout(() => till$.remove(), 2100);
-    // how far it is from the till to the middle of the number, measured rather
-    // than guessed, because the number is as wide as the number happens to be
-    const dx = (br.left + br.width / 2) - (lr.left + tillX + 19);
+    const midX = br.left + br.width / 2 - lr.left;
     for (let i = 0; i < 5; i++) {
         const n = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         n.setAttribute('class', 'note');
         n.setAttribute('viewBox', '0 0 14 14');
         n.innerHTML = '<use href="#i-cash"/>';
-        n.style.setProperty('--dx', (dx * (.78 + Math.random() * .34)).toFixed(1) + 'px');
-        n.style.setProperty('--r', ((Math.random() - .5) * 70).toFixed(0) + 'deg');
-        n.style.setProperty('--d', (260 + i * 95) + 'ms');
-        n.style.left = tillX + 4 + 'px';
+        n.style.setProperty('--dx', ((Math.random() - .5) * 70).toFixed(1) + 'px');
+        n.style.setProperty('--r', ((Math.random() - .5) * 90).toFixed(0) + 'deg');
+        n.style.setProperty('--d', (i * 85) + 'ms');
+        n.style.left = (midX - 15 + (Math.random() - .5) * 58).toFixed(1) + 'px';
         line.appendChild(n);
         setTimeout(() => n.remove(), 1800 + i * 95);
     }
-    setTimeout(till, 140);           // the drawer, once it is actually there
+    till();
     // and the number climbs to meet them
-    const t0 = now() + 300, SPAN = 1150;
+    const t0 = now(), SPAN = 1150;
     cancelAnimationFrame(tillRaf);
     const step = () => {
         const e = Math.min(1, Math.max(0, now() - t0) / SPAN);
@@ -6150,9 +6154,12 @@ document.getElementById('minilist').addEventListener('click', e => {
     startMini();
     const M = MINIS.find(m => m.id === btn.dataset.mini);
     Object.assign(mini, { id: M.id, name: M.name, say: M.say, secs: M.secs || MINI_S,
-                          won: 0, t0: now(), begun: M.id === 'sauce' ? false : undefined });
+                          won: 0, t0: now(), lone: true,
+                          begun: M.id === 'sauce' ? false : undefined });
     if (M.id === 'jar') { mini.jar = W / 2; mini.coins = []; mini.next = 0; }
-    else if (M.id === 'sauce') { mini.dogY = H * .54; mini.x0 = W * .18; mini.x1 = W * .82;
+    else if (M.id === 'sauce') { mini.dogY = H * .54; mini.x0 = W * .16; mini.x1 = W * .84;
+                                 mini.tilt = (Math.random() - .5) * 150;
+                                 mini.bow = (Math.random() < .5 ? -1 : 1) * (34 + Math.random() * 46);
                                  mini.paint = []; mini.drawing = false; }
     else if (M.id === 'ninja') { mini.fly = []; mini.bits = []; mini.next = .3;
                                  mini.swipe = []; mini.hit = 0; }
@@ -6335,10 +6342,16 @@ function heart(g, x, y, r, a) {
    holding the knife should go. Pivoted on his boots rather than his middle,
    because a man bending at the waist does not slide across the floor. */
 const OOF_MS = 900;
-let oofT0 = 0, oofRaf = 0, oofKind = 'ribs';
+let oofT0 = 0, oofRaf = 0, oofKind = 'ribs', knifeFly = null;
 function windButcher(kind) {
     oofKind = kind || 'ribs';
     oofT0 = now();
+    /* And the knife goes. A man caught like that does not keep hold of what he
+       is holding: it leaves his hand end over end and comes down somewhere
+       else, and he has it back by the time he has straightened up. */
+    knifeFly = { t0: now(), x: BUT_AT[0] + 55, y: BUT_AT[1] - 107,
+                 vx: 150 + Math.random() * 110, vy: -430 - Math.random() * 90,
+                 spin: 9 + Math.random() * 5, ang: -1.5 };
     /* One in the ribs folds a man forwards. The other does not: he goes up on
        his toes with his knees together and stays there, which is the entire
        joke and about as far as it needs to go. */
@@ -6349,7 +6362,7 @@ function windButcher(kind) {
 function oofStep() {
     oofRaf = 0;
     if (!oofT0) return;
-    if (now() - oofT0 > OOF_MS) { oofT0 = 0; drawShopfront(); return; }
+    if (now() - oofT0 > OOF_MS) { oofT0 = 0; knifeFly = null; drawShopfront(); return; }
     drawShopfront();
     oofRaf = requestAnimationFrame(oofStep);
 }
@@ -6427,9 +6440,29 @@ function drawShopfront() {
            Held to the last frame it was a pop from glum and empty-handed to
            beaming with the knife back over his head. */
         const sore = fold > .25;
-        drawButcher(g, !sore, { cx: 0, cy: -96 * .88, k: .88,
-                                holds: sore ? 'none' : 'knife', winded: sore });
+        /* It only comes back to his hand once the thrown one has landed, or
+           there are two of them on the screen at once. */
+        const e2 = (now() - knifeFly.t0) / 1000;
+        knifeFly.x += knifeFly.vx * .016;
+        knifeFly.y += knifeFly.vy * .016;
+        knifeFly.vy += 1500 * .016;
+        knifeFly.ang += knifeFly.spin * .016;
+        /* The machine's head stays on while it is being winded. It was taken
+           off for the duration, so poking the thing turned it back into a man
+           for a second - which is the one moment the joke needs it most. A
+           robot has no face to screw up, so it folds and gets the stars and
+           that is all the reaction it has. */
+        drawButcher(g, !sore, { cx: 0, cy: -96 * .88, k: .88, bot: running('robot'),
+                                holds: e2 < .85 ? 'none' : 'knife', winded: sore });
         g.restore();
+        if (e2 < .85) {                             // the one in the air
+            g.save();
+            g.globalAlpha = Math.min(1, (.85 - e2) * 5);
+            g.translate(knifeFly.x, knifeFly.y);
+            g.rotate(knifeFly.ang);
+            drawKnife(g, 0, 0, 0, .88 * .8, cast.knife);
+            g.restore();
+        }
         if (fold > .1) {
             g.save();
             g.globalAlpha = Math.min(1, fold * 2);
@@ -6461,8 +6494,10 @@ function drawShopfront() {
     }
     // the knife is in hand and the dog is stood alongside, so the line
     // only has to introduce the two of them
+    // and it is not Reg standing there with that head on, it is AI Reg
     document.getElementById('cast-line').innerHTML =
-        `${cast.butcher.name} and ${cast.dog.dog} the ${cast.dog.name}`;
+        `${running('robot') ? 'AI ' : ''}${cast.butcher.name} and ` +
+        `${cast.dog.dog} the ${cast.dog.name}`;
     showBank();
 }
 /* The hand landing, and a dog pleased about it: a soft thump under two notes

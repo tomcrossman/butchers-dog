@@ -202,13 +202,17 @@ so it fits whatever the till holds: measured at 320, 390 and 430 with a hundred
 and twenty-three thousand in it, and it stays inside the line on all three.
 
 **The week's takings go in in front of you.** Come back to the window after a
-week and a till turns up beside the number, the drawer goes, five notes arc
-across and fade into it, and the number counts from what the till held to what
-it holds now. Then the till goes again and it is just the number, because a
-till sat there all day every day says nothing the number does not - it only has
-something to say on the one occasion money is actually going into it. It runs
-after a week and at no other time: opening the game to a till spitting money at
-you says nothing happened.
+week and five notes come up out of the bottom of the number, arc apart and fade
+into it, and the number counts from what the till held to what it holds now,
+with the drawer going under it. It runs after a week and at no other time:
+opening the game to money flying at you says nothing happened.
+
+There was a till drawn beside the number for the length of it. It is the better
+picture and it does not fit: the money line is the width of the window and
+sized to it, so a week that takes the total into four figures pushes the till
+off the side of a phone, and a prop that leaves the screen on the good weeks is
+a prop that works on the ones nobody wants. The notes come out of the number
+itself now, which is where they are going anyway.
 
 **The shopfront goes to the edges and to the top.** There is no gutter round
 it: a shopfront with a strip of tiled wall either side of it is a photograph of
@@ -237,6 +241,12 @@ than starting a second one.
 drops, his eyes screw shut, his mouth goes to an O, three stars go round the
 boater and he straightens back up - pivoted on his boots rather than his
 middle, because a man bending at the waist does not slide across the floor.
+
+**And the knife goes.** It leaves his hand on the blow, turning end over end
+across the window and off the top of it, because a man who has just been winded
+is not still holding a cleaver neatly - and his hand is empty for as long as it
+is in the air, so the knife is in one place at a time. It is back in his fist by
+the time he has straightened up, and nobody saw it come back.
 
 There is a smaller box inside that one, down where the apron does the most
 work, and it does not fold him forwards at all: he goes up on his toes with his
@@ -364,7 +374,14 @@ for, and the dog turns round and goes after it, giving back every inch it had
 climbed. It comes in across the whole window, big and slow enough to be seen
 doing it - it used to be lobbed up from the bottom right in a third of a
 second, small, landing where the knife already sits, which is the one corner of
-the screen nobody is watching. It was a button on the HUD first. The whole input of this game is a
+the screen nobody is watching. **And the dog catches it.** The throw is aimed at
+where its mouth will be rather than at a point on the floor, and the bone sits
+across the open jaw, rocking, for as long as it has got it - it used to land
+somewhere near the dog and lie there while the dog turned round with nothing in
+its mouth, which is a dog ignoring a bone. It is drawn after the dog rather than
+before it, so it is in front of the muzzle and not behind the head.
+
+It was a button on the HUD first. The whole input of this game is a
 swipe, and a second kind of tap in the middle of a five-second day was one
 thing too many to be holding.
 
@@ -388,7 +405,9 @@ segment with a moulded shell over the end of it, black hubs at the joints and a
 two-finger gripper on the wrist. And with it switched on, the man on the
 shopfront has its head: a visor, two green lamps, an aerial and a grille,
 standing there in his apron holding his knife, which is the joke of the upgrade
-said in one picture. It does not catch steaks either, and the shelf says so.
+said in one picture. The name under him changes with it - Reg is **AI Reg** for
+as long as it is switched on, and so is the line about who is working this week.
+It does not catch steaks either, and the shelf says so.
 
 **Dog insurance** is the second most expensive thing in the shop and the only
 other one that is not about money. Twelve hundred pounds, and cutting the dog stops being the end
@@ -495,6 +514,12 @@ thing on, so an upgrade can be tested in a real week rather than argued about.
 It is a switch in the back room rather than a build flag for exactly that
 reason, it is saved with everything else, and while it is on the version label
 in the corner says so.
+
+With it on there is one more button under the shelves: **a mini-game**, with the
+four of them to pick from, because the honest way to see the barbecue is to play
+a perfect week and the honest way to see it twice is to play two. It puts you
+back on the shopfront when it is done rather than opening a week - it is not
+Saturday night, it is a man in the back room with the lights on.
 
 The shop has no heading and no way out at the bottom of a long scroll: it is a
 close cross in the corner, like everything else on a phone. What is pinned at
@@ -750,8 +775,16 @@ twenty-two pounds, about a third on top of a perfect week.
   ends when the grill is empty rather than when the clock says so; the jar ends
   when the last coin has landed, the same way.
 - **Sauce on.** One pass of ketchup down a hot dog. What it pays is how much of
-  the bun you covered and how straight you kept it, both - so a quick scribble
-  down the middle is worth less than one careful stroke. Up to twenty pounds,
+  the bun you covered and how closely you followed it, both - so a quick
+  scribble down the middle is worth less than one careful stroke. **The bun is
+  never the same bun twice**: it tilts one way or the other and bows up or down,
+  and the sauce has to go along it rather than across the screen. It was a
+  horizontal line on a horizontal bun, which is a straight line drawn with a
+  finger - the one thing a finger is good at - and it paid nearly full marks for
+  it. A flat stroke across the new one pays six pounds forty and following the
+  curve pays seventeen fifty, which is the gap the game was missing. The
+  tolerance is tighter with it, because the shape is now the thing being asked
+  for. Up to twenty pounds,
   and **four and a half seconds**, not nine. The other two are nine seconds of
   things coming at you; this one is a single stroke, and nine seconds to draw
   one line is nine seconds to draw it as slowly and as carefully as you like,
