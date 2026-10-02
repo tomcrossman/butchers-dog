@@ -316,10 +316,10 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 @keyframes introIn { from { opacity: 0; } to { opacity: 1; } }
 #intro[hidden] { display: none; }
 body.waiting #hud { display: none; }
-#intro .rule {
-    width: 132px; height: 2px; margin: 16px 0 12px;
-    background: linear-gradient(90deg, transparent, var(--gold-d), transparent);
-}
+/* The gold hairline that used to sit above the names has gone. It was there
+   to separate the shop from the text under it, and the counter does that now
+   - a marble slab across the whole window is a stronger line than a line is,
+   and two of them stacked is one too many. */
 #intro p { margin: 0; max-width: 340px; font-size: 18px; font-weight: 700;
            line-height: 1.45; letter-spacing: .02em; opacity: .82; }
 /* The sign, the two of them and the till belong together - they are one thing
@@ -328,7 +328,13 @@ body.waiting #hud { display: none; }
     width: 100%; display: flex; flex-direction: column; align-items: center; flex: none;
 }
 #intro .mid, #intro .acts { padding: 0 22px; }
-#intro .btn { margin-top: 14px; width: 100%; max-width: 236px; }
+/* The name and the till sit in the middle of what is left between the counter
+   and the buttons rather than hanging off the bottom of the counter with a
+   hole under them. It takes whatever room the shopfront and the buttons do
+   not, and centres in it. */
+#intro .mid { flex: 1 1 auto; justify-content: center; }
+#intro .btn { margin-top: 15px; width: 100%; max-width: 262px;
+              font-size: 19px; padding: 15px; }
 /* The debug way in, and the four it offers. */
 .btn.try-mini { font-size: 12px; padding: 7px; opacity: .7; border-style: dashed; }
 .btn.try-mini[hidden] { display: none; }
@@ -344,7 +350,8 @@ body.waiting #hud { display: none; }
 /* On the shopfront they are screwed to the front of the counter, so they are
    made of what the counter is made of. The same button on the shop and the
    back room is still on a tiled wall and stays green. */
-#intro .btn.ghost { background: linear-gradient(180deg, #503520, #33200f); }
+#intro .btn.ghost { background: linear-gradient(180deg, #503520, #33200f);
+                    font-size: 16px; padding: 12px; margin-top: 11px; }
 .bank { display: flex; align-items: center; justify-content: center; gap: 7px;
         margin-top: 14px; }
 .bank .ico { width: 17px; height: 17px; flex: none; fill: var(--gold); opacity: .55; }
@@ -579,71 +586,99 @@ body.waiting #hud { display: none; }
    disc, and the words are the whole point of the unwon ones. */
 .pins { display: flex; flex-direction: column; gap: 5px; }
 .pin {
+    position: relative;
     display: flex; align-items: center; gap: 9px; text-align: left;
-    padding: 4px 9px 4px 3px;
-    background: linear-gradient(180deg, #1a4636, #123327);
-    border: 2px solid rgba(220,171,62,.3); border-radius: 3px;
+    padding: 6px 11px 6px 5px; color: #f6f1e6;
+    background: linear-gradient(180deg, #1d1a16, #0f0d0b);
+    border: none; border-radius: 6px;
+    box-shadow: 0 3px 0 rgba(0,0,0,.35);
 }
+.pin::after { border-color: rgba(246,241,230,.2); }
 .pin canvas { width: 38px; height: 46px; flex: none; }
 .pin .n { display: block; font-family: var(--font-display); font-size: 14px;
-          line-height: 1.2; color: rgba(243,233,214,.45); }
+          line-height: 1.2; color: rgba(246,241,230,.5); }
 .pin .w { display: block; font-size: 10px; font-weight: 700; line-height: 1.35;
-          opacity: .4; margin-top: 1px; }
-.pin.up { border-color: var(--gold); background: linear-gradient(180deg, #27624a, #184233); }
+          opacity: .3; margin-top: 1px; }
+.pin.up::after { border-color: rgba(220,171,62,.6); }
 .pin.up .n { color: var(--gold); }
 .pin.up .w { opacity: .72; }
 /* Two rooms, and the tabs are the door between them. */
 .tabs { display: flex; gap: 6px; width: 100%; max-width: 330px; margin: 9px 0 0; }
 .tabs button {
-    flex: 1; cursor: pointer; padding: 8px 4px 7px;
-    background: linear-gradient(180deg, #1a4636, #123327);
-    border: 2px solid var(--gold-d); border-radius: 3px; color: var(--cream);
+    position: relative; flex: 1; cursor: pointer; padding: 10px 4px 9px;
+    background: linear-gradient(180deg, #1d1a16, #0f0d0b);
+    border: none; border-radius: 6px; color: #f6f1e6;
+    box-shadow: 0 3px 0 rgba(0,0,0,.42);
     font-family: var(--font); font-weight: 900; font-size: 11px;
-    letter-spacing: .12em; text-transform: uppercase; opacity: .6;
+    letter-spacing: .12em; text-transform: uppercase; opacity: .7;
 }
+.tabs button::after { inset: 3px; border-radius: 3px;
+                      border-color: rgba(246,241,230,.3); }
 .tabs button.on {
     background: linear-gradient(180deg, #e8be55, var(--brass));
-    border-color: #2a2118; color: #2a2118; opacity: 1;
+    color: #2a2118; opacity: 1;
 }
-.buy .why { font-size: 10px; font-weight: 700; line-height: 1.34; opacity: .6;
-            padding: 2px 6px 0; }
+.tabs button.on::after { border-color: rgba(42,33,24,.4); }
+/* Every tile on these shelves is a thing with a price on it, which is exactly
+   what a counter ticket is for - so they are counter tickets: the black plaque
+   with the white keyline that the day's takings come up on, with the thing
+   drawn on it and the price written the way a price is written on a card,
+   pounds the size of the ticket and the pence up in the corner.
+
+   They were green panels with gold edges on a green tiled wall, which is the
+   flat-sheet problem again: the shelves and the wall behind them were made of
+   the same thing and the eye had nothing to catch on. The wall stays green,
+   because a butcher's shop has a green tiled wall. What is on it does not. */
+.buy .why { font-size: 10px; font-weight: 700; line-height: 1.34; opacity: .55;
+            padding: 2px 7px 0; }
 .buy {
     position: relative;
     display: flex; flex-direction: column; align-items: center; gap: 1px;
-    padding: 3px 2px 4px; cursor: pointer; overflow: hidden;
-    background: linear-gradient(180deg, #1a4636, #123327);
-    border: 2px solid var(--gold-d); border-radius: 3px; color: var(--cream);
+    padding: 5px 3px 7px; cursor: pointer; overflow: hidden;
+    background: linear-gradient(180deg, #1d1a16, #0f0d0b);
+    border: none; border-radius: 7px; color: #f6f1e6;
+    box-shadow: 0 3px 0 rgba(0,0,0,.42);
     font-family: var(--font); font-weight: 700; font-size: 13px;
 }
+/* The hairline inside the edge, which is the thing that makes it a ticket.
+   It goes under the contents rather than over them - the item is drawn on a
+   transparent canvas, so the line still shows through everywhere the item is
+   not, which is what a line ruled on a card does. */
+.buy::after, .tabs button::after, .pin::after {
+    content: ''; position: absolute; inset: 4px; pointer-events: none;
+    border: 1.5px solid rgba(246,241,230,.42); border-radius: 4px;
+}
+.buy > *, .pin > * { position: relative; z-index: 1; }
 .buy canvas { width: min(100%, 118px); height: auto; display: block; }
-.buy .pr { font-family: var(--font-display); font-size: 12px; color: var(--gold);
-           line-height: 1.1; }
+.buy .pr { font-family: var(--font-display); font-size: 17px; color: #f6f1e6;
+           line-height: 1.05; letter-spacing: .01em; }
+.buy .pr i { font-style: normal; font-size: .52em; letter-spacing: 0;
+             position: relative; top: -.86em; margin-left: .06em; }
 .buy .tag { font-size: 8px; font-weight: 900; letter-spacing: .08em;
             text-transform: uppercase; line-height: 1.5; }
-/* What it has on now: filled in, gold all the way round, and a tick in the
-   corner. There was a gold strip along the bottom of it as well, which was one
-   more thing saying the same thing as the tick above it. */
-.buy.worn {
-    border-color: var(--gold);
-    background: linear-gradient(180deg, #2f7351, #1e5039);
-    box-shadow: inset 0 0 0 2px rgba(220,171,62,.3), 0 0 0 1px rgba(0,0,0,.25);
-}
+/* What it has on now: the keyline goes gold and a tick lands in the corner.
+   There was a gold strip along the bottom of it as well, which was one more
+   thing saying the same thing as the tick above it. */
+.buy.worn { box-shadow: 0 3px 0 rgba(0,0,0,.42), 0 0 0 1.5px rgba(220,171,62,.55); }
+.buy.worn::after { border-color: var(--gold); }
 .buy.worn .tag { color: #8fd6a2; }
-.buy.trying .why { color: #2a2118; opacity: .72; }
+.buy.trying .why { color: #2a2118; opacity: .7; }
 .buy .tick {
-    position: absolute; top: 3px; right: 3px; width: 15px; height: 15px;
+    position: absolute; z-index: 2; top: 7px; right: 7px; width: 15px; height: 15px;
     border-radius: 50%; background: #3fa564; color: #0d2b1d;
     box-shadow: 0 0 0 1.5px rgba(13,43,29,.45);
     font-size: 10px; font-weight: 900; line-height: 15px; text-align: center;
 }
-.buy.got { border-color: rgba(220,171,62,.55); }
-.buy.got .tag { color: var(--cream); opacity: .7; }
-/* trying something on is not owning it, so it does not look like owning it:
-   the tile goes gold side out, the way a thing on the counter does */
-.buy.trying { border-color: var(--gold); background: linear-gradient(180deg, #e8be55, #c9992f); }
+.buy.got::after { border-color: rgba(246,241,230,.26); }
+.buy.got .tag { color: #f6f1e6; opacity: .62; }
+/* Trying something on is not owning it, so it does not look like owning it:
+   the ticket goes gold side out, the way a thing on the counter does. */
+.buy.trying { background: linear-gradient(180deg, #e8be55, #c9992f); color: #2a2118; }
+.buy.trying::after { border-color: rgba(42,33,24,.45); }
+.buy.trying .pr { color: #2a2118; }
 .buy.trying .tag { color: #2a2118; }
 .buy.poor { opacity: .42; }
-.buy:active { transform: translateY(1px); }
+.buy:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.42); }
 
 /* Nothing is bought by tapping a tile. What you tapped comes down here, on
    the dog, with the price on it and two ways out - which is the whole point,
@@ -652,7 +687,7 @@ body.waiting #hud { display: none; }
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 14;
     display: flex; flex-wrap: wrap; align-items: center; gap: 0 12px;
     padding: 10px 14px calc(12px + env(safe-area-inset-bottom));
-    background: linear-gradient(180deg, #1d5140, #10291f);
+    background: linear-gradient(180deg, #1d1a16, #0c0a08);
     border-top: 3px solid var(--gold);
     box-shadow: 0 -8px 20px rgba(0,0,0,.45);
     animation: barIn .22s ease-out both;
@@ -1007,11 +1042,10 @@ body.waiting #hud { display: none; }
     <div id="intro">
         <div class="top">
         <div class="front"><canvas id="shopfront" width="340" height="400"></canvas></div>
-        <div class="mid">
-            <div class="rule"></div>
-            <p id="cast-line">Six days. One string a day.</p>
-                <div class="bank" id="bank-line"></div>
         </div>
+        <div class="mid">
+            <p id="cast-line">Six days. One string a day.</p>
+            <div class="bank" id="bank-line"></div>
         </div>
         <div class="acts">
             <button class="btn" id="play">Open up shop</button>
@@ -1115,7 +1149,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v96';
+const APP_VERSION = 'v97';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2250,6 +2284,12 @@ const money2 = p => {
 };
 // on a tile there is no room for two noughts nobody reads
 const money0 = p => p % 100 === 0 ? '£' + commas(String(p / 100)) : money2(p);
+/* The same thing on a ticket: no pence at all when there are none, because
+   nobody writes £190.00 on a card, and up in the corner when there are. */
+const ticket0 = p => p % 100 === 0
+    ? '£' + commas(String(p / 100))
+    : '£' + commas(String(Math.floor(p / 100))) +
+      '<i>' + String(p % 100).padStart(2, '0') + '</i>';
 /* How a price is written on a counter ticket: the pounds the size of the
    ticket and the pence up in the corner after them. */
 const ticketed = p => {
@@ -6719,7 +6759,7 @@ function paintStore() {
                              `<span class="tag">${shopUp ? 'On' : '&nbsp;'}</span>`
                       // owning a hat needs no word on it: no price is the word
                       : got ? `<span class="tag">${shopUp ? 'Off' : '&nbsp;'}</span>`
-                      : `<span class="pr">${money0(i.price)}</span>`;
+                      : `<span class="pr">${ticket0(i.price)}</span>`;
             const why = i.why ? `<span class="why">${i.why}</span>` : '';
             return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
                    `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>${tag}${why}</button>`;
@@ -6915,7 +6955,18 @@ function doWipe() {
     openSetup();
 }
 
+/* The strip of screen above the page - the notch bar on a phone, the bit a
+   browser tints from the theme colour. It was the tiled green everywhere,
+   which on the shopfront put a band of wall above a sign that is supposed to
+   be fixed to the top of the building. It is whatever the top of the current
+   screen is made of: the fascia board on the shopfront, the tiles everywhere
+   else. */
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+const theme = c => { if (themeMeta && themeMeta.content !== c) themeMeta.content = c; };
+const FASCIA = '#241a16', TILE = '#1c4a39';
+
 function showShop() {
+    theme(FASCIA);
     money = 0; ledger = []; fed = 0;
     round = 0; live = false; armed = false; tallying = false; teaching = false;
     dog.going = false; dog.chomp = 0; dog.toy = 0; dog.stare = 0;
@@ -7027,6 +7078,7 @@ function throughTheDoor() {
 }
 function beginWeek() {
     startSession(); audioNow();
+    theme(TILE);
     showingIntro = false;
     document.getElementById('intro').hidden = true;
     document.body.classList.remove('waiting');
@@ -7078,6 +7130,7 @@ document.getElementById('minilist').addEventListener('click', e => {
     const btn = e.target.closest('[data-mini]');
     if (!btn) return;
     pickEl.hidden = true;
+    theme(TILE);
     showingIntro = false;
     document.getElementById('intro').hidden = true;
     document.body.classList.remove('waiting');
@@ -7532,6 +7585,7 @@ fit();
 makeString(1);
 dog.s = string.len + 64;          // waiting at the bottom of the title page
 draw();
+theme(started ? FASCIA : TILE);   // whatever is at the top of the screen on boot
 if (!started) openSetup();
 </script>
 </body>

@@ -264,6 +264,14 @@ the bottom of the canvas rather than stopping at it, and three little black
 price tickets stood on it - the same plaque the day's takings come up on.
 Nothing else in one picture says butcher's counter.
 
+**The strip above the page is whatever is at the top of the screen.** The
+notch bar on a phone, the band a browser tints from the theme colour: it was
+the tiled green on every screen, which on the shopfront put an inch of wall
+above a sign that is supposed to be fixed to the top of the building. It is
+the fascia board's own dark brown while the shopfront is up and the tiles
+everywhere else, so the sign runs off the top of the phone rather than
+stopping short of it.
+
 **And the bottom half of the screen is that counter.** It was the same bottle
 green as the wall above it, which made the whole thing one flat sheet with a
 shop drawn across the top of it and nothing under the drawing - the name and
@@ -522,6 +530,24 @@ twenty: one link off the bottom of the string, about halfway through the day,
 cut at the quality of somebody who has done it a hundred times and is not
 trying to impress. He is a spare pair of hands, not a better player than you.
 
+**Everything on these shelves is a counter ticket.** Every tile is a thing
+with a price on it, which is exactly what a counter ticket is for - so they
+are the black plaque with the white keyline that the day's takings come up
+on, with the thing drawn on it and the price written the way a price is
+written on a card: pounds the size of the ticket, the pence up in the corner,
+and no pence at all when there are none, because nobody writes £190.00 on a
+card. The keyline goes under the drawing rather than over it, so it still
+shows through everywhere the item is not, which is what a line ruled on a card
+does. The one you have on has a gold keyline and a tick; the one on the
+counter being tried goes gold side out. The tabs and the board on the wall are
+the same ticket.
+
+They were green panels with gold edges on a green tiled wall, which is the
+flat-sheet problem again: the shelves and the wall behind them were made of
+the same thing and there was nothing for the eye to catch on. The wall stays
+green, because a butcher's shop has a green tiled wall. What is hung on it
+does not.
+
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
 rather than Worn or Wear. A line under each says what it does, on the shelf and
@@ -590,6 +616,14 @@ till are one thing being shown and they stay together at the top, and the way
 in is the footer at the bottom. The shop
 scales to whatever height is going, so it fits a short phone without squashing
 the butcher.
+
+The name and the till sit in the middle of what is left between the counter
+and the buttons, rather than hanging off the bottom of the counter with a hole
+underneath them: that block takes whatever room the shopfront and the buttons
+do not, and centres in it. The gold hairline that used to sit above the names
+has gone with it - it was there to separate the shop from the text under it,
+and a marble slab across the whole window is a stronger line than a line is.
+Two of them stacked is one too many.
 
 The game's name is on the setup screen and nowhere else: once the shop is
 yours, the sign over the window is the one that matters, so the shopfront gets
