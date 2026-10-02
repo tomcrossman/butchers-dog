@@ -369,6 +369,19 @@ dark green panel with a gold border round it and a gold number in it, which is
 the game's own furniture - a dialog box, and it read as one, in the middle of
 the one screen that is meant to be a butcher's window.
 
+**It fits on a phone**, which took measuring: the two of them standing over a
+six-day receipt came to more than a short phone is tall and the torn bottom
+edge of the paper went off the screen, which is exactly the part that makes it
+paper. He gives up the room rather than the receipt does - he is the
+illustration and it is the thing being read - and the whole card is measured at
+320, 390 and 430 wide with nothing to scroll on any of them. **And he has the
+robot head on when the robot is on**, the same as he does in the window: it was
+Reg holding the takings up on a receipt that said *served by AI Reg*.
+
+**A day's pictures stay on one line.** A day with links, a pudding and two
+steaks on it wrapped to a second row and shoved its money out of line with the
+day beside it, which on a receipt is the one thing that must never happen.
+
 It is a counter ticket now: the black plastic plaque with the white keyline
 that is propped on a wire spike in front of everything in the window, a little
 pig on it, the day's verdict in small caps along the top, what was sold in the
