@@ -1592,7 +1592,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v121';
+const APP_VERSION = 'v122';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3481,28 +3481,29 @@ const MINIS = [
 let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
 let miniTook = null;
-function startMini() {
-    const M = pick(MINIS);
-    mini = { id: M.id, name: M.name, say: M.say, secs: M.secs || MINI_S,
-             t0: now(), won: 0, done: false };
-    if (M.id === 'jar') {
-        mini.jar = W / 2; mini.coins = []; mini.next = 0;
-    } else if (M.id === 'sauce') {
-        sauceSet();
-    } else if (M.id === 'ninja') {
-        mini.fly = []; mini.bits = []; mini.next = .35; mini.swipe = []; mini.hit = 0;
-    } else if (M.id === 'dream') {
-        dreamSet();
-    } else if (M.id === 'cats') {
-        catsSet();
-    } else if (M.id === 'shell') {
-        shellSet();
-    } else {
+/* How each of them is set up, in one place. There used to be a second copy of
+   this chain behind the debug door, and a seventh game added to one of them
+   and not the other is a game that opens to an empty counter. */
+function miniSetup(id) {
+    if (id === 'jar') { mini.jar = W / 2; mini.coins = []; mini.next = 0; }
+    else if (id === 'sauce') sauceSet();
+    else if (id === 'ninja') { mini.fly = []; mini.bits = []; mini.next = .35;
+                               mini.swipe = []; mini.hit = 0; }
+    else if (id === 'dream') dreamSet();
+    else if (id === 'cats') catsSet();
+    else if (id === 'shell') shellSet();
+    else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
             mini.bangers.push({ x: W * (.5 + (i - 2) * .17), y: H * .52 + (i % 2) * 34,
                                 done: 0, ready: 2.4 + Math.random() * 3, gone: false, taken: false });
     }
+}
+function startMini() {
+    const M = pick(MINIS);
+    mini = { id: M.id, name: M.name, say: M.say, secs: M.secs || MINI_S,
+             t0: now(), won: 0, done: false };
+    miniSetup(M.id);
     jingleUp();
     tick();
 }
@@ -3626,7 +3627,13 @@ function shellSet() {
     mini.under = (Math.random() * 3) | 0;          // which cover it is actually under
     mini.phase = 'show'; mini.pt = 0;
     mini.swap = null; mini.swaps = 0; mini.pick = -1; mini.right = false;
+    /* He has two hands and they are always on the counter. They used to be
+       conjured onto whichever two covers were moving and taken away again
+       between every swap, which is not a man shuffling three basins, it is
+       four hands appearing and disappearing in six places. */
+    mini.hands = [{ x: shellRest(0), y: 0, grip: 0 }, { x: shellRest(1), y: 0, grip: 0 }];
 }
+const shellRest = i => W / 2 + (i ? 1 : -1) * Math.min(96, W * .25);
 /* Where a cover is this frame. During a swap the two of them are still
    holding their old slots - the swap is only committed when it lands - so
    each one slides to where the other one is and one of the pair goes over
@@ -3648,6 +3655,27 @@ const scuff = () => safely(t => {
     hiss(t, { hp: 700, lp: 3800, dur: .17, vol: .13 });
     tone(t, { freq: 190, to: 130, dur: .14, type: 'triangle', vol: .05 });
 });
+/* Where his two hands are. The left hand takes whichever of the pair is
+   further left, so they never cross over each other, and between swaps they
+   come back and rest on the slab rather than leaving the counter. */
+function shellHands(dt) {
+    const m = mini;
+    let want;
+    if (m.swap) {
+        const a = shellAt(m.swap.a), b = shellAt(m.swap.b);
+        want = a[0] <= b[0] ? [a, b] : [b, a];
+    } else {
+        want = [[shellRest(0), 0], [shellRest(1), 0]];
+    }
+    // quick onto a cover, unhurried off it
+    const k = 1 - Math.exp(-dt / (m.swap ? .05 : .16));
+    for (let i = 0; i < 2; i++) {
+        const h = m.hands[i];
+        h.x += (want[i][0] - h.x) * k;
+        h.y += (want[i][1] - h.y) * k;
+        h.grip += ((m.swap ? 1 : 0) - h.grip) * (1 - Math.exp(-dt / .07));
+    }
+}
 function shellStep(dt) {
     const m = mini;
     m.pt += dt;
@@ -3679,8 +3707,9 @@ function shellStep(dt) {
         // a wrong one gets shown where it actually was, which is the whole point
         if (!m.right && m.pt > .6)
             m.pots[m.under].lift = Math.min(1, (m.pt - .6) / .3);
-        if (m.pt > 1.7) endMini();
+        if (m.pt > 1.7) { shellHands(dt); endMini(); return; }
     }
+    shellHands(dt);
 }
 function catsSet() {
     mini.dx = W * .5; mini.dy = H * .68; mini.vx = 0; mini.vy = 0;
@@ -4836,17 +4865,22 @@ function drawMini(ms) {
         }
         /* His hands, on whichever two are moving. Nothing else on the screen
            says it is him doing it rather than the covers doing it themselves. */
-        if (mini.swap) for (const i of [mini.swap.a, mini.swap.b]) {
-            const [x, y] = shellAt(i);
-            const hy = ty + y - 56;
+        /* Both of them, every frame. On a cover they are over the top of it
+           with the fingers down the side; off one they are flat on the slab. */
+        for (const h of mini.hands) {
+            // flat on the slab at rest, over the top of a cover when it has one
+            const hy = ty + h.y - (4 + h.grip * 52);
             ctx.fillStyle = '#f4f0e4';                        // the cuff of the coat
-            ctx.beginPath(); ctx.roundRect(x - 16, hy - 44, 32, 30, 9); ctx.fill();
-            ctx.fillStyle = cast.butcher.skinD;               // fingers over the dome
+            ctx.beginPath();
+            ctx.roundRect(h.x - 16, hy - (20 + h.grip * 22), 32, 20 + h.grip * 10, 9);
+            ctx.fill();
+            ctx.fillStyle = cast.butcher.skinD;               // fingers down the side
             for (const fx of [-10, -3.5, 3.5, 10]) {
-                ctx.beginPath(); ctx.roundRect(x + fx - 3, hy - 2, 6, 19, 3); ctx.fill();
+                ctx.beginPath();
+                ctx.roundRect(h.x + fx - 3, hy - 4, 6, 8 + h.grip * 14, 3); ctx.fill();
             }
             ctx.fillStyle = cast.butcher.skin;                // and the back of the hand
-            ctx.beginPath(); ctx.ellipse(x, hy - 8, 19, 14, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(h.x, hy - 8, 19, 13, 0, 0, Math.PI * 2); ctx.fill();
         }
         /* What it was worth, where it was. */
         if (mini.phase === 'reveal' && mini.pt > .35) {
@@ -7957,7 +7991,9 @@ function drawTile(c, item, circle = true, k0 = .46) {
         return;
     }
     if (item.id === 'apprentice') {                   // and the lad himself
-        drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 18, k: .23, holds: 'knife',
+        /* Both arms down. A lad on his first Saturday is stood waiting to be
+           told what to do, not holding a knife up over his head. */
+        drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 18, k: .23, holds: 'none',
                                 young: true });
         return;
     }
@@ -8523,25 +8559,14 @@ document.getElementById('minilist').addEventListener('click', e => {
     document.body.classList.remove('waiting');
     round = 1; live = false; money = 0;
     showHud();
-    /* startMini picks one of the four at random; this puts the chosen one over
-       the top of it, set up the way its own branch would have. */
+    /* startMini picks one at random; this puts the chosen one over the top of
+       it, set up by the same code its own branch would have run. */
     startMini();
     const M = MINIS.find(m => m.id === btn.dataset.mini);
     Object.assign(mini, { id: M.id, name: M.name, say: M.say, secs: M.secs || MINI_S,
-                          won: 0, t0: now(), lone: true,
+                          won: 0, t0: now(), done: false, lone: true,
                           begun: M.id === 'sauce' ? false : undefined });
-    if (M.id === 'jar') { mini.jar = W / 2; mini.coins = []; mini.next = 0; }
-    else if (M.id === 'sauce') { sauceSet(); }
-    else if (M.id === 'ninja') { mini.fly = []; mini.bits = []; mini.next = .3;
-                                 mini.swipe = []; mini.hit = 0; }
-    else if (M.id === 'dream') { dreamSet(); }
-    else if (M.id === 'cats') { catsSet(); }
-    else {
-        mini.bangers = [];
-        for (let i = 0; i < 5; i++)
-            mini.bangers.push({ x: W * (.5 + (i - 2) * .17), y: H * .52 + (i % 2) * 34,
-                                done: 0, ready: 2.4 + Math.random() * 3, gone: false, taken: false });
-    }
+    miniSetup(M.id);
 });
 
 /* Who you are this week, what you are cutting with, and the six of them

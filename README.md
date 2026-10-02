@@ -650,6 +650,9 @@ name going gold is the difference when you are reading a row; a box round it is
 the difference when you are looking at the whole shelf from the top of the
 screen, which is what you are actually doing on a board of thirty-six.
 
+The apprentice on his shelf has both arms down. A lad on his first Saturday is
+stood waiting to be told what to do, not holding a knife up over his head.
+
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
 rather than Worn or Wear. A line under each says what it does, on the shelf and
@@ -1279,6 +1282,17 @@ twenty-two pounds, about a third on top of a perfect week.
   is the one being had. The back of its head is built out of the same numbers
   the front of it is, off whichever breed is stood there: a generic lump at the
   bottom of the screen is not your dog. His arm only goes up when it worked.
+
+  He has two hands and they are always on the counter. They were conjured onto
+  whichever pair of covers was moving and taken away again after every swap,
+  which is not a man shuffling three basins, it is four hands appearing and
+  disappearing in six places. The left hand takes whichever of a pair is
+  further left so they never cross, they go onto a cover quickly and come off
+  it unhurried, and between swaps they rest flat on the slab.
+
+  And how each of the seven is set up lives in one place now. There was a
+  second copy of that chain behind the debug door, and a seventh game added to
+  one of them and not the other is a game that opens to an empty counter.
 - **After the cats.** The shop after dark, and something is in it that should
   not be. **Drag anywhere and the dog goes where your finger is** - not where it
   is, where it is heading, because he is a dog and not a cursor: he builds up
