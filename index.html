@@ -177,6 +177,29 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
                margin-left: 7px; color: #b03a25; font-weight: 900; opacity: .85; }
 #ledger .pw { width: 10px; height: 10px; fill: #b03a25; flex: none; }
 #ledger td.m .got { font-family: var(--font); font-size: 12px; margin: 0; }
+/* The stone is not in the shop. A headstone on a tiled wall is a headstone
+   propped against a tiled wall; this is wherever they go. Dusk, a row of
+   small ones further back, and the grass they are all in. */
+#card.grave {
+    /* The horizon is at forty-eight per cent whatever the screen is, so the
+       stones stand behind the one with the name on it rather than under the
+       paper. Two rows: a smaller, dimmer one further back and a nearer one in
+       front of it, each a band of stones with a row of domed tops over it. */
+    background:
+        radial-gradient(circle at 36px 100%, #4e5a52 10px, transparent 10.5px)
+            left 0 top calc(48% - 25px)/72px 11px repeat-x,
+        repeating-linear-gradient(90deg, transparent 0 26px, #4e5a52 26px 46px,
+                                  transparent 46px 72px)
+            left 0 top calc(48% - 14px)/72px 32px repeat-x,
+        radial-gradient(circle at 26px 100%, #3b4740 7px, transparent 7.5px)
+            left 14px top calc(48% - 22px)/52px 8px repeat-x,
+        repeating-linear-gradient(90deg, transparent 0 19px, #3b4740 19px 33px,
+                                  transparent 33px 52px)
+            left 14px top calc(48% - 14px)/52px 20px repeat-x,
+        linear-gradient(180deg, transparent 48%, #2a4531 48%, #16241a 100%),
+        linear-gradient(180deg, #272e4c 0%, #4a4466 24%, #7d5660 40%,
+                        #a56c56 46%, #c48b5c 50%, #c48b5c 100%);
+}
 /* the week that ended with a stone in it has no ledger worth printing */
 #card.grave #ledger { display: none; }
 /* nothing under the total on an ordinary week - but over a headstone the next
@@ -491,8 +514,8 @@ body.waiting #hud { display: none; }
         linear-gradient(104deg, transparent 38%, rgba(226,244,255,.05) 44%,
                         rgba(226,244,255,.015) 50%, transparent 56%),
         repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 1px, transparent 1px 4px),
-        radial-gradient(120% 52% at 50% 0%, rgba(214,238,250,.16) 0%, transparent 64%),
-        linear-gradient(180deg, #31383c 0%, #222a2e 34%, #141a1d 100%);
+        radial-gradient(120% 52% at 50% 0%, rgba(214,238,250,.18) 0%, transparent 64%),
+        linear-gradient(180deg, #4c565c 0%, #3a4449 36%, #283136 100%);
 }
 #store .shut { background: linear-gradient(180deg, #3d464b, #222a2e);
                border-color: rgba(206,222,230,.5); color: #e8f0f4; }
@@ -558,7 +581,9 @@ body.waiting #hud { display: none; }
 #store { padding-top: 0; justify-content: flex-start; }
 #store, #settings { padding-right: 18px; }
 #stock-head {
-    position: sticky; top: 0; z-index: 2;
+    /* Over everything that scrolls under it. The tickets on the trays sit at
+       2 and the tick at 3, so at 2 this was being scrolled straight over. */
+    position: sticky; top: 0; z-index: 6;
     align-self: stretch; width: auto; margin: 0 -18px;   /* out past the gutters */
     display: flex; flex-direction: column; align-items: center;
     padding: 5px 0 7px;
@@ -616,8 +641,8 @@ body.waiting #hud { display: none; }
 /* How far down the board you are, over the top of the eight shelves it is
    split into. */
 #stock .tot {
-    margin: 2px 0 9px; font-family: var(--font-display); font-size: 15px;
-    letter-spacing: .02em; color: var(--cream); opacity: .78; text-align: center;
+    margin: 2px 0 10px; font-family: var(--font-display); font-size: 16px;
+    letter-spacing: .02em; color: #dbe8ee; opacity: .72; text-align: center;
 }
 /* A shop tells you what a thing looks like, not what it is called: every
    item is drawn on the dog's own head in its own little window, so a rack of
@@ -628,25 +653,28 @@ body.waiting #hud { display: none; }
 /* The board. One a line, because a rosette with no words on it is a coloured
    disc, and the words are the whole point of the unwon ones. */
 .pins { display: flex; flex-direction: column; gap: 5px; }
+/* A row on the board is a label, not a thing for sale, so it is the same
+   little black ticket that is propped on the front of every tray next door
+   rather than a tray of its own. It was left as a cream card when the shelves
+   became trays, which made the board look like it had come from a different
+   shop. */
 .pin {
     position: relative;
     display: flex; align-items: center; gap: 9px; text-align: left;
-    padding: 6px 11px 6px 5px; color: #26211c;
-    background: linear-gradient(180deg, #faf7f0, #eae3d4);
-    border: none; border-radius: 6px;
-    box-shadow: 0 3px 0 rgba(0,0,0,.35);
+    padding: 7px 11px 7px 5px; color: #f6f1e6;
+    background: linear-gradient(180deg, #1b1917, #0a0908);
+    border: none; border-radius: 4px;
+    box-shadow: 0 3px 0 rgba(0,0,0,.5);
 }
-.pin::after { border-color: rgba(38,33,28,.22); }
+.pin::after { inset: 3px; border-radius: 2px; border-color: rgba(246,241,230,.26); }
 .pin canvas { width: 38px; height: 46px; flex: none; }
 .pin .n { display: block; font-family: var(--font-display); font-size: 14px;
-          line-height: 1.2; color: rgba(38,33,28,.45); }
+          line-height: 1.2; color: rgba(246,241,230,.46); }
 .pin .w { display: block; font-size: 10px; font-weight: 700; line-height: 1.35;
-          opacity: .42; margin-top: 1px; }
-.pin.up { box-shadow: 0 3px 0 rgba(0,0,0,.35), 0 0 0 2px var(--gold-d);
-          background: linear-gradient(180deg, #fff8e4, #f2e7c6); }
-.pin.up::after { border-color: rgba(168,124,34,.5); }
-.pin.up .n { color: #8a6417; }
-.pin.up .w { opacity: .78; }
+          opacity: .34; margin-top: 1px; }
+.pin.up::after { border-color: rgba(220,171,62,.65); }
+.pin.up .n { color: var(--gold); }
+.pin.up .w { opacity: .72; }
 /* Two rooms, and the tabs are the door between them. */
 .tabs { display: flex; gap: 6px; width: 100%; max-width: 330px; margin: 9px 0 0; }
 .tabs button {
@@ -681,11 +709,11 @@ body.waiting #hud { display: none; }
     position: relative;
     display: flex; flex-direction: column; align-items: stretch;
     padding: 0 0 7px; cursor: pointer;
-    background: linear-gradient(168deg, #262a2c 0%, #141617 52%, #0b0c0d 100%);
+    background: linear-gradient(168deg, #333a3d 0%, #222729 52%, #181c1e 100%);
     border: none; border-radius: 5px; color: #f6f1e6;
-    box-shadow: 0 3px 0 rgba(0,0,0,.5),
-                inset 0 0 0 1.5px rgba(198,216,224,.17),
-                inset 0 2px 0 rgba(236,248,255,.13);
+    box-shadow: 0 3px 0 rgba(0,0,0,.42),
+                inset 0 0 0 1.5px rgba(206,226,236,.2),
+                inset 0 2px 0 rgba(236,248,255,.16);
     font-family: var(--font); font-weight: 700; font-size: 13px;
 }
 .buy .why { display: block; font-size: 10px; font-weight: 700; line-height: 1.32;
@@ -719,19 +747,23 @@ body.waiting #hud { display: none; }
    the tops of it showing over the back of the ticket: any more and it stops
    being a garnish and becomes a hedge. Three sizes at three heights so the
    edge of it is ragged rather than a row of identical scallops. */
-.buy .tik::before {
-    content: ''; position: absolute; z-index: -1; left: 8px; right: 8px;
-    top: -11px; height: 16px;
-    /* Each tile is exactly the height of the strip and the circle sits on its
-       bottom edge, so the three of them are solid along the bottom and ragged
-       along the top, which is the shape of a frill. */
+/* The kale is stuffed in between the trays, not laid inside them: it goes in
+   to fill the gaps a loaded counter leaves, and it was reading as a hedge
+   growing out of every tray. It sits behind its own tray and pokes up into the
+   gap above it, so the only place you ever see it is between one row and the
+   next. Each tile is exactly the height of the strip and the circle sits on
+   its bottom edge, so the three sizes are solid along the bottom and ragged
+   along the top, which is the shape of a frill. */
+.buy::before {
+    content: ''; position: absolute; z-index: -1; left: -4px; right: -4px;
+    top: -9px; height: 14px; pointer-events: none;
     background:
-        radial-gradient(circle at 50% 100%, #1b3f23 13px, transparent 13.5px)
-            0 0/26px 16px repeat-x,
-        radial-gradient(circle at 50% 100%, #27592e 10px, transparent 10.5px)
-            9px 0/20px 16px repeat-x,
-        radial-gradient(circle at 50% 100%, #35763b 7px, transparent 7.5px)
-            5px 0/14px 16px repeat-x;
+        radial-gradient(circle at 50% 100%, #1b3f23 11px, transparent 11.5px)
+            0 0/22px 14px repeat-x,
+        radial-gradient(circle at 50% 100%, #27592e 8.5px, transparent 9px)
+            8px 0/17px 14px repeat-x,
+        radial-gradient(circle at 50% 100%, #35763b 6px, transparent 6.5px)
+            4px 0/12px 14px repeat-x;
 }
 .buy .pr { display: block; font-family: var(--font-display); font-size: 17px;
            color: #f6f1e6; line-height: 1.05; letter-spacing: .01em; }
@@ -764,7 +796,13 @@ body.waiting #hud { display: none; }
 .buy.trying .pr { color: #2a2118; }
 .buy.trying .tag { color: #2a2118; }
 .buy.trying .why { opacity: .8; }
-.buy.poor { opacity: .45; }
+/* One you cannot afford is still one you have to be able to read: at under
+   half it was a smudge, and the point of showing it at all is that you can see
+   what you are saving up for. The price is what goes quiet, not the goods. */
+.buy.poor { opacity: .82; }
+.buy.poor canvas { opacity: .5; }
+.buy.poor .pr { color: rgba(246,241,230,.55); }
+.buy.poor .why { opacity: .4; }
 .buy:active { transform: translateY(2px);
                box-shadow: 0 1px 0 rgba(0,0,0,.5), inset 0 0 0 1.5px rgba(198,216,224,.17); }
 
@@ -878,7 +916,7 @@ body.waiting #hud { display: none; }
    banged on the paper, which is the only thing that ever gets added to a
    receipt after it is printed. */
 #ribbon {
-    position: absolute; top: 11px; right: 4px; transform: rotate(-8deg);
+    position: absolute; top: 11px; right: 10px; transform: rotate(-8deg);
     font-family: var(--mono); font-weight: 700; font-size: 9.5px; letter-spacing: .13em;
     white-space: nowrap; padding: 4px 8px 3px; background: transparent;
     color: #b3372b; border: 2.5px solid #b3372b; border-radius: 3px;
@@ -916,8 +954,16 @@ body.waiting #hud { display: none; }
 #card #vet-pay.poor { background: linear-gradient(180deg, #4a4438, #3a3529);
                       color: #b9b2a2; border-color: #2a2118; }
 #card.vet #vet-pay, #card.vet #vet-no { display: block; }
-#card.vet #ribbon { background: #7a5c1c; }
+/* The stamp is an outline, not a block of colour: this was still filling it
+   with dark gold from when it was a ribbon, which left dark red lettering on
+   a dark gold ground and nothing you could read. */
+#card.vet #ribbon { color: #8a6417; border-color: #8a6417;
+                    box-shadow: inset 0 0 0 1px rgba(138,100,23,.35); }
 #card.vet #rating, #card.hurt #rating { font-size: 15px; }
+/* These three have no ledger under the stamp to push the text clear of it, so
+   the paper gives them the room instead. The stamp was landing on the one
+   line they have. */
+#card.vet .inner, #card.hurt .inner, #card.grave .inner { padding-top: 48px; }
 /* the only number on this card is the one on the button */
 #card.vet #score { display: none; }
 #card.vet #rating { font-size: 18px; margin-top: 2px; }
@@ -1244,7 +1290,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v102';
+const APP_VERSION = 'v104';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1696,7 +1742,10 @@ function drawCat(ms) {
     ctx.save();
     ctx.translate(x, cat.y + Math.abs(step) * 2);
     ctx.scale(cat.dir * 1.35, 1.35);          // big enough to be worth stopping for
-    const ink = '#2f2b35', lit = '#454050';
+    /* Ginger rather than black. A black cat on a bottle-green wall is a
+       cat-shaped piece of wall, and the whole of this upgrade is that the dog
+       stops to look at it - which is no good if you cannot. */
+    const ink = '#b8692c', lit = '#d98f4f';
     const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
     ctx.save();                                       // the tail, up and curling
     ctx.strokeStyle = ink; ctx.lineWidth = 7; ctx.lineCap = 'round';
@@ -6758,7 +6807,7 @@ function drawTile(c, item, circle = true) {
         g.save();
         g.translate(TILE_W / 2 + 6, TILE_H / 2 + 16);
         g.scale(1.15, 1.15);
-        const ink = '#2f2b35';
+        const ink = '#b8692c';           // the same ginger that walks the floor
         const blob = (fill, path) => { g.beginPath(); path(); g.closePath(); g.fillStyle = fill; g.fill(); };
         g.strokeStyle = ink; g.lineWidth = 6; g.lineCap = 'round';
         g.beginPath(); g.moveTo(-10, 6); g.quadraticCurveTo(-30, 4, -26, -20); g.stroke();

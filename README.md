@@ -529,7 +529,9 @@ does not make the dog harder to hit; it makes hitting it something you survive.
 
 **A cat**, four hundred and eighty, is the small favour to the bone's big one:
 one walks along the floor every day at a moment nobody picked, and the dog
-stops dead to watch it go. Along the floor every time - it used to walk past
+stops dead to watch it go. It is ginger. It was black, and a black cat on a
+bottle-green wall is a cat-shaped piece of the wall - which is no good at all
+when the whole of the upgrade is that you watch the dog watch it. Along the floor every time - it used to walk past
 seventy pixels under wherever the dog happened to be, which put it halfway up
 the tiles on a Monday and off the bottom edge on a Saturday, and a cat that
 turns up at a different height every day reads as a thing the game is doing to
@@ -579,8 +581,19 @@ can explain and everybody expects. Three sizes at three heights so its edge is
 ragged rather than a row of identical scallops, and only the tops of it showing:
 any more and it stops being a garnish and becomes a hedge.
 
+The kale goes **between** the trays rather than inside them, which is where it
+goes in a real one: it is stuffed in to fill the gaps a loaded counter leaves,
+and laid in each tray it read as a hedge growing out of every item. Each tray
+carries its own strip behind itself, poking up into the gap above, so the only
+place you ever see it is between one row and the next.
+
 They are packed to a five-pixel gap. A counter with air round everything in it
 is a counter at the end of a Saturday.
+
+**One you cannot afford is still one you can read.** At under half opacity the
+whole tile was a smudge, and the point of showing it at all is that you can see
+what you are saving up for. It is the picture that goes quiet and the price
+that goes grey; the words stay.
 
 The one you have on has a gold edge round the tray and a tick in the corner;
 the one taken out and put on the counter has its ticket gold side out. The
@@ -733,6 +746,15 @@ Nell, and two of the butchers are Pearl and Doreen.
 Below the minimum the same card comes up with the same figure, on a button that
 will not be pressed - a bill you cannot meet is the reason you are about to
 bury a dog, and worth seeing.
+
+**And the stone is not in the shop.** A headstone propped against a tiled wall
+is a headstone propped against a tiled wall, so that card gets a graveyard at
+dusk: a horizon at forty-eight per cent of whatever screen it is on, two rows
+of small stones standing behind the one with the name on it - a dimmer, smaller
+row further back and a nearer one in front of it - grass under them and the
+last of the sun along the skyline. The three cards with no ledger on them give
+the stamp its own room at the top, because with nothing under it, it was
+landing on the one line they have.
 
 Say goodbye and it goes off to wherever they go, halo and wings and spinning
 gently, on the card you are already looking at. Going into the distance is a
