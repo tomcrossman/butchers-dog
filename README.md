@@ -199,7 +199,16 @@ board that throws a shadow on the tiles, the name signwritten in gold with
 FAMILY BUTCHER under it, and a scalloped awning below in the butcher's own
 apron colour, so the shop belongs to whoever is behind the counter. The sign used to be the same green as
 the wall behind it, which made it a plaque drawn onto the tiles rather than a
-board in front of them. What the shop is called changes every week - A Cut Above, Beef Encounter, Meat Expectations,
+board in front of them.
+
+The board itself is signwritten rather than ruled. A hairline rectangle with a
+word in the middle of it is a label, and that is what it was: it is a double
+frame now with the corners cut off it, a diamond on every corner of the inner
+one, the name in the same condensed caps as the title with a dark cut-in behind
+it so the gold sits proud of the board, and FAMILY BUTCHER under it between two
+rules with a diamond at each end. None of that is clever - it is just what is
+on the front of a shop, and the difference between a sign and a box with a word
+in it is entirely in that. What the shop is called changes every week - A Cut Above, Beef Encounter, Meat Expectations,
 Fillet of Soul, Cleaver Girl, Much Ado About Mutton, Sir Loin of Beef, Rack &
 Ruin and a dozen more, because a butcher's shop is obliged by long tradition to
 be called something like that. On the block: a butcher's knife, a cleaver, a
@@ -731,13 +740,25 @@ has gone with it - it was there to separate the shop from the text under it,
 and a marble slab across the whole window is a stronger line than a line is.
 Two of them stacked is one too many.
 
-**The setup screen is the fascia board.** It is the first thing anybody sees
+**The setup screen is a sign on a wall.** It is the first thing anybody sees
 and it was the tiled wall you play against, which is the inside of a shop you
-have not got yet. It is the dark signwritten plate instead, gold beading along
-the top and the bottom of the screen, the form in the counter's own mahogany,
-and the game's name painted on it the size a name on a fascia is painted - in
-**Rye**, a Victorian slab with spurs on it, which is the face a signwriter would
-have reached for in 1910 and the only place in the game that uses it.
+have not got yet. It is a whitewashed brick wall instead, with the game's name
+hung on it on a signwritten board. Making the whole screen the board was the
+other way round - it left the sign nothing to be a sign against, and near-black
+across a phone reads as unlit rather than as painted timber.
+
+The bricks are drawn once into a small tile and repeated: a proper stagger with
+a different wash on every brick, one in four older and warmer than the rest, is
+three lines of canvas and a fortnight of gradients. The wear on them is barely
+there on purpose - a tile repeats, and a mark you can pick out is a mark you
+then see in a grid all the way up the wall.
+
+The name is in **Staatliches**, bold condensed caps, which is what is actually
+painted on a butcher's: MEATS, FINEST CUTS, BUTCHERSON, PREMIUM QUALITY. A
+Victorian spurred slab was tried first and reads as a fairground rather than a
+shop. It is the only place in the game that uses it, it is stacked over two
+lines the way a sign like that is set, and there is no rule under it: the words
+are the sign.
 
 The game's name is on the setup screen and nowhere else: once the shop is
 yours, the sign over the window is the one that matters, so the shopfront gets
@@ -747,6 +768,18 @@ You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the game's own name, with a die
 to roll if you cannot think of one - and that, the till and the wardrobe are
 saved. It is one object under one key.
+
+**The four lines are one plate, not five rectangles a line.** Every question
+used to be a bordered field with a bordered brass button either side of it,
+inside a bordered panel, which is the look of a form someone has to fill in. A
+signwriter does not outline a plate and then outline everything standing on it.
+So the gold rule is set *inside* the edge of the plate rather than drawn round
+it, the lines between the questions are hairlines that stop short of that rule,
+the name sits in a slot cut into the plate - an inner shadow, no line round it
+- and the arrows are painted straight on in gold. The same plate is the back
+room's two switches and the reset screen's. The die that rolls you a name is
+drawn as a die now: it was the character for one, and a phone that has not got
+that glyph draws an empty box instead.
 
 **Out the back is a back room.** Match-boarding, a bulb over the door and
 nothing on the walls, with the version screwed to the bottom of it rather than

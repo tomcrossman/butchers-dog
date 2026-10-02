@@ -15,7 +15,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Rye&family=Lato:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Staatliches&family=Lato:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
@@ -47,11 +47,11 @@
     --mono:         ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
                     "Liberation Mono", monospace;
     --font-display: "Alfa Slab One", Georgia, serif;
-    /* The game's own name, and nothing else. Rye is a Victorian slab with
-       spurs on it - the face a signwriter would have used on a fascia board in
-       1910, which is the one thing on that screen the whole game is named
-       after. */
-    --font-title:   "Rye", "Alfa Slab One", Georgia, serif;
+    /* The game's own name, and nothing else. Bold condensed caps, which is
+       what is actually painted on a butcher's: MEATS, BUTCHERSON, FINEST CUTS.
+       A Victorian spurred slab was the other way to go and reads as a fairground
+       rather than a shop. */
+    --font-title:   "Staatliches", "Alfa Slab One", Georgia, serif;
 }
 * { box-sizing: border-box; touch-action: manipulation; -webkit-user-select: none; user-select: none;
     -webkit-tap-highlight-color: transparent; }
@@ -596,9 +596,7 @@ body.waiting #hud { display: none; }
 }
 #settings .rows, #confirm .rows {
     background: linear-gradient(180deg, #3e2c1c, #241910);
-    border-color: var(--gold-d);
 }
-#settings .row { border-top-color: rgba(220,171,62,.2); }
 /* And the version is screwed to the bottom of the wall rather than floating
    under whatever the last thing on the screen happens to be. */
 #settings .ver { position: absolute; left: 0; right: 0;
@@ -645,33 +643,48 @@ body.waiting #hud { display: none; }
    the bottom of it, and the game's name painted on it the size a name on a
    fascia is painted. Tiles were the wall you play against, which is the inside
    of a shop you have not got yet. */
+/* A whitewashed brick wall with the sign hung on it, which is what a butcher's
+   sign is actually hung on. The whole screen being the board was the other way
+   round and left nothing for it to be a board against - and near-black, which
+   read as unlit. The bricks are drawn once into a small tile and repeated:
+   a proper stagger with a different wash on every brick is three lines of
+   canvas and a fortnight of gradients. */
 #setup {
-    background:
-        radial-gradient(120% 56% at 50% 14%, rgba(255,226,160,.09) 0%, transparent 66%),
-        radial-gradient(120% 100% at 50% 50%, transparent 38%, rgba(0,0,0,.5) 100%),
-        repeating-linear-gradient(90deg, rgba(255,232,196,.016) 0 2px, transparent 2px 9px),
-        linear-gradient(180deg, #2e221b 0%, #1d1512 52%, #120c0a 100%);
-    box-shadow: inset 0 6px 0 var(--brass), inset 0 -6px 0 var(--brass);
+    background-color: #b9b5ad;
+    background-position: 0 0, 0 0;
+    background-repeat: repeat, repeat;
+}
+#setup::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(130% 80% at 50% 26%, rgba(255,250,240,.16) 0%, transparent 58%),
+                radial-gradient(130% 100% at 50% 50%, transparent 34%, rgba(38,30,24,.42) 100%);
+}
+#setup > * { position: relative; z-index: 1; }
+/* The sign itself: the dark plate with the gold rule inside it that every one
+   of these is, hung on the wall with a shadow under it. */
+#setup .board {
+    position: relative; margin: 0 0 6px; padding: 20px 26px 17px;
+    background: linear-gradient(180deg, #241a15, #140e0b);
+    border-radius: 7px; box-shadow: 0 10px 22px rgba(28,20,14,.55);
+}
+#setup .board::after {
+    content: ''; position: absolute; inset: 7px; pointer-events: none;
+    border: 2px solid rgba(220,171,62,.5); border-radius: 3px;
 }
 #setup h1 {
     margin: 0; font-family: var(--font-title); font-weight: 400; color: var(--gold);
-    font-size: clamp(38px, 15vw, 70px); line-height: 1.04; letter-spacing: .005em;
-    text-shadow: 0 4px 0 rgba(0,0,0,.5), 0 0 26px rgba(220,171,62,.22);
-}
-/* The gold hairline a signwriter rules inside the edge of a board. */
-#setup h1::after {
-    content: ''; display: block; width: 72%; height: 2px; margin: 14px auto 0;
-    background: linear-gradient(90deg, transparent, var(--gold-d) 20%,
-                                var(--gold-d) 80%, transparent);
+    font-size: clamp(44px, 18vw, 82px); line-height: .98; letter-spacing: .02em;
+    text-transform: uppercase;
+    text-shadow: 0 5px 0 rgba(0,0,0,.5), 0 0 30px rgba(220,171,62,.2);
 }
 #setup .rows {
-    background: linear-gradient(180deg, #4a3220, #2d1d10);
-    border-color: var(--gold-d);
+    background: linear-gradient(180deg, #3a2615, #24170c);
+    box-shadow: 0 9px 20px rgba(28,20,14,.5), inset 0 1px 0 rgba(255,240,214,.09);
 }
-#setup .row { border-top-color: rgba(220,171,62,.2); }
-#setup .row input { background: rgba(0,0,0,.3); }
+#setup .btn { box-shadow: 0 4px 0 rgba(0,0,0,.35), 0 8px 16px rgba(28,20,14,.4); }
+#setup .row input { background: rgba(0,0,0,.34); }
 #setup .sub {
-    margin: 9px 0 0; font-size: 13px; font-weight: 900; letter-spacing: .18em;
+    margin: 16px 0 0; font-size: 13px; font-weight: 900; letter-spacing: .18em;
     text-transform: uppercase; color: var(--cream); opacity: .6;
 }
 #preview { margin-top: 2px; }
@@ -711,34 +724,58 @@ body.waiting #hud { display: none; }
 #stock-head .bank b { font-size: 26px; }
 #stock-dog { width: min(42vw, 166px); height: auto; margin-top: 0; }
 /* One panel, four lines in it, hairlines between. Four separate boxes read as
-   four separate questions; this reads as the one form it is. */
+   four separate questions; this reads as the one form it is.
+
+   And one plate, not a stack of boxes. Every line used to be a bordered field
+   with a bordered button either side of it, which is five rectangles to a
+   question and the look of a form someone had to fill in. A signwriter does
+   not outline a plate and then outline everything on it: the gold rule is set
+   *inside* the edge, the lines between are hairlines that stop short of it,
+   the name sits in a slot cut into the plate rather than a box drawn on it,
+   and the arrows are painted straight on. */
 .rows {
-    width: 100%; max-width: 320px; margin: 12px 0 4px; overflow: hidden;
+    position: relative;
+    width: 100%; max-width: 320px; margin: 12px 0 4px;
     background: linear-gradient(180deg, #1a4636, #123327);
-    border: 2px solid var(--gold-d); border-radius: 3px;
+    border-radius: 5px;
+    box-shadow: 0 7px 18px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,240,214,.09);
+}
+.rows::after {
+    content: ''; position: absolute; inset: 5px; pointer-events: none;
+    border: 1.5px solid rgba(220,171,62,.4); border-radius: 2px;
 }
 .row {
-    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
-    border-top: 1px solid rgba(220,171,62,.22);
+    position: relative;
+    display: flex; align-items: center; gap: 8px; padding: 9px 15px;
 }
-.row:first-child { border-top: 0; }
-.row .lab { flex: none; width: 74px; text-align: left; font-size: 11px; font-weight: 900;
-            letter-spacing: .1em; text-transform: uppercase; opacity: .6; }
+/* The hairline runs between the lines, not into the gold rule either side. */
+.row + .row::before {
+    content: ''; position: absolute; left: 13px; right: 13px; top: 0; height: 1px;
+    background: rgba(220,171,62,.17);
+}
+.row .lab { flex: none; width: 72px; text-align: left; font-size: 11px; font-weight: 900;
+            letter-spacing: .1em; text-transform: uppercase; opacity: .55; }
 .row b { flex: 1; font-family: var(--font-display); font-weight: 400; font-size: 17px;
          color: var(--cream); letter-spacing: .02em; }
+/* Cut into the plate: no line round it, just the shadow of an edge. */
 .row input {
-    flex: 1; min-width: 0; background: rgba(0,0,0,.25); color: var(--cream);
-    border: 1px solid rgba(220,171,62,.35); border-radius: 2px;
+    flex: 1; min-width: 0; background: rgba(0,0,0,.3); color: var(--cream);
+    border: 0; border-radius: 2px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.45), inset 0 0 0 1px rgba(220,171,62,.14);
     font-family: var(--font-display); font-weight: 400; font-size: 16px;
-    padding: 5px 8px; text-align: center; letter-spacing: .02em;
+    padding: 6px 8px; text-align: center; letter-spacing: .02em;
 }
-.row input:focus { outline: none; border-color: var(--gold); }
+.row input:focus {
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.45), inset 0 0 0 1.5px var(--gold);
+}
 .nudge {
-    flex: none; width: 34px; padding: 5px 0; cursor: pointer;
-    background: var(--brass); color: #2a2118; border: 2px solid #2a2118; border-radius: 3px;
-    font-family: var(--font-display); font-size: 17px; line-height: 1;
+    flex: none; width: 32px; padding: 5px 0; cursor: pointer;
+    background: none; color: var(--gold); border: 0; opacity: .68;
+    font-family: var(--font-display); font-size: 23px; line-height: 1;
 }
-.nudge:active { transform: translateY(1px); }
+.nudge svg { width: 17px; height: 17px; fill: currentColor; vertical-align: -3px; }
+.nudge:active { opacity: 1; transform: translateY(1px); }
 #stock { width: 100%; max-width: 330px; margin: 8px 0 4px; }
 .shelf { margin-bottom: 10px; }
 .shelf { margin-bottom: 10px; }
@@ -1273,6 +1310,14 @@ body.waiting #hud { display: none; }
         <ellipse cx="5.2" cy="2.4" rx="1.7" ry="2.1"/>
         <ellipse cx="8.8" cy="2.4" rx="1.7" ry="2.1"/>
     </symbol>
+    <symbol id="i-dice" viewBox="0 0 14 14">
+        <path d="M 3 1.2 H 11 A 1.8 1.8 0 0 1 12.8 3 V 11 A 1.8 1.8 0 0 1 11 12.8
+                 H 3 A 1.8 1.8 0 0 1 1.2 11 V 3 A 1.8 1.8 0 0 1 3 1.2 Z"
+              fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="4.6" cy="4.6" r="1.15"/><circle cx="9.4" cy="4.6" r="1.15"/>
+        <circle cx="7" cy="7" r="1.15"/>
+        <circle cx="4.6" cy="9.4" r="1.15"/><circle cx="9.4" cy="9.4" r="1.15"/>
+    </symbol>
     <symbol id="i-cup" viewBox="0 0 14 14">
         <path d="M 4 1.4 H 10 V 5.2 C 10 7.3, 8.7 8.6, 7 8.6 C 5.3 8.6, 4 7.3, 4 5.2 Z"/>
         <path d="M 6 8.4 H 8 V 10.4 H 6 Z"/><path d="M 3.4 10.4 H 10.6 V 12.6 H 3.4 Z"/>
@@ -1319,8 +1364,10 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="setup" hidden>
-        <h1>Butcher&rsquo;s<br>Dog</h1>
-        <p class="sub">Start your shop</p>
+        <div class="board">
+            <h1>Butcher&rsquo;s<br>Dog</h1>
+            <p class="sub">Start your shop</p>
+        </div>
         <canvas id="preview" width="330" height="196"></canvas>
         <div class="rows">
             <div class="row"><span class="lab">Butcher</span>
@@ -1333,10 +1380,10 @@ body.waiting #hud { display: none; }
                 <button class="nudge" data-pick="dog" data-step="1">&rsaquo;</button></div>
             <div class="row"><span class="lab">Dog name</span>
                 <input id="in-dog" maxlength="12" autocomplete="off" spellcheck="false">
-                <button class="nudge" id="roll-dog">&#9861;</button></div>
+                <button class="nudge" id="roll-dog" aria-label="Another name"><svg viewBox="0 0 14 14"><use href="#i-dice"/></svg></button></div>
             <div class="row"><span class="lab">Shop</span>
                 <input id="in-shop" maxlength="26" autocomplete="off" spellcheck="false">
-                <button class="nudge" id="roll-shop">&#9861;</button></div>
+                <button class="nudge" id="roll-shop" aria-label="Another name"><svg viewBox="0 0 14 14"><use href="#i-dice"/></svg></button></div>
         </div>
         <button class="btn" id="setup-done">That&rsquo;ll do</button>
     </div>
@@ -1410,7 +1457,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v111';
+const APP_VERSION = 'v112';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -6902,6 +6949,50 @@ function previewKit() {
     return kit;
 }
 const previewKnife = () => (tryOn && tryOn.kind === 'knife') ? itemById(tryOn.id) : cast.knife;
+/* A tile of whitewashed brick. Two courses by two bricks, with every brick
+   drawn again a tile-width either side so the joints carry across the seam -
+   a wall that does not tile is a wall with a line down it. Every brick gets
+   its own wash and a few get a worn patch, because the whole point of a
+   whitewashed wall is that no two bricks took the paint the same. */
+function brickTile() {
+    const BW = 92, BH = 34, M = 5, TW = BW * 2 + M * 2, TH = (BH + M) * 2;
+    const c = document.createElement('canvas');
+    c.width = TW; c.height = TH;
+    const g = c.getContext('2d');
+    g.fillStyle = '#9d988f'; g.fillRect(0, 0, TW, TH);          // the mortar
+    const rnd = i => { const v = Math.sin(i * 12.9898) * 43758.5; return v - Math.floor(v); };
+    let n = 0;
+    for (let row = 0; row < 2; row++) {
+        const y = row * (BH + M) + M / 2;
+        const off = row ? -(BW + M) / 2 : 0;
+        for (let i = -1; i <= 2; i++) {
+            const x = off + i * (BW + M);
+            const k = rnd(++n), k2 = rnd(n + 40);
+            const lift = 212 + k * 34;
+            g.fillStyle = `rgb(${lift | 0},${(lift - 4 - k2 * 8) | 0},${(lift - 10 - k2 * 14) | 0})`;
+            g.beginPath(); g.roundRect(x, y, BW, BH, 2); g.fill();
+            if (k2 > .74) {                                     // one in four is older
+                g.fillStyle = `rgba(166,132,108,${.12 + k * .2})`;
+                g.beginPath(); g.roundRect(x, y, BW, BH, 2); g.fill();
+            }
+            /* Where it has worn. Barely there: a tile repeats, and a mark you
+               can pick out is a mark you then see in a grid all the way up
+               the wall. */
+            for (let w = 0; w < 3; w++) {
+                const kw = rnd(n * 7 + w * 13);
+                g.fillStyle = `rgba(178,166,150,${.03 + kw * .07})`;
+                g.beginPath();
+                g.ellipse(x + BW * (.12 + kw * .76), y + BH * (.2 + rnd(n + w * 5) * .6),
+                          BW * (.06 + kw * .2), BH * (.12 + kw * .3),
+                          kw * 2, 0, Math.PI * 2);
+                g.fill();
+            }
+            g.fillStyle = 'rgba(255,255,255,.3)';               // and the top arris
+            g.fillRect(x + 1, y, BW - 2, 1.5);
+        }
+    }
+    return c.toDataURL();
+}
 function drawPreview(id, w, h, withMan) {
     const c = document.getElementById(id);
     if (!c) return;
@@ -7822,24 +7913,54 @@ function drawFascia(g, name, apron) {
     g.shadowColor = 'transparent';
     g.fillStyle = '#c59430';                            // a beaded gold edge
     g.fillRect(x0, y1 - 4, x1 - x0, 4);
-    g.strokeStyle = 'rgba(220,171,62,.45)'; g.lineWidth = 1;
-    g.strokeRect(x0 + 8, y0 + 7, x1 - x0 - 16, y1 - y0 - 19);
+    /* A signwriter does not rule a rectangle on a fascia: the frame has its
+       corners cut off it, there are two of them, and there is a diamond on
+       every corner. It was a box with a word in it. */
+    const cut = 10;
+    const frame = (ix, iy, iw, ih, c) => {
+        g.beginPath();
+        g.moveTo(ix + cut, iy);
+        g.lineTo(ix + iw - cut, iy); g.lineTo(ix + iw, iy + cut);
+        g.lineTo(ix + iw, iy + ih - cut); g.lineTo(ix + iw - cut, iy + ih);
+        g.lineTo(ix + cut, iy + ih); g.lineTo(ix, iy + ih - cut);
+        g.lineTo(ix, iy + cut);
+        g.closePath();
+        g.strokeStyle = c; g.stroke();
+    };
+    g.lineWidth = 2;  frame(9, 6, 322, 56, 'rgba(220,171,62,.72)');
+    g.lineWidth = 1;  frame(14, 11, 312, 46, 'rgba(220,171,62,.3)');
+    const mid = (x0 + x1) / 2;
+    g.fillStyle = 'rgba(220,171,62,.72)';               // a diamond on each corner
+    for (const [dx, dy] of [[14, 11], [326, 11], [14, 57], [326, 57]]) {
+        g.save(); g.translate(dx, dy); g.rotate(Math.PI / 4);
+        g.fillRect(-2.6, -2.6, 5.2, 5.2); g.restore();
+    }
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.font = '400 31px "Alfa Slab One", Georgia, serif';
-    const room = x1 - x0 - 36, w = g.measureText(name).width;
+    /* The name in the same bold condensed caps the game's own name is in,
+       which is what is actually painted on one of these. */
+    g.font = '400 30px "Staatliches", "Alfa Slab One", Georgia, serif';
+    const room = x1 - x0 - 52, w = g.measureText(name.toUpperCase()).width;
     g.save();
-    g.translate((x0 + x1) / 2, y0 + 30);
+    g.translate(mid, y0 + 28);
     if (w > room) g.scale(room / w, 1);
+    g.fillStyle = '#2a1d10';                            // cut into the board
+    g.fillText(name.toUpperCase(), 0, 1.6);
     g.fillStyle = '#e8c15a';
-    g.fillText(name, 0, 0);
+    g.fillText(name.toUpperCase(), 0, 0);
     g.restore();
-    g.font = '900 10px Lato, system-ui, sans-serif';    // and what the trade is
+    /* And what the trade is, with a rule either side of it the way every one
+       of these has. */
+    g.font = '900 9px Lato, system-ui, sans-serif';
+    const trade = 'F A M I L Y   B U T C H E R';
+    const tw = g.measureText(trade).width;
     g.fillStyle = 'rgba(232,193,90,.62)';
-    g.save();
-    g.translate((x0 + x1) / 2, y0 + 53);
-    g.scale(1, 1);
-    for (let i = 0; i < 1; i++) g.fillText('F A M I L Y   B U T C H E R', 0, 0);
-    g.restore();
+    g.fillText(trade, mid, y0 + 51);
+    g.fillStyle = 'rgba(220,171,62,.45)';
+    for (const sx of [-1, 1]) {
+        g.fillRect(mid + sx * (tw / 2 + 8) - (sx < 0 ? 26 : 0), y0 + 50.2, 26, 1.4);
+        g.save(); g.translate(mid + sx * (tw / 2 + 40), y0 + 51); g.rotate(Math.PI / 4);
+        g.fillRect(-2.2, -2.2, 4.4, 4.4); g.restore();
+    }
 
     // the awning: stripes off the apron behind the counter, scalloped at the bottom
     const ay = y1, ah = 26, scallop = 11, n = Math.round((x1 - x0) / (scallop * 2));
@@ -8217,6 +8338,7 @@ document.getElementById('shopfront').addEventListener('pointerdown', e => {
     if (x >= bx0 && x <= bx1 && y >= by0 && y <= by1) windButcher('ribs');
 });
 /* Boot: whatever was saved, or a stranger who has to pick a shop first. */
+setupEl.style.backgroundImage = 'url(' + brickTile() + ')';
 loadSave();
 deal();                           // the cast, before anything asks who the dog is
 if (started) seenBreed();         // and whoever is standing there already counts
