@@ -804,10 +804,18 @@ the room the title used to have and the till under it is the score.
 The two of them are stood under the sign at a size you can actually see them
 at - they are what you are choosing, and small enough they were a decoration
 rather than the thing the four lines underneath are about. They stand *on* the
-form rather than above it: the bottom sixth of that canvas is empty, because
-it is where their feet are, so the plate comes up to meet it. And the plate
-and the button under it are the same width, because two things stacked with
-their sides not lining up is the one thing you notice about them.
+form rather than above it - the apron and the dog are drawn to the very bottom
+edge of that canvas, so the plate butts straight onto them. And the plate and
+the button under it are the same width, because two things stacked with their
+sides not lining up is the one thing you notice about them.
+
+Everything on this screen is capped against the height of the screen as well
+as its width, and a short phone gets the same four things a size smaller.
+Four stacked things where the last one is the way in cannot each take whatever
+they like, and a title screen you have to scroll to find the start button on
+is not a title screen. The caps are a share of the screen rather than of the
+window, so they are a share of what is actually left after the notch and the
+home bar.
 
 You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the sign, with a die to roll if

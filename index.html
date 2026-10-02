@@ -704,7 +704,14 @@ body.waiting #hud { display: none; }
    wall with a shadow under it is a poster. It is drawn rather than built out of
    divs because the lettering goes round the ring, and nothing in CSS sets type
    on a circle. */
-#setup #signboard { width: min(84vw, 330px); height: auto; margin: 2px 0 4px; }
+/* Tied to the height of the screen as well as the width of it: four things
+   are stacked here and the last of them is the way in, so none of them may
+   take whatever it likes. Both caps on a canvas with a width and a height of
+   its own fit it inside the two of them and keep it the shape it is - and the
+   height is a share of this screen rather than of the window, so it is a
+   share of what is actually left after the notch and the home bar. */
+#setup #signboard { max-width: min(84vw, 330px); max-height: 32%;
+                    width: auto; height: auto; margin: 2px 0 2px; }
 #setup .rows {
     background: linear-gradient(180deg, #3a2615, #24170c);
     box-shadow: 0 9px 20px rgba(28,20,14,.5), inset 0 1px 0 rgba(255,240,214,.09);
@@ -715,14 +722,27 @@ body.waiting #hud { display: none; }
               box-shadow: 0 4px 0 rgba(0,0,0,.35), 0 8px 16px rgba(28,20,14,.4); }
 #setup .row input { background: rgba(0,0,0,.34); }
 #preview { margin-top: 2px; }
-/* The bottom sixth of that canvas is empty - it is where their feet are, and
-   they stand on them - so the form comes up to meet it. A gap there has them
-   floating over the thing they are standing on. */
-#setup .rows { margin-top: calc(min(94vw, 368px) * -.093); }
+#setup .btn { margin-top: 12px; }
+/* A short phone gets the same four things, smaller. Scrolling a title screen
+   to find the button that starts the game is not a title screen. */
+@media (max-height: 700px) {
+    #setup #signboard { max-height: 29%; margin: 0; }
+    #preview { max-height: 21%; }
+    #setup .row { padding: 7px 14px; }
+    #setup .row b { font-size: 18px; }
+    #setup .row input { font-size: 17px; padding: 4px 8px; }
+    #setup .nudge { font-size: 20px; }
+    #setup .btn { padding: 11px; font-size: 18px; margin-top: 9px; }
+    #setup { padding: 12px 18px; }
+}
+/* The form butts straight onto the bottom of them. There is nothing to pull
+   it up over - the apron and the dog are drawn to the very bottom edge of that
+   canvas - so anything negative here takes the dog with it. */
+#setup .rows { margin-top: 0; }
 /* The two of them are what you are choosing, so they get the room: they were
    small enough on this screen to be a decoration rather than the thing the
    four lines underneath are about. */
-#preview { width: min(94vw, 368px); height: auto; }
+#preview { max-width: min(94vw, 368px); max-height: 23%; width: auto; height: auto; }
 /* The dog is the whole point of the shop, so it does not scroll away with the
    first shelf: it is pinned to the top and every tile you try goes straight
    onto it, in view, without scrolling back up for a look. */
@@ -1552,7 +1572,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v117';
+const APP_VERSION = 'v118';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -7137,7 +7157,11 @@ function drawSignBoard() {
     for (const sx of [-1, 1]) {                         // two chains down to it
         const lx = cx + sx * 58;
         g.strokeStyle = IRON; g.lineWidth = 3.4;
-        for (let i = 0; i < 4; i++) {                   // down to the lug on the ring
+        /* Down onto the ring, not down to near it. The ring is a circle, so
+           where the chain meets it is further down than the top of it. */
+        const reach = cy - Math.sqrt(R * R - 58 * 58) + 10;
+        const n = Math.max(2, Math.round((reach - (ay + 13)) / 21));
+        for (let i = 0; i < n; i++) {
             g.beginPath(); g.ellipse(lx, ay + 13 + i * 21, 5, 11, 0, 0, TAU); g.stroke();
         }
     }
