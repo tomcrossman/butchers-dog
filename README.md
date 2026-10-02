@@ -286,6 +286,21 @@ So the only things that ever appear over the window are the things that are not
 money: PERFECT, a double, a greedy one, a prime cut, a link the dog dropped or
 spat out.
 
+**The day is priced like a piece of meat.** What a day took used to go up on a
+dark green panel with a gold border round it and a gold number in it, which is
+the game's own furniture - a dialog box, and it read as one, in the middle of
+the one screen that is meant to be a butcher's window.
+
+It is a counter ticket now: the black plastic plaque with the white keyline
+that is propped on a wire spike in front of everything in the window, a little
+pig on it, the day's verdict in small caps along the top, what was sold in the
+small print under the rule, and the money set as big as the ticket will take
+with **the pence up in the corner**, which is how a price is written on a
+ticket and never how it is written in a dialog box. It is pushed down onto the
+spike rather than faded up - it arrives off-square, overshoots and settles -
+and on a day you get the whole string off, the red flash off the same window
+lands on the corner of it saying *the lot*.
+
 The week's card says one number and one word under it: the takings, and
 `banked`. The till's running total used to be squeezed into that caption beside
 it, which is two different numbers in one line - and it is on the shopfront you
@@ -819,6 +834,34 @@ twenty-two pounds, about a third on top of a perfect week.
   window does, so it is a shorter window rather than a hidden one. A burnt one is scraped off after a second, and when the
   grill is empty the game is over whatever the clock says - there is nothing to
   watch on an empty barbecue.
+
+**None of them happens in the shop.** The bottle-green tiles are the wall you
+work against and they are behind every single thing in this game; four
+mini-games played on them is the same room four times over at the one moment
+the game is meant to feel like a treat. So each has a backdrop of its own,
+drawn on the same terms as everything else - flat shapes, no outline, and
+nothing kept between frames, so what moves is worked out from the clock.
+
+- **Cash only** is the shop after closing with one lamp left on over the till.
+  Dark on purpose: a gold coin coming down through that light is the brightest
+  thing on the screen, which is the whole game. The cone is seven cones inside
+  each other rather than one, because a hard-edged triangle on a dark wall is a
+  wedge of paint rather than a lamp.
+- **Sauce on** is blue gingham oilcloth, which is what a hot dog is handed to
+  you over. Blue because the sauce is red, and a red line on a red cloth is a
+  line you cannot see. It is held down hard at the edges and left alone in the
+  middle, so the bun is the thing you are looking at.
+- **Sausage samurai** is night, a moon with a slow turn of rays behind it, a
+  hill, and blossom coming past. Dark for the same reason the first one is: a
+  pale sword and a red sausage both read against it, and neither of them reads
+  against a sunrise.
+- **On the barbecue** is out the back at dusk - a hedge along the end of the
+  garden, the last of the sun behind it, the stars starting, and a lawn mown in
+  stripes that widen as they come at you. Dark enough that a pink sausage and a
+  black one are plainly two different things, which is the whole game.
+
+All four darken under the top of the screen, because the name of the game and
+the clock sit up there and they have to read on all four.
 
 They run on the same canvas the day is played on. A second canvas means a
 second copy of everything that makes this one fit a phone, and by the time they

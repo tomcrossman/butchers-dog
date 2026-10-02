@@ -208,30 +208,82 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     100% { transform: translateY(-50%) scale(.92); opacity: 0; }
 }
 
-/* The day's takings, over the middle of the window rather than the bottom of
-   it - the dog finishes wherever it got to, and the bottom of the string is
-   exactly where it usually is. On its own plate, so it reads over whatever
-   is behind it. */
+/* The day's takings. It used to be a dark green panel with a gold border and
+   a gold number in it, which is the game's own furniture: a dialog box, and
+   it read as one.
+
+   It is a counter ticket now - the black plastic plaque with the white
+   keyline that is propped on a wire spike in every butcher's window in
+   France, the price set huge with the pence up in the corner. The day gets
+   priced the way a piece of meat on the slab gets priced, which is the only
+   thing that happens on this screen anyway. */
 #tally {
     position: absolute; left: 50%; top: 32%; z-index: 9;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) rotate(-2.5deg);
     text-align: center; pointer-events: none; display: none;
-    width: max-content; max-width: min(80vw, 290px); padding: 13px 22px 11px;
-    background: rgba(12, 34, 26, .88);
-    border: 2px solid var(--gold-d); border-radius: 3px;
-    box-shadow: 0 4px 0 rgba(0,0,0,.4);
+    width: max-content; max-width: min(80vw, 290px); padding: 11px 20px 10px;
+    background: linear-gradient(180deg, #1d1a16, #0f0d0b);
+    border-radius: 7px;
+    box-shadow: 0 7px 0 rgba(0,0,0,.45), 0 10px 22px rgba(0,0,0,.45);
 }
-#tally.on { display: block; animation: tallyIn .3s cubic-bezier(.2, 1.4, .4, 1) both; }
-@keyframes tallyIn { from { transform: translate(-50%, -44%) scale(.92); opacity: 0; }
-                     to   { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+/* the hairline inside the edge, which is what makes it a ticket and not a box */
+#tally::after {
+    content: ''; position: absolute; inset: 4px; pointer-events: none;
+    border: 1.5px solid rgba(246,241,230,.52); border-radius: 4px;
+}
+/* and the spike it is stood on, down into the meat */
+#tally::before {
+    content: ''; position: absolute; left: 50%; top: 100%; margin-left: -3.5px;
+    width: 7px; height: 54px;
+    background: linear-gradient(90deg, #6e6a63, #e4e7ea 42%, #8d9095);
+    clip-path: polygon(0 0, 100% 0, 100% 74%, 50% 100%, 0 74%);
+}
+#tally.on { display: block; animation: tallyIn .44s cubic-bezier(.3, 1.3, .4, 1) both; }
+/* It is pushed down onto the spike rather than faded up: it arrives
+   off-square, overshoots, and settles back the way a ticket shoved on a wire
+   actually behaves. */
+@keyframes tallyIn {
+    0%   { transform: translate(-50%, -50%) translateY(-34px) rotate(-11deg) scale(.94);
+           opacity: 0; }
+    38%  { opacity: 1; }
+    64%  { transform: translate(-50%, -50%) translateY(3px) rotate(2deg) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) rotate(-2.5deg) scale(1); opacity: 1; }
+}
+/* What it is, in the small caps along the top of the ticket. */
+#tally .l { display: block; font-family: var(--font); font-weight: 900; font-size: 13px;
+            color: #f6f1e6; text-transform: uppercase; letter-spacing: .11em;
+            line-height: 1.2; }
+#tally.lot .l { padding-left: 26px; }
+#tally .l::after {
+    content: ''; display: block; width: 100%; height: 1.5px; margin: 6px 0 2px;
+    background: rgba(246,241,230,.3);
+}
 #tally .n {
-    display: block; font-family: var(--font-display); font-size: clamp(40px, 13vw, 58px);
-    line-height: 1; color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.45);
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    font-family: var(--font-display); font-size: clamp(38px, 12.5vw, 54px);
+    line-height: 1.04; color: #f6f1e6;
 }
-#tally .l { display: block; font-family: var(--font); font-weight: 900; font-size: 15px;
-            text-transform: uppercase; letter-spacing: .08em; margin-top: 3px; line-height: 1.25; }
-#tally .b { display: block; font-size: 11px; font-weight: 700; letter-spacing: .12em;
-            text-transform: uppercase; opacity: .5; margin-top: 5px; }
+#tally .n .cut { width: 42px; height: 42px; flex: none; fill: #f6f1e6; opacity: .95; }
+/* the pence up in the corner, which is how a price is written on a ticket
+   and never how it is written in a dialog box */
+#tally .n i { font-style: normal; font-size: .44em; letter-spacing: 0;
+              position: relative; top: -1.02em; margin-left: .08em; }
+#tally .b { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+            text-transform: uppercase; color: rgba(246,241,230,.52); margin-top: 4px; }
+/* The red flash off the same window, for the one day in a while you get the
+   whole string off. It is the only thing on the ticket that is not black. */
+#tally .flash {
+    position: absolute; top: -28px; left: -26px; width: 54px; height: 54px;
+    display: flex; align-items: center; justify-content: center; padding: 5px;
+    border-radius: 50%; background: #c4231f; color: #fff3e8;
+    transform: rotate(-15deg);
+    box-shadow: 0 3px 0 rgba(0,0,0,.4);
+    font-family: var(--font); font-weight: 900; font-size: 11px; line-height: 1.08;
+    letter-spacing: .05em; text-transform: uppercase;
+    animation: flashOn .38s cubic-bezier(.2,1.8,.4,1) .22s both;
+}
+@keyframes flashOn { from { transform: rotate(-15deg) scale(0); }
+                     to   { transform: rotate(-15deg) scale(1); } }
 
 /* ---- the front door ---------------------------------------------------
    A phone browser will not let a freshly loaded page make a sound on the
@@ -744,6 +796,20 @@ body.waiting #hud { display: none; }
     </symbol>
     <!-- The shop till: a sign on top, a keypad knocked out of the body and
          the drawer under it. What the money in this game actually sits in. -->
+    <!-- The animal, for the ticket. A counter ticket carries a little
+         silhouette of whatever it is pricing, and this shop prices pigs. -->
+    <symbol id="i-pig" viewBox="0 0 34 26">
+        <ellipse cx="14.4" cy="13.4" rx="10.6" ry="7.2"/>
+        <ellipse cx="24.6" cy="12" rx="6.4" ry="5.8"/>
+        <ellipse cx="30.4" cy="13.6" rx="3" ry="2.6"/>
+        <path d="M 21.2 6.6 L 27 4.6 L 27.4 10.4 Z"/>
+        <path d="M 6.6 18 H 10 V 24.4 H 6.6 Z"/>
+        <path d="M 11.6 18.6 H 15 V 24.4 H 11.6 Z"/>
+        <path d="M 17.4 18.6 H 20.8 V 24.4 H 17.4 Z"/>
+        <path d="M 21.8 17.4 H 25.2 V 24.4 H 21.8 Z"/>
+        <path d="M 5.6 9.4 C 1.6 9.2 1.4 4.2 4.8 4.2 C 7 4.2 7.2 6.8 5.4 6.8"
+              fill="none" stroke="#f6f1e6" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
     <symbol id="i-till" viewBox="0 0 14 14">
         <path fill-rule="evenodd" d="M 3.6 .3 H 10.4 V 4.3 H 3.6 Z
                  M 5.1 1.5 V 3.1 H 8.9 V 1.5 Z"/>
@@ -913,7 +979,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v93';
+const APP_VERSION = 'v94';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2025,6 +2091,12 @@ const money2 = p => {
 };
 // on a tile there is no room for two noughts nobody reads
 const money0 = p => p % 100 === 0 ? '£' + commas(String(p / 100)) : money2(p);
+/* How a price is written on a counter ticket: the pounds the size of the
+   ticket and the pence up in the corner after them. */
+const ticketed = p => {
+    const v = (p / 100).toFixed(2), dot = v.indexOf('.');
+    return '£' + commas(v.slice(0, dot)) + '<i>' + v.slice(dot + 1) + '</i>';
+};
 
 let round = 0, live = false, armed = false, tallying = false, roundT0 = 0;
 let money = 0, roundMoney = 0, ledger = [], steaks = 0;
@@ -2183,12 +2255,18 @@ function endRound() {
        yourself, is the game arguing with itself. And the bottom line names the
        dog's share out loud, so the week's card is never the first you hear of
        it. */
-    tallyEl.innerHTML = `<span class="n">${money2(roundMoney)}</span>` +
+    /* Read top to bottom like the ticket it is: what it is, what it costs with
+       the pence up in the corner, and the small print under the rule. */
+    tallyEl.innerHTML =
         `<span class="l">${pick(ate ? (saved ? THROUGH : MISSED)
                                      : stole ? STOLEN : CLEAN)}</span>` +
+        `<span class="n"><svg class="cut" viewBox="0 0 34 26"><use href="#i-pig"/></svg>` +
+        `<span>${ticketed(roundMoney)}</span></span>` +
         `<span class="b">${saved} sold` +
         `${ate ? ` &middot; dog got ${ate}` : ''}` +
-        `${stole ? ' &middot; steak gone' : ''}</span>`;
+        `${stole ? ' &middot; steak gone' : ''}</span>` +
+        (saved === string.n && saved > 1 ? '<span class="flash">The lot</span>' : '');
+    tallyEl.classList.toggle('lot', saved === string.n && saved > 1);
     tallyEl.classList.add('on');
     jingleUp();
     tallyT = setTimeout(nextRound, 1500);
@@ -2936,8 +3014,214 @@ function miniUp() {
     sauceScore();
     endMini();
 }
+/* ============================================================
+   SOMEWHERE ELSE
+   The hour after closing is not the shop, so it does not happen on the
+   shop's wall. The bottle-green tiles are the room you work in and they
+   are behind every single thing in this game; four mini-games played on
+   them is the same room four times over, at the one moment the game is
+   meant to feel like a treat.
+
+   So each of them gets a backdrop of its own, drawn the way everything
+   else here is - flat shapes, no outline, and nothing kept between
+   frames: what moves is worked out from the clock. They go down before
+   the game does, and every one of them ends with the same scrim across
+   the top, because the title and the clock sit up there and they have to
+   read on all four.
+   ============================================================ */
+function miniBack(ms) {
+    const g = ctx;
+    g.save();
+    const rnd = (i, k) => { const v = Math.sin(i * 12.9898 + k * 78.233) * 43758.5;
+                            return v - Math.floor(v); };
+
+    if (mini.id === 'jar') {
+        /* The shop after closing, with one lamp left on over the till. Dark,
+           so a gold coin coming down through it is the brightest thing on the
+           screen - which is the whole game. */
+        const rm = g.createLinearGradient(0, 0, 0, H);
+        rm.addColorStop(0, '#211a14'); rm.addColorStop(.62, '#17110d');
+        rm.addColorStop(1, '#0d0a08');
+        g.fillStyle = rm; g.fillRect(0, 0, W, H);
+
+        const lx = W / 2, ly = RAIL + 92;
+        /* What it throws. Three cones inside each other rather than one, so
+           the edge of the light builds up instead of being a line: a hard
+           triangle on a dark wall is a wedge of paint, not a lamp. */
+        for (const [wide, a] of [[.80, .02], [.70, .02], [.60, .02], [.50, .02],
+                                 [.40, .02], [.30, .022], [.20, .024]]) {
+            const cone = g.createLinearGradient(0, ly, 0, H);
+            cone.addColorStop(0, 'rgba(255,226,154,' + a + ')');
+            cone.addColorStop(.72, 'rgba(255,226,154,' + a * .5 + ')');
+            cone.addColorStop(1, 'rgba(255,226,154,0)');
+            g.fillStyle = cone;
+            g.beginPath();
+            g.moveTo(lx - 22, ly); g.lineTo(lx + 22, ly);
+            g.lineTo(lx + W * wide, H); g.lineTo(lx - W * wide, H);
+            g.closePath(); g.fill();
+        }
+
+        const bl = g.createRadialGradient(lx, ly + 2, 4, lx, ly + 2, 78);
+        bl.addColorStop(0, 'rgba(255,226,154,.30)');
+        bl.addColorStop(1, 'rgba(255,226,154,0)');
+        g.fillStyle = bl;                                     // the bloom round it
+        g.beginPath(); g.ellipse(lx, ly + 2, 78, 46, 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = '#3a2d1c';                             // the flex
+        g.fillRect(lx - 2, 0, 4, ly - 26);
+        g.fillStyle = '#8a6417';                             // the shade
+        g.beginPath();
+        g.moveTo(lx - 12, ly - 28); g.lineTo(lx + 12, ly - 28);
+        g.lineTo(lx + 34, ly); g.lineTo(lx - 34, ly);
+        g.closePath(); g.fill();
+        g.fillStyle = '#f0d484';                             // and the bulb under it
+        g.beginPath(); g.ellipse(lx, ly + 3, 9, 7, 0, 0, Math.PI * 2); g.fill();
+
+        const cy = H - 66;                                   // the counter it all lands on
+        g.fillStyle = '#2a1d12'; g.fillRect(0, cy, W, H - cy);
+        g.fillStyle = '#4a3522'; g.fillRect(0, cy, W, 7);
+        g.fillStyle = 'rgba(255,226,154,.07)';
+        g.beginPath();
+        g.moveTo(lx - W * .5, cy); g.lineTo(lx + W * .5, cy);
+        g.lineTo(lx + W * .64, cy + 26); g.lineTo(lx - W * .64, cy + 26);
+        g.closePath(); g.fill();
+
+    } else if (mini.id === 'sauce') {
+        /* Blue gingham oilcloth, which is what a hot dog is handed to you
+           over. Blue rather than red because the sauce is red and a red line
+           on a red cloth is a line you cannot see. */
+        g.fillStyle = '#eadfca'; g.fillRect(0, 0, W, H);
+        g.fillStyle = 'rgba(56,96,142,.22)';
+        const sq = 34;
+        for (let x = -sq; x < W + sq; x += sq) g.fillRect(x, 0, sq * .56, H);
+        for (let y = -sq; y < H + sq; y += sq) g.fillRect(0, y, W, sq * .56);
+        /* Hard down at the edges and nothing in the middle: the bun has to be
+           the thing you are looking at, and a cloth that is as loud as the
+           food on it is a cloth you are fighting. */
+        const vg = g.createRadialGradient(W / 2, H * .52, H * .08, W / 2, H * .52, H * .62);
+        vg.addColorStop(0, 'rgba(48,32,16,0)');
+        vg.addColorStop(.5, 'rgba(48,32,16,.26)');
+        vg.addColorStop(1, 'rgba(34,22,10,.72)');
+        g.fillStyle = vg; g.fillRect(0, 0, W, H);
+
+    } else if (mini.id === 'ninja') {
+        /* Night, a moon, and the blossom coming off whatever is out of shot.
+           Dark on purpose: a pale sword and a red sausage both read against
+           it, and neither of them reads against a sunrise. */
+        const sky = g.createLinearGradient(0, 0, 0, H);
+        sky.addColorStop(0, '#191030'); sky.addColorStop(.55, '#2b1740');
+        sky.addColorStop(1, '#45203f');
+        g.fillStyle = sky; g.fillRect(0, 0, W, H);
+
+        const mx = W * .74, my = H * .26, mr = Math.min(W, H) * .13;
+        for (let i = 16; i > 0; i--) {                       // the halo
+            g.fillStyle = 'rgba(246,230,200,' + (.013 * (17 - i) / 16) + ')';
+            g.beginPath(); g.arc(mx, my, mr + i * 7, 0, Math.PI * 2); g.fill();
+        }
+        g.save();                                            // and a slow turn of rays
+        g.translate(mx, my); g.rotate(ms / 26000);
+        g.fillStyle = 'rgba(246,230,200,.05)';
+        for (let i = 0; i < 14; i++) {
+            g.beginPath(); g.moveTo(0, 0);
+            const a2 = i * Math.PI * 2 / 14;
+            g.arc(0, 0, Math.max(W, H), a2, a2 + .09);
+            g.closePath(); g.fill();
+        }
+        g.restore();
+        g.fillStyle = '#f6e6c8';
+        g.beginPath(); g.arc(mx, my, mr, 0, Math.PI * 2); g.fill();
+
+        g.fillStyle = '#120a1c';                             // the hill under it all
+        g.beginPath();
+        g.moveTo(0, H);
+        g.lineTo(0, H * .80);
+        for (let x = 0; x <= W; x += W / 8)
+            g.lineTo(x, H * .80 + Math.sin(x / W * 3.1 + 1.2) * H * .035);
+        g.lineTo(W, H);
+        g.closePath(); g.fill();
+
+        for (let i = 0; i < 16; i++) {                       // blossom coming past
+            const t = ((ms / 7400) + rnd(i, 1)) % 1;
+            const px = (rnd(i, 2) * 1.3 - .15) * W + Math.sin(t * 6 + i) * 26;
+            const py = -20 + t * (H + 40);
+            g.save();
+            g.translate(px, py);
+            g.rotate(t * 7 + i);
+            g.globalAlpha = .34 + .3 * rnd(i, 3);
+            g.fillStyle = '#efc6d4';
+            g.beginPath(); g.ellipse(0, 0, 5, 3, 0, 0, Math.PI * 2); g.fill();
+            g.restore();
+        }
+        g.globalAlpha = 1;
+
+    } else {
+        /* Out the back of the shop at dusk, which is where a barbecue
+           actually happens. Dark enough that a pink sausage and a black one
+           are plainly two different things, which is the whole game. */
+        const sky = g.createLinearGradient(0, 0, 0, H * .62);
+        sky.addColorStop(0, '#1b2b44'); sky.addColorStop(.55, '#3d3356');
+        sky.addColorStop(1, '#8a4a44');
+        g.fillStyle = sky; g.fillRect(0, 0, W, H);
+
+        const hz = H * .44;
+        const glow = g.createRadialGradient(W * .3, hz, 10, W * .3, hz, W * .72);
+        glow.addColorStop(0, 'rgba(232,150,78,.55)');
+        glow.addColorStop(1, 'rgba(232,150,78,0)');
+        g.fillStyle = glow; g.fillRect(0, 0, W, hz + 60);
+
+        for (let i = 0; i < 20; i++) {                       // a few already out
+            const sx = rnd(i, 4) * W, sy = rnd(i, 5) * hz * .7;
+            g.globalAlpha = .22 + .3 * Math.abs(Math.sin(ms / 1400 + i));
+            g.fillStyle = '#efe6ff';
+            g.beginPath(); g.arc(sx, sy, 1.4, 0, Math.PI * 2); g.fill();
+        }
+        g.globalAlpha = 1;
+
+        g.fillStyle = '#1d2e24';                             // the hedge along the back
+        for (let x = -30; x < W + 30; x += 34)
+            for (let k = 0; k < 2; k++) {
+                const bx = x + k * 17, br = 26 + rnd(x + k, 6) * 16;
+                g.beginPath(); g.arc(bx, hz + 14 - rnd(x + k, 7) * 16, br, 0, Math.PI * 2); g.fill();
+            }
+        g.fillRect(0, hz + 10, W, H * .18);
+
+        const grass = g.createLinearGradient(0, hz + 20, 0, H);
+        grass.addColorStop(0, '#24402a'); grass.addColorStop(1, '#13231a');
+        g.fillStyle = grass; g.fillRect(0, hz + 20, W, H - hz - 20);
+
+        /* Mown in stripes, which is what every back lawn in England looks
+           like and is one `fillRect` a stripe. They widen as they come at you,
+           so the lawn goes away from you rather than lying flat. */
+        let gy2 = hz + 20;
+        for (let i = 0; i < 9 && gy2 < H; i++) {
+            const th = 12 + i * i * 2.2;
+            g.fillStyle = i % 2 ? 'rgba(255,255,255,.035)' : 'rgba(0,0,0,.09)';
+            g.fillRect(0, gy2, W, Math.min(th, H - gy2));
+            gy2 += th;
+        }
+
+        g.fillStyle = '#0d1a12';                             // and it comes up at you
+        for (let i = 0; i < 46; i++) {
+            const bx = rnd(i, 8) * W, bh = 16 + rnd(i, 9) * 34;
+            const lean = (rnd(i, 10) - .5) * 22;
+            g.beginPath();
+            g.moveTo(bx - 4, H); g.lineTo(bx + 4, H); g.lineTo(bx + lean, H - bh);
+            g.closePath(); g.fill();
+        }
+    }
+
+    /* The name of the game and the clock are at the top of all four, so all
+       four get the same darkening under them. */
+    const scrim = g.createLinearGradient(0, 0, 0, RAIL + 88);
+    scrim.addColorStop(0, 'rgba(8,18,14,.60)');
+    scrim.addColorStop(.62, 'rgba(8,18,14,.42)');
+    scrim.addColorStop(1, 'rgba(8,18,14,0)');
+    g.fillStyle = scrim; g.fillRect(0, 0, W, RAIL + 88);
+    g.restore();
+}
+
 function drawMini(ms) {
     const left = miniLeft(), e = 1 - left / mini.secs;
+    miniBack(ms);
     ctx.save();
     if (mini.id === 'ninja') {
         /* A whole one in the air, and the two halves of one that is not. The
