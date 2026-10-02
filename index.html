@@ -144,8 +144,12 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
    inside whichever of the two runs out first, which is the height on a phone
    and the width on a short wide one. */
 /* Width first, so it fills what it is given rather than stopping at the 340
-   pixels the canvas happens to be; the height cap takes over on a short one. */
-#shopfront { width: 100%; height: auto; max-height: 54vh;
+   pixels the canvas happens to be - but the cap is on the width, not the
+   height. A width of a hundred per cent with a cap on the height is two
+   different scales, one for each axis, and on a window wider than it is tall
+   that is a butcher a foot and a half across. The cap is the height it is
+   allowed, converted back into the width that gives it: 340 over 400. */
+#shopfront { width: min(100%, 45.9vh); height: auto;
              animation: butcherIn .6s cubic-bezier(.2, 1.5, .4, 1) both; }
 /* the week's takings, day by day */
 #ledger { width: 100%; border-collapse: collapse; margin: 2px 0 8px;
@@ -1588,7 +1592,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v120';
+const APP_VERSION = 'v121';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3472,6 +3476,7 @@ const MINIS = [
     { id: 'ninja', name: 'Sausage samurai', say: 'Cut them out of the air' },
     { id: 'dream', name: 'Butcher\u2019s dream', say: 'Hold to rise. Eat what you can' },
     { id: 'cats',  name: 'After the cats', say: 'Drag the dog. Run them out' },
+    { id: 'shell', name: 'Find it', say: 'Watch his hands. One go', secs: 14 },
 ];
 let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
@@ -3490,6 +3495,8 @@ function startMini() {
         dreamSet();
     } else if (M.id === 'cats') {
         catsSet();
+    } else if (M.id === 'shell') {
+        shellSet();
     } else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
@@ -3556,6 +3563,125 @@ const CAT_PAY = 170, CAT_PAY_RUN = 32, CAT_PAY_CAP = 4;
 const DOG_ACC = 2700, DOG_MAX = 580, CAT_WALK = 210, CAT_BOLT = 340, CAT_SEES = 155;
 /* He is a dog, not a cursor: he goes where your finger is rather than being
    where it is, which is the whole of the game. Letting go lets him coast. */
+/* The back of the dog's head, which is the one view of it the game never
+   otherwise shows. Built out of the same numbers the front of it is - the
+   skull, the coat and the ears off whichever breed is stood there - because a
+   generic lump at the bottom of the screen is not your dog, and this is the
+   one game where your dog is the one being had. */
+function dogBack(g, x, y, ms) {
+    const B = breedFor(), TAU = Math.PI * 2;
+    const k = Math.min(3, W * .56 / (B.skullW * 2.2));
+    const sway = Math.sin(ms / 620) * .035;            // it is watching, not asleep
+    g.save();
+    g.translate(x + Math.sin(ms / 900) * 5, y);
+    g.scale(k, k);
+    g.rotate(sway);
+    g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 22; g.shadowOffsetY = -6;
+    g.fillStyle = B.shade;                             // the shoulders
+    g.beginPath(); g.ellipse(0, 52, 86, 58, 0, 0, TAU); g.fill();
+    g.shadowColor = 'transparent';
+    g.fillStyle = B.coat;                              // the scruff of the neck
+    g.beginPath(); g.roundRect(-33, -16, 66, 70, 26); g.fill();
+    // the ears, whatever this one has got, seen from behind
+    g.fillStyle = B.earCol;
+    for (const sx of [-1, 1]) {
+        g.save(); g.translate(sx * (B.skullW * .86), -B.skullH * .34);
+        if (B.ear === 'prick') {
+            g.rotate(sx * .18);
+            g.beginPath();
+            g.moveTo(-9, 14); g.lineTo(0, -30); g.lineTo(11, 12);
+            g.closePath(); g.fill();
+        } else if (B.ear === 'fold') {
+            g.rotate(sx * .3);
+            g.beginPath(); g.ellipse(0, -2, 13, 17, 0, 0, TAU); g.fill();
+        } else {
+            g.rotate(sx * .12);
+            g.beginPath(); g.roundRect(-12, -14, 24, 44, 12); g.fill();
+        }
+        g.restore();
+    }
+    g.fillStyle = B.coat;                              // the skull
+    g.beginPath(); g.ellipse(0, -8, B.skullW * 1.06, B.skullH * .96, 0, 0, TAU); g.fill();
+    g.fillStyle = B.lit;                               // and the light on the top of it
+    g.beginPath(); g.ellipse(0, -B.skullH * .34, B.skullW * .66, B.skullH * .44, 0, 0, TAU);
+    g.fill();
+    g.restore();
+}
+/* ---- Find it ------------------------------------------------------------
+   The one game in here you cannot get better at by being quicker. He puts a
+   sausage under one of three covers, shuffles them, and you have one go. It
+   pays what it pays because a third of the time you were always going to be
+   wrong, and because the only thing that improves it is paying attention -
+   which is the one thing none of the other five ask of you.
+
+   And you are behind the dog for it, over the back of its head, because the
+   dog is the one being fooled. */
+const SHELL_PAY = 3800;          // what finding it is worth, which is a week's work
+const SHELL_SWAPS = 7;
+const SHELL_SHOW = 1.5, SHELL_DROP = .55, SHELL_SWAP = .46;
+const shellY = () => H * .58;                      // the counter he does it on
+const shellSlot = i => W / 2 + (i - 1) * Math.min(98, (W - 116) / 2);
+function shellSet() {
+    mini.pots = [0, 1, 2].map(i => ({ slot: i, lift: 0 }));
+    mini.under = (Math.random() * 3) | 0;          // which cover it is actually under
+    mini.phase = 'show'; mini.pt = 0;
+    mini.swap = null; mini.swaps = 0; mini.pick = -1; mini.right = false;
+}
+/* Where a cover is this frame. During a swap the two of them are still
+   holding their old slots - the swap is only committed when it lands - so
+   each one slides to where the other one is and one of the pair goes over
+   the top, which is the whole of what you are watching. */
+function shellAt(i) {
+    const p = mini.pots[i], s = mini.swap;
+    let x = shellSlot(p.slot), y = 0;
+    if (s && (s.a === i || s.b === i)) {
+        const other = mini.pots[s.a === i ? s.b : s.a];
+        const e = clamp(s.t / s.dur, 0, 1);
+        const k = e < .5 ? 2 * e * e : 1 - Math.pow(2 - 2 * e, 2) / 2;
+        x += (shellSlot(other.slot) - x) * k;
+        y = -Math.sin(k * Math.PI) * ((s.a === i) === s.over ? 38 : 9);
+    }
+    return [x, y];
+}
+// a cover being dragged across a marble slab, which is the only sound in it
+const scuff = () => safely(t => {
+    hiss(t, { hp: 700, lp: 3800, dur: .17, vol: .13 });
+    tone(t, { freq: 190, to: 130, dur: .14, type: 'triangle', vol: .05 });
+});
+function shellStep(dt) {
+    const m = mini;
+    m.pt += dt;
+    if (m.phase === 'show') {
+        for (const p of m.pots) p.lift = Math.min(1, m.pt / .3);
+        if (m.pt > SHELL_SHOW) { m.phase = 'drop'; m.pt = 0; }
+    } else if (m.phase === 'drop') {
+        for (const p of m.pots) p.lift = Math.max(0, 1 - m.pt / .4);
+        if (m.pt > SHELL_DROP) { m.phase = 'shuffle'; m.pt = 0; }
+    } else if (m.phase === 'shuffle') {
+        if (!m.swap) {
+            if (m.swaps >= SHELL_SWAPS) { m.phase = 'wait'; m.pt = 0; return; }
+            const a = (Math.random() * 3) | 0;
+            let b; do { b = (Math.random() * 3) | 0; } while (b === a);
+            m.swap = { a, b, t: 0, dur: SHELL_SWAP - m.swaps * .022,
+                       over: Math.random() < .5 };
+            m.swaps++;
+            scuff();
+        }
+        const s = m.swap;
+        s.t += dt;
+        if (s.t >= s.dur) {
+            const t = m.pots[s.a].slot;
+            m.pots[s.a].slot = m.pots[s.b].slot; m.pots[s.b].slot = t;
+            m.swap = null;
+        }
+    } else if (m.phase === 'reveal') {
+        m.pots[m.pick].lift = Math.min(1, m.pt / .3);
+        // a wrong one gets shown where it actually was, which is the whole point
+        if (!m.right && m.pt > .6)
+            m.pots[m.under].lift = Math.min(1, (m.pt - .6) / .3);
+        if (m.pt > 1.7) endMini();
+    }
+}
 function catsSet() {
     mini.dx = W * .5; mini.dy = H * .68; mini.vx = 0; mini.vy = 0;
     mini.tx = mini.dx; mini.ty = mini.dy; mini.held = false; mini.face = 1;
@@ -3758,6 +3884,8 @@ function miniStep(dt) {
             if (m.x < -50) { mini.meat.splice(i, 1); mini.run = 0; }
         }
         mini.puff = mini.puff.filter(p => now() - p.t0 < 620);
+    } else if (mini.id === 'shell') {
+        shellStep(dt);
     } else if (mini.id === 'cats') {
         const top = RAIL + 108, bot = H - 72, lf = 36, rt = W - 36;
         if (mini.held) {                       // he makes for wherever you are
@@ -3861,6 +3989,23 @@ function miniAt(x, y) {
        him up. */
     if (mini.id === 'dream') { mini.hold = true; return; }
     if (mini.id === 'cats') { mini.tx = x; mini.ty = y; mini.held = true; return; }
+    /* One go, and only once he has stopped. A tap while they are still moving
+       is not a guess, it is a misfire. */
+    if (mini.id === 'shell') {
+        if (mini.phase !== 'wait') return;
+        let best = -1, near = 66;
+        for (let i = 0; i < 3; i++) {
+            const d = Math.abs(x - shellAt(i)[0]);
+            if (d < near) { near = d; best = i; }
+        }
+        if (best < 0) return;
+        mini.pick = best;
+        mini.right = best === mini.under;
+        mini.phase = 'reveal'; mini.pt = 0;
+        if (mini.right) { mini.won = SHELL_PAY; ding(); yelp(); }
+        else buzz();
+        return;
+    }
     if (mini.id === 'jar') { mini.jar = clamp(x, 56, W - 56); return; }
     if (mini.id === 'ninja') {
         /* Tested as the blade goes through rather than when the finger comes
@@ -4194,6 +4339,46 @@ function miniBack(ms) {
                 g.restore();
             }
         }
+    } else if (mini.id === 'shell') {
+        /* The shop, from the wrong side of the counter. Everything else in
+           here is played from where the butcher stands; this one is played
+           from where the dog does, so the counter runs across the middle of
+           the window and he is behind it with his hands over it. */
+        const ty = shellY();
+        const wall = g.createLinearGradient(0, 0, 0, ty);
+        wall.addColorStop(0, '#2b7156'); wall.addColorStop(1, '#174636');
+        g.fillStyle = wall; g.fillRect(0, 0, W, ty);
+        g.fillStyle = 'rgba(8,30,20,.26)';                   // the grout
+        for (let x = (W % 54) / 2; x < W; x += 54) g.fillRect(x, 0, 2.5, ty);
+        for (let y = RAIL + 10; y < ty; y += 44) g.fillRect(0, y, W, 2.5);
+        const lamp = g.createRadialGradient(W / 2, RAIL + 20, 10, W / 2, RAIL + 20, ty);
+        lamp.addColorStop(0, 'rgba(255,236,186,.22)');
+        lamp.addColorStop(1, 'rgba(255,236,186,0)');
+        g.fillStyle = lamp; g.fillRect(0, 0, W, ty);
+
+        /* Him, behind it, drawn before the slab so the slab cuts him off at
+           the waist the way a counter does. */
+        /* His head and shoulders are over it and the slab takes him at the
+           waist, which is what you see of a butcher from where the dog is. */
+        /* Both arms down: the hands you can see are the two on the covers, and
+           a man with one arm in the air and two hands on the counter is three
+           arms. */
+        /* And he is pleased with himself only when it worked: his arm goes up
+           on a dog that picked the wrong one, which is also the one moment
+           there are no hands on the counter for it to be a third arm beside. */
+        drawButcher(g, mini.phase === 'reveal' && !mini.right,
+                    { cx: W / 2, cy: ty - 8, k: Math.min(1.1, W / 330), holds: 'none' });
+
+        g.fillStyle = 'rgba(0,0,0,.3)';                      // what it casts on him
+        g.fillRect(0, ty - 9, W, 9);
+        const front = g.createLinearGradient(0, ty + 17, 0, H);
+        front.addColorStop(0, '#9a6f3e'); front.addColorStop(1, '#5d3d1d');
+        g.fillStyle = front; g.fillRect(0, ty + 17, W, H - ty);
+        g.fillStyle = 'rgba(26,15,6,.34)';                   // the panelling on it
+        for (let x = (W % 74) / 2; x < W; x += 74) g.fillRect(x, ty + 17, 5, H - ty);
+        g.fillStyle = '#e6e0d1'; g.fillRect(0, ty, W, 17);   // the slab across it
+        g.fillStyle = '#fbf8f0'; g.fillRect(0, ty, W, 5);
+        g.fillStyle = '#b9b1a0'; g.fillRect(0, ty + 14, W, 3);
     } else {
         /* Out the back of the shop at dusk, which is where a barbecue
            actually happens. Dark enough that a pink sausage and a black one
@@ -4593,6 +4778,93 @@ function drawMini(ms) {
                 { open: .3, tilt: clamp(mini.vx * mini.face / 2600, -.26, .26) },
                 ms, cast.dog, cast.kit);
         ctx.restore();
+    } else if (mini.id === 'shell') {
+        const ty = shellY();
+        /* A cover is a pudding basin upside down: a dome, a knob on the top of
+           it and a rim where it meets the slab. Enamel, because a butcher's
+           back shelf is enamel and because a white dome on a white slab still
+           reads once it has a shadow under it. */
+        const cover = (x, y, lift) => {
+            const up = lift * 86;
+            ctx.save();
+            ctx.translate(x, y - up);
+            ctx.fillStyle = 'rgba(0,0,0,.26)';               // on the slab under it
+            ctx.beginPath();
+            ctx.ellipse(0, up + 4, 44 - lift * 8, 9 - lift * 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();                                 // the dome
+            ctx.moveTo(-43, 0);
+            ctx.bezierCurveTo(-43, -62, 43, -62, 43, 0);
+            ctx.closePath();
+            ctx.fillStyle = '#eee7d6'; ctx.fill();
+            ctx.beginPath();                                 // the light down one side
+            ctx.moveTo(-30, 0);
+            ctx.bezierCurveTo(-30, -48, -6, -54, -4, -52);
+            ctx.bezierCurveTo(-18, -44, -19, -22, -16, 0);
+            ctx.closePath();
+            ctx.fillStyle = '#fdfaf2'; ctx.fill();
+            ctx.fillStyle = '#c3bba6';                       // the shade down the other
+            ctx.beginPath();
+            ctx.moveTo(26, 0);
+            ctx.bezierCurveTo(31, -34, 22, -50, 16, -54);
+            ctx.bezierCurveTo(38, -48, 43, -22, 43, 0);
+            ctx.closePath(); ctx.fill();
+            ctx.fillStyle = '#2c4f3f';                       // the band round the rim
+            ctx.fillRect(-43, -7, 86, 7);
+            ctx.fillStyle = '#d8d0bc';
+            ctx.beginPath(); ctx.ellipse(0, -62, 8, 6, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+        };
+        /* What is under one of them. Drawn out of the same pot as the rail,
+           because it is the same sausage. */
+        const banger = (x, y) => {
+            ctx.save();
+            ctx.translate(x, y - 9); ctx.rotate(-.08);
+            ctx.fillStyle = 'rgba(0,0,0,.22)';
+            ctx.beginPath(); ctx.ellipse(0, 11, 30, 6, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.roundRect(-29, -11, 58, 22, 11);
+            ctx.fillStyle = MEAT.body; ctx.fill();
+            ctx.beginPath(); ctx.roundRect(-22, -8, 36, 7, 3.5);
+            ctx.fillStyle = MEAT.lit; ctx.fill();
+            ctx.restore();
+        };
+        for (let i = 0; i < 3; i++) {
+            const [x, y] = shellAt(i);
+            // and it is only there to be seen when the cover is off it
+            if (i === mini.under && mini.pots[i].lift > .05) banger(x, ty + y);
+            cover(x, ty + y, mini.pots[i].lift);
+        }
+        /* His hands, on whichever two are moving. Nothing else on the screen
+           says it is him doing it rather than the covers doing it themselves. */
+        if (mini.swap) for (const i of [mini.swap.a, mini.swap.b]) {
+            const [x, y] = shellAt(i);
+            const hy = ty + y - 56;
+            ctx.fillStyle = '#f4f0e4';                        // the cuff of the coat
+            ctx.beginPath(); ctx.roundRect(x - 16, hy - 44, 32, 30, 9); ctx.fill();
+            ctx.fillStyle = cast.butcher.skinD;               // fingers over the dome
+            for (const fx of [-10, -3.5, 3.5, 10]) {
+                ctx.beginPath(); ctx.roundRect(x + fx - 3, hy - 2, 6, 19, 3); ctx.fill();
+            }
+            ctx.fillStyle = cast.butcher.skin;                // and the back of the hand
+            ctx.beginPath(); ctx.ellipse(x, hy - 8, 19, 14, 0, 0, Math.PI * 2); ctx.fill();
+        }
+        /* What it was worth, where it was. */
+        if (mini.phase === 'reveal' && mini.pt > .35) {
+            const [x] = shellAt(mini.right ? mini.pick : mini.under);
+            const e2 = Math.min(1, (mini.pt - .35) / .7);
+            ctx.globalAlpha = mini.right ? 1 - Math.pow(e2, 3) * .3 : .85;
+            ctx.fillStyle = mini.right ? '#ffeab0' : '#e8836a';
+            ctx.font = '400 ' + (mini.right ? 34 : 24) +
+                       'px "Staatliches", "Alfa Slab One", Georgia, serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(mini.right ? money0(SHELL_PAY) : 'THERE',
+                         x, ty - 182 - e2 * 22);
+            ctx.globalAlpha = 1;
+        }
+        /* And the back of its head, which is the one thing in this game you
+           never see otherwise: you are stood behind the dog watching the man
+           do it to the dog. */
+        dogBack(ctx, W / 2, H - 26, ms);
     } else if (mini.id === 'dream') {
         /* What is coming at him, drawn out of the same pot as the rail so a
            black pudding in a dream is still a black pudding. */
@@ -5516,7 +5788,7 @@ const ROSETTES = [
     { id: 'clean',   silk: 'green',  name: 'Not One Lost',   why: 'A whole week the dog got nothing.' },
     { id: 'clean5',  silk: 'green',  name: 'Ten Clean Weeks', why: 'And nine more like it.' },
     { id: 'after',   silk: 'green',  name: 'After Hours',    why: 'Ten hours after closing, which is ten clean weeks’ worth.' },
-    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all six of the after-hours games.' },
+    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all seven of the after-hours games.' },
     { id: 'noburn',  silk: 'red',    name: 'Nothing Burnt',  why: 'Five off the barbecue and not one black.' },
 
     { id: 'hundred', silk: 'brass',  name: 'A Hundred Pounds', why: 'A hundred in the till.' },
@@ -5667,7 +5939,7 @@ function sweep(quiet) {
     if (save.tally.loyal >= 10) give('loyal');
     if (save.tally.breeds.length >= 10) give('allsorts');
     if (save.tally.hours >= 10) give('after');
-    if (save.tally.minis.length >= 6) give('three3');
+    if (save.tally.minis.length >= 7) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');
     // the shelves, counted off what is actually on them rather than a number
     const bought = STOCK.filter(i => i.price > 0);
@@ -7466,6 +7738,11 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => {
     if (document.getElementById('shopfront')) drawShopfront();
 });
 function openSetup() {
+    /* The wall this screen is, whenever it comes back - not only at boot. A
+       reset went to the setup screen with the shop floor's green still set
+       behind the status bar, which is a strip of a room that is not on the
+       screen any more. */
+    theme(WALL_RED);
     document.getElementById('in-dog').value = save.dogName;
     document.getElementById('in-shop').value = save.shop;
     paintSetup();

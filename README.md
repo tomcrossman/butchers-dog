@@ -878,6 +878,17 @@ YEAR instead, in brighter gold, with a star either end of it where the diamond
 was. The week's receipt carries the same line under the same name, so it says
 it too.
 
+**The shopfront keeps its shape on a window wider than it is tall.** It was a
+width of a hundred per cent with a cap on the height, which is two different
+scales, one per axis - and on a laptop that is a butcher a foot and a half
+across. The cap is on the width now: the height it is allowed, converted back
+into the width that gives it.
+
+**The strip behind the status bar belongs to whichever screen is under it.**
+Resetting the game went back to the setup screen with the shop floor's green
+still set, which is a strip of a room that is no longer on the screen. The
+setup screen claims the brick every time it opens, not only at boot.
+
 **The dog is cut when the blade goes into it, not when it passes over its
 head.** The dog climbs the string, so it is on the string, and so is the
 sausage it is about to take: a circle round where it stands reaches up into the
@@ -915,7 +926,7 @@ reason, it is saved with everything else, and while it is on the version label
 in the corner says so.
 
 With it on there is one more button under the shelves: **a mini-game**, with the
-six of them to pick from, because the honest way to see the barbecue is to play
+seven of them to pick from, because the honest way to see the barbecue is to play
 a perfect week and the honest way to see it twice is to play two. It puts you
 back on the shopfront when it is done rather than opening a week - it is not
 Saturday night, it is a man in the back room with the lights on.
@@ -1078,7 +1089,7 @@ find; and four in one swipe once, which the board tells you to try on a
 Saturday, because a straight line through two twists tops out at
 three anywhere from Monday to Friday and at five on a Saturday, measured over a
 hundred and twenty deals of each. A week the dog got nothing, ten of those, ten
-hours after closing, all six of its games, and a barbecue with nothing black
+hours after closing, all seven of its games, and a barbecue with nothing black
 on it. A hundred pounds, a thousand, five thousand, and a hundred and twenty in one week - a shop with the rail stocked,
 the slab stocked and an hour after closing clears a hundred and thirty, and
 sixty was a middling Tuesday-to-Saturday. The
@@ -1258,6 +1269,16 @@ twenty-two pounds, about a third on top of a perfect week.
   about taking two at once, carried through the back door again. One off the
   back of a line breaks the run. Nothing is lost for missing: there is no
   scoreboard back here, only a till.
+- **Find it.** He puts a sausage under one of three covers, shuffles them, and
+  **you get one tap**. Find it and it pays thirty-eight pounds, which is more
+  than any other hour after closing has ever paid; miss and it pays nothing and
+  you are shown where it actually was. A third of the time you were always
+  going to be wrong, and the only thing that improves it is paying attention -
+  which is the one thing none of the other six ask of you. It is also the only
+  one you watch from behind the dog, over the back of its head, because the dog
+  is the one being had. The back of its head is built out of the same numbers
+  the front of it is, off whichever breed is stood there: a generic lump at the
+  bottom of the screen is not your dog. His arm only goes up when it worked.
 - **After the cats.** The shop after dark, and something is in it that should
   not be. **Drag anywhere and the dog goes where your finger is** - not where it
   is, where it is heading, because he is a dog and not a cursor: he builds up
@@ -1327,8 +1348,13 @@ nothing kept between frames, so what moves is worked out from the clock.
   speeds so the sky has a depth to it. The clouds are sausages. Nobody says it
   out loud and everybody sees it.
 
-All four darken under the top of the screen, because the name of the game and
-the clock sit up there and they have to read on all six.
+- **Find it** is the only one played from the other side of the counter: the
+  tiled wall, one lamp on it, the marble slab across the middle of the window,
+  the panelled oak below it, and him behind it with his head and shoulders
+  over the top.
+
+All of them darken under the top of the screen, because the name of the game
+and the clock sit up there and they have to read on every one.
 
 They run on the same canvas the day is played on. A second canvas means a
 second copy of everything that makes this one fit a phone, and by the time they
