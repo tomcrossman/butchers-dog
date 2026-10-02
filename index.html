@@ -633,7 +633,7 @@ body.waiting #hud { display: none; }
     position: sticky; top: 0; z-index: 6;
     align-self: stretch; width: auto; margin: 0 -18px;   /* out past the gutters */
     display: flex; flex-direction: column; align-items: center;
-    padding: 5px 0 7px;
+    padding: 2px 0 9px;
     /* The case is set into the counter, so the rail over the top of it is the
        same mahogany as the front of the counter on the shopfront. It was
        steel, which made the top of this screen a second material for no
@@ -648,7 +648,10 @@ body.waiting #hud { display: none; }
 }
 #stock-head .who { font-family: var(--font-display); font-size: 19px; color: var(--cream);
                    line-height: 1; margin-top: 1px; }
-#stock-head .bank { margin-top: 5px; }
+/* With the dog gone off the top of this screen the till is the only thing on
+   that rail, so it gets the size and the room. */
+#stock-head .bank { margin: 9px 0 11px; }
+#stock-head .bank b { font-size: 26px; }
 #stock-dog { width: min(42vw, 166px); height: auto; margin-top: 0; }
 /* One panel, four lines in it, hairlines between. Four separate boxes read as
    four separate questions; this reads as the one form it is. */
@@ -705,29 +708,32 @@ body.waiting #hud { display: none; }
 .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
 /* The board. One a line, because a rosette with no words on it is a coloured
    disc, and the words are the whole point of the unwon ones. */
-.pins { display: flex; flex-direction: column; gap: 5px; }
-/* A row on the board is a label, not a thing for sale, so it is the same
-   little black ticket that is propped on the front of every tray next door
-   rather than a tray of its own. It was left as a cream card when the shelves
-   became trays, which made the board look like it had come from a different
-   shop. */
+/* The board. One a line, because a rosette with no words on it is a coloured
+   disc, and the words are the whole point of the unwon ones.
+
+   No plaque on it either. The shelves next door are things lying on the kale
+   with a ticket in front of them, and a board of thirty-six black slabs beside
+   that is a different shop again - so these are a list written on the bed,
+   with a hairline between one and the next and nothing else. Won is gold and
+   full strength, unwon is dim: that is the whole of the difference and it does
+   not need a box to make it. */
+.pins { display: flex; flex-direction: column; }
 .pin {
     position: relative;
     display: flex; align-items: center; gap: 9px; text-align: left;
-    padding: 7px 11px 7px 5px; color: #f6f1e6;
-    background: linear-gradient(180deg, #1b1917, #0a0908);
-    border: none; border-radius: 4px;
-    box-shadow: 0 3px 0 rgba(0,0,0,.5);
+    padding: 7px 8px 7px 2px; color: #f6f1e6;
+    background: none; border: none; border-radius: 0; box-shadow: none;
 }
-.pin::after { inset: 3px; border-radius: 2px; border-color: rgba(246,241,230,.26); }
-.pin canvas { width: 38px; height: 46px; flex: none; }
+.pin + .pin { border-top: 1px solid rgba(246,241,230,.13); }
+.pin canvas { width: 38px; height: 46px; flex: none;
+              filter: drop-shadow(0 2px 4px rgba(4,14,7,.6)); }
 .pin .n { display: block; font-family: var(--font-display); font-size: 14px;
-          line-height: 1.2; color: rgba(246,241,230,.46); }
+          line-height: 1.2; color: rgba(246,241,230,.44);
+          text-shadow: 0 1px 3px rgba(5,16,8,.9); }
 .pin .w { display: block; font-size: 10px; font-weight: 700; line-height: 1.35;
-          opacity: .34; margin-top: 1px; }
-.pin.up::after { border-color: rgba(220,171,62,.65); }
+          opacity: .38; margin-top: 1px; text-shadow: 0 1px 3px rgba(5,16,8,.9); }
 .pin.up .n { color: var(--gold); }
-.pin.up .w { opacity: .72; }
+.pin.up .w { opacity: .82; }
 /* Two rooms, and the tabs are the door between them. */
 .tabs { display: flex; gap: 6px; width: 100%; max-width: 330px; margin: 9px 0 0; }
 .tabs button {
@@ -766,8 +772,14 @@ body.waiting #hud { display: none; }
 /* The plaque. Knocked a degree or two off square the way one stuck in on a
    wire always is, and it is the thing that goes gold when the thing behind it
    is the one you have on. */
+/* Every plaque on a shelf is the same height. They are propped in a row and a
+   row of tickets at six different heights is a row of tickets somebody has
+   knocked. The tile stretches to the tallest in its row and the plaque takes
+   whatever is left, with what is on it sat in the middle. */
+.buy { justify-content: flex-start; }
 .buy .tik {
-    position: relative; z-index: 2; display: block;
+    position: relative; z-index: 2; flex: 1 1 auto; min-height: 56px;
+    display: flex; flex-direction: column; justify-content: center;
     margin: -10px 3px 0; padding: 7px 6px 8px; text-align: center;
     background: linear-gradient(180deg, #1d1a16, #0a0908);
     border-radius: 7px; transform: rotate(-1.3deg);
@@ -835,11 +847,14 @@ body.waiting #hud { display: none; }
    straight onto the near-black counter, and a pair of dark glasses on a
    near-black counter is two dark dots - the one thing you are being asked to
    look at before you spend the money on it. */
+/* Light enough to see all of a dark dog against. It was near-black, which is
+   fine for a steak and no good at all for a Midnight in a black top hat - and
+   this is the one look you get at the thing before you pay for it. */
 #tryon canvas {
     width: 70px; height: auto; flex: none; border-radius: 4px;
-    background: linear-gradient(168deg, #3b4347 0%, #272d30 52%, #1c2123 100%);
-    box-shadow: inset 0 0 0 1.5px rgba(206,226,236,.22),
-                inset 0 2px 0 rgba(236,248,255,.16);
+    background: linear-gradient(168deg, #7c888e 0%, #5b666c 52%, #464f55 100%);
+    box-shadow: inset 0 0 0 1.5px rgba(236,248,255,.28),
+                inset 0 2px 0 rgba(246,252,255,.26);
 }
 /* The dog wearing it needs more than a tray's worth, and the counter gives it
    up: there is nothing else on that bar but a name and two buttons. */
@@ -1321,7 +1336,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v108';
+const APP_VERSION = 'v109';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3194,6 +3209,7 @@ const MINIS = [
     { id: 'grill', name: 'On the barbecue', say: 'Tap them when they are done, not before' },
     { id: 'ninja', name: 'Sausage samurai', say: 'Cut them out of the air' },
     { id: 'dream', name: 'Butcher\u2019s dream', say: 'Hold to rise. Eat what you can' },
+    { id: 'cats',  name: 'After the cats', say: 'Drag the dog. Run them out' },
 ];
 let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
@@ -3210,6 +3226,8 @@ function startMini() {
         mini.fly = []; mini.bits = []; mini.next = .35; mini.swipe = []; mini.hit = 0;
     } else if (M.id === 'dream') {
         dreamSet();
+    } else if (M.id === 'cats') {
+        catsSet();
     } else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
@@ -3268,6 +3286,23 @@ const KATANA = 150, KATANA_RUN = 110;
    wave cannot be the whole game. */
 const DREAM = 90, DREAM_RUN = 28, DREAM_CAP = 5;
 const DREAM_UP = 1550, DREAM_DOWN = 1150, DREAM_VMAX = 540;
+/* What one of them is worth on its way out of the door, and what each one in
+   an unbroken run adds - the rail's rule again. A cat that gets past him and
+   out of the window breaks it, but only one that saw him coming: the ones that
+   wander in and out again without ever noticing him were never a chase. */
+const CAT_PAY = 170, CAT_PAY_RUN = 32, CAT_PAY_CAP = 4;
+const DOG_ACC = 2700, DOG_MAX = 580, CAT_WALK = 210, CAT_BOLT = 340, CAT_SEES = 155;
+/* He is a dog, not a cursor: he goes where your finger is rather than being
+   where it is, which is the whole of the game. Letting go lets him coast. */
+function catsSet() {
+    mini.dx = W * .5; mini.dy = H * .68; mini.vx = 0; mini.vy = 0;
+    mini.tx = mini.dx; mini.ty = mini.dy; mini.held = false; mini.face = 1;
+    mini.cats = []; mini.next = .25; mini.got = 0; mini.run = 0; mini.puff = [];
+}
+const yip = () => safely(t => {
+    tone(t, { freq: 640, to: 1180, dur: .09, type: 'square', vol: .1 });
+    tone(t, { freq: 980, to: 520, dur: .13, type: 'triangle', vol: .07, at: .07 });
+});
 const SAUCE_WAIT = 2600;        // the longest the ketchup will wait to be picked up
 // how far off the middle of the bun still counts, and the width of the bun
 const SAUCE_TOL = 30;
@@ -3461,6 +3496,66 @@ function miniStep(dt) {
             if (m.x < -50) { mini.meat.splice(i, 1); mini.run = 0; }
         }
         mini.puff = mini.puff.filter(p => now() - p.t0 < 620);
+    } else if (mini.id === 'cats') {
+        const top = RAIL + 108, bot = H - 72, lf = 36, rt = W - 36;
+        if (mini.held) {                       // he makes for wherever you are
+            const ax = mini.tx - mini.dx, ay = mini.ty - mini.dy;
+            const d = Math.hypot(ax, ay) || 1;
+            mini.vx += ax / d * DOG_ACC * dt;
+            mini.vy += ay / d * DOG_ACC * dt;
+        }
+        const slow = Math.pow(.015, dt);       // and slides to a stop when you let go
+        mini.vx *= slow; mini.vy *= slow;
+        const sp = Math.hypot(mini.vx, mini.vy);
+        if (sp > DOG_MAX) { mini.vx *= DOG_MAX / sp; mini.vy *= DOG_MAX / sp; }
+        mini.dx = clamp(mini.dx + mini.vx * dt, lf, rt);
+        mini.dy = clamp(mini.dy + mini.vy * dt, top, bot);
+        if (Math.abs(mini.vx) > 14) mini.face = mini.vx > 0 ? 1 : -1;
+
+        mini.next -= dt;                       // they come in off the sides
+        if (mini.next <= 0 && mini.cats.length < 4 && left > 1.2) {
+            mini.next = .5 + Math.random() * .7;
+            const side = Math.random() < .5 ? -1 : 1;
+            mini.cats.push({ x: side < 0 ? lf - 46 : rt + 46,
+                             y: top + 20 + Math.random() * (bot - top - 40),
+                             vx: -side * CAT_WALK * .7, vy: (Math.random() - .5) * 90,
+                             turn: .4 + Math.random() * .8, seen: false,
+                             coat: (Math.random() * CATS.length) | 0, ph: Math.random() * 7 });
+        }
+        for (let i = mini.cats.length - 1; i >= 0; i--) {
+            const c = mini.cats[i];
+            const ax = c.x - mini.dx, ay = c.y - mini.dy;
+            const d = Math.hypot(ax, ay) || 1;
+            if (d < 48) {                      // and go straight back out again
+                mini.cats.splice(i, 1);
+                mini.run++; mini.got++;
+                mini.won += CAT_PAY + Math.min(mini.run - 1, CAT_PAY_CAP) * CAT_PAY_RUN;
+                mini.puff.push({ x: c.x, y: c.y, t0: now(), run: mini.run });
+                mini.run > 1 ? chink() : yip();
+                showHud();
+                continue;
+            }
+            if (d < CAT_SEES) {                // it has seen him and it is off
+                c.seen = true;
+                c.vx += ax / d * 950 * dt; c.vy += ay / d * 950 * dt;
+            } else {
+                c.turn -= dt;                  // otherwise it is only mooching
+                if (c.turn <= 0) {
+                    c.turn = .5 + Math.random();
+                    c.vx += (Math.random() - .5) * 280; c.vy += (Math.random() - .5) * 210;
+                }
+            }
+            const cs = Math.hypot(c.vx, c.vy) || 1, cap = c.seen ? CAT_BOLT : CAT_WALK;
+            if (cs > cap) { c.vx *= cap / cs; c.vy *= cap / cs; }
+            c.x += c.vx * dt; c.y += c.vy * dt;
+            if (c.y < top) { c.y = top; c.vy = Math.abs(c.vy); }
+            if (c.y > bot) { c.y = bot; c.vy = -Math.abs(c.vy); }
+            if (c.x < lf - 80 || c.x > rt + 80) {
+                if (c.seen) mini.run = 0;      // one that got away from him
+                mini.cats.splice(i, 1);
+            }
+        }
+        mini.puff = mini.puff.filter(p => now() - p.t0 < 620);
     } else if (mini.id === 'grill') {
         /* A grill makes a noise. It is the only thing on the screen, so it
            gets one - a quiet hiss every half second rather than one long
@@ -3502,6 +3597,7 @@ function miniAt(x, y) {
        where, which is the point: you are not steering him, you are holding
        him up. */
     if (mini.id === 'dream') { mini.hold = true; return; }
+    if (mini.id === 'cats') { mini.tx = x; mini.ty = y; mini.held = true; return; }
     if (mini.id === 'jar') { mini.jar = clamp(x, 56, W - 56); return; }
     if (mini.id === 'ninja') {
         /* Tested as the blade goes through rather than when the finger comes
@@ -3588,6 +3684,7 @@ function sauceScore() {
 }
 function miniUp() {
     if (mini && mini.id === 'dream') { mini.hold = false; return; }
+    if (mini && mini.id === 'cats') { mini.held = false; return; }
     if (mini && mini.id === 'ninja') { mini.swipe = []; mini.hit = 0; return; }
     if (!mini || mini.done || mini.id !== 'sauce') return;
     mini.tip = null;
@@ -3732,6 +3829,34 @@ function miniBack(ms) {
         }
         g.globalAlpha = 1;
 
+    } else if (mini.id === 'cats') {
+        /* The shop after dark, which is the one time the rest of this game is
+           not in it. The same tiled wall with the lights off, a shaft of
+           street lamp through the window, and the counter across the bottom:
+           it is the only backdrop in here that is allowed to be the shop,
+           because the whole point of it is that something is in the shop that
+           should not be. */
+        const wall = g.createLinearGradient(0, 0, 0, H);
+        wall.addColorStop(0, '#1d3f36'); wall.addColorStop(.5, '#17322b');
+        wall.addColorStop(1, '#0d1f1b');
+        g.fillStyle = wall; g.fillRect(0, 0, W, H);
+        g.fillStyle = '#0b1c19';
+        for (let y = 0; y < H; y += 52) g.fillRect(0, y, W, 2.4);
+        for (let x = 0; x < W; x += 64) g.fillRect(x, 0, 2.4, H);
+        g.save();                                    // the light off the street
+        g.beginPath();
+        g.moveTo(W * .08, 0); g.lineTo(W * .52, 0);
+        g.lineTo(W * .92, H); g.lineTo(W * .34, H);
+        g.closePath();
+        const sh = g.createLinearGradient(0, 0, 0, H);
+        sh.addColorStop(0, 'rgba(226,240,210,.13)');
+        sh.addColorStop(1, 'rgba(226,240,210,.02)');
+        g.fillStyle = sh; g.fill();
+        g.restore();
+        g.fillStyle = '#2a1a0f';                     // and the counter they are on
+        g.fillRect(0, H - 52, W, 52);
+        g.fillStyle = '#4a3522'; g.fillRect(0, H - 52, W, 4);
+        g.fillStyle = 'rgba(8,20,16,.4)'; g.fillRect(0, H - 58, W, 7);
     } else if (mini.id === 'dream') {
         /* A dream, so none of the game's own colours. Warm sherbet sky, a sun
            that is not quite a sun, and clouds that are the wrong shape on
@@ -4144,6 +4269,34 @@ function drawMini(ms) {
                         0, 0, Math.PI * 2);
             ctx.fill();
         } else drawBottle(W - 56, H - 128, -2.3);
+    } else if (mini.id === 'cats') {
+        for (const c of mini.cats) {
+            ctx.save();
+            ctx.translate(c.x, c.y);
+            ctx.scale((c.vx >= 0 ? 1 : -1) * .74, .74);
+            ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 11; ctx.shadowOffsetY = 7;
+            catShape(ctx, Math.sin(ms / 90 + c.ph) * .7, ms / 64 + c.ph, CATS[c.coat]);
+            ctx.restore();
+        }
+        for (const p of mini.puff) {                 // what each one was worth
+            const e2 = (now() - p.t0) / 620;
+            ctx.globalAlpha = 1 - e2 * e2;
+            ctx.fillStyle = '#fff3d2';
+            ctx.font = '400 ' + (p.run > 1 ? 24 : 19) + 'px "Alfa Slab One", Georgia, serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(p.run > 1 ? '\u00d7' + p.run : '\u2022', p.x, p.y - 26 - e2 * 40);
+            ctx.globalAlpha = 1;
+        }
+        /* Your own dog, in whatever you have bought it, leaning into the turn
+           and with its mouth open because it is having the time of its life. */
+        ctx.save();
+        ctx.translate(mini.dx, mini.dy);
+        ctx.scale(mini.face, 1);
+        ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 13; ctx.shadowOffsetY = 8;
+        drawDog(ctx, 0, 0, .82 / cast.dog.k,
+                { open: .3, tilt: clamp(mini.vx * mini.face / 2600, -.26, .26) },
+                ms, cast.dog, cast.kit);
+        ctx.restore();
     } else if (mini.id === 'dream') {
         /* What is coming at him, drawn out of the same pot as the rail so a
            black pudding in a dream is still a black pudding. */
@@ -5043,7 +5196,7 @@ const ROSETTES = [
     { id: 'clean',   silk: 'green',  name: 'Not One Lost',   why: 'A whole week the dog got nothing.' },
     { id: 'clean5',  silk: 'green',  name: 'Ten Clean Weeks', why: 'And nine more like it.' },
     { id: 'after',   silk: 'green',  name: 'After Hours',    why: 'Ten hours after closing, which is ten clean weeks’ worth.' },
-    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all five of the after-hours games.' },
+    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all six of the after-hours games.' },
     { id: 'noburn',  silk: 'red',    name: 'Nothing Burnt',  why: 'Five off the barbecue and not one black.' },
 
     { id: 'hundred', silk: 'brass',  name: 'A Hundred Pounds', why: 'A hundred in the till.' },
@@ -5194,7 +5347,7 @@ function sweep(quiet) {
     if (save.tally.loyal >= 10) give('loyal');
     if (save.tally.breeds.length >= 10) give('allsorts');
     if (save.tally.hours >= 10) give('after');
-    if (save.tally.minis.length >= 5) give('three3');
+    if (save.tally.minis.length >= 6) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');
     // the shelves, counted off what is actually on them rather than a number
     const bought = STOCK.filter(i => i.price > 0);
@@ -7073,19 +7226,23 @@ function paintStore() {
                height, which on a tray with a ticket propped on the front of it
                is an empty ticket - a blank card in front of the goods saying
                nothing, which is the one thing a real one never does. */
+            /* Every plaque says something, because a plaque with nothing on
+                it is a blank card propped in front of the goods. The ones that
+                cost nothing say Free, which is what is written on the card in
+                a window when a thing is thrown in; one you own and have not
+                got on says Yours, which is the truth and is not the word Wear
+                thirty times over. */
+            const free = i.price === 0;
             const tag = trying ? `<span class="tag">Trying</span>`
-                      : on ? (shopUp ? `<span class="tag">On</span>` : '')
-                      : got ? (shopUp ? `<span class="tag">Off</span>` : '')
+                      : on ? (free ? `<span class="pr">Free</span>`
+                                   : `<span class="tag">On</span>`)
+                      : got ? (free ? `<span class="pr">Free</span>`
+                                    : `<span class="tag">${shopUp ? 'Off' : 'Yours'}</span>`)
                       : `<span class="pr">${ticket0(i.price)}</span>`;
             const why = i.why ? `<span class="why">${i.why}</span>` : '';
             return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
                    `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>` +
-                   /* No plaque at all when there is nothing to write on one -
-                      a hat you already own says nothing, and a blank card
-                      propped in front of the goods is the one thing a real
-                      counter never has on it. The one you have on always gets
-                      one, because the tick is pinned to the plaque. */
-                   (tag || why || on ? `<span class="tik">${tick}${tag}${why}</span>` : '') +
+                   `<span class="tik">${tick}${tag}${why}</span>` +
                    `</button>`;
         }).join('');
         return `<div class="shelf"><h3>${label}</h3>` +
@@ -7499,6 +7656,7 @@ document.getElementById('minilist').addEventListener('click', e => {
     else if (M.id === 'ninja') { mini.fly = []; mini.bits = []; mini.next = .3;
                                  mini.swipe = []; mini.hit = 0; }
     else if (M.id === 'dream') { dreamSet(); }
+    else if (M.id === 'cats') { catsSet(); }
     else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)

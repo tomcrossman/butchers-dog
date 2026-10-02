@@ -615,10 +615,25 @@ whole tile was a smudge, and the point of showing it at all is that you can see
 what you are saving up for. It is the picture that goes quiet and the price
 that goes grey; the words stay.
 
-The one you have on has a gold edge round the tray and a tick in the corner;
-the one taken out and put on the counter has its ticket gold side out. The
-board on the wall is the same black ticket. The back room keeps the tiles,
-because a back room is a back room.
+The one you have on has a gold edge round its plaque and a tick on the corner
+of it; the one taken out and put on the counter has its plaque gold side out.
+The back room keeps the tiles, because a back room is a back room.
+
+**Every plaque on a shelf is the same height and every one of them says
+something.** They are propped in a row, and a row of tickets at six different
+heights is a row of tickets somebody has knocked; each tile stretches to the
+tallest in its row and the plaque takes whatever is left with its words sat in
+the middle. The ones that cost nothing say **Free**, which is what is written on
+a card in a window when a thing is thrown in, and one you own but have not got
+on says **Yours** - which is the truth, and is not the word Wear thirty times
+over.
+
+The board on the wall has no plaque at all. The shelves are things lying on the
+kale with a ticket in front of them, and thirty-six black slabs beside that is a
+different shop again: it is a list written straight on the bed, a hairline
+between one row and the next, gold and full strength for a won one and dim for
+an unwon one. That is the whole of the difference and it does not need a box to
+make it.
 
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
@@ -731,7 +746,7 @@ reason, it is saved with everything else, and while it is on the version label
 in the corner says so.
 
 With it on there is one more button under the shelves: **a mini-game**, with the
-five of them to pick from, because the honest way to see the barbecue is to play
+six of them to pick from, because the honest way to see the barbecue is to play
 a perfect week and the honest way to see it twice is to play two. It puts you
 back on the shopfront when it is done rather than opening a week - it is not
 Saturday night, it is a man in the back room with the lights on.
@@ -894,7 +909,7 @@ find; and four in one swipe once, which the board tells you to try on a
 Saturday, because a straight line through two twists tops out at
 three anywhere from Monday to Friday and at five on a Saturday, measured over a
 hundred and twenty deals of each. A week the dog got nothing, ten of those, ten
-hours after closing, all five of its games, and a barbecue with nothing black
+hours after closing, all six of its games, and a barbecue with nothing black
 on it. A hundred pounds, a thousand, five thousand, and a hundred and twenty in one week - a shop with the rail stocked,
 the slab stocked and an hour after closing clears a hundred and thirty, and
 sixty was a middling Tuesday-to-Saturday. The
@@ -980,7 +995,7 @@ sausages across six days, and the sixth is eleven of them with the dog coming
 at you at nearly twice Monday's speed - it is the rarest thing in this game and
 it cannot be fluked. One good Wednesday does not buy it.
 
-Five of them, one picked at random, nine seconds each, and it runs before the
+Six of them, one picked at random, nine seconds each, and it runs before the
 week is counted so whatever it makes is part of that week's takings.
 
 It says why it is happening. PERFECT WEEK lands across the middle of the screen
@@ -1074,6 +1089,27 @@ twenty-two pounds, about a third on top of a perfect week.
   about taking two at once, carried through the back door again. One off the
   back of a line breaks the run. Nothing is lost for missing: there is no
   scoreboard back here, only a till.
+- **After the cats.** The shop after dark, and something is in it that should
+  not be. **Drag anywhere and the dog goes where your finger is** - not where it
+  is, where it is heading, because he is a dog and not a cursor: he builds up
+  speed, leans into the turn and slides to a stop when you let go. Touch a cat
+  and it goes straight back out of the window.
+
+  It is the last verb nobody was using. The other five are a sideways drag, a
+  traced line, a timed tap, a swipe and a hold; dragging in two dimensions is
+  what is left, and it happens to be exactly what chasing something is.
+
+  They are not targets, they are cats. They mooch about on their own business
+  until he gets within about a hundred and fifty pixels, and then they have seen
+  him and they break, away from wherever he is, half as fast again. One that saw
+  him and got out anyway breaks your run; one that wandered in and out without
+  ever noticing him was never a chase and does not count against you. A run pays
+  more and more the longer you hold it, which is the rail's rule about taking two
+  at once, carried through the back door one last time.
+
+  It is your own dog, in whatever you have bought him, with his mouth open
+  because he is having the time of his life - and there are three coats of cat,
+  because a shop full of one cat is a shop full of one cat.
 - **On the barbecue.** Five sausages cooking at their own speeds, steaming,
   spitting fat at the bars and hissing every half second. Tap one while it is
   done and it is four forty; tap it early, or leave it until it is black,
@@ -1085,10 +1121,10 @@ twenty-two pounds, about a third on top of a perfect week.
   grill is empty the game is over whatever the clock says - there is nothing to
   watch on an empty barbecue.
 
-**None of them happens in the shop.** The bottle-green tiles are the wall you
-work against and they are behind every single thing in this game; five
-mini-games played on them is the same room five times over at the one moment
-the game is meant to feel like a treat. So each has a backdrop of its own,
+**None of them happens in the shop, bar one.** The bottle-green tiles are the
+wall you work against and they are behind every single thing in this game; six
+mini-games played on them is the same room six times over at the one moment the
+game is meant to feel like a treat. So each has a backdrop of its own,
 drawn on the same terms as everything else - flat shapes, no outline, and
 nothing kept between frames, so what moves is worked out from the clock.
 
@@ -1109,6 +1145,10 @@ nothing kept between frames, so what moves is worked out from the clock.
   garden, the last of the sun behind it, the stars starting, and a lawn mown in
   stripes that widen as they come at you. Dark enough that a pink sausage and a
   black one are plainly two different things, which is the whole game.
+- **After the cats** is the only one that is allowed to be the shop, because
+  the whole point of it is that something is in the shop that should not be.
+  The same tiled wall with the lights off, a shaft of street lamp through the
+  window, and the counter across the bottom.
 - **Butcher's dream** is not a place at all, and uses none of the game's own
   colours to say so: a sherbet sky going from violet at the top to peach at the
   bottom, a sun that is not quite a sun, and three banks of cloud at three
@@ -1116,7 +1156,7 @@ nothing kept between frames, so what moves is worked out from the clock.
   out loud and everybody sees it.
 
 All four darken under the top of the screen, because the name of the game and
-the clock sit up there and they have to read on all five.
+the clock sit up there and they have to read on all six.
 
 They run on the same canvas the day is played on. A second canvas means a
 second copy of everything that makes this one fit a phone, and by the time they
