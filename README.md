@@ -771,30 +771,23 @@ purpose - a tile repeats, and a mark you can pick out is a mark you then see in
 a grid all the way up the wall. They were whitewashed, which is a dairy or a
 fishmonger; a butcher's is on a red brick corner.
 
-**The sign is cut out of iron and hung off a bracket**, which is what a shop
-that has been there a hundred years has over its door. An iron rail across the
-wall, bolted through a plate at each end with a scroll under each one carrying
-the weight, two chains off the middle of it and a round board swinging under
-them. A bracket out of one side was tried first: it leaves the arm ending in
-mid-air and the sign hanging off to one side of everything else on the screen.
+**The sign is the plaque that goes on a brick wall**: the signwritten
+cartouche with its ends swept out to a point and a crown on the top and the
+bottom edge, fixed flat to the brick, cream on near-black, with QUALITY MEATS
+arched over the name and MEAT & PROVISION under a ruled line beneath it.
 
-It is drawn rather than built out of divs for two reasons: the lettering goes
-round the ring, and nothing in CSS sets type on a circle; and the ring is a
-**cutout** - the iron and the letters on it are all there is of it, and the
-brick shows straight through the words. One band the whole way round with
-QUALITY MEATS and EST. 2026 knocked out of it, not two arcs with the ring
-showing between them, because a band that stops halfway reads as a piece that
-has broken off.
+It was a round board hung off a wrought-iron bracket on two chains before
+that, which is a lovely thing and the wrong thing. A hanging sign is what
+sticks out over a pavement to be read from down the street; this is the wall
+you are stood in front of, and what goes on that is a plaque. (Before the
+hanging sign it was a cutout with an oak panel in it, and before that the whole
+screen was the board. It took a while.)
 
-The middle is **an oak panel set into the ring**, with the name burnt into it
-as big as the board will take and a pig and the dog stood along the bottom of
-it - the thing being sold, and on this one the thing waiting underneath it,
-which is what every one of these has. There was a rule with two bones on it
-there, and a rule with two bones on it is what it looked like. All iron was
-tried before that, with the name welded to a bar to stop it floating and brick
-showing through behind it, which left the one thing you are meant to read
-sitting on a wall rather than on a sign. The grain runs across the panel the
-way a board is cut, not round it: a disc with rings in it is a tree stump.
+It is drawn rather than built out of divs for two reasons: the top line is set
+round an arc, and nothing in CSS sets type on a curve; and the outline has
+eight curves in it that have to hold their proportions at any size. Everything
+on the plaque is that same outline pushed in, so the two keylines follow the
+edge rather than being rectangles sitting inside it.
 
 The name is in **Staatliches**, bold condensed caps, which is what is actually
 painted on a butcher's: MEATS, FINEST CUTS, BUTCHERSON, PREMIUM QUALITY. A

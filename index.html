@@ -608,16 +608,18 @@ body.waiting #hud { display: none; }
 /* Everything drains out of it. No brick, no gold, no green, no shadow worth
    the name: the one screen in here with nothing on it worth having, and one
    way out. */
+/* Three things, the same air between each of them. */
 #vegan {
-    z-index: 16; background: linear-gradient(180deg, #d4d3cd, #b9b8b1);
+    z-index: 16; gap: 30px;
+    background: linear-gradient(180deg, #d4d3cd, #b9b8b1);
     color: #4e5249; animation: introIn .45s ease-out both;
 }
 #vegan canvas { width: min(74vw, 260px); height: auto; }
 /* The picture says it. A line under it explaining what the picture says is
    the one thing this screen does not need. */
-#vegan h2 { margin: 4px 0 26px; font-family: var(--font-display); font-weight: 400;
+#vegan h2 { margin: 0; font-family: var(--font-display); font-weight: 400;
             font-size: 32px; letter-spacing: .02em; color: #595e53; text-shadow: none; }
-#vegan .btn { width: 100%; max-width: 280px; margin: 0;
+#vegan .btn { width: 100%; max-width: 280px; margin: 0; flex: none;
               background: linear-gradient(180deg, #8d9186, #6e7268);
               color: #eceae4; border-color: #4a4e45; box-shadow: 0 4px 0 rgba(0,0,0,.2); }
 /* Out the back is out the back: the same brickwork as the front of the
@@ -1517,7 +1519,7 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="setup" hidden>
-        <canvas id="signboard" width="340" height="372"></canvas>
+        <canvas id="signboard" width="340" height="268"></canvas>
         <canvas id="preview" width="330" height="196"></canvas>
         <div class="rows">
             <div class="row"><span class="lab">Butcher</span>
@@ -1573,7 +1575,7 @@ body.waiting #hud { display: none; }
 
     <!-- The one answer out the back that is not a yes, and what it gets you. -->
     <div id="vegan" hidden>
-        <canvas id="veg" width="240" height="200"></canvas>
+        <canvas id="veg" width="240" height="132"></canvas>
         <h2>Vegan sausage</h2>
         <button class="btn" id="veg-back">Back to the meat</button>
     </div>
@@ -1618,7 +1620,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v126';
+const APP_VERSION = 'v127';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -4997,23 +4999,22 @@ function drawMini(ms) {
             ctx.beginPath(); ctx.ellipse(h.x, hy - 8, 19, 13, 0, 0, Math.PI * 2); ctx.fill();
         }
         /* What it was worth, where it was. */
-        if (mini.phase === 'reveal' && mini.pt > .3) {
-            const [x] = shellAt(mini.right ? mini.pick : mini.under);
+        /* Only when it was under the one you picked. Getting it wrong lifts
+           the right cover in front of you, which says it: a word over the top
+           of that is the game telling you what you are looking at. */
+        if (mini.right && mini.phase === 'reveal' && mini.pt > .3) {
+            const [x] = shellAt(mini.pick);
             const e2 = Math.min(1, (mini.pt - .3) / .55);
             const pop = e2 < 1 ? 1.35 - .35 * (e2 * e2 * (3 - 2 * e2)) : 1;
-            const txt = mini.right ? money0(SHELL_PAY) : 'THERE';
-            const y = ty - 178 - e2 * 26;
             ctx.save();
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.globalAlpha = mini.right ? 1 : .9;
-            ctx.translate(x, y);
-            if (mini.right) ctx.scale(pop, pop);
-            ctx.font = '400 ' + (mini.right ? 50 : 26) +
-                       'px "Staatliches", "Alfa Slab One", Georgia, serif';
+            ctx.translate(x, ty - 178 - e2 * 26);
+            ctx.scale(pop, pop);
+            ctx.font = '400 50px "Staatliches", "Alfa Slab One", Georgia, serif';
             ctx.fillStyle = 'rgba(14,34,24,.55)';           // cut in behind it
-            ctx.fillText(txt, 0, 4);
-            ctx.fillStyle = mini.right ? '#ffeab0' : '#e8836a';
-            ctx.fillText(txt, 0, 0);
+            ctx.fillText(money0(SHELL_PAY), 0, 4);
+            ctx.fillStyle = '#ffeab0';
+            ctx.fillText(money0(SHELL_PAY), 0, 0);
             ctx.restore();
         }
         /* And the back of its head, which is the one thing in this game you
@@ -7567,202 +7568,105 @@ function brickTile() {
     }
     return c.toDataURL();
 }
-/* The game's own sign, hung off a wall bracket the way a shop that has been
-   there a hundred years hangs one. A round board rather than a rectangle: the
-   name goes in the middle of it and the trade goes round the ring, which is
-   what is on every one of these and the one thing a rectangle cannot do. */
+/* The game's own sign. It was hung off a wrought-iron bracket on two chains,
+   which is a lovely thing and the wrong thing: a hanging sign is what sticks
+   out over a pavement to be read from down the street, and this is the wall
+   you are stood in front of. This is the plaque that goes on that - the
+   signwritten cartouche with its ends swept out to a point and a crown on the
+   top and the bottom edge, fixed flat to the brick, cream on near-black.
+
+   Drawn rather than built out of divs for two reasons: the top line is set
+   round an arc, and nothing in CSS sets type on a curve; and the shape has
+   eight curves in it that have to hold their proportions at any size. */
 function drawSignBoard() {
     const c = document.getElementById('signboard');
     if (!c) return;
-    const W = 340, H = 372, TAU = Math.PI * 2;
+    const W = 340, H = 268;
     const g = sharp(c, W, H);
     g.clearRect(0, 0, W, H);
-    const cx = W / 2, R = 126, cy = H - R - 14;
-    const IRON = '#231f1c', IRON_H = '#4a443d';
-    const RING = '400 15px "Staatliches", "Alfa Slab One", Georgia, serif';
+    const cx = W / 2, L = 13, R = W - 13, T = 16, B = 244, M = (T + B) / 2;
+    const CREAM = '#f2ecda';
 
-    /* ---- the bracket. An iron rail across the wall, bolted to it through a
-       plate at each end, a scroll under each plate carrying the weight, and
-       the board hanging off the middle of it on two chains. A bracket out of
-       one side leaves the arm ending in mid-air and the sign hanging off to
-       one side of everything else on the screen; this is fixed at both ends
-       and the sign is under the middle of it. ---- */
-    const ay = 24, span = 150;
-    g.lineCap = 'round'; g.lineJoin = 'round';
-    g.strokeStyle = IRON; g.lineWidth = 7;
-    g.beginPath(); g.moveTo(cx - span, ay); g.lineTo(cx + span, ay); g.stroke();
-    for (const sx of [-1, 1]) {
-        const bx = cx + sx * span;
-        g.fillStyle = IRON;                             // the plate on the wall
-        g.beginPath(); g.roundRect(bx - 7.5, ay - 20, 15, 48, 3); g.fill();
-        g.fillStyle = IRON_H;                           // two bolts through it
-        g.beginPath(); g.arc(bx, ay - 13, 2.6, 0, TAU); g.fill();
-        g.beginPath(); g.arc(bx, ay + 21, 2.6, 0, TAU); g.fill();
-        g.strokeStyle = IRON; g.lineWidth = 3.4;        // the brace under it
+    /* The outline. Everything on the plaque is the same outline pushed in, so
+       the keylines follow the edge rather than being a rectangle inside it. */
+    const shape = o => {
+        const l = L + o, r = R - o, t = T + o, b = B - o, w = 46 - o * .5;
         g.beginPath();
-        g.moveTo(bx + sx * 1, ay + 32);
-        g.bezierCurveTo(bx - sx * 26, ay + 30, bx - sx * 42, ay + 15, bx - sx * 49, ay + 2);
-        g.stroke();
-        g.beginPath();                                  // and a curl off it
-        g.moveTo(bx - sx * 18, ay + 29);
-        g.bezierCurveTo(bx - sx * 6, ay + 34, bx - sx * 12, ay + 48, bx - sx * 25, ay + 43);
-        g.bezierCurveTo(bx - sx * 34, ay + 39, bx - sx * 30, ay + 30, bx - sx * 23, ay + 34);
-        g.stroke();
-    }
-    g.fillStyle = 'rgba(255,255,255,.1)';               // the light along the top
-    g.fillRect(cx - span, ay - 3.2, span * 2, 1.6);
-    for (const sx of [-1, 1]) {                         // two chains down to it
-        const lx = cx + sx * 58;
-        g.strokeStyle = IRON; g.lineWidth = 3.4;
-        /* Down onto the ring, not down to near it. The ring is a circle, so
-           where the chain meets it is further down than the top of it. */
-        const reach = cy - Math.sqrt(R * R - 58 * 58) + 10;
-        const n = Math.max(2, Math.ceil((reach - (ay + 13)) / 21));
-        for (let i = 0; i < n; i++) {
-            g.beginPath(); g.ellipse(lx, ay + 13 + i * 21, 5, 11, 0, 0, TAU); g.stroke();
-        }
-    }
+        g.moveTo(l + w, t);
+        g.lineTo(cx - 52, t);                           // the crown on the top edge
+        g.quadraticCurveTo(cx, t - 15 + o * .4, cx + 52, t);
+        g.lineTo(r - w, t);
+        g.bezierCurveTo(r - w + 15, t, r - 12, t + 10, r - 15, M - 32);
+        g.lineTo(r, M);                                 // and out to the point
+        g.lineTo(r - 15, M + 32);
+        g.bezierCurveTo(r - 12, b - 10, r - w + 15, b, r - w, b);
+        g.lineTo(cx + 52, b);                           // and the one underneath
+        g.quadraticCurveTo(cx, b + 15 - o * .4, cx - 52, b);
+        g.lineTo(l + w, b);
+        g.bezierCurveTo(l + w - 15, b, l + 12, b - 10, l + 15, M + 32);
+        g.lineTo(l, M);
+        g.lineTo(l + 15, M - 32);
+        g.bezierCurveTo(l + 12, t + 10, l + w - 15, t, l + w, t);
+        g.closePath();
+    };
 
-    /* ---- The board: an iron ring with the trade cut out of it, and an oak
-       panel set into the ring with the name burnt into that. The ring is a
-       cutout, so the brick shows through the lettering on it; the middle is
-       a board, which is what the name wants to be on. All iron and the name
-       had to be welded to a bar to stop it floating, and the inside of the
-       ring was brick, which left the one thing you are meant to read sitting
-       on a wall rather than on a sign. ---- */
-    g.save();
-    g.shadowColor = 'rgba(30,16,10,.55)'; g.shadowBlur = 9; g.shadowOffsetY = 5;
-    g.fillStyle = IRON;
-    /* One band the whole way round, not two arcs with the ring showing
-       between them: a band that stops halfway reads as a piece that has
-       broken off. */
-    g.beginPath();
-    g.arc(cx, cy, R, 0, TAU);
-    g.arc(cx, cy, R - 27, TAU, 0, true);
-    g.closePath(); g.fill();
+    g.save();                                           // screwed flat to the brick
+    g.shadowColor = 'rgba(28,14,10,.5)'; g.shadowBlur = 16; g.shadowOffsetY = 8;
+    const plate = g.createLinearGradient(0, T, 0, B);
+    plate.addColorStop(0, '#221c18'); plate.addColorStop(1, '#120e0c');
+    g.fillStyle = plate; shape(0); g.fill();
     g.restore();
+    g.strokeStyle = 'rgba(242,236,218,.85)'; g.lineWidth = 2.4;   // the keyline
+    shape(10); g.stroke();
+    g.strokeStyle = 'rgba(242,236,218,.28)'; g.lineWidth = 1;
+    shape(16); g.stroke();
 
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    /* Type set round the ring. Nothing in CSS does this, which is most of the
-       reason the sign is drawn at all. */
-    const arc = (text, radius, mid, top, font) => {
+    /* The trade, set round a very big circle so the line sits on a gentle
+       curve rather than in a bowl. */
+    const arc = (text, font, ry, radius) => {
         g.font = font;
+        const oy = ry + radius;
         const chars = [...text];
         const widths = chars.map(ch => g.measureText(ch).width);
-        const total = widths.reduce((a, b) => a + b, 0);
-        let a0 = mid - (top ? 1 : -1) * (total / radius) / 2;
+        let a0 = -Math.PI / 2 - (widths.reduce((a, b) => a + b, 0) / radius) / 2;
         for (let i = 0; i < chars.length; i++) {
-            const step = (widths[i] / radius) * (top ? 1 : -1);
-            const a = a0 + step / 2;
+            const step = widths[i] / radius, a = a0 + step / 2;
             g.save();
-            g.translate(cx + Math.cos(a) * radius, cy + Math.sin(a) * radius);
-            g.rotate(a + (top ? Math.PI / 2 : -Math.PI / 2));
+            g.translate(cx + Math.cos(a) * radius, oy + Math.sin(a) * radius);
+            g.rotate(a + Math.PI / 2);
             g.fillText(chars[i], 0, 0);
             g.restore();
             a0 += step;
         }
     };
-    g.save();
-    g.globalCompositeOperation = 'destination-out';
-    g.fillStyle = '#000';
-    arc('QUALITY MEATS', R - 13.5, -Math.PI / 2, true, RING);
-    arc('EST. 2026', R - 13.5, Math.PI / 2, false, RING);
-    for (const sx of [-1, 1]) {                         // a diamond between them
-        g.save(); g.translate(cx + sx * (R - 13.5), cy); g.rotate(Math.PI / 4);
-        g.fillRect(-3.4, -3.4, 6.8, 6.8); g.restore();
-    }
-    g.restore();
+    g.fillStyle = 'rgba(242,236,218,.78)';
+    arc('Q U A L I T Y   M E A T S', '900 11px Lato, system-ui, sans-serif', T + 40, 300);
 
-    /* ---- the oak panel set into the ring ---- */
-    const PR = R - 22;
-    g.save();
-    g.beginPath(); g.arc(cx, cy, PR, 0, TAU); g.clip();
-    const oak = g.createLinearGradient(0, cy - PR, 0, cy + PR);
-    oak.addColorStop(0, '#c49456'); oak.addColorStop(.52, '#ae7c3f');
-    oak.addColorStop(1, '#8d5f2b');
-    g.fillStyle = oak; g.fillRect(cx - PR, cy - PR, PR * 2, PR * 2);
-    /* The grain. Drawn across the board the way a board is cut, not round the
-       circle - a disc with rings in it is a tree stump. */
-    const rnd = i => { const v = Math.sin(i * 12.9898) * 43758.5; return v - Math.floor(v); };
-    for (let i = 0; i < 26; i++) {
-        const k = rnd(i + 3);
-        const y = cy - PR + (i + k * .8) * (PR * 2 / 26);
-        g.strokeStyle = `rgba(86,54,22,${.06 + k * .13})`;
-        g.lineWidth = .7 + k * 1.5;
-        g.beginPath();
-        g.moveTo(cx - PR, y);
-        g.bezierCurveTo(cx - PR / 3, y + (k - .5) * 5, cx + PR / 3, y - (k - .5) * 6, cx + PR, y);
-        g.stroke();
-    }
-    g.fillStyle = 'rgba(70,42,16,.3)';                  // it sits down in the ring
-    g.beginPath(); g.arc(cx, cy, PR, 0, TAU);
-    g.arc(cx, cy, PR - 7, TAU, 0, true); g.fill();
-    g.restore();
-    g.strokeStyle = 'rgba(58,36,14,.46)'; g.lineWidth = 1.6;   // a line burnt inside the edge
-    g.beginPath(); g.arc(cx, cy, PR - 8, 0, TAU); g.stroke();
-
-    /* ---- the name burnt into it, as big as the board will take ---- */
-    g.save();
-    g.textAlign = 'center'; g.textBaseline = 'middle';
+    /* The name, as big as the plate will take it. */
     const paint = (text, y, size, room) => {
         g.font = `400 ${size}px "Staatliches", "Alfa Slab One", Georgia, serif`;
         const w = g.measureText(text).width;
         g.save();
-        g.translate(cx, cy + y);
+        g.translate(cx, y);
         if (w > room) g.scale(room / w, 1);
-        g.fillStyle = 'rgba(255,230,190,.26)';          // the edge the iron left
-        g.fillText(text, 0, 1.5);
-        g.fillStyle = '#3d2710';
-        g.fillText(text, 0, 0);
+        g.fillStyle = CREAM; g.fillText(text, 0, 0);
         g.restore();
     };
-    paint('BUTCHER\u2019S', -36, 38, 160);
-    paint('DOG', 5, 52, 150);
+    paint('BUTCHER\u2019S', T + 92, 46, 206);
+    paint('DOG', T + 144, 56, 190);
 
-    /* ---- and the pair of them along the bottom of it, which is what is on
-       every one of these: the thing being sold, and on this one the thing
-       waiting underneath it. A rule with two bones on it was a rule with two
-       bones on it. ---- */
-    const beast = (bx, by, k, flip, kind) => {
-        g.save();
-        g.translate(bx, by); g.scale(k * (flip ? -1 : 1), k); g.translate(-17, -24.4);
-        g.beginPath();
-        if (kind === 'pig') {
-            g.ellipse(14.4, 13.4, 10.6, 7.2, 0, 0, TAU);
-            g.ellipse(24.6, 12, 6.4, 5.8, 0, 0, TAU);
-            g.ellipse(30.4, 13.6, 3, 2.6, 0, 0, TAU);
-            g.moveTo(21.2, 6.6); g.lineTo(27, 4.6); g.lineTo(27.4, 10.4); g.closePath();
-            for (const [x, y, w] of [[6.6, 18, 3.4], [11.6, 18.6, 3.4],
-                                     [17.4, 18.6, 3.4], [21.8, 17.4, 3.4]])
-                g.rect(x, y, w, 24.4 - y);
-            g.fill();
-            g.strokeStyle = g.fillStyle; g.lineWidth = 1.7; g.lineCap = 'round';
-            g.beginPath();                                          // the curly tail
-            g.moveTo(5.6, 9.4);
-            g.bezierCurveTo(1.6, 9.2, 1.4, 4.2, 4.8, 4.2);
-            g.bezierCurveTo(7, 4.2, 7.2, 6.8, 5.4, 6.8);
-            g.stroke();
-        } else {
-            g.ellipse(14, 13.6, 9.8, 6.2, 0, 0, TAU);               // the body
-            g.moveTo(20, 9); g.lineTo(26.5, 5.5); g.lineTo(27.5, 13); g.closePath();
-            g.ellipse(27, 8.4, 4.9, 4.6, 0, 0, TAU);                // the head
-            g.ellipse(31.4, 10.8, 3.4, 2.4, 0, 0, TAU);             // the muzzle
-            g.moveTo(24.4, 4.6); g.lineTo(28.4, 1.4); g.lineTo(29.2, 6.4); g.closePath();
-            for (const [x, y] of [[6.4, 17.6], [11.2, 18.4], [17.6, 18.4], [21.6, 17.2]])
-                g.rect(x, y, 3.3, 24.4 - y);
-            g.fill();
-            g.strokeStyle = g.fillStyle; g.lineWidth = 2.2; g.lineCap = 'round';
-            g.beginPath();                                          // the tail, up
-            g.moveTo(5.2, 11.4);
-            g.bezierCurveTo(1.4, 9.6, 1.2, 3.4, 5.6, 2.2);
-            g.stroke();
-        }
-        g.restore();
-    };
-    g.fillStyle = '#3d2710';
-    beast(cx - 32, cy + 64, 1.02, false, 'pig');
-    beast(cx + 34, cy + 64, 1.02, true, 'dog');
-    g.restore();
+    /* A rule with a diamond on each end of it, and what the trade is under
+       that, which is what is written along the bottom of every one of these. */
+    g.fillStyle = 'rgba(242,236,218,.5)';
+    g.fillRect(cx - 58, T + 176, 116, 1.4);
+    for (const sx of [-1, 1]) {
+        g.save(); g.translate(cx + sx * 68, T + 176.7); g.rotate(Math.PI / 4);
+        g.fillRect(-2.8, -2.8, 5.6, 5.6); g.restore();
+    }
+    g.fillStyle = 'rgba(242,236,218,.66)';
+    g.font = '900 10px Lato, system-ui, sans-serif';
+    g.fillText('M E A T   &   P R O V I S I O N', cx, T + 196);
 }
 function drawPreview(id, w, h, withMan) {
     const c = document.getElementById(id);
@@ -8455,10 +8359,10 @@ function goVegan() {
 function drawVegan() {
     const c = document.getElementById('veg');
     if (!c) return;
-    const g = sharp(c, 240, 200), TAU = Math.PI * 2;
-    g.clearRect(0, 0, 240, 200);
+    const g = sharp(c, 240, 132), TAU = Math.PI * 2;
+    g.clearRect(0, 0, 240, 132);
     g.save();
-    g.translate(120, 104); g.rotate(.05);
+    g.translate(120, 60); g.rotate(.05);
     g.fillStyle = 'rgba(80,84,74,.12)';                 // what little shadow it casts
     g.beginPath(); g.ellipse(0, 34, 70, 9, 0, 0, TAU); g.fill();
     g.fillStyle = '#9aa08a';                            // the thing itself
