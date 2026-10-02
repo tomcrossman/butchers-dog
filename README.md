@@ -226,6 +226,14 @@ off the side of a phone, and a prop that leaves the screen on the good weeks is
 a prop that works on the ones nobody wants. The notes come out of the number
 itself now, which is where they are going anyway.
 
+The figure that was added lives entirely above the total and never touches it.
+It used to start on the number and pass straight through it on the way up,
+which is two figures on top of each other at the one moment either of them is
+worth reading. Below it would have been simpler and does not fit: on a short
+phone there is nothing under the total but the Open up shop button. The space
+it rises through belongs to the names, so the names stand down for the length
+of it.
+
 **And it is the whole screen.** Five small notes creeping up over a second was
 the one moment in this game where something good is unambiguously happening,
 and it went past without anybody noticing it. There are ten notes and eight
@@ -250,11 +258,23 @@ played on. Two things fix it and neither needs any space: the daylight coming
 in under the awning, which is the only light a shop like this has, washing down
 the tiles and falling off at the corners - and the **counter** across the
 bottom, which is what the two of them are stood behind. The dog's chin is over
-the top of it, which is where a dog puts its chin. Marble slab, a dark front
+the top of it, which is where a dog puts its chin. Marble slab, a mahogany front
 that goes down into the colour the page carries on in so the counter runs off
 the bottom of the canvas rather than stopping at it, and three little black
 price tickets stood on it - the same plaque the day's takings come up on.
 Nothing else in one picture says butcher's counter.
+
+**And the bottom half of the screen is that counter.** It was the same bottle
+green as the wall above it, which made the whole thing one flat sheet with a
+shop drawn across the top of it and nothing under the drawing - the name and
+the till were floating on a tiled wall that had no business being there, since
+by then you are stood in front of the counter rather than behind it. A counter
+front is a different material from the wall behind it, and the moment it is,
+everything under the slab reads as the front of the counter: gold lettering on
+dark wood, which is what every high-street butcher's has had painted on it
+since there were high streets. The canvas paints its own tiles now rather than
+leaving the page's to show through, so the wall stops where the wall stops, and
+the ghost buttons on that screen are made of what the counter is made of.
 
 And he holds his knife by the handle. A knife in this game is drawn from its
 point - the tip is the origin, because on the shop floor the tip is where your
