@@ -247,7 +247,15 @@ The till buys things, and the things are the point. It is called Upgrades on
 the door and in the ledger, because the shop in this game is the one with the
 sausages in the window.
 
-**On the block**, the knives, is not decoration either. Each one has an edge:
+**On the block**, the knives, is not decoration either, and it is no longer
+loose change. The whole block used to cost a hundred and fifty-three pounds,
+which is less than one thing on the rail, for the only permanent advantage in
+the shop: every other shelf makes the same work pay more, and this one makes
+the work easier for the rest of your life. A hundred and sixty, four hundred
+and fifty and nine hundred and fifty now - a few weeks, a season, and second
+only to the insurance.
+
+Each one has an edge:
 how many points it takes off the bar for a perfect cut, from nothing on the
 butcher's own knife up to six on the cleaver, which is the top of the block -
 it is what a butcher reaches for when the job is serious, and shears are for
@@ -507,7 +515,7 @@ phone.
 
 A butcher's shop has rosettes on the wall. Not points, not a score, not a
 percentage - prize cards from shows nobody else remembers, pinned up and left
-there. So that is what these are. **Thirty-three of them**, and they buy
+there. So that is what these are. **Thirty-four of them**, and they buy
 nothing and unlock nothing: the whole reward is that the window fills up and
 the next person who looks at your shop can see what it has done.
 
@@ -555,7 +563,9 @@ vet's bill paid, a dog buried, fifty pats, and a dog in a bought hat, face and
 collar at once. Every knife, everything on the rail, and every single thing in
 the shop. Selling every link on a Saturday - eleven of them against a dog at
 nearly twice Monday's speed, which Monday's four is not. Six perfect cuts in a
-day. A week without halving one yourself. Ten weeks with the same dog. The
+day. Fifty steaks taken out of the air - three a week off a plain slab and
+twelve off a stocked one, and only the ones you get the blade to before the
+floor or the dog does. A week without halving one yourself. Ten weeks with the same dog. The
 bone, the cat and the lad all at once. Watching the dog find out what is in a
 black pudding. And **two** nobody would go looking for, which stay dots on the
 board until they happen. They are both the butcher: one in the ribs folds a man

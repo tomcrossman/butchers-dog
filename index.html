@@ -854,7 +854,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v81';
+const APP_VERSION = 'v82';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1515,6 +1515,8 @@ function hitSteak(sw) {
 }
 function sliceSteak() {
     money += STEAK_PAY; roundMoney += STEAK_PAY; steaks++;
+    save.tally.steaks++;
+    if (save.tally.steaks >= 50) award('steaks');
     showHud();
     // and the same rule as PERFECT: what you did, not what it paid
     shouts.push({ text: 'PRIME CUT', x: steak.x, y: steak.y - 26, t0: now() });
@@ -3251,13 +3253,19 @@ const SHOPS = ['A Cut Above', 'Beef Encounter', 'Meat Expectations', 'Bangers & 
 const KNIVES = [
     { id: 'chef',    kind: 'knife', name: 'Butcher\u2019s knife', price: 0, ring: 1, edge: 0,
       why: 'The one you start with.' },
-    { id: 'boning',  kind: 'knife', name: 'Boning knife', price: 1800, ring: 1.3, edge: 2,
+    /* The whole block used to cost a hundred and fifty-three pounds, which is
+       less than one thing on the rail, for the only permanent advantage in the
+       shop - every other shelf makes the same work pay more, and this one
+       makes the work easier for the rest of your life. It is priced as the
+       investment it is now: the boning knife is a few weeks, the shears are a
+       season, and the cleaver is second only to the insurance. */
+    { id: 'boning',  kind: 'knife', name: 'Boning knife', price: 16000, ring: 1.3, edge: 2,
       why: 'A little more room on a perfect cut.' },
     /* The cleaver is the top of the block, not the shears. It is the thing a
        butcher reaches for when the job is serious; shears are for poultry. */
-    { id: 'shears',  kind: 'knife', name: 'Butcher\u2019s shears', price: 4500, ring: .8, edge: 4,
+    { id: 'shears',  kind: 'knife', name: 'Butcher\u2019s shears', price: 45000, ring: .8, edge: 4,
       why: 'More room again.' },
-    { id: 'cleaver', kind: 'knife', name: 'Cleaver', price: 9000, ring: .5, edge: 6,
+    { id: 'cleaver', kind: 'knife', name: 'Cleaver', price: 95000, ring: .5, edge: 6,
       why: 'The most room there is on a perfect cut.' },
 ];
 const KIT = [
@@ -3375,7 +3383,7 @@ const FRESH = () => ({
     /* The wall. `got` is which rosettes are on it; `tally` is the handful of
        running counts that no other part of the game had a reason to keep. */
     got: [],
-    tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0, trebles: 0, hours: 0 },
+    tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0, trebles: 0, hours: 0, steaks: 0 },
 });
 let save = FRESH(), started = false;
 function loadSave() {
@@ -3479,6 +3487,10 @@ const ROSETTES = [
 
     { id: 'saturday',silk: 'gold',   name: 'Saturday Night',  why: 'Sell every link on a Saturday. Eleven of them.' },
     { id: 'six',     silk: 'gold',   name: 'Six of the Best', why: 'Six perfect cuts in one day.' },
+    /* Three a week off a plain slab and twelve off a stocked one, and only if
+       you get the blade to them before the floor or the dog does. */
+    { id: 'steaks',  silk: 'red',    name: 'Fifty Prime Cuts',
+      why: 'Fifty steaks taken out of the air.' },
     { id: 'nowt',    silk: 'green',  name: 'Nothing Wasted',  why: 'A week without halving a single one yourself.' },
     { id: 'year',    silk: 'gold',   name: 'A Full Year',     why: 'Fifty-two weeks in the same shop.' },
     { id: 'loyal',   silk: 'pink',   name: 'Old Friends',     why: 'Ten weeks with the same dog.' },
@@ -3552,6 +3564,7 @@ function sweep(quiet) {
     if (save.tally.perfect >= 25) give('dead');
     if (save.tally.perfect >= 500) give('fivehun');
     if (save.tally.trebles >= 10) give('three');
+    if (save.tally.steaks >= 50) give('steaks');
     if (save.weeks >= 52) give('year');
     if (save.bank >= 10000) give('hundred');
     if (save.bank >= 100000) give('grand');
