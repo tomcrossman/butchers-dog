@@ -544,9 +544,22 @@ the same ticket.
 
 They were green panels with gold edges on a green tiled wall, which is the
 flat-sheet problem again: the shelves and the wall behind them were made of
-the same thing and there was nothing for the eye to catch on. The wall stays
-green, because a butcher's shop has a green tiled wall. What is hung on it
-does not.
+the same thing and there was nothing for the eye to catch on.
+
+**And the shop is made of the counter.** Tickets on a green tiled wall are
+tickets on a wall, which is right for the window and wrong for this: you are
+stood at the counter spending the till, so the screen is the counter - the
+same mahogany as the bottom half of the shopfront, planked at the quarters the
+way the counter front is, so the two screens join up rather than introducing a
+sixth material. The tiles stay in the back room, which is a back room.
+
+Four others were tried on paper and none of them is this: plain charcoal,
+which makes the tickets float and loses the only thing this game has, which is
+that everything is somewhere; an end-grain butcher's block, which is a grid
+behind a grid; scrubbed white marble - the counter top rather than its front -
+which gives the black tickets the most contrast there is and turns a phone
+into a lightbulb at nine at night; and brown paper off the roll, which has the
+same problem and is a better wrapping than a background.
 
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
