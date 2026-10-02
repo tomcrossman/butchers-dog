@@ -581,11 +581,20 @@ can explain and everybody expects. Three sizes at three heights so its edge is
 ragged rather than a row of identical scallops, and only the tops of it showing:
 any more and it stops being a garnish and becomes a hedge.
 
-The kale goes **between** the trays rather than inside them, which is where it
-goes in a real one: it is stuffed in to fill the gaps a loaded counter leaves,
-and laid in each tray it read as a hedge growing out of every item. Each tray
-carries its own strip behind itself, poking up into the gap above, so the only
-place you ever see it is between one row and the next.
+**The kale is the bed.** In a real counter the whole floor of the case is
+packed with curly kale and everything is set down into it - so that is what is
+under all of it, rather than a trim round each tray. It went through a frill
+inside each tray, which read as a hedge growing out of every item, and a strip
+between them, which read as a hedge between every row. It is the ground now.
+
+Four layers of overlapping discs with soft edges, lightest and smallest on top,
+on tile sizes that share no factors - thirty-seven by thirty-one, twenty-nine by
+twenty-three, twenty-three by nineteen, nineteen by seventeen - so the pattern
+does not come round again for thousands of pixels and reads as a mass rather
+than as spots. Hard-edged circles on tidy tiles is bubble wrap; soft ones at
+four scales is foliage. A flat dark wash over the top of it keeps it under the
+goods, because a bed of garnish that is brighter than the meat is a bed of
+garnish nobody asked to look at.
 
 They are packed to a five-pixel gap. A counter with air round everything in it
 is a counter at the end of a Saturday.
@@ -641,7 +650,11 @@ faces on the eye line, collars at the chin - and Nothing on its head is an
 empty circle, which is exactly right. The counter at the bottom draws the same
 item without the circle - there is one thing on the screen down there and its
 name beside it - and seeing it on the dog is what the pinned preview at the top
-is for.
+is for. It is drawn **at whatever scale fills the space**: a pair of round
+glasses measures twenty pixels across, and twenty pixels of dark grey on a
+near-black counter is two dots, which is a poor look at the thing you are being
+asked to pay for. It is measured, scaled to fit, measured again and put in the
+middle, on a little tray of its own.
 
 The dog is pinned to the top of the shop and does not scroll away with the
 first shelf, so whatever you try goes on in front of you without scrolling back
@@ -753,12 +766,21 @@ bury a dog, and worth seeing.
 
 **And the stone is not in the shop.** A headstone propped against a tiled wall
 is a headstone propped against a tiled wall, so that card gets a graveyard at
-dusk: a horizon at forty-eight per cent of whatever screen it is on, two rows
-of small stones standing behind the one with the name on it - a dimmer, smaller
-row further back and a nearer one in front of it - grass under them and the
-last of the sun along the skyline. The three cards with no ledger on them give
-the stamp its own room at the top, because with nothing under it, it was
-landing on the one line they have.
+dusk: a horizon at forty-eight per cent of whatever screen it is on, grass
+under it and the last of the sun along the skyline. Behind the one with the
+name on it, **three rows of small stones** on tile widths that share no factors
+- sixty-seven, fifty-three, forty-one - so they interleave rather than lining
+up in a fence, each a band of stones with a row of domed tops over it, and the
+far ones palest, because that is what distance does to a grey thing. The first
+pass had two rows of flat-topped posts at one width, which is a fence.
+
+**And three crows go over.** The flight is one transform and the flapping is a
+second one on the bird inside it: a shallow m squashed and stretched
+vertically, which at twenty pixels is exactly as much bird as anybody has ever
+needed. They are only ever on this card.
+
+The three cards with no ledger on them give the stamp its own room at the top,
+because with nothing under it, it was landing on the one line they have.
 
 Say goodbye and it goes off to wherever they go, halo and wings and spinning
 gently, on the card you are already looking at. Going into the distance is a

@@ -183,23 +183,54 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #card.grave {
     /* The horizon is at forty-eight per cent whatever the screen is, so the
        stones stand behind the one with the name on it rather than under the
-       paper. Two rows: a smaller, dimmer one further back and a nearer one in
-       front of it, each a band of stones with a row of domed tops over it. */
+       paper. Three rows of them at three sizes on tile widths that share no
+       factors - sixty-seven, fifty-three, forty-one - so they interleave
+       rather than lining up in a fence, each a band of stones with a row of
+       domed tops over it, and the far ones palest because that is what
+       distance does to a grey thing. */
     background:
-        radial-gradient(circle at 36px 100%, #4e5a52 10px, transparent 10.5px)
-            left 0 top calc(48% - 25px)/72px 11px repeat-x,
-        repeating-linear-gradient(90deg, transparent 0 26px, #4e5a52 26px 46px,
-                                  transparent 46px 72px)
-            left 0 top calc(48% - 14px)/72px 32px repeat-x,
-        radial-gradient(circle at 26px 100%, #3b4740 7px, transparent 7.5px)
-            left 14px top calc(48% - 22px)/52px 8px repeat-x,
-        repeating-linear-gradient(90deg, transparent 0 19px, #3b4740 19px 33px,
-                                  transparent 33px 52px)
-            left 14px top calc(48% - 14px)/52px 20px repeat-x,
-        linear-gradient(180deg, transparent 48%, #2a4531 48%, #16241a 100%),
-        linear-gradient(180deg, #272e4c 0%, #4a4466 24%, #7d5660 40%,
-                        #a56c56 46%, #c48b5c 50%, #c48b5c 100%);
+        radial-gradient(circle at 33px 100%, #5f6c62 11px, transparent 11.5px)
+            left 0 top calc(48% - 24px)/67px 10px repeat-x,
+        repeating-linear-gradient(90deg, transparent 0 22px, #5f6c62 22px 44px,
+                                  transparent 44px 67px)
+            left 0 top calc(48% - 14px)/67px 28px repeat-x,
+        radial-gradient(circle at 25px 100%, #6d7972 9px, transparent 9.5px)
+            left 19px top calc(48% - 20px)/53px 8px repeat-x,
+        repeating-linear-gradient(90deg, transparent 0 16px, #6d7972 16px 34px,
+                                  transparent 34px 53px)
+            left 19px top calc(48% - 12px)/53px 20px repeat-x,
+        radial-gradient(circle at 19.5px 100%, #7a857e 6.5px, transparent 7px)
+            left 7px top calc(48% - 16px)/41px 7px repeat-x,
+        repeating-linear-gradient(90deg, transparent 0 13px, #7a857e 13px 26px,
+                                  transparent 26px 41px)
+            left 7px top calc(48% - 10px)/41px 14px repeat-x,
+        linear-gradient(180deg, transparent 48%, #3f6a46 48%, #294731 72%,
+                        #1d3324 100%),
+        linear-gradient(180deg, #3c456f 0%, #6a5a84 20%, #9c6a7e 34%,
+                        #cf8a68 44%, #eaa972 48%, #eaa972 100%);
 }
+/* Three crows going over, which is the other half of what a graveyard at dusk
+   is. They are only ever on this card. The flight is one transform and the
+   flapping is a second one on the bird inside it - a shallow m squashed and
+   stretched vertically, which at twenty pixels is exactly as much bird as
+   anybody has ever needed. */
+#card .crows { display: none; }
+#card.grave .crows {
+    display: block; position: absolute; inset: 0; z-index: 0;
+    overflow: hidden; pointer-events: none;
+}
+#card.grave #butcher, #card.grave .inner { position: relative; z-index: 1; }
+.crows i { position: absolute; left: 0; display: block;
+           animation: crowFly var(--t) linear var(--d) infinite; }
+/* An inline svg with no width or height on it is three hundred by a hundred
+   and fifty, and `height: auto` keeps the hundred and fifty - so the ratio has
+   to be said out loud. */
+.crows i svg { display: block; width: 100%; height: auto; aspect-ratio: 24 / 10;
+               fill: #241e2a; opacity: .72;
+               animation: flap .44s ease-in-out infinite alternate; }
+@keyframes crowFly { from { transform: translateX(-14vw); }
+                     to   { transform: translateX(118vw); } }
+@keyframes flap { from { transform: scaleY(.4); } to { transform: scaleY(1.3); } }
 /* the week that ended with a stone in it has no ledger worth printing */
 #card.grave #ledger { display: none; }
 /* nothing under the total on an ordinary week - but over a headstone the next
@@ -509,13 +540,30 @@ body.waiting #hud { display: none; }
    The case itself is cold steel, lit from the top, with the glass in front of
    it catching the light across the top corner. Everything in it is darker than
    it is, so the trays sit in it rather than on it. */
+/* The bed is kale. In a real counter the whole floor of the case is packed
+   with curly kale and the trays are set down into it, so that is what is
+   under everything here - not a strip of garnish round each tray, which read
+   as a hedge growing out of every item, but the bed they are all sitting in.
+
+   Four layers of overlapping discs, lightest and smallest on top, on tile
+   sizes that share no factors - 23 by 19, 26 by 21, 31 by 17, 29 by 23 - so
+   the pattern does not come back round for thousands of pixels and reads as a
+   mass rather than as spots. */
 #store {
     background:
         linear-gradient(104deg, transparent 38%, rgba(226,244,255,.05) 44%,
                         rgba(226,244,255,.015) 50%, transparent 56%),
-        repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 1px, transparent 1px 4px),
-        radial-gradient(120% 52% at 50% 0%, rgba(214,238,250,.18) 0%, transparent 64%),
-        linear-gradient(180deg, #4c565c 0%, #3a4449 36%, #283136 100%);
+        radial-gradient(120% 40% at 50% 0%, rgba(236,250,255,.1) 0%, transparent 68%),
+        linear-gradient(rgba(8,22,11,.42), rgba(8,22,11,.42)),
+        radial-gradient(circle at 50% 50%, #336f3a 0, #336f3a 9px, transparent 16px)
+            6px 4px/37px 31px,
+        radial-gradient(circle at 50% 50%, #2c6434 0, #2c6434 9px, transparent 15px)
+            17px 13px/29px 23px,
+        radial-gradient(circle at 50% 50%, #24552b 0, #24552b 8px, transparent 14px)
+            3px 9px/23px 19px,
+        radial-gradient(circle at 50% 50%, #1d4824 0, #1d4824 7px, transparent 12px)
+            11px 2px/19px 17px,
+        #17391e;
 }
 #store .shut { background: linear-gradient(180deg, #3d464b, #222a2e);
                border-color: rgba(206,222,230,.5); color: #e8f0f4; }
@@ -636,20 +684,22 @@ body.waiting #hud { display: none; }
     gap: 10px; font-size: 10px; font-weight: 900; letter-spacing: .16em;
     text-transform: uppercase; color: var(--gold); opacity: .75; text-align: left;
 }
-#store .shelf h3 { color: #dbe8ee; opacity: .62; }
+#store .shelf h3 { color: #e6f2e9; opacity: .72;
+                   text-shadow: 0 1px 2px rgba(5,16,8,.8); }
 .shelf h3 em { font-style: normal; letter-spacing: .1em; opacity: .62; flex: none; }
 /* How far down the board you are, over the top of the eight shelves it is
    split into. */
 #stock .tot {
     margin: 2px 0 10px; font-family: var(--font-display); font-size: 16px;
-    letter-spacing: .02em; color: #dbe8ee; opacity: .72; text-align: center;
+    letter-spacing: .02em; color: #eaf4ec; opacity: .82; text-align: center;
+    text-shadow: 0 1px 3px rgba(5,16,8,.8);
 }
 /* A shop tells you what a thing looks like, not what it is called: every
    item is drawn on the dog's own head in its own little window, so a rack of
    seventeen hats reads at a glance instead of being seventeen words. */
-/* Packed edge to edge, the way a case is loaded. A counter with air round
-   everything in it is a counter at the end of a Saturday. */
-.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+/* Set down into the bed with a bit of it showing round each one, the way a
+   case is loaded. */
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
 /* The board. One a line, because a rosette with no words on it is a coloured
    disc, and the words are the whole point of the unwon ones. */
 .pins { display: flex; flex-direction: column; gap: 5px; }
@@ -711,7 +761,7 @@ body.waiting #hud { display: none; }
     padding: 0 0 7px; cursor: pointer;
     background: linear-gradient(168deg, #333a3d 0%, #222729 52%, #181c1e 100%);
     border: none; border-radius: 5px; color: #f6f1e6;
-    box-shadow: 0 3px 0 rgba(0,0,0,.42),
+    box-shadow: 0 2px 7px rgba(5,16,8,.6), 0 2px 0 rgba(8,20,11,.5),
                 inset 0 0 0 1.5px rgba(206,226,236,.2),
                 inset 0 2px 0 rgba(236,248,255,.16);
     font-family: var(--font); font-weight: 700; font-size: 13px;
@@ -747,24 +797,7 @@ body.waiting #hud { display: none; }
    the tops of it showing over the back of the ticket: any more and it stops
    being a garnish and becomes a hedge. Three sizes at three heights so the
    edge of it is ragged rather than a row of identical scallops. */
-/* The kale is stuffed in between the trays, not laid inside them: it goes in
-   to fill the gaps a loaded counter leaves, and it was reading as a hedge
-   growing out of every tray. It sits behind its own tray and pokes up into the
-   gap above it, so the only place you ever see it is between one row and the
-   next. Each tile is exactly the height of the strip and the circle sits on
-   its bottom edge, so the three sizes are solid along the bottom and ragged
-   along the top, which is the shape of a frill. */
-.buy::before {
-    content: ''; position: absolute; z-index: -1; left: -4px; right: -4px;
-    top: -9px; height: 14px; pointer-events: none;
-    background:
-        radial-gradient(circle at 50% 100%, #1b3f23 11px, transparent 11.5px)
-            0 0/22px 14px repeat-x,
-        radial-gradient(circle at 50% 100%, #27592e 8.5px, transparent 9px)
-            8px 0/17px 14px repeat-x,
-        radial-gradient(circle at 50% 100%, #35763b 6px, transparent 6.5px)
-            4px 0/12px 14px repeat-x;
-}
+
 .buy .pr { display: block; font-family: var(--font-display); font-size: 17px;
            color: #f6f1e6; line-height: 1.05; letter-spacing: .01em; }
 .buy .pr i { font-style: normal; font-size: .52em; letter-spacing: 0;
@@ -774,7 +807,7 @@ body.waiting #hud { display: none; }
 /* What it has on now: a gold edge round the tray and a tick in the corner.
    There was a gold strip along the bottom of it as well, which was one more
    thing saying the same thing as the tick above it. */
-.buy.worn { box-shadow: 0 3px 0 rgba(0,0,0,.5), 0 0 0 2.5px var(--gold),
+.buy.worn { box-shadow: 0 2px 7px rgba(5,16,8,.6), 0 0 0 2.5px var(--gold),
                         inset 0 2px 0 rgba(236,248,255,.13); }
 .buy.worn .tik { box-shadow: 0 4px 7px rgba(0,0,0,.55), inset 0 0 0 1px var(--gold); }
 .buy.worn .tag { color: #8fd6a2; }
@@ -791,7 +824,7 @@ body.waiting #hud { display: none; }
 .buy.trying .tik { background: linear-gradient(180deg, #f0d484, #d8a93c);
                    box-shadow: 0 4px 7px rgba(0,0,0,.55), inset 0 0 0 1px rgba(42,33,24,.5);
                    color: #2a2118; }
-.buy.trying { box-shadow: 0 3px 0 rgba(0,0,0,.5), 0 0 0 2.5px var(--gold),
+.buy.trying { box-shadow: 0 2px 7px rgba(5,16,8,.6), 0 0 0 2.5px var(--gold),
                           inset 0 2px 0 rgba(236,248,255,.13); }
 .buy.trying .pr { color: #2a2118; }
 .buy.trying .tag { color: #2a2118; }
@@ -804,7 +837,8 @@ body.waiting #hud { display: none; }
 .buy.poor .pr { color: rgba(246,241,230,.55); }
 .buy.poor .why { opacity: .4; }
 .buy:active { transform: translateY(2px);
-               box-shadow: 0 1px 0 rgba(0,0,0,.5), inset 0 0 0 1.5px rgba(198,216,224,.17); }
+               box-shadow: 0 1px 3px rgba(5,16,8,.6),
+                           inset 0 0 0 1.5px rgba(206,226,236,.2); }
 
 /* Nothing is bought by tapping a tile. What you tapped comes down here, on
    the dog, with the price on it and two ways out - which is the whole point,
@@ -821,7 +855,16 @@ body.waiting #hud { display: none; }
 @keyframes barIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
 #tryon[hidden] { display: none; }
 #store.trying { padding-bottom: 176px; }
-#tryon canvas { width: 62px; height: auto; flex: none; }
+/* On its own little tray, like it was on the shelf. It used to be drawn
+   straight onto the near-black counter, and a pair of dark glasses on a
+   near-black counter is two dark dots - the one thing you are being asked to
+   look at before you spend the money on it. */
+#tryon canvas {
+    width: 70px; height: auto; flex: none; border-radius: 4px;
+    background: linear-gradient(168deg, #3b4347 0%, #272d30 52%, #1c2123 100%);
+    box-shadow: inset 0 0 0 1.5px rgba(206,226,236,.22),
+                inset 0 2px 0 rgba(236,248,255,.16);
+}
 #tryon .said { flex: 1; min-width: 0; text-align: left; }
 #tryon .nm { display: block; font-family: var(--font-display); font-size: 19px;
              color: var(--cream); line-height: 1.2; }
@@ -1136,6 +1179,12 @@ body.waiting #hud { display: none; }
         <ellipse cx="7" cy="7" rx="2.6" ry="3.1"/>
         <circle cx="3.4" cy="7" r=".9"/><circle cx="10.6" cy="7" r=".9"/>
     </symbol>
+    <!-- A crow at a distance, which is two wings and no bird: the shallow m
+         everybody has drawn in the corner of a landscape since landscapes. -->
+    <symbol id="i-crow" viewBox="0 0 24 10">
+        <path d="M 0 1.5 C 5 1, 9 3.4, 12 6.4 C 15 3.4, 19 1, 24 1.5
+                 C 19 3.4, 15 5.6, 12 9 C 9 5.6, 5 3.4, 0 1.5 Z"/>
+    </symbol>
     <symbol id="i-gear" viewBox="0 0 14 14">
         <path fill-rule="evenodd" d="M 6 .6 H 8 L 8.3 2.4 L 9.6 2.95 L 11.1 1.9 L 12.5 3.3
                  L 11.45 4.8 L 12 6.1 L 13.8 6.4 V 8.4 L 12 8.7 L 11.45 10 L 12.5 11.5
@@ -1271,6 +1320,11 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="card" hidden>
+        <span class="crows" aria-hidden="true">
+            <i style="top:13%;width:26px;--t:17s;--d:0s"><svg><use href="#i-crow"/></svg></i>
+            <i style="top:25%;width:17px;--t:25s;--d:-7s"><svg><use href="#i-crow"/></svg></i>
+            <i style="top:34%;width:21px;--t:21s;--d:-13s"><svg><use href="#i-crow"/></svg></i>
+        </span>
         <canvas id="butcher" width="330" height="300"></canvas>
         <div class="inner">
             <div id="ribbon">WEEK&rsquo;S TAKINGS</div>
@@ -1290,7 +1344,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v105';
+const APP_VERSION = 'v106';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -6882,16 +6936,30 @@ function drawWorn(g, item, circle) {
     if (circle) { paint(g, .46); return; }
     scratch.width = TILE_W; scratch.height = TILE_H;
     const t = scratch.getContext('2d');
-    paint(t, .62);
-    const d = t.getImageData(0, 0, TILE_W, TILE_H).data;
-    let x0 = TILE_W, y0 = TILE_H, x1 = -1, y1 = -1;
-    for (let y = 0; y < TILE_H; y++) for (let x = 0; x < TILE_W; x++)
-        if (d[(y * TILE_W + x) * 4 + 3] > 8) {
-            if (x < x0) x0 = x; if (x > x1) x1 = x;
-            if (y < y0) y0 = y; if (y > y1) y1 = y;
-        }
-    if (x1 < 0) return;                                  // nothing on it at all
-    g.drawImage(scratch, TILE_W / 2 - (x0 + x1) / 2, TILE_H / 2 - (y0 + y1) / 2);
+    const box = k => {
+        t.clearRect(0, 0, TILE_W, TILE_H);
+        paint(t, k);
+        const d = t.getImageData(0, 0, TILE_W, TILE_H).data;
+        let x0 = TILE_W, y0 = TILE_H, x1 = -1, y1 = -1;
+        for (let y = 0; y < TILE_H; y++) for (let x = 0; x < TILE_W; x++)
+            if (d[(y * TILE_W + x) * 4 + 3] > 8) {
+                if (x < x0) x0 = x; if (x > x1) x1 = x;
+                if (y < y0) y0 = y; if (y > y1) y1 = y;
+            }
+        return x1 < 0 ? null : [x0, y0, x1, y1];
+    };
+    let b = box(.62);
+    if (!b) return;                                      // nothing on it at all
+    /* A pair of round glasses measures twenty pixels across and was being
+       shown at twenty pixels across, on a counter the width of a thumb - two
+       grey dots, and the one thing you are being asked to look at before you
+       spend the money. Whatever it is, it is the only thing down there, so it
+       is drawn at whatever scale fills the space: measured, scaled to fit,
+       measured again, and put in the middle. */
+    const grow = Math.min(TILE_W * .8 / (b[2] - b[0] + 1),
+                          TILE_H * .8 / (b[3] - b[1] + 1), 2.4);
+    if (grow > 1.05) { const big = box(.62 * grow); if (big) b = big; }
+    g.drawImage(scratch, TILE_W / 2 - (b[0] + b[2]) / 2, TILE_H / 2 - (b[1] + b[3]) / 2);
 }
 function paintStore() {
     deal();
