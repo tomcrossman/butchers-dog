@@ -14,6 +14,12 @@ The other two are ink on squared paper. This one is a butcher's window:
 bottle-green glazed tiles, a brass rail across the top with the string hanging
 off it, gold signwriting on dark plates, and a ticket for a scorecard.
 
+The tiles came up a shade. They were dark enough that a black cat walking along
+the bottom of the window - the whole point of which is that you look at it -
+was a cat-shaped piece of the wall, and the darker dogs went the same way.
+Everything in front of them is lighter than they are, so a wall nearly as dark
+as the things standing on it is a wall doing the opposite of its job.
+
 There is no outline on anything. A sausage with a line drawn round it is a
 cartoon of a sausage; this one is three flat shapes - the body, a band of light
 down one side and a band of shade down the other - which is how the thing is
@@ -382,7 +388,7 @@ Reg holding the takings up on a receipt that said *served by AI Reg*.
 steaks on it wrapped to a second row and shoved its money out of line with the
 day beside it, which on a receipt is the one thing that must never happen.
 
-It is a counter ticket now: the black plastic plaque with the white keyline
+It is a counter ticket now: the black plaque with the white keyline
 that is propped on a wire spike in front of everything in the window, a little
 pig on it, the day's verdict in small caps along the top, what was sold in the
 small print under the rule, and the money set as big as the ticket will take
@@ -543,36 +549,43 @@ twenty: one link off the bottom of the string, about halfway through the day,
 cut at the quality of somebody who has done it a hundred times and is not
 trying to impress. He is a spare pair of hands, not a better player than you.
 
-**Everything on these shelves is a counter ticket.** Every tile is a thing
-with a price on it, which is exactly what a counter ticket is for - so they
-are the black plaque with the white keyline that the day's takings come up
-on, with the thing drawn on it and the price written the way a price is
-written on a card: pounds the size of the ticket, the pence up in the corner,
-and no pence at all when there are none, because nobody writes £190.00 on a
-card. The keyline goes under the drawing rather than over it, so it still
-shows through everywhere the item is not, which is what a line ruled on a card
-does. The one you have on has a gold keyline and a tick; the one on the
-counter being tried goes gold side out. The tabs and the board on the wall are
-the same ticket.
+**The shop is a display counter**, and a display counter is a specific thing
+rather than a mood: black enamel trays packed edge to edge in a lit chiller, a
+frill of curly kale laid in under the meat, and a little black ticket propped
+on the front of each one. It took three goes to get there. Green panels with
+gold edges on a green tiled wall were the same thing twice - the shelves and
+the wall behind them made of the same material, and nothing for the eye to
+catch on. Black tickets were right about the typography and wrong about the
+place: a ticket on a wall is a ticket on a wall, and you are stood at a
+counter. A cream label with a dark window in it was right about the card and
+wrong about everything round it.
 
-They were green panels with gold edges on a green tiled wall, which is the
-flat-sheet problem again: the shelves and the wall behind them were made of
-the same thing and there was nothing for the eye to catch on.
+So the screen is the case you are looking into. Cold steel, lit from the top,
+with the glass catching the light across one corner, and everything in it
+darker than it is so the trays sit *in* it rather than on it. Each tile is a
+**tray**: black enamel with a steel lip along the top edge, squarer than a card
+because a tray is squarer than a card, and the thing lies in it. The tray being
+black is what makes the goods readable, which is also why real ones are black -
+a knife in this game is a white blade and the sawdust is pale flecks, and both
+of them vanish on anything lighter.
 
-**And the shop is made of the counter.** Tickets on a green tiled wall are
-tickets on a wall, which is right for the window and wrong for this: you are
-stood at the counter spending the till, so the screen is the counter - the
-same mahogany as the bottom half of the shopfront, planked at the quarters the
-way the counter front is, so the two screens join up rather than introducing a
-sixth material. The tiles stay in the back room, which is a back room.
+Over the front of each tray, a **ticket**: a little black card knocked a degree
+or two off square the way one stuck in on a wire always is, carrying the price
+written the way a price is written on a card - pounds the size of the card, the
+pence up in the corner, and no pence at all when there are none, because nobody
+writes £190.00 on a card. And behind the ticket, the tops of a **frill of curly
+kale**, which is the one thing in every butcher's window in England that nobody
+can explain and everybody expects. Three sizes at three heights so its edge is
+ragged rather than a row of identical scallops, and only the tops of it showing:
+any more and it stops being a garnish and becomes a hedge.
 
-Four others were tried on paper and none of them is this: plain charcoal,
-which makes the tickets float and loses the only thing this game has, which is
-that everything is somewhere; an end-grain butcher's block, which is a grid
-behind a grid; scrubbed white marble - the counter top rather than its front -
-which gives the black tickets the most contrast there is and turns a phone
-into a lightbulb at nine at night; and brown paper off the roll, which has the
-same problem and is a better wrapping than a background.
+They are packed to a five-pixel gap. A counter with air round everything in it
+is a counter at the end of a Saturday.
+
+The one you have on has a gold edge round the tray and a tick in the corner;
+the one taken out and put on the counter has its ticket gold side out. The
+board on the wall is the same black ticket. The back room keeps the tiles,
+because a back room is a back room.
 
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
@@ -848,6 +861,16 @@ told you there are two.
 
 What that comes to, played out: nothing in an ordinary first week, three in a
 flawless one, four by week five, nine by week twenty and twenty by week sixty.
+
+**The board is in shelves, like the shop.** Thirty-six rows in one column is a
+list you scroll past; the same thirty-six under eight headings - on the knife,
+after hours, in the till, the shopping, the dog, time served, nobody's
+business, and the lot - is a board you can find your way around, and the
+heading tells you what sort of thing you are looking at before you have read
+the row. Each one carries its own count, because a heading that only names a
+thing is a heading and one that counts it is a reason to come back to that
+shelf. How far down the whole board you are sits over the top of them, as a
+figure and nothing else: the tab above it already says which board this is.
 
 The board shows the unwon ones and what they want, because a locked row that
 will not say what it is is a thing to look up rather than a thing to go and do.

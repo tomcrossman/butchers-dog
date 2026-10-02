@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<meta name="theme-color" content="#1c4a39">
+<meta name="theme-color" content="#235c46">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Butcher's Dog">
 <meta name="mobile-web-app-capable" content="yes">
@@ -28,10 +28,10 @@
    drawn and nothing like how a cartoon is.
    ============================================================ */
 :root {
-    --tile:    #1c4a39;
-    --tile-lo: #17402f;
-    --grout:   #12362a;
-    --shade:   #143d2f;
+    --tile:    #235c46;
+    --tile-lo: #1d523d;
+    --grout:   #174636;
+    --shade:   #1a4c3b;
     --cream:   #f3e9d6;
     --cream-d: #d9cbb0;
     --gold:    #dcab3e;
@@ -62,7 +62,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
         radial-gradient(120% 100% at 50% 50%, transparent 46%, rgba(0,0,0,.40) 100%),
         repeating-linear-gradient(0deg, var(--grout) 0 2.5px, transparent 2.5px 48px),
         repeating-linear-gradient(90deg, var(--grout) 0 2.5px, transparent 2.5px 60px),
-        linear-gradient(180deg, #235c47 0%, var(--tile) 42%, #163d2f 100%);
+        linear-gradient(180deg, #2b7156 0%, var(--tile) 42%, #1c4e3c 100%);
 }
 #pad { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
@@ -468,7 +468,7 @@ body.waiting #hud { display: none; }
         radial-gradient(120% 80% at 50% 30%, rgba(255,255,255,.06) 0%, transparent 60%),
         repeating-linear-gradient(0deg, var(--grout) 0 2.5px, transparent 2.5px 48px),
         repeating-linear-gradient(90deg, var(--grout) 0 2.5px, transparent 2.5px 60px),
-        linear-gradient(180deg, #1c4a39 0%, #16402f 60%, #102b21 100%);
+        linear-gradient(180deg, #235c46 0%, #1c523e 60%, #15392c 100%);
     animation: introIn .3s ease-out both;
 }
 /* The shop is the one of these that is not the back room: you are stood at
@@ -478,14 +478,24 @@ body.waiting #hud { display: none; }
    the shopfront, so the two screens join up instead of introducing a sixth
    material. The planks are a quarter of the width apart, which is the same
    division the counter front uses. */
+/* The shop is the display counter, and a display counter is a specific thing:
+   black enamel trays packed edge to edge in a lit chiller, a frill of curly
+   kale between them, and a little black ticket on a spike stuck in the front
+   of each one. Not a shelf of panels - a case you are looking into.
+
+   The case itself is cold steel, lit from the top, with the glass in front of
+   it catching the light across the top corner. Everything in it is darker than
+   it is, so the trays sit in it rather than on it. */
 #store {
     background:
-        repeating-linear-gradient(90deg, rgba(0,0,0,.22) 0 2px, transparent 2px 25%),
-        repeating-linear-gradient(0deg, rgba(255,232,196,.022) 0 1px, transparent 1px 7px),
-        radial-gradient(130% 70% at 50% 0%, rgba(255,232,196,.13) 0%, transparent 62%),
-        linear-gradient(180deg, #5c3c23 0%, #3f2817 46%, #2a1a0f 100%);
+        linear-gradient(104deg, transparent 38%, rgba(226,244,255,.05) 44%,
+                        rgba(226,244,255,.015) 50%, transparent 56%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 1px, transparent 1px 4px),
+        radial-gradient(120% 52% at 50% 0%, rgba(214,238,250,.16) 0%, transparent 64%),
+        linear-gradient(180deg, #31383c 0%, #222a2e 34%, #141a1d 100%);
 }
-#store .shut { background: linear-gradient(180deg, #553820, #33200f); }
+#store .shut { background: linear-gradient(180deg, #3d464b, #222a2e);
+               border-color: rgba(206,222,230,.5); color: #e8f0f4; }
 #setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden],
 #minipick[hidden] { display: none; }
 #settings, #confirm, #minipick { justify-content: center; }
@@ -552,12 +562,13 @@ body.waiting #hud { display: none; }
     align-self: stretch; width: auto; margin: 0 -18px;   /* out past the gutters */
     display: flex; flex-direction: column; align-items: center;
     padding: 5px 0 7px;
-    background: linear-gradient(180deg, #4e331d, #382313);
+    background: linear-gradient(180deg, #3f484d, #272f33);
+    box-shadow: inset 0 2px 0 rgba(236,248,255,.12);
 }
 #stock-head::after {                                  /* it casts onto the shelves */
     content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 16px;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(14,8,4,.55), rgba(14,8,4,0));
+    background: linear-gradient(180deg, rgba(6,10,12,.6), rgba(6,10,12,0));
 }
 #stock-head .who { font-family: var(--font-display); font-size: 19px; color: var(--cream);
                    line-height: 1; margin-top: 1px; }
@@ -594,11 +605,13 @@ body.waiting #hud { display: none; }
 .nudge:active { transform: translateY(1px); }
 #stock { width: 100%; max-width: 330px; margin: 8px 0 4px; }
 .shelf { margin-bottom: 10px; }
+.shelf { margin-bottom: 10px; }
 .shelf h3 {
-    margin: 0 0 5px; display: flex; justify-content: space-between; align-items: baseline;
+    margin: 0 0 6px; display: flex; justify-content: space-between; align-items: baseline;
     gap: 10px; font-size: 10px; font-weight: 900; letter-spacing: .16em;
     text-transform: uppercase; color: var(--gold); opacity: .75; text-align: left;
 }
+#store .shelf h3 { color: #dbe8ee; opacity: .62; }
 .shelf h3 em { font-style: normal; letter-spacing: .1em; opacity: .62; flex: none; }
 /* How far down the board you are, over the top of the eight shelves it is
    split into. */
@@ -609,7 +622,9 @@ body.waiting #hud { display: none; }
 /* A shop tells you what a thing looks like, not what it is called: every
    item is drawn on the dog's own head in its own little window, so a rack of
    seventeen hats reads at a glance instead of being seventeen words. */
-.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+/* Packed edge to edge, the way a case is loaded. A counter with air round
+   everything in it is a counter at the end of a Saturday. */
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
 /* The board. One a line, because a rosette with no words on it is a coloured
    disc, and the words are the whole point of the unwon ones. */
 .pins { display: flex; flex-direction: column; gap: 5px; }
@@ -636,7 +651,7 @@ body.waiting #hud { display: none; }
 .tabs { display: flex; gap: 6px; width: 100%; max-width: 330px; margin: 9px 0 0; }
 .tabs button {
     position: relative; flex: 1; cursor: pointer; padding: 10px 4px 9px;
-    background: linear-gradient(180deg, #1d1a16, #0f0d0b);
+    background: linear-gradient(180deg, #1b1f22, #0d1113);
     border: none; border-radius: 6px; color: #f6f1e6;
     box-shadow: 0 3px 0 rgba(0,0,0,.42);
     font-family: var(--font); font-weight: 900; font-size: 11px;
@@ -659,17 +674,22 @@ body.waiting #hud { display: none; }
    flat-sheet problem again: the shelves and the wall behind them were made of
    the same thing and the eye had nothing to catch on. The wall stays green,
    because a butcher's shop has a green tiled wall. What is on it does not. */
-.buy .why { font-size: 10px; font-weight: 700; line-height: 1.34; opacity: .62;
-            padding: 2px 4px 0; }
+/* A tray. Black enamel with a steel lip catching the light off the top of the
+   case, squarer than a card because a tray is squarer than a card, and the
+   thing lies in it. */
 .buy {
     position: relative;
-    display: flex; flex-direction: column; align-items: center; gap: 1px;
-    padding: 5px 5px 7px; cursor: pointer; overflow: hidden;
-    background: linear-gradient(180deg, #faf7f0, #eae3d4);
-    border: none; border-radius: 7px; color: #26211c;
-    box-shadow: 0 3px 0 rgba(0,0,0,.42);
+    display: flex; flex-direction: column; align-items: stretch;
+    padding: 0 0 7px; cursor: pointer;
+    background: linear-gradient(168deg, #262a2c 0%, #141617 52%, #0b0c0d 100%);
+    border: none; border-radius: 5px; color: #f6f1e6;
+    box-shadow: 0 3px 0 rgba(0,0,0,.5),
+                inset 0 0 0 1.5px rgba(198,216,224,.17),
+                inset 0 2px 0 rgba(236,248,255,.13);
     font-family: var(--font); font-weight: 700; font-size: 13px;
 }
+.buy .why { display: block; font-size: 10px; font-weight: 700; line-height: 1.32;
+            opacity: .62; padding: 1px 2px 0; }
 /* The hairline inside the edge, which is the thing that makes it a ticket.
    It goes under the contents rather than over them - what is drawn on a tile
    is drawn on a transparent canvas, so the line still shows through
@@ -679,39 +699,74 @@ body.waiting #hud { display: none; }
     border: 1.5px solid rgba(246,241,230,.42); border-radius: 4px;
 }
 .pin > * { position: relative; z-index: 1; }
-/* The window the item sits in. Everything in this shop was drawn to be looked
-   at against a dark background - a knife is a white blade and the sawdust is
-   pale flecks - so the picture keeps its dark and the card round it goes
-   light, which is a meat tray with a label on it and is where this started. */
-.buy canvas { width: 100%; height: auto; display: block; border-radius: 4px;
-              background: linear-gradient(180deg, #221e19, #110f0d); }
-.buy .pr { font-family: var(--font-display); font-size: 18px; color: #26211c;
-           line-height: 1.05; letter-spacing: .01em; margin-top: 2px; }
+/* The thing itself, lying in the tray. It is drawn on a transparent canvas and
+   everything in this shop was drawn to be looked at against a dark background -
+   a knife is a white blade, the sawdust is pale flecks - so the tray being
+   black is what makes the goods readable, which is also why real ones are. */
+.buy canvas { width: 100%; height: auto; display: block; }
+/* And the ticket on the front of it: a little black card, knocked a degree or
+   two off square the way one stuck in on a wire always is, with a frill of
+   curly kale poking out from behind it. */
+.buy .tik {
+    position: relative; z-index: 2; display: block;
+    margin: -11px 5px 0; padding: 5px 5px 6px; text-align: center;
+    background: linear-gradient(180deg, #1b1917, #0a0908);
+    border-radius: 3px; transform: rotate(-1.4deg);
+    box-shadow: 0 4px 7px rgba(0,0,0,.55), inset 0 0 0 1px rgba(246,241,230,.34);
+}
+.buy:nth-child(2n) .tik { transform: rotate(1.3deg); }
+/* Curly kale, which is what is actually under the meat in a real one. Just
+   the tops of it showing over the back of the ticket: any more and it stops
+   being a garnish and becomes a hedge. Three sizes at three heights so the
+   edge of it is ragged rather than a row of identical scallops. */
+.buy .tik::before {
+    content: ''; position: absolute; z-index: -1; left: 8px; right: 8px;
+    top: -11px; height: 16px;
+    /* Each tile is exactly the height of the strip and the circle sits on its
+       bottom edge, so the three of them are solid along the bottom and ragged
+       along the top, which is the shape of a frill. */
+    background:
+        radial-gradient(circle at 50% 100%, #1b3f23 13px, transparent 13.5px)
+            0 0/26px 16px repeat-x,
+        radial-gradient(circle at 50% 100%, #27592e 10px, transparent 10.5px)
+            9px 0/20px 16px repeat-x,
+        radial-gradient(circle at 50% 100%, #35763b 7px, transparent 7.5px)
+            5px 0/14px 16px repeat-x;
+}
+.buy .pr { display: block; font-family: var(--font-display); font-size: 17px;
+           color: #f6f1e6; line-height: 1.05; letter-spacing: .01em; }
 .buy .pr i { font-style: normal; font-size: .52em; letter-spacing: 0;
              position: relative; top: -.86em; margin-left: .06em; }
-.buy .tag { font-size: 8px; font-weight: 900; letter-spacing: .08em;
+.buy .tag { display: block; font-size: 8px; font-weight: 900; letter-spacing: .08em;
             text-transform: uppercase; line-height: 1.5; }
-/* What it has on now: a gold edge all the way round and a tick in the corner.
+/* What it has on now: a gold edge round the tray and a tick in the corner.
    There was a gold strip along the bottom of it as well, which was one more
    thing saying the same thing as the tick above it. */
-.buy.worn { box-shadow: 0 3px 0 rgba(0,0,0,.42), 0 0 0 2.5px var(--gold);
-            background: linear-gradient(180deg, #fff8e4, #f2e7c6); }
-.buy.worn .tag { color: #1f7a3f; }
+.buy.worn { box-shadow: 0 3px 0 rgba(0,0,0,.5), 0 0 0 2.5px var(--gold),
+                        inset 0 2px 0 rgba(236,248,255,.13); }
+.buy.worn .tik { box-shadow: 0 4px 7px rgba(0,0,0,.55), inset 0 0 0 1px var(--gold); }
+.buy.worn .tag { color: #8fd6a2; }
 .buy .tick {
-    position: absolute; z-index: 2; top: 9px; right: 9px; width: 16px; height: 16px;
+    position: absolute; z-index: 3; top: 7px; right: 7px; width: 16px; height: 16px;
     border-radius: 50%; background: #3fa564; color: #0d2b1d;
     box-shadow: 0 0 0 1.5px rgba(13,43,29,.45);
     font-size: 10px; font-weight: 900; line-height: 15px; text-align: center;
 }
-.buy.got .tag { color: #26211c; opacity: .55; }
+.buy.got .tag { color: #f6f1e6; opacity: .6; }
 /* Trying something on is not owning it, so it does not look like owning it:
-   the card goes gold side out, the way a thing on the counter does. */
-.buy.trying { background: linear-gradient(180deg, #f0d484, #d8a93c); color: #2a2118; }
+   the ticket on the front goes gold side out, the way a thing taken out and
+   put on the counter does. */
+.buy.trying .tik { background: linear-gradient(180deg, #f0d484, #d8a93c);
+                   box-shadow: 0 4px 7px rgba(0,0,0,.55), inset 0 0 0 1px rgba(42,33,24,.5);
+                   color: #2a2118; }
+.buy.trying { box-shadow: 0 3px 0 rgba(0,0,0,.5), 0 0 0 2.5px var(--gold),
+                          inset 0 2px 0 rgba(236,248,255,.13); }
 .buy.trying .pr { color: #2a2118; }
 .buy.trying .tag { color: #2a2118; }
-.buy.trying .why { color: #2a2118; opacity: .78; }
+.buy.trying .why { opacity: .8; }
 .buy.poor { opacity: .45; }
-.buy:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.42); }
+.buy:active { transform: translateY(2px);
+               box-shadow: 0 1px 0 rgba(0,0,0,.5), inset 0 0 0 1.5px rgba(198,216,224,.17); }
 
 /* Nothing is bought by tapping a tile. What you tapped comes down here, on
    the dog, with the price on it and two ways out - which is the whole point,
@@ -763,7 +818,7 @@ body.waiting #hud { display: none; }
         radial-gradient(120% 100% at 50% 50%, transparent 40%, rgba(0,0,0,.55) 100%),
         repeating-linear-gradient(0deg, var(--grout) 0 2.5px, transparent 2.5px 48px),
         repeating-linear-gradient(90deg, var(--grout) 0 2.5px, transparent 2.5px 60px),
-        linear-gradient(180deg, #1c4a39 0%, #16402f 60%, #102b21 100%);
+        linear-gradient(180deg, #235c46 0%, #1c523e 60%, #15392c 100%);
     animation: introIn .34s ease-out both;
 }
 #card[hidden] { display: none; }
@@ -1189,7 +1244,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v101';
+const APP_VERSION = 'v102';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -6812,15 +6867,20 @@ function paintStore() {
                       : canAfford ? 'buy' : 'buy poor';
             // the tick in the corner already says it is on the dog; a word
             // under it as well is the same thing said twice
+            /* The tick is pinned to the corner of the tray, so it is not
+               inside the ticket - a transformed box is the containing block
+               for anything positioned inside it, and it ended up stuck to the
+               ticket instead of to the tray. */
+            const tick = on ? `<span class="tick">&#10003;</span>` : '';
             const tag = trying ? `<span class="tag">Trying</span>`
-                      : on ? `<span class="tick">&#10003;</span>` +
-                             `<span class="tag">${shopUp ? 'On' : '&nbsp;'}</span>`
+                      : on ? `<span class="tag">${shopUp ? 'On' : '&nbsp;'}</span>`
                       // owning a hat needs no word on it: no price is the word
                       : got ? `<span class="tag">${shopUp ? 'Off' : '&nbsp;'}</span>`
                       : `<span class="pr">${ticket0(i.price)}</span>`;
             const why = i.why ? `<span class="why">${i.why}</span>` : '';
             return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
-                   `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>${tag}${why}</button>`;
+                   `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>${tick}` +
+                   `<span class="tik">${tag}${why}</span></button>`;
         }).join('');
         return `<div class="shelf"><h3>${label}</h3>` +
                `<div class="tiles">${tiles}</div></div>`;
@@ -6844,7 +6904,8 @@ function paintWall() {
                `</span></div>`;
     };
     document.getElementById('stock').innerHTML =
-        `<div class="tot">On the wall &middot; ${save.got.length} of ${ROSETTES.length}</div>` +
+        /* The tab above it already says which board this is. */
+        `<div class="tot">${save.got.length} of ${ROSETTES.length}</div>` +
         WALL.map(sh => {
             /* How many of each shelf, because a heading that only names a
                thing is a heading and one that counts it is a reason to go
@@ -7029,7 +7090,7 @@ function doWipe() {
    else. */
 const themeMeta = document.querySelector('meta[name="theme-color"]');
 const theme = c => { if (themeMeta && themeMeta.content !== c) themeMeta.content = c; };
-const FASCIA = '#241a16', TILE = '#1c4a39';
+const FASCIA = '#241a16', TILE = '#235c46';
 
 function showShop() {
     theme(FASCIA);
@@ -7305,10 +7366,10 @@ function drawRoom(g) {
        different material now, and a see-through canvas would have put that
        material behind the tiles as well. */
     const wall = g.createLinearGradient(0, 0, 0, 400);
-    wall.addColorStop(0, '#235c47'); wall.addColorStop(.42, '#1c4a39');
-    wall.addColorStop(1, '#163d2f');
+    wall.addColorStop(0, '#2b7156'); wall.addColorStop(.42, '#235c46');
+    wall.addColorStop(1, '#1c4e3c');
     g.fillStyle = wall; g.fillRect(0, 0, 340, 400);
-    g.fillStyle = '#12362a';                             // and the grout between them
+    g.fillStyle = '#174636';                             // and the grout between them
     for (let y = 0; y < 400; y += 42) g.fillRect(0, y, 340, 2.2);
     for (let x = 0; x < 340; x += 52) g.fillRect(x, 0, 2.2, 400);
     const wash = g.createLinearGradient(0, 96, 0, 300);  // the daylight off the street
