@@ -746,13 +746,11 @@ body.waiting #hud { display: none; }
 }
 .row {
     position: relative;
-    display: flex; align-items: center; gap: 8px; padding: 9px 15px;
+    display: flex; align-items: center; gap: 8px; padding: 10px 15px;
 }
-/* The hairline runs between the lines, not into the gold rule either side. */
-.row + .row::before {
-    content: ''; position: absolute; left: 13px; right: 13px; top: 0; height: 1px;
-    background: rgba(220,171,62,.17);
-}
+/* And nothing between them. The hairlines were the last of the ruling: the
+   rule round the plate already says where the plate ends, and four lines on
+   one plate read as four lines without being fenced off from each other. */
 .row .lab { flex: none; width: 72px; text-align: left; font-size: 11px; font-weight: 900;
             letter-spacing: .1em; text-transform: uppercase; opacity: .55; }
 .row b { flex: 1; font-family: var(--font-display); font-weight: 400; font-size: 17px;
@@ -1457,7 +1455,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v112';
+const APP_VERSION = 'v113';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 

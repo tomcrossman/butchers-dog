@@ -774,9 +774,11 @@ used to be a bordered field with a bordered brass button either side of it,
 inside a bordered panel, which is the look of a form someone has to fill in. A
 signwriter does not outline a plate and then outline everything standing on it.
 So the gold rule is set *inside* the edge of the plate rather than drawn round
-it, the lines between the questions are hairlines that stop short of that rule,
-the name sits in a slot cut into the plate - an inner shadow, no line round it
-- and the arrows are painted straight on in gold. The same plate is the back
+it, there is nothing at all between the questions, the name sits in a slot cut
+into the plate - an inner shadow, no line round it - and the arrows are painted
+straight on in gold. The hairlines between the lines went last: the rule round
+the plate already says where the plate ends, and four lines on one plate read
+as four lines without being fenced off from each other. The same plate is the back
 room's two switches and the reset screen's. The die that rolls you a name is
 drawn as a die now: it was the character for one, and a phone that has not got
 that glyph draws an empty box instead.
