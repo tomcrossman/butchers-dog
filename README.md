@@ -530,6 +530,16 @@ said in one picture. The name under him changes with it - Reg is **AI Reg** for
 as long as it is switched on, and so is the line about who is working this week.
 It does not catch steaks either, and the shelf says so.
 
+**Its head is ninety across and a hundred and eight down.** The man whose head
+it replaces is eighty-two by ninety-six, so it is taller than it is wide, which
+a head is - but it took four goes to get there. Eighty-four by ninety-two was a
+letterbox; sixty-eight by a hundred and twelve was a letterbox stood on its
+end; eighty read as a different body under the apron. The visor, the grille and
+the ears come out with the head every time rather than staying the width they
+were, or widening it only widens the bezel. The shelf tile is that same head
+shrunk, not a second drawing of it, so it has never been wrong in one place and
+right in the other.
+
 **Dog insurance** is the second most expensive thing in the shop and the only
 other one that is not about money. Twelve hundred pounds, and cutting the dog stops being the end
 of it: it is hurt, the day ends there, and it lives. No vet, no bill, no stone,
@@ -575,8 +585,13 @@ a doorway looks like, and never more than half a head into the room. He is
 shorter than the man, stood further back, and drawn behind him, so if he leans
 far enough to reach the apron he is behind it. He loses the hair down the side
 of his face that the clean-shaven butchers have: a dark oval over one cheek on
-a head you are only seeing half of reads as a bruise rather than a
-hairstyle.
+a head you are only seeing half of reads as a bruise rather than a hairstyle.
+
+**And his stripe is lighter.** He wears the shop's apron, and the shop's apron
+on two people stood next to each other is one person drawn twice - so his is
+the shop's own colour taken two fifths of the way to white, hat band included,
+which is a new lad's apron beside one that has been through the wash a hundred
+times. It is the only colour arithmetic in the game.
 
 **The shop is a display counter**, and a display counter is a specific thing
 rather than a mood: black enamel trays packed edge to edge in a lit chiller, a
@@ -857,10 +872,17 @@ saved. It is one object under one key.
 
 **Wiping the shop is a goodbye.** Say yes to it and he waves - a proper wave,
 the arm right over and back twice a second, not the idle swing - while the
-whole window pulls away from you, the door shuts across it with a crack of
-light down the middle, and that fades into the setup screen with the sign on
-the wall. Four years of a shop ending with the screen simply being a different
-screen was the one thing in here that happened for nothing.
+whole window pulls away from you into the dark, the door shuts across it with
+a crack of light down the middle, and that fades into the setup screen with
+the sign on the wall. Four years of a shop ending with the screen simply being
+a different screen was the one thing in here that happened for nothing.
+
+**And there is nothing behind it.** Shrinking the window uncovered the tiled
+wall you play against, which is the inside of the shop you are stepping out of
+- so the shop had a shop behind it. The dark is an outset shadow on the
+shrinking thing itself rather than a layer underneath it: it fills everything
+outside the window and it is scaled by the same transform, so it arrives
+exactly as the gap does and never has to be timed against it.
 
 **Out the back is behind a door, not a gear.** The way into the back room is
 the bottom left corner of the shopfront, and the icon on it is a door stood

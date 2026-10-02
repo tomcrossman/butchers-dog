@@ -628,7 +628,14 @@ body.leaving { background: #0b0908; }
    the wall you play against behind it is stepping back into the same room. */
 body.leaving #pad { opacity: 0; transition: opacity .5s ease-out; }
 body.leaving #hud { display: none; }
+/* And nothing behind it. Shrinking the window to a quarter of the screen
+   uncovered the tiled wall you play against, which is the inside of the shop
+   you are stepping out of - so the shop had a shop behind it. The dark is an
+   outset shadow on the shrinking thing itself rather than a layer underneath:
+   it fills everything outside the window, it is scaled by the same transform,
+   so it arrives exactly as the gap does and never has to be timed. */
 #intro.goodbye { pointer-events: none; transform-origin: 50% 36%;
+                 box-shadow: 0 0 0 400vmax #0b0908;
                  animation: steppingBack 2.3s cubic-bezier(.45, 0, .2, 1) both; }
 @keyframes steppingBack {
     0%, 20%  { transform: scale(1); }
@@ -1752,7 +1759,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v133';
+const APP_VERSION = 'v134';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -7813,6 +7820,11 @@ function drawKnife(ctx, x, y, ang, k, K) {
    The head sits high enough to leave room under whatever is on the lip for a
    mouth, which is the whole difference between the two of them. The neck is
    drawn before the coat, or it paints over its own collar. */
+/* A hex nudged toward white, which is the only colour arithmetic in here. */
+const paler = (hex, k = .4) => {
+    const n = parseInt(hex.slice(1), 16), up = c => Math.round(c + (255 - c) * k);
+    return `rgb(${up(n >> 16 & 255)},${up(n >> 8 & 255)},${up(n & 255)})`;
+};
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null,
                                    winded = false, bot = false, young = false,
                                    wave = 0, arms = null } = {}) {
@@ -7820,8 +7832,12 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     /* The apprentice is the lad. Whoever is behind the counter this week has a
        moustache or a beard half the time, and a seventeen-year-old on his
        first Saturday has neither - so he borrows the face and loses the hair
-       on it. */
-    if (young) B = { ...B, face: 'none' };
+       on it. He borrows the shop's apron too, and the same apron on two
+       people stood next to each other is one person drawn twice: his stripe
+       is the shop's colour taken two fifths of the way to white, which is a
+       new lad's apron against one that has been through the wash a hundred
+       times. */
+    if (young) B = { ...B, face: 'none', apron: paler(B.apron) };
     ctx.save();
     ctx.translate(cx, cy);
     ctx.scale(k, k);
@@ -8019,24 +8035,26 @@ function botHead(g) {
        is sixty-eight across and a hundred and twelve down, and the visor and
        the grille came in with it rather than staying the width they were. */
     /* The man whose head this replaces is eighty-two across and ninety-six
-       down. This is eighty across and a hundred and ten down - taller than it
-       is wide, which a head is, and not so much narrower than his that it
-       reads as a different body underneath. Sixty-eight was a letterbox stood
-       on its end. */
-    blob('#4a515a', () => { g.roundRect(-15, -84, 30, 34, 4); });
-    blob('#9aa0a8', () => { g.roundRect(-40, -172, 80, 110, 20); });    // the head
-    blob('#7b818a', () => { g.roundRect(-40, -172, 80, 14, [20, 20, 2, 2]); });
-    blob('#2e343c', () => { g.roundRect(-32, -144, 64, 35, 14); });     // the visor
+       down. This is ninety across and a hundred and eight down: still taller
+       than it is wide, which a head is, but no longer narrower than the
+       shoulders it is bolted to - at eighty it read as a different body
+       underneath, and at sixty-eight it was a letterbox stood on its end.
+       Everything on it came out with it rather than staying the width it
+       was, or widening the head only widens the bezel. */
+    blob('#4a515a', () => { g.roundRect(-16, -84, 32, 34, 4); });
+    blob('#9aa0a8', () => { g.roundRect(-45, -170, 90, 108, 22); });    // the head
+    blob('#7b818a', () => { g.roundRect(-45, -170, 90, 14, [22, 22, 2, 2]); });
+    blob('#2e343c', () => { g.roundRect(-36, -143, 72, 35, 15); });     // the visor
     for (const sx of [-1, 1])                                          // the lamps
-        blob('#7fe0a8', () => g.ellipse(sx * 14.5, -127, 7.4, 8.4, 0, 0, Math.PI * 2));
+        blob('#7fe0a8', () => g.ellipse(sx * 16.5, -126, 7.8, 8.6, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1])
-        blob('#d8fbe8', () => g.ellipse(sx * 14.5 - 2.4, -130, 2.5, 2.9, 0, 0, Math.PI * 2));
-    blob('#6c727a', () => { g.roundRect(-22, -100, 44, 15, 5); });      // the grille
-    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 8.4 - 1.5, -100, 3, 15); });
-    blob('#c3c8cf', () => { g.roundRect(-2.5, -196, 5, 28, 2); });      // the aerial
-    blob('#7fe0a8', () => g.arc(0, -200, 5.5, 0, Math.PI * 2));
+        blob('#d8fbe8', () => g.ellipse(sx * 16.5 - 2.6, -129, 2.6, 3, 0, 0, Math.PI * 2));
+    blob('#6c727a', () => { g.roundRect(-25, -100, 50, 15, 5); });      // the grille
+    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 9.6 - 1.6, -100, 3.2, 15); });
+    blob('#c3c8cf', () => { g.roundRect(-2.5, -194, 5, 28, 2); });      // the aerial
+    blob('#7fe0a8', () => g.arc(0, -198, 5.5, 0, Math.PI * 2));
     for (const sx of [-1, 1])                                          // and the ears
-        blob('#6c727a', () => { g.roundRect(sx * 40 - (sx > 0 ? 0 : 7), -138, 7, 25, 3); });
+        blob('#6c727a', () => { g.roundRect(sx * 45 - (sx > 0 ? 0 : 7), -137, 7, 25, 3); });
 }
 
 /* ---- showing you how ----------------------------------------------------
