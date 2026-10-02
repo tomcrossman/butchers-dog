@@ -815,6 +815,11 @@ is not a title screen. The caps are a share of the screen rather than of the
 window, so they are a share of what is actually left after the notch and the
 home bar.
 
+There are seventy-four names for a dog and fifty-two for a shop. The dog's are
+short, hard and shoutable across a shop floor - nothing with three syllables in
+it - and the shop's are obliged by long tradition to be a pun, the worse the
+better.
+
 You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the sign, with a die to roll if
 you cannot think of one, and **Start your shop** under them, which is what the
@@ -912,11 +917,29 @@ number every time, so even something waking up on a timer finds that no time
 has passed. Phones only: a laptop in landscape is not a phone on its side.
 
 **The two of them breathe.** Nobody stands still for a quarter of an hour, and
-the shopfront is a screen you sit on: he shifts his weight on his boots and she
-has a look about every seven seconds or so, a tilt of the head one way and
-back. It is the same pose the pat uses, so a pat lands on top of it rather than
-fighting it, and the whole thing redraws at about a third of the screen's rate
-because a breath does not need sixty frames a second.
+the shopfront is a screen you sit on. He breathes, shifts his weight from one
+boot to the other, bounces on his heels every five seconds, and the arm with
+the knife in it has a longer, lazier swing of its own on its own shoulder - a
+man holding a knife over his head for an hour does not hold it still. The pivot
+is his boots, so a couple of degrees at the ankle is half an inch at the hat,
+which is the amount you actually notice: a degree of lean and two pixels of bob
+was a man holding his breath. The dog has a look about every seven seconds or
+so, a tilt of the head one way and back, and **shuts its eyes when you pat
+it** - opening them again in the last fifth of it to see whether there is any
+more coming. It is the same pose the pat uses, so a pat lands on top of the
+idle rather than fighting it, and the whole thing redraws at about a third of
+the screen's rate because a breath does not need sixty frames a second.
+
+**The shop opens like a shop.** Pressing the way in builds the shopfront behind
+the wall first, then rolls the wall away upward with the bottom rail of a
+shutter on the leading edge of it. The sign and the form drop out of it in the
+first fifth of a second so the thing going up is a wall rather than a wall with
+furniture stuck to it.
+
+**A name too long for its slot scrolls.** It waits a beat at each end, it only
+runs while that screen is up, and it stops dead the moment the cursor goes in
+the box, because a field that moves while you are typing in it is a field you
+cannot type in.
 
 **Out the back is a back room.** The same brickwork the front of the building
 is made of, one bulb over the door and nothing on the walls, with the version

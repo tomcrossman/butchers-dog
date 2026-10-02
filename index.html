@@ -767,6 +767,20 @@ body.waiting #hud { display: none; }
     88% { transform: translateY(-3px) rotate(-.7deg); }
     93% { transform: translateY(0) rotate(.3deg); }
 }
+/* And it goes up like a shutter, because that is how a shop opens. The sign
+   and the form drop out of it first and quickly, then the whole wall rolls
+   away upward with the bottom rail of the shutter on the leading edge of it,
+   and the shop is already stood there behind. */
+#setup.lifting { pointer-events: none;
+                 animation: shutterUp .78s cubic-bezier(.55, 0, .25, 1) .12s forwards; }
+#setup.lifting > * { animation: shutterGo .22s ease-in forwards; }
+#setup.lifting::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 15px;
+    z-index: 2; background: linear-gradient(180deg, #8e867b 0%, #5c554c 55%, #2e2a25 100%);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .55);
+}
+@keyframes shutterGo { to { opacity: 0; transform: translateY(16px) scale(.97); } }
+@keyframes shutterUp { to { transform: translateY(-101%); } }
 #setup .row input { background: rgba(0,0,0,.34); }
 #preview { margin-top: 2px; }
 #setup .btn { margin-top: 12px; }
@@ -969,7 +983,7 @@ body.waiting #hud { display: none; }
 .pin.up .n { color: #4a3514; text-shadow: none; }
 .pin.up .w { opacity: .72; color: #4a3514; text-shadow: none; }
 /* Two rooms, and the tabs are the door between them. */
-.tabs { display: flex; gap: 6px; width: 100%; max-width: 330px; margin: 9px 0 0; }
+.tabs { display: flex; gap: 10px; width: 100%; max-width: 330px; margin: 9px 0 0; }
 .tabs button {
     position: relative; flex: 1; cursor: pointer; padding: 10px 4px 9px;
     background: linear-gradient(180deg, #1d1a16, #0d0b09);
@@ -1669,7 +1683,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v129';
+const APP_VERSION = 'v130';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -5991,9 +6005,20 @@ const TIERS = [
       chin: 46, snout: [28, 20, 16], eyes: [18, -13, 5], brow: .6, tongue: 1, look: 'up',
       cheeks: '#c4322a' },
 ]];
+/* Names a dog in a butcher's window would actually answer to: short, hard
+   and shoutable across a shop floor. Nothing with three syllables in it. */
 const DOG_NAMES = ['Alfie', 'Nipper', 'Winston', 'Duke', 'Bruno', 'Goliath', 'Bess',
                    'Tyke', 'Rex', 'Pip', 'Nell', 'Rolo', 'Hector', 'Barney', 'Dot',
-                   'Milo', 'Sable', 'Gyp', 'Ruby', 'Bronson'];
+                   'Milo', 'Sable', 'Gyp', 'Ruby', 'Bronson',
+                   'Chops', 'Banger', 'Scraps', 'Trotter', 'Brisket', 'Rissole',
+                   'Pickle', 'Gravy', 'Suet', 'Tripe', 'Dripping', 'Crackling',
+                   'Mutton', 'Shanks', 'Knuckle', 'Offal', 'Lardy', 'Beefy',
+                   'Stan', 'Vera', 'Arthur', 'Doris', 'Clive', 'Mavis', 'Norman',
+                   'Enid', 'Reg', 'Flo', 'Sid', 'Ethel', 'Bert', 'Gladys',
+                   'Bramble', 'Thistle', 'Tuppence', 'Biscuit', 'Treacle',
+                   'Marmite', 'Custard', 'Pudding', 'Rhubarb', 'Pickles',
+                   'Tank', 'Bruiser', 'Digger', 'Scrapper', 'Chancer', 'Rocket',
+                   'Turbo', 'Tiny', 'Lumpy', 'Smudge', 'Patch', 'Socks'];
 
 /* ---- the week -----------------------------------------------------------
    Six days, one delivery a day, and the string longer and the dog bigger
@@ -6044,11 +6069,24 @@ const BUTCHERS = [
 ];
 /* The name over the door. A butcher's shop is obliged by long tradition to be
    called something like one of these, but you can call yours what you like. */
+/* A butcher's shop is obliged by long tradition to be called something like
+   this, and the worse the pun the longer the shop has been there. */
 const SHOPS = ['A Cut Above', 'Beef Encounter', 'Meat Expectations', 'Bangers & Cash',
                'The Merchant of Venison', 'Best of the Wurst', 'Fillet of Soul',
                'Cleaver Girl', 'Nice to Meat You', 'Much Ado About Mutton',
                'The Chop Shop', 'Sir Loin of Beef', 'Prime Suspect', 'Rack & Ruin',
-               'Meat & Greet', 'Chop Chop', 'The Rump Room', 'Lord of the Wings'];
+               'Meat & Greet', 'Chop Chop', 'The Rump Room', 'Lord of the Wings',
+               'The Prime Minister', 'Grillin\u2019 Me Softly', 'Meat the Parents',
+               'Chop to It', 'The Full Mounty', 'Steaks on a Plane',
+               'Lamb of God', 'The Loin King', 'Hamageddon', 'Pulp Friction',
+               'Meat Loaf', 'Silence of the Lambs', 'A Fistful of Dollars',
+               'Shoulder to Cry On', 'The Butcher\u2019s Apron', 'Well Hung',
+               'Chuck Steak', 'The Rib Tickler', 'Flank You Very Much',
+               'Mince Over Matter', 'Here for the Bacon', 'Pork Chop Express',
+               'The Great Shank', 'Loin Before Beauty', 'Cut & Run',
+               'Offal Lot of Meat', 'Something to Chew On', 'The Last Supper',
+               'Gammon Style', 'Rare & Well Done', 'The Meating Place',
+               'Brisket to the Wind', 'Haggis & Sons', 'Two Sheds Butchers'];
 
 /* ---- the shop ------------------------------------------------------------
    What the week's takings are for. Knives first, because they are cheap and
@@ -6910,6 +6948,7 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
        game wearing the shopping was the one in the window. */
     if (kit === undefined) kit = cast ? cast.kit : null;
     const o = pose.open, sq = pose.squash || 0, st = pose.stare || 0;
+    const shut = pose.shut || 0;          // being made a fuss of, eyes closed
     // how it feels about the week, which is the opposite of how he feels
     const glum = pose.mood === 'glum', gone = pose.mood === 'gone';
     ctx.save();
@@ -7020,7 +7059,19 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     }
     // eyes, or what a cartoon puts there instead when it is all over
     for (const sx of [-1, 1]) {
-        if (gone) {
+        if (shut > .5 && !gone) {
+            /* Being scratched behind the ear. An eye drawn shut is not a
+               smaller dot, it is a line with a curve in it going the other way
+               from a sad one - and the lashes of the lid show at the ends. */
+            const w = B.eyes[2] * 1.9;
+            ctx.strokeStyle = B.iris || '#201814';
+            ctx.lineWidth = 3.6; ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(sx * B.eyes[0] - w, B.eyes[1] + 1);
+            ctx.quadraticCurveTo(sx * B.eyes[0], B.eyes[1] - w * .9,
+                                 sx * B.eyes[0] + w, B.eyes[1] + 1);
+            ctx.stroke();
+        } else if (gone) {
             const r = B.eyes[2] * 1.5;
             ctx.strokeStyle = '#201814'; ctx.lineWidth = 3.4; ctx.lineCap = 'round';
             ctx.beginPath();
@@ -7351,7 +7402,8 @@ function drawKnife(ctx, x, y, ang, k, K) {
    mouth, which is the whole difference between the two of them. The neck is
    drawn before the coat, or it paints over its own collar. */
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null,
-                                   winded = false, bot = false, young = false } = {}) {
+                                   winded = false, bot = false, young = false,
+                                   wave = 0 } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
     /* The apprentice is the lad. Whoever is behind the counter this week has a
        moustache or a beard half the time, and a seventeen-year-old on his
@@ -7369,6 +7421,11 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
 
     for (const sx of [-1, 1]) {
         const raised = up && sx > 0;
+        /* The raised arm swings on its own shoulder. Everything in it - the
+           sleeve, the fist and whatever is in the fist - is drawn inside this
+           one transform, so the knife goes where the arm goes. */
+        ctx.save();
+        if (raised && wave) { ctx.translate(40, -44); ctx.rotate(wave); ctx.translate(-40, 44); }
         blob(COAT_D, () => {
             ctx.moveTo(sx * 40, -44);
             if (raised) {
@@ -7408,6 +7465,7 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
             blob('#6f9c60', () => ctx.ellipse(3, -18, 5, 6, 0, 0, Math.PI * 2));
             ctx.restore();
         }
+        ctx.restore();
     }
     blob(SKIN_D, () => { ctx.rect(-13, -76, 26, 30); });   // the neck, under the collar
     blob(COAT, () => {
@@ -7537,20 +7595,24 @@ function botHead(g) {
     /* Taller than it is wide, the way a head is. It was eighty-four across
        and ninety-two down with a visor through the middle of it, which from
        the shop floor is a letterbox. */
-    blob('#4a515a', () => { g.roundRect(-15, -82, 30, 32, 4); });
-    blob('#9aa0a8', () => { g.roundRect(-38, -168, 76, 104, 20); });    // the head
-    blob('#7b818a', () => { g.roundRect(-38, -168, 76, 14, [20, 20, 2, 2]); });
-    blob('#2e343c', () => { g.roundRect(-30, -140, 60, 36, 14); });     // the visor
+    /* Taller than it is wide, which a head is and a letterbox is not. The man
+       whose head this replaces is eighty-two across and ninety-six down; this
+       is sixty-eight across and a hundred and twelve down, and the visor and
+       the grille came in with it rather than staying the width they were. */
+    blob('#4a515a', () => { g.roundRect(-14, -84, 28, 34, 4); });
+    blob('#9aa0a8', () => { g.roundRect(-34, -174, 68, 112, 18); });    // the head
+    blob('#7b818a', () => { g.roundRect(-34, -174, 68, 13, [18, 18, 2, 2]); });
+    blob('#2e343c', () => { g.roundRect(-27, -146, 54, 34, 13); });     // the visor
     for (const sx of [-1, 1])                                          // the lamps
-        blob('#7fe0a8', () => g.ellipse(sx * 14, -122, 7.5, 8.5, 0, 0, Math.PI * 2));
+        blob('#7fe0a8', () => g.ellipse(sx * 12.5, -129, 7, 8, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1])
-        blob('#d8fbe8', () => g.ellipse(sx * 14 - 2.5, -125, 2.6, 3, 0, 0, Math.PI * 2));
-    blob('#6c727a', () => { g.roundRect(-21, -96, 42, 15, 5); });       // the grille
-    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 8 - 1.5, -96, 3, 15); });
-    blob('#c3c8cf', () => { g.roundRect(-2.5, -192, 5, 28, 2); });      // the aerial
-    blob('#7fe0a8', () => g.arc(0, -196, 5.5, 0, Math.PI * 2));
+        blob('#d8fbe8', () => g.ellipse(sx * 12.5 - 2.3, -132, 2.4, 2.8, 0, 0, Math.PI * 2));
+    blob('#6c727a', () => { g.roundRect(-19, -102, 38, 15, 5); });      // the grille
+    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 7.2 - 1.4, -102, 2.8, 15); });
+    blob('#c3c8cf', () => { g.roundRect(-2.5, -198, 5, 28, 2); });      // the aerial
+    blob('#7fe0a8', () => g.arc(0, -202, 5.5, 0, Math.PI * 2));
     for (const sx of [-1, 1])                                          // and the ears
-        blob('#6c727a', () => { g.roundRect(sx * 38 - (sx > 0 ? 0 : 7), -132, 7, 24, 3); });
+        blob('#6c727a', () => { g.roundRect(sx * 34 - (sx > 0 ? 0 : 6), -140, 6, 24, 3); });
 }
 
 /* ---- showing you how ----------------------------------------------------
@@ -8146,7 +8208,30 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => {
     drawSignBoard();
     if (document.getElementById('shopfront')) drawShopfront();
 });
+/* A name longer than its slot scrolls, so you can read the end of it. It
+   waits a beat at each end, it only runs while that screen is up, and it stops
+   dead the moment you put the cursor in the box - a field that moves while you
+   are typing in it is a field you cannot type in. */
+let marqT0 = 0;
+function marquee() {
+    requestAnimationFrame(marquee);
+    if (setupEl.hidden) return;
+    for (const id of ['in-dog', 'in-shop']) {
+        const el = document.getElementById(id);
+        const over = el.scrollWidth - el.clientWidth;
+        if (over <= 2 || document.activeElement === el) {
+            if (document.activeElement !== el) el.scrollLeft = 0;
+            continue;
+        }
+        const period = 2400 + over * 28;            // a long name takes longer
+        const e = ((now() - marqT0) % (period * 2)) / period;
+        const k = e < 1 ? e : 2 - e;                // down and back
+        const q = Math.min(1, Math.max(0, (k - .2) / .6));
+        el.scrollLeft = over * (q * q * (3 - 2 * q));
+    }
+}
 function openSetup() {
+    marqT0 = now();
     /* The wall this screen is, whenever it comes back - not only at boot. A
        reset went to the setup screen with the shop floor's green still set
        behind the status bar, which is a strip of a room that is not on the
@@ -8193,8 +8278,15 @@ document.getElementById('setup-done').addEventListener('click', () => {
     save.shop = (document.getElementById('in-shop').value || '').trim().slice(0, 26) || pick(SHOPS);
     started = true;
     putSave();
-    setupEl.hidden = true;
+    /* The shop is built behind the shutter before the shutter starts to move,
+       so what comes up is the window rather than an empty frame. */
     showShop();
+    setupEl.classList.add('lifting');
+    rattle();
+    setTimeout(() => {
+        setupEl.hidden = true;
+        setupEl.classList.remove('lifting');
+    }, 940);
 });
 
 /* ---- spending it -------------------------------------------------------- */
@@ -9426,14 +9518,28 @@ function drawShopfront() {
        both of them have grown into it. They stand on the same line at the
        bottom of the canvas and the gap between them is what is left. */
     if (!oofT0) {
-        /* He breathes and shifts his weight, pivoting on his boots. A man
-           stood behind a counter for an hour does both. */
+        /* He breathes, shifts his weight from one boot to the other, and every
+           five seconds or so bounces on his heels - which is what a man stood
+           behind a counter with a knife in his hand and nothing to cut does.
+           A degree of lean and two pixels of bob was a man holding his breath:
+           the pivot is his boots, so a couple of degrees at the ankle is half
+           an inch at the hat, which is the amount you actually notice. */
+        const br = Math.sin(it / 980);                  // the breath
+        const lean = Math.sin(it / 2100);               // and the weight on it
+        const beat = (it / 4600) % 1;
+        const heft = beat < .13 ? Math.sin(beat / .13 * Math.PI) : 0;
+        const foot = BUT_AT[1] + 96 * .88;
         g.save();
-        g.translate(BUT_AT[0], BUT_AT[1] + 96 * .88);
-        g.rotate(Math.sin(it / 2900) * .012);
-        g.translate(-BUT_AT[0], -(BUT_AT[1] + 96 * .88));
-        drawButcher(g, true, { cx: 112, cy: 312 + sway * 1.8, k: .88, holds: 'knife',
-                               bot: running('robot') });
+        g.translate(BUT_AT[0], foot);
+        g.rotate(lean * .062 + heft * .05);
+        g.scale(1 - br * .02, 1 + br * .032 + heft * .045);
+        g.translate(-BUT_AT[0], -foot);
+        /* The arm has a longer, lazier swing than the rest of him, because a
+           man holding a knife over his head for an hour does not hold it
+           still - and it goes up with the bounce. */
+        drawButcher(g, true, { cx: 112 + lean * 5, cy: 312 + br * 5 - heft * 11,
+                               k: .88, holds: 'knife', bot: running('robot'),
+                               wave: Math.sin(it / 1700) * .085 + heft * .13 });
         g.restore();
     } else {
         /* It lands in a tenth of a second and comes back out over the rest,
@@ -9510,7 +9616,10 @@ function drawShopfront() {
         ms = now();
         pose = { open: 0, squash: Math.sin(e * Math.PI * 2.4) * .8 * fade,
                  tilt: Math.sin(e * Math.PI * 4.6) * .14 * fade,
-                 reach: -Math.abs(Math.sin(e * Math.PI * 2.4)) * 5 * fade };
+                 reach: -Math.abs(Math.sin(e * Math.PI * 2.4)) * 5 * fade,
+                 /* Eyes shut for all of it bar the last fifth, which is them
+                    opening again to see whether there is any more of it. */
+                 shut: e < .82 ? 1 : 0 };
     }
     drawDog(g, DOG_AT[0], DOG_AT[1], .96 / cast.dog.k, pose, ms, cast.dog);
     drawCounter(g);                   // in front of the pair of them
@@ -9577,6 +9686,7 @@ draw();
    that is the brick wall the sign hangs on, not the tiles you play against. */
 theme(started ? FASCIA : WALL_RED);
 startIdle();
+marquee();
 if (!started) openSetup();
 </script>
 </body>
