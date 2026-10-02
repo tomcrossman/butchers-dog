@@ -784,12 +784,14 @@ showing between them, because a band that stops halfway reads as a piece that
 has broken off.
 
 The middle is **an oak panel set into the ring**, with the name burnt into it
-and a bone either side of the rule where everybody else puts a pig. All iron
-was tried first and the name had to be welded to a bar to stop it floating,
-with brick showing through behind it - which left the one thing you are meant
-to read sitting on a wall rather than on a sign. The grain runs across the
-panel the way a board is cut, not round it: a disc with rings in it is a tree
-stump.
+as big as the board will take and a pig and the dog stood along the bottom of
+it - the thing being sold, and on this one the thing waiting underneath it,
+which is what every one of these has. There was a rule with two bones on it
+there, and a rule with two bones on it is what it looked like. All iron was
+tried before that, with the name welded to a bar to stop it floating and brick
+showing through behind it, which left the one thing you are meant to read
+sitting on a wall rather than on a sign. The grain runs across the panel the
+way a board is cut, not round it: a disc with rings in it is a tree stump.
 
 The name is in **Staatliches**, bold condensed caps, which is what is actually
 painted on a butcher's: MEATS, FINEST CUTS, BUTCHERSON, PREMIUM QUALITY. A
@@ -867,6 +869,15 @@ and the bell. A shelf whose only sign you have spent two hundred pounds is
 that a word has changed from a price to Purchased is a shelf that has not
 noticed.
 
+**Butcher of the Year goes on the front of the building.** The one rosette
+that wants every other rosette on the wall is the only thing in the game with
+nowhere sensible to be shown off: it hangs on the wall inside with thirty-five
+others, and the one thing a shop would actually do with it is paint it on the
+sign. So the line a butcher's keeps for FAMILY BUTCHER says BUTCHER OF THE
+YEAR instead, in brighter gold, with a star either end of it where the diamond
+was. The week's receipt carries the same line under the same name, so it says
+it too.
+
 **The dog is cut when the blade goes into it, not when it passes over its
 head.** The dog climbs the string, so it is on the string, and so is the
 sausage it is about to take: a circle round where it stands reaches up into the
@@ -887,8 +898,9 @@ them on the setup screen, the shelf tiles and the week's card all got it.
 **Out the back is a back room.** The same brickwork the front of the building
 is made of, one bulb over the door and nothing on the walls, with the version
 screwed to the bottom of it rather than floating under whatever the last thing
-on the screen happens to be, and Reset game directly above it - which is where
-a button that can undo a month goes. It was the same tiled green as the shop floor,
+on the screen happens to be, and Reset game above it with some room between
+them - which is where a button that can undo a month goes, and not so close to
+the version label that the two read as one thing. It was the same tiled green as the shop floor,
 which made the one room in this building that is not for customers look like
 the one room that is; then it was match-boarding, which made the back room a
 different building from the shop. It is the same wall as the setup screen, one

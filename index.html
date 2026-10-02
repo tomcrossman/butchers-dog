@@ -630,7 +630,7 @@ body.waiting #hud { display: none; }
 #settings .ver { position: absolute; z-index: 1; left: 0; right: 0;
                  bottom: calc(14px + env(safe-area-inset-bottom)); margin: 0; }
 #settings .wipe { position: absolute; z-index: 1; left: 0; right: 0;
-                  bottom: calc(36px + env(safe-area-inset-bottom)); margin: 0;
+                  bottom: calc(52px + env(safe-area-inset-bottom)); margin: 0;
                   padding: 8px 0; }
 /* The one screen in the game that can undo a month, so it gets a whole screen
    and says what it will take rather than a red line that asks twice. */
@@ -1588,7 +1588,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v119';
+const APP_VERSION = 'v120';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3062,7 +3062,7 @@ function endWeek() {
        carries - when it was and who served you. */
     document.getElementById('till-head').innerHTML =
         `<span class="sh">${save.shop}</span>` +
-        `<span class="fb">Family Butcher</span>` +
+        `<span class="fb">${won('best') ? 'Butcher of the Year' : 'Family Butcher'}</span>` +
         `<span class="wk"><span>Week ${save.weeks}</span>` +
         `<span>Served by ${running('robot') ? 'AI ' : ''}${cast.butcher.name}</span></span>`;
     const stamp = save.bank * 3 + save.weeks * 131 + money;
@@ -7243,7 +7243,7 @@ function drawSignBoard() {
     g.restore();
 
     /* ---- the oak panel set into the ring ---- */
-    const PR = R - 26;
+    const PR = R - 22;
     g.save();
     g.beginPath(); g.arc(cx, cy, PR, 0, TAU); g.clip();
     const oak = g.createLinearGradient(0, cy - PR, 0, cy + PR);
@@ -7267,10 +7267,10 @@ function drawSignBoard() {
     g.beginPath(); g.arc(cx, cy, PR, 0, TAU);
     g.arc(cx, cy, PR - 7, TAU, 0, true); g.fill();
     g.restore();
-    g.strokeStyle = 'rgba(58,36,14,.5)'; g.lineWidth = 1.6;   // a line burnt inside the edge
-    g.beginPath(); g.arc(cx, cy, PR - 13, 0, TAU); g.stroke();
+    g.strokeStyle = 'rgba(58,36,14,.46)'; g.lineWidth = 1.6;   // a line burnt inside the edge
+    g.beginPath(); g.arc(cx, cy, PR - 8, 0, TAU); g.stroke();
 
-    /* ---- and the name burnt into it ---- */
+    /* ---- the name burnt into it, as big as the board will take ---- */
     g.save();
     g.textAlign = 'center'; g.textBaseline = 'middle';
     const paint = (text, y, size, room) => {
@@ -7280,24 +7280,57 @@ function drawSignBoard() {
         g.translate(cx, cy + y);
         if (w > room) g.scale(room / w, 1);
         g.fillStyle = 'rgba(255,230,190,.26)';          // the edge the iron left
-        g.fillText(text, 0, 1.4);
+        g.fillText(text, 0, 1.5);
         g.fillStyle = '#3d2710';
         g.fillText(text, 0, 0);
         g.restore();
     };
-    paint('BUTCHER\u2019S', -22, 33, (PR - 16) * 2);
-    paint('DOG', 24, 39, (PR - 30) * 2);
-    /* A bone either side of a rule, where everybody else puts a pig. */
-    const bone = (bx, by, k) => {
-        g.save(); g.translate(bx, by); g.scale(k, k);
-        g.beginPath(); g.rect(-5, -1.6, 10, 3.2);
-        g.arc(-5.6, -2.6, 2.5, 0, TAU); g.arc(-5.6, 2.6, 2.5, 0, TAU);
-        g.arc(5.6, -2.6, 2.5, 0, TAU); g.arc(5.6, 2.6, 2.5, 0, TAU);
-        g.fill(); g.restore();
+    paint('BUTCHER\u2019S', -36, 38, 160);
+    paint('DOG', 5, 52, 150);
+
+    /* ---- and the pair of them along the bottom of it, which is what is on
+       every one of these: the thing being sold, and on this one the thing
+       waiting underneath it. A rule with two bones on it was a rule with two
+       bones on it. ---- */
+    const beast = (bx, by, k, flip, kind) => {
+        g.save();
+        g.translate(bx, by); g.scale(k * (flip ? -1 : 1), k); g.translate(-17, -24.4);
+        g.beginPath();
+        if (kind === 'pig') {
+            g.ellipse(14.4, 13.4, 10.6, 7.2, 0, 0, TAU);
+            g.ellipse(24.6, 12, 6.4, 5.8, 0, 0, TAU);
+            g.ellipse(30.4, 13.6, 3, 2.6, 0, 0, TAU);
+            g.moveTo(21.2, 6.6); g.lineTo(27, 4.6); g.lineTo(27.4, 10.4); g.closePath();
+            for (const [x, y, w] of [[6.6, 18, 3.4], [11.6, 18.6, 3.4],
+                                     [17.4, 18.6, 3.4], [21.8, 17.4, 3.4]])
+                g.rect(x, y, w, 24.4 - y);
+            g.fill();
+            g.strokeStyle = g.fillStyle; g.lineWidth = 1.7; g.lineCap = 'round';
+            g.beginPath();                                          // the curly tail
+            g.moveTo(5.6, 9.4);
+            g.bezierCurveTo(1.6, 9.2, 1.4, 4.2, 4.8, 4.2);
+            g.bezierCurveTo(7, 4.2, 7.2, 6.8, 5.4, 6.8);
+            g.stroke();
+        } else {
+            g.ellipse(14, 13.6, 9.8, 6.2, 0, 0, TAU);               // the body
+            g.moveTo(20, 9); g.lineTo(26.5, 5.5); g.lineTo(27.5, 13); g.closePath();
+            g.ellipse(27, 8.4, 4.9, 4.6, 0, 0, TAU);                // the head
+            g.ellipse(31.4, 10.8, 3.4, 2.4, 0, 0, TAU);             // the muzzle
+            g.moveTo(24.4, 4.6); g.lineTo(28.4, 1.4); g.lineTo(29.2, 6.4); g.closePath();
+            for (const [x, y] of [[6.4, 17.6], [11.2, 18.4], [17.6, 18.4], [21.6, 17.2]])
+                g.rect(x, y, 3.3, 24.4 - y);
+            g.fill();
+            g.strokeStyle = g.fillStyle; g.lineWidth = 2.2; g.lineCap = 'round';
+            g.beginPath();                                          // the tail, up
+            g.moveTo(5.2, 11.4);
+            g.bezierCurveTo(1.4, 9.6, 1.2, 3.4, 5.6, 2.2);
+            g.stroke();
+        }
+        g.restore();
     };
     g.fillStyle = '#3d2710';
-    g.fillRect(cx - 22, cy - 1.4, 44, 2.2);
-    bone(cx - 38, cy - .3, .95); bone(cx + 38, cy - .3, .95);
+    beast(cx - 32, cy + 64, 1.02, false, 'pig');
+    beast(cx + 34, cy + 64, 1.02, true, 'dog');
     g.restore();
 }
 function drawPreview(id, w, h, withMan) {
@@ -8294,17 +8327,40 @@ function drawFascia(g, name, apron) {
     g.fillText(name.toUpperCase(), 0, 0);
     g.restore();
     /* And what the trade is, with a rule either side of it the way every one
-       of these has. */
+       of these has - until the year it is not what the trade is any more. A
+       shop that has won the thing says so on the front of the building, in
+       the line a butcher's keeps for FAMILY BUTCHER, with a star either end
+       of it instead of the diamond. There is nowhere else to put it: the
+       rosette is on the wall inside with thirty-five others, and the one
+       thing you would actually do with it is paint it on the sign. */
+    const best = won('best');
     g.font = '900 9px Lato, system-ui, sans-serif';
-    const trade = 'F A M I L Y   B U T C H E R';
-    const tw = g.measureText(trade).width;
-    g.fillStyle = 'rgba(232,193,90,.62)';
-    g.fillText(trade, mid, y0 + 51);
-    g.fillStyle = 'rgba(220,171,62,.45)';
+    const trade = best ? 'B U T C H E R   O F   T H E   Y E A R'
+                       : 'F A M I L Y   B U T C H E R';
+    const bar = 200;                                    // all the rule has room for
+    let tw = g.measureText(trade).width, squeeze = 1;
+    if (tw > bar) { squeeze = bar / tw; tw = bar; }
+    g.fillStyle = best ? 'rgba(246,219,138,.9)' : 'rgba(232,193,90,.62)';
+    g.save(); g.translate(mid, y0 + 51); g.scale(squeeze, 1);
+    g.fillText(trade, 0, 0); g.restore();
+    g.fillStyle = best ? 'rgba(240,206,116,.8)' : 'rgba(220,171,62,.45)';
     for (const sx of [-1, 1]) {
         g.fillRect(mid + sx * (tw / 2 + 8) - (sx < 0 ? 26 : 0), y0 + 50.2, 26, 1.4);
-        g.save(); g.translate(mid + sx * (tw / 2 + 40), y0 + 51); g.rotate(Math.PI / 4);
-        g.fillRect(-2.2, -2.2, 4.4, 4.4); g.restore();
+        g.save(); g.translate(mid + sx * (tw / 2 + 40), y0 + 51);
+        if (best) {
+            /* Five points, and the inner radius a shade under half the outer:
+               any more and it is a flower, any less and it is a caltrop. */
+            g.beginPath();
+            for (let i = 0; i < 10; i++) {
+                const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 2.3 : 5.4;
+                i ? g.lineTo(Math.cos(a) * r, Math.sin(a) * r)
+                  : g.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+            }
+            g.closePath(); g.fill();
+        } else {
+            g.rotate(Math.PI / 4); g.fillRect(-2.2, -2.2, 4.4, 4.4);
+        }
+        g.restore();
     }
 
     // the awning: stripes off the apron behind the counter, scalloped at the bottom
