@@ -137,7 +137,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 /* What the day was made of, in the colour each thing actually is. */
 #ledger .cnt { display: inline-flex; align-items: center; gap: 3px;
                margin-right: 11px; font-weight: 900; font-size: 12px; }
-#ledger .cnt svg { width: 13px; height: 13px; flex: none; }
+#ledger .cnt svg { width: 16px; height: 16px; flex: none; }
 #ledger .cnt.meat  { color: #a8402a; } #ledger .cnt.meat svg  { fill: #c4472e; }
 #ledger .cnt.pud   { color: #4a3330; } #ledger .cnt.pud svg   { fill: #3d2724; }
 #ledger .cnt.steak { color: #8a3f52; } #ledger .cnt.steak svg { fill: #b2566c; }
@@ -157,9 +157,11 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 /* The dog's line is a footnote rather than a row of accounts - there is no
    money in the right-hand column of it - so it runs across the two columns and
    only the number is picked out. */
-#ledger tr.extra.ate td { opacity: .55; }
+#ledger tr.extra.ate td { opacity: .72; }
 #ledger tr.extra.ate td.d, #ledger tr.extra.ate td.m { white-space: nowrap; }
-#ledger tr.extra.ate td.w { opacity: .8; padding-left: 12px; }
+#ledger tr.extra.ate td.m { color: #b03a25; }
+#ledger .cnt.paw { color: #b03a25; } #ledger .cnt.paw svg { fill: #b03a25; }
+#ledger .near { font-size: 10px; font-weight: 700; opacity: .55; font-style: italic; }
 /* A paw and a number, in the colour everything lost in this game is written
    in. It reads down the rows as a column without being given one. */
 #ledger .got { display: inline-flex; align-items: center; gap: 2px;
@@ -714,21 +716,32 @@ body.waiting #hud { display: none; }
         <path d="M 8.6 6.6 H 10.2 V 8 H 8.6 Z"/><path d="M 3.8 9 H 5.4 V 10.4 H 3.8 Z"/>
         <path d="M 6.2 9 H 7.8 V 10.4 H 6.2 Z"/>
     </symbol>
-    <!-- What a day is made of, for the ledger: a link, a steak. The black
-         pudding is the same link in a different colour, because it is. -->
-    <symbol id="i-link" viewBox="0 0 14 14">
-        <rect x="3.3" y=".9" width="7.4" height="12.2" rx="3.7"
-              transform="rotate(20 7 7)"/>
+    <!-- What a day is made of, for the ledger. Three colours of lozenge is
+         three lozenges at thirteen pixels, so they differ as shapes: a link is
+         a slim bent banger, a pudding is the same bend with the fat knocked
+         out of it in four white flecks, and a steak is a wide chop with the
+         eye of the bone through it and the knuckle out of one side. -->
+    <symbol id="i-link" viewBox="0 0 16 16">
+        <path d="M 5.2 1.2 C 7.1 .3 9.3 1.1 10.1 3 L 13.4 9.9
+                 C 14.3 11.8 13.5 14 11.6 14.8 C 9.7 15.7 7.5 14.9 6.7 13
+                 L 3.4 6.1 C 2.5 4.2 3.3 2 5.2 1.2 Z"/>
     </symbol>
-    <!-- A steak is a third lozenge at thirteen pixels unless it has a bone in
-         it, so it has one: the eye knocked out, and the knuckle sticking out
-         of the side where a chop's does. -->
-    <symbol id="i-steak" viewBox="0 0 14 14">
+    <symbol id="i-pud" viewBox="0 0 16 16">
         <path fill-rule="evenodd"
-              d="M 2.6 6.2 C 2.6 2.9, 5.6 1, 8.4 1.5 C 11.7 2.1, 13.2 5.3, 12.3 8.4
-                 C 11.4 11.4, 7.9 13.4, 5.3 12.2 C 3.2 11.2, 2.6 8.6, 2.6 6.2 Z
-                 M 7.6 4.6 A 2 2 0 1 0 7.61 4.6 Z"/>
-        <path d="M 3 4.6 C 1 4.3, .6 6, 1.1 7 C 1.6 8.1, 3 8.1, 3.4 7.6 Z"/>
+              d="M 5.2 1.2 C 7.1 .3 9.3 1.1 10.1 3 L 13.4 9.9
+                 C 14.3 11.8 13.5 14 11.6 14.8 C 9.7 15.7 7.5 14.9 6.7 13
+                 L 3.4 6.1 C 2.5 4.2 3.3 2 5.2 1.2 Z
+                 M 6.6 4 A 1.05 1.05 0 1 0 6.61 4 Z
+                 M 8.5 6.6 A 1.05 1.05 0 1 0 8.51 6.6 Z
+                 M 8.1 9.4 A 1.05 1.05 0 1 0 8.11 9.4 Z
+                 M 10 12.1 A 1.05 1.05 0 1 0 10.01 12.1 Z"/>
+    </symbol>
+    <symbol id="i-steak" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M 6.2 1.4 C 10.6 .4 15 3.2 15.4 7.6 C 15.8 11.8 11.8 15.3 7.6 14.6
+                 C 4.1 14 4.4 11.4 4.6 8.6 C 4.8 5.6 3.7 2.1 6.2 1.4 Z
+                 M 10.1 5.6 A 2.5 2.5 0 1 0 10.11 5.6 Z"/>
+        <path d="M 4.6 4.4 C 1.9 3.6 .3 5.4 1 7.4 C 1.7 9.5 3.9 10 4.9 9.1 Z"/>
     </symbol>
     <!-- The shop till: a sign on top, a keypad knocked out of the body and
          the drawer under it. What the money in this game actually sits in. -->
@@ -890,7 +903,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v85';
+const APP_VERSION = 'v86';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1528,7 +1541,8 @@ function steakStep(dt) {
                the event; the day's tally says `steak gone` twenty seconds
                later, when there is nothing else on the screen to read. */
             steak = null;
-            stole++; dog.keen++; dog.chomp = CHOMP;
+            stole++; stoleWeek++; fedCost += STEAK_PAY;
+            dog.keen++; dog.chomp = CHOMP;
             snarl(); jolt(); settleUp();
             return;
         }
@@ -1768,11 +1782,14 @@ function ruin(p, k, x, y) {
    ============================================================ */
 const dog = { s: 1e5, speed: 0, going: false, chomp: 0, keen: 0, grabX: null };
 let fed = 0;                        // how many it has had off you this week
+// and what that was worth: a link off the rail at an ordinary cut, a steak at
+// a steak, which is as near as anybody can say what you would have got for it
+let fedCost = 0;
 /* What you did to the string yourself this week, and how well, today. Named
    `botched` rather than `spoiled` because the swipe scorer keeps a local
    `spoiled` of its own for the one stroke, and two counters a scroll apart
    with the same name is a bug waiting to be written. */
-let botched = 0, perfectToday = 0;
+let botched = 0, perfectToday = 0, stoleWeek = 0;
 /* Getting one is the only thing the dog ever does, so it is worth the frames.
    It gapes on the way up, snaps at a third of the way through - which is when
    the sausage actually arrives in its mouth and the screen jolts - and then
@@ -1857,6 +1874,7 @@ function dogStep(dt) {
             if (spat) { yuck(); award('pudding'); } else plop(saved);
         } else {
             lost++; fed++; ate++;
+            fedCost += priceOf(72) * (poshLink(k) ? BLANKET_PAY : 1);
             const rp = document.getElementById('roundplate');
             rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
         }
@@ -1952,8 +1970,8 @@ function startRound(n) {
     if (n === 1) {
         toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
         seenBreed();                                   // whoever is at the door
-        fed = 0;                                       // a week starts owing nothing
-        botched = 0;                                   // and having spoiled nothing
+        fed = 0; fedCost = 0;                          // a week starts owing nothing
+        botched = 0; stoleWeek = 0;                    // and having spoiled nothing
         miniTook = null;                               // last week's is spent
     }
     roundT0 = now();
@@ -2093,10 +2111,18 @@ function lastLine() {
                `<td class="m">+ ${money2(miniTook.won)}</td></tr>`;
     const off = fed;                     // off the rail, not the ones you spoiled
     if (!off) return '';                 // a clean week with no hour is not a thing
-    // the count is already down the rows, so this line is only the reason
+    /* The dog's line reads like the day lines above it: what it had, in the
+       same pictures, and what that came to in the same column as the money.
+       In red and with a minus on it, because it is the one number on this card
+       that went the other way. The sentence only turns up when you were within
+       one or two of the hour, which is the only time it is worth saying. */
     return `<tr class="extra ate"><td class="d">The dog</td>` +
-           `<td class="w">A week it gets none buys an hour after closing</td>` +
-           `<td class="m">${paw(off)}</td></tr>`;
+           `<td class="w">` +
+           `<span class="cnt paw"><svg><use href="#i-paw"/></svg>${off - stoleWeek}</span>` +
+           (stoleWeek ? `<span class="cnt steak"><svg><use href="#i-steak"/></svg>${stoleWeek}</span>` : '') +
+           (off <= 2 ? `<span class="near">so near the hour</span>` : '') +
+           `</td>` +
+           `<td class="m">&minus;${money2(Math.round(fedCost))}</td></tr>`;
 }
 function endWeek() {
     live = false; armed = false; tallying = false; dog.going = false; teaching = false;
@@ -2127,7 +2153,7 @@ function endWeek() {
         `<td class="d">${r.day.short}</td>` +
         `<td class="w">` +
         tally6('meat', 'link', r.sold - (r.puds || 0)) +
-        tally6('pud', 'link', r.puds || 0) +
+        tally6('pud', 'pud', r.puds || 0) +
         tally6('steak', 'steak', r.steaks) +
         `</td>` +
         `<td class="m">${money2(r.took)}</td></tr>`).join('') + lastLine();

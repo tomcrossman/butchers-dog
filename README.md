@@ -266,14 +266,20 @@ are about to be put back on anyway, counting itself up out of a till drawer.
 **The ledger counts in pictures.** "7 sold &middot; 1 steak &middot; dog got 1"
 on every row is a sentence to read six times over; a link, a pudding and a
 steak with a number against each is a thing you take in at a glance, and it is
-what was actually on the rail that day. Each is the colour that thing is - a
-red link, a near-black pudding, a pink steak with the eye of the bone knocked
-out of it, because a steak is a third lozenge at thirteen pixels unless it has
-a bone in it.
+what was actually on the rail that day. They differ **as shapes**, not only in
+colour: three colours of lozenge is three lozenges at this size. A link is a
+slim bent banger; a pudding is the same bend with four white flecks knocked out
+of it, which is how it is drawn on the rail as well; a steak is a wide chop
+with the eye of the bone through it and the knuckle out of one side.
 
-And the dog is on the card once rather than on every line of it: a paw and a
-number at the bottom, against the one sentence that matters, which is that a
-week it gets none buys an hour after closing.
+And the dog's line reads like the day lines above it. A paw and a number for
+what it had off the rail, a steak for any it took out of the air, and in the
+money column what that came to - **in red, with a minus on it**, because it is
+the one number on the card that went the other way. A link is counted at what
+an ordinary cut would have fetched and a steak at a steak, which is as near as
+anybody can say what you would have got for it. The only words left on that row
+turn up when the dog had one or two: *so near the hour*, which is the only time
+it is worth saying.
 
 **The money is banked.** There is no best week and no high score: the week's
 takings go in the till and stay there, and what you did with the money is the
