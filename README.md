@@ -927,6 +927,13 @@ Aye, If you insist, and a dozen more. It changes nothing whatsoever. It is
 saved with everything else, because a man should not have to say how much he
 means it twice.
 
+There is one answer past the end of that list that is not a yes, and it gets
+you a screen of its own: everything drains out of the game - no brick, no gold,
+no green, no shadow worth the name - and there is a **vegan sausage** on it,
+grey-green, extruded, with a face that knows. One line under it and one way
+out. The setting is not kept: you are put back on Yes the moment you look away
+from it, because it is not a setting, it is a warning.
+
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
 Reset game - which takes a whole screen to say what it is about to take rather
 than a red line that asks twice - and a debug switch that hands you the whole shop for free and turns every switchable
@@ -1289,6 +1296,14 @@ twenty-two pounds, about a third on top of a perfect week.
   is the one being had. The back of its head is built out of the same numbers
   the front of it is, off whichever breed is stood there: a generic lump at the
   bottom of the screen is not your dog. His arm only goes up when it worked.
+
+  An egg with a paler egg inside it is a bald head. What makes it the back of a
+  dog is the three things you would actually see: ears standing where that
+  breed's ears stand, the scruff of the neck running down into the shoulders,
+  and the parting down the middle of the skull. The light on the crown is the
+  same skull again, smaller and lifted, clipped to itself - so its lower edge
+  follows the curve of the head instead of being an oval floating on top of
+  one.
 
   He has two hands and they are always on the counter. They were conjured onto
   whichever pair of covers was moving and taken away again after every swap,

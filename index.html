@@ -545,7 +545,7 @@ body.waiting #hud { display: none; }
                text-shadow: 0 4px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
-#setup, #store, #settings, #confirm, #minipick {
+#setup, #store, #settings, #confirm, #minipick, #vegan {
     position: absolute; inset: 0; z-index: 13; overflow-y: auto;
     /* safe centring: a shelf taller than the window centres its own top off
        the screen, and no amount of scrolling gets it back */
@@ -603,8 +603,23 @@ body.waiting #hud { display: none; }
     background: linear-gradient(180deg, #553820, #33200f);
 }
 #setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden],
-#minipick[hidden] { display: none; }
-#settings, #confirm, #minipick { justify-content: center; }
+#minipick[hidden], #vegan[hidden] { display: none; }
+#settings, #confirm, #minipick, #vegan { justify-content: center; }
+/* Everything drains out of it. No brick, no gold, no green, no shadow worth
+   the name: the one screen in here with nothing on it worth having, and one
+   way out. */
+#vegan {
+    z-index: 16; background: linear-gradient(180deg, #d4d3cd, #b9b8b1);
+    color: #4e5249; animation: introIn .45s ease-out both;
+}
+#vegan canvas { width: min(74vw, 260px); height: auto; }
+#vegan h2 { margin: 4px 0 8px; font-family: var(--font-display); font-weight: 400;
+            font-size: 32px; letter-spacing: .02em; color: #595e53; text-shadow: none; }
+#vegan .note { max-width: 300px; margin: 0 0 22px; font-size: 12px; font-weight: 700;
+               line-height: 1.6; opacity: .7; }
+#vegan .btn { width: 100%; max-width: 280px; margin: 0;
+              background: linear-gradient(180deg, #8d9186, #6e7268);
+              color: #eceae4; border-color: #4a4e45; box-shadow: 0 4px 0 rgba(0,0,0,.2); }
 /* Out the back is out the back: the same brickwork as the front of the
    building, one bulb over the door and nothing on the walls. It was
    match-boarding, which made the back room a different building from the one
@@ -1556,6 +1571,14 @@ body.waiting #hud { display: none; }
         <div class="ver" id="set-ver">v1</div>
     </div>
 
+    <!-- The one answer out the back that is not a yes, and what it gets you. -->
+    <div id="vegan" hidden>
+        <canvas id="veg" width="240" height="200"></canvas>
+        <h2>Vegan sausage</h2>
+        <p class="note">Nobody said anything. The dog left the room.</p>
+        <button class="btn" id="veg-back">Back to the meat</button>
+    </div>
+
     <div id="minipick" hidden>
         <h2>After hours</h2>
         <p class="note">Out the back only. Whatever it pays goes nowhere.</p>
@@ -1596,7 +1619,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v123';
+const APP_VERSION = 'v124';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3572,44 +3595,72 @@ const DOG_ACC = 2700, DOG_MAX = 580, CAT_WALK = 210, CAT_BOLT = 340, CAT_SEES = 
    otherwise shows. Built out of the same numbers the front of it is - the
    skull, the coat and the ears off whichever breed is stood there - because a
    generic lump at the bottom of the screen is not your dog, and this is the
-   one game where your dog is the one being had. */
+   one game where your dog is the one being had.
+
+   An egg with a paler egg inside it is a bald head. What makes it the back of
+   a dog is the three things you would actually see: ears that stand where
+   that breed's ears stand, the scruff of the neck running down into the
+   shoulders, and the parting down the middle of the skull. The light on the
+   crown is the same skull again, smaller and lifted, clipped to itself - so
+   its lower edge follows the curve of the head instead of being an oval
+   floating on top of one. */
 function dogBack(g, x, y, ms) {
     const B = breedFor(), TAU = Math.PI * 2;
-    const k = Math.min(3, W * .56 / (B.skullW * 2.2));
-    const sway = Math.sin(ms / 620) * .035;            // it is watching, not asleep
+    const SW = B.skullW, SH = B.skullH;
+    /* The whole head, with the neck and the shoulders running off the bottom
+       of the window: what you are stood behind is a dog, not the top of one. */
+    const k = Math.min(2.6, W * .46 / (SW * 2.2));
     g.save();
     g.translate(x + Math.sin(ms / 900) * 5, y);
     g.scale(k, k);
-    g.rotate(sway);
-    g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 22; g.shadowOffsetY = -6;
-    g.fillStyle = B.shade;                             // the shoulders
-    g.beginPath(); g.ellipse(0, 52, 86, 58, 0, 0, TAU); g.fill();
+    g.rotate(Math.sin(ms / 620) * .035);                 // it is watching, not asleep
+
+    g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 24; g.shadowOffsetY = -8;
+    g.fillStyle = B.shade;                               // the shoulders
+    g.beginPath(); g.ellipse(0, 90, 76, 52, 0, 0, TAU); g.fill();
     g.shadowColor = 'transparent';
-    g.fillStyle = B.coat;                              // the scruff of the neck
-    g.beginPath(); g.roundRect(-33, -16, 66, 70, 26); g.fill();
-    // the ears, whatever this one has got, seen from behind
-    g.fillStyle = B.earCol;
-    for (const sx of [-1, 1]) {
-        g.save(); g.translate(sx * (B.skullW * .86), -B.skullH * .34);
+    g.fillStyle = B.coat;                                // the scruff of the neck
+    g.beginPath();
+    g.moveTo(-SW * .84, 84);
+    g.bezierCurveTo(-SW * .74, 26, -SW * .62, 8, -SW * .54, -8);
+    g.lineTo(SW * .54, -8);
+    g.bezierCurveTo(SW * .62, 8, SW * .74, 26, SW * .84, 84);
+    g.closePath(); g.fill();
+
+    const ear = (sx, front) => {
+        if ((B.ear === 'prick') === front) return;       // pricked ones go behind
+        g.save();
+        g.fillStyle = B.earCol;
         if (B.ear === 'prick') {
-            g.rotate(sx * .18);
             g.beginPath();
-            g.moveTo(-9, 14); g.lineTo(0, -30); g.lineTo(11, 12);
+            g.moveTo(sx * SW * .44, -SH * .50);
+            g.lineTo(sx * SW * 1.00, -SH * 1.52);
+            g.lineTo(sx * SW * 1.14, -SH * .30);
             g.closePath(); g.fill();
         } else if (B.ear === 'fold') {
-            g.rotate(sx * .3);
-            g.beginPath(); g.ellipse(0, -2, 13, 17, 0, 0, TAU); g.fill();
-        } else {
-            g.rotate(sx * .12);
-            g.beginPath(); g.roundRect(-12, -14, 24, 44, 12); g.fill();
+            g.translate(sx * SW * .94, -SH * .20); g.rotate(sx * .34);
+            g.beginPath(); g.ellipse(0, 0, SW * .40, SH * .50, 0, 0, TAU); g.fill();
+        } else {                                         // and these hang
+            g.translate(sx * SW * .92, SH * .22); g.rotate(sx * .12);
+            g.beginPath();
+            g.roundRect(-SW * .34, -SH * .54, SW * .68, SH * 1.22, SW * .34);
+            g.fill();
         }
         g.restore();
-    }
-    g.fillStyle = B.coat;                              // the skull
-    g.beginPath(); g.ellipse(0, -8, B.skullW * 1.06, B.skullH * .96, 0, 0, TAU); g.fill();
-    g.fillStyle = B.lit;                               // and the light on the top of it
-    g.beginPath(); g.ellipse(0, -B.skullH * .34, B.skullW * .66, B.skullH * .44, 0, 0, TAU);
-    g.fill();
+    };
+    for (const sx of [-1, 1]) ear(sx, false);
+
+    g.fillStyle = B.coat;                                // the skull
+    g.beginPath(); g.ellipse(0, 0, SW * 1.02, SH * .94, 0, 0, TAU); g.fill();
+    g.save();                                            // the light on the crown
+    g.beginPath(); g.ellipse(0, 0, SW * 1.02, SH * .94, 0, 0, TAU); g.clip();
+    g.fillStyle = B.lit;
+    g.beginPath(); g.ellipse(0, -SH * .42, SW * .90, SH * .78, 0, 0, TAU); g.fill();
+    g.restore();
+    g.fillStyle = 'rgba(0,0,0,.1)';                      // the parting down the middle
+    g.beginPath(); g.roundRect(-1.7, -SH * .84, 3.4, SH * 1.5, 1.7); g.fill();
+
+    for (const sx of [-1, 1]) ear(sx, true);
     g.restore();
 }
 /* ---- Find it ------------------------------------------------------------
@@ -3637,7 +3688,9 @@ function shellSet() {
        four hands appearing and disappearing in six places. */
     mini.hands = [{ x: shellRest(0), y: 0, grip: 0 }, { x: shellRest(1), y: 0, grip: 0 }];
 }
-const shellRest = i => W / 2 + (i ? 1 : -1) * Math.min(96, W * .25);
+/* Out past the covers. Resting them at the outer two slots put a hand on top
+   of each of them for the whole game, which is a man holding two basins. */
+const shellRest = i => W / 2 + (i ? 1 : -1) * Math.min(152, W * .40);
 /* Where a cover is this frame. During a swap the two of them are still
    holding their old slots - the swap is only committed when it lands - so
    each one slides to where the other one is and one of the pair goes over
@@ -4902,7 +4955,7 @@ function drawMini(ms) {
         /* And the back of its head, which is the one thing in this game you
            never see otherwise: you are stood behind the dog watching the man
            do it to the dog. */
-        dogBack(ctx, W / 2, H - 26, ms);
+        dogBack(ctx, W / 2, H - 72, ms);
     } else if (mini.id === 'dream') {
         /* What is coming at him, drawn out of the same pot as the rail so a
            black pudding in a dream is still a black pudding. */
@@ -8317,6 +8370,42 @@ const AYE = ['Yes', 'Hell yes', 'Of course', 'Damn right', 'Always', 'Too right'
               'Go on then', 'Obviously', 'Aye', 'Naturally', 'God yes', 'Every time',
               'Oh go on', 'Rather', 'Certainly', 'You know it', 'Why not',
               'Absolutely', 'If you insist', 'Yes please'];
+/* Everything drains out of the game for one screen. No brick, no gold, no
+   green, no shadow worth the name - the drabbest thing the stylesheet has ever
+   been asked for, and one way out of it. */
+function drawVegan() {
+    const c = document.getElementById('veg');
+    if (!c) return;
+    const g = sharp(c, 240, 200), TAU = Math.PI * 2;
+    g.clearRect(0, 0, 240, 200);
+    g.save();
+    g.translate(120, 104); g.rotate(.05);
+    g.fillStyle = 'rgba(80,84,74,.12)';                 // what little shadow it casts
+    g.beginPath(); g.ellipse(0, 34, 70, 9, 0, 0, TAU); g.fill();
+    g.fillStyle = '#9aa08a';                            // the thing itself
+    g.beginPath(); g.roundRect(-80, -26, 160, 52, 26); g.fill();
+    g.fillStyle = '#a9ae99';
+    g.beginPath(); g.roundRect(-62, -18, 92, 14, 7); g.fill();
+    g.fillStyle = '#7e8470';                            // a seam, because it was extruded
+    g.beginPath(); g.roundRect(-80, 7, 160, 4, 2); g.fill();
+    g.fillStyle = '#3f453a';                            // and a face that knows
+    g.beginPath(); g.arc(-22, -5, 4.4, 0, TAU); g.fill();
+    g.beginPath(); g.arc(14, -5, 4.4, 0, TAU); g.fill();
+    g.strokeStyle = '#3f453a'; g.lineWidth = 3.4; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(-18, 15); g.quadraticCurveTo(-4, 6, 10, 15); g.stroke();
+    /* Inner ends up. The other way round is a cross sausage, and it has not
+       got the energy. */
+    g.beginPath(); g.moveTo(-33, -12); g.lineTo(-15, -19); g.stroke();
+    g.beginPath(); g.moveTo(25, -12); g.lineTo(7, -19); g.stroke();
+    g.restore();
+}
+const vegEl = document.getElementById('vegan');
+document.getElementById('veg-back').addEventListener('click', () => {
+    vegEl.hidden = true;
+    theme(WALL_RED);
+    paintSettings();
+    plop(3);
+});
 function paintSettings() {
     // the back room's own door onto the shopfront, open only while debug is
     document.getElementById('to-mini').hidden = !save.debug;
@@ -8346,8 +8435,20 @@ document.querySelectorAll('.nudge[data-flip]').forEach(btn =>
 function flip(what) {
     if (what === 'sound') { toggleSound(); paintSettings(); return; }
     if (what === 'meat') {
-        save.meat = ((save.meat || 0) + 1) % AYE.length;
-        putSave(); paintSettings(); plop(2);
+        const n = ((save.meat || 0) + 1) % (AYE.length + 1);
+        /* The one past the end of the list. It is not kept - you are put back
+           on Yes the moment you look away from it - because it is not a
+           setting, it is a warning. */
+        if (n === AYE.length) {
+            save.meat = 0; putSave();
+            document.getElementById('set-meat').textContent = 'No';
+            theme('#c9c8c2');
+            drawVegan();
+            vegEl.hidden = false;
+            buzz();
+            return;
+        }
+        save.meat = n; putSave(); paintSettings(); plop(2);
         return;
     }
     save.debug = !save.debug;
