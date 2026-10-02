@@ -717,7 +717,7 @@ body.waiting #hud { display: none; }
    with a hairline between one and the next and nothing else. Won is gold and
    full strength, unwon is dim: that is the whole of the difference and it does
    not need a box to make it. */
-.pins { display: flex; flex-direction: column; }
+.pins { display: flex; flex-direction: column; gap: 2px; }
 .pin {
     position: relative;
     display: flex; align-items: center; gap: 9px; text-align: left;
@@ -732,6 +732,16 @@ body.waiting #hud { display: none; }
           text-shadow: 0 1px 3px rgba(5,16,8,.9); }
 .pin .w { display: block; font-size: 10px; font-weight: 700; line-height: 1.35;
           opacity: .38; margin-top: 1px; text-shadow: 0 1px 3px rgba(5,16,8,.9); }
+/* And a gold edge round the ones you have got. The name going gold is the
+   difference when you are reading a row; a box round it is the difference when
+   you are looking at the shelf from the top of the screen, which is what you
+   are actually doing on a board of thirty-six. */
+.pin.up {
+    border: 2px solid rgba(220,171,62,.7); border-radius: 5px;
+    background: rgba(220,171,62,.07);
+    padding: 5px 7px 5px 1px;
+}
+.pin.up + .pin { border-top-color: transparent; }
 .pin.up .n { color: var(--gold); }
 .pin.up .w { opacity: .82; }
 /* Two rooms, and the tabs are the door between them. */
@@ -1336,7 +1346,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v109';
+const APP_VERSION = 'v110';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 

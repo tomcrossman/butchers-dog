@@ -631,9 +631,12 @@ over.
 The board on the wall has no plaque at all. The shelves are things lying on the
 kale with a ticket in front of them, and thirty-six black slabs beside that is a
 different shop again: it is a list written straight on the bed, a hairline
-between one row and the next, gold and full strength for a won one and dim for
-an unwon one. That is the whole of the difference and it does not need a box to
-make it.
+between one row and the next, and dim for one you have not got.
+
+The ones you have got are **boxed in gold** with a wash of it behind them. The
+name going gold is the difference when you are reading a row; a box round it is
+the difference when you are looking at the whole shelf from the top of the
+screen, which is what you are actually doing on a board of thirty-six.
 
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
