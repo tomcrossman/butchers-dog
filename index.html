@@ -544,7 +544,7 @@ body.waiting #hud { display: none; }
                text-shadow: 0 4px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
-#setup, #store, #settings, #confirm, #minipick, #vegan, #turn {
+#setup, #store, #settings, #confirm, #minipick, #vegan, #turn, #code {
     position: absolute; inset: 0; z-index: 13; overflow-y: auto;
     /* safe centring: a shelf taller than the window centres its own top off
        the screen, and no amount of scrolling gets it back */
@@ -602,8 +602,23 @@ body.waiting #hud { display: none; }
     background: linear-gradient(180deg, #553820, #33200f);
 }
 #setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden],
-#minipick[hidden], #vegan[hidden], #turn[hidden] { display: none; }
-#settings, #confirm, #minipick, #vegan, #turn { justify-content: center; }
+#minipick[hidden], #vegan[hidden], #turn[hidden], #code[hidden] { display: none; }
+#settings, #confirm, #minipick, #vegan, #turn, #code { justify-content: center; }
+#code { z-index: 17; gap: 14px; }
+#code input {
+    width: 100%; max-width: 280px; padding: 13px 10px; text-align: center;
+    background: rgba(0,0,0,.34); color: var(--cream); border: 0; border-radius: 3px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.5), inset 0 0 0 1px rgba(220,171,62,.18);
+    font-family: var(--font-display); font-weight: 400; font-size: 26px;
+    letter-spacing: .22em; text-transform: uppercase;
+}
+#code input:focus { outline: none;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.5), inset 0 0 0 1.5px var(--gold); }
+#code .btn { width: 100%; max-width: 280px; margin: 0; }
+#code.wrong input { animation: nope .42s ease-out both; }
+@keyframes nope { 0%, 100% { transform: translateX(0); }
+                  15% { transform: translateX(-9px); } 35% { transform: translateX(8px); }
+                  55% { transform: translateX(-6px); } 78% { transform: translateX(4px); } }
 /* A phone on its side. The shop is a window with a sausage hanging down the
    middle of it, which is a tall thing in a tall frame: on its side there is no
    room above the rail for the string and no room below it for the dog. It
@@ -700,14 +715,17 @@ body.waiting #hud { display: none; }
    Off the corner rather than jammed into it, though: it had no air round it
    at all and read as something that had slipped down there. */
 #to-set {
+    /* Level with the middle of the last button rather than sat on the floor
+       under it. The footer's own gutter is five per cent of the width, so the
+       button's middle is that plus half a button up from the bottom. */
     position: absolute; z-index: 2; left: 14px;
-    bottom: calc(14px + env(safe-area-inset-bottom));
+    bottom: calc(5vw + 4px + env(safe-area-inset-bottom));
     width: 40px; height: 40px; padding: 8px; cursor: pointer; line-height: 0;
     background: none; border: none; opacity: .5;
 }
 #to-set svg { width: 100%; height: 100%; fill: var(--cream); }
 #to-set:active { opacity: .7; }
-#setup h2, #settings h2, #confirm h2, #minipick h2 {
+#setup h2, #settings h2, #confirm h2, #minipick h2, #code h2 {
     margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
     font-size: 35px; letter-spacing: .02em;
     color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.4);
@@ -1615,19 +1633,28 @@ body.waiting #hud { display: none; }
                 <button class="nudge" data-flip="sound"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
                 <b id="set-sound">On</b>
                 <button class="nudge" data-flip="sound"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
-            <div class="row"><span class="lab">Debug</span>
-                <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
-                <b id="set-debug">Off</b>
-                <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
             <div class="row"><span class="lab">Meat</span>
                 <button class="nudge" data-flip="meat"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
                 <b id="set-meat">Yes</b>
                 <button class="nudge" data-flip="meat"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
+            <div class="row"><span class="lab">Debug</span>
+                <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
+                <b id="set-debug">Off</b>
+                <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
         </div>
-        <p class="note" id="debug-note">Debug hands you every upgrade for nothing,
-            so you can switch them on and see what they do.</p>
         <button class="wipe" id="wipe">Reset game</button>
         <div class="ver" id="set-ver">v1</div>
+    </div>
+
+    <!-- Debug is not a setting you turn on, it is a door you know the word
+         for. Turning it off again needs nothing: it is getting in that is
+         guarded, not getting out. -->
+    <div id="code" hidden>
+        <h2>Say the word</h2>
+        <input id="code-in" maxlength="12" autocomplete="off" autocapitalize="characters"
+               spellcheck="false" aria-label="The word">
+        <button class="btn" id="code-go">Go on then</button>
+        <button class="btn ghost" id="code-no">Leave it</button>
     </div>
 
     <!-- A sausage hangs down, and so does the phone. -->
@@ -1683,7 +1710,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v130';
+const APP_VERSION = 'v132';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3681,16 +3708,18 @@ const DOG_ACC = 2700, DOG_MAX = 580, CAT_WALK = 210, CAT_BOLT = 340, CAT_SEES = 
    crown is the same skull again, smaller and lifted, clipped to itself - so
    its lower edge follows the curve of the head instead of being an oval
    floating on top of one. */
-function dogBack(g, x, y, ms) {
+function dogBack(g, x, y, ms, bow = 0) {
     const B = breedFor(), TAU = Math.PI * 2;
     const SW = B.skullW, SH = B.skullH;
     /* The whole head, with the neck and the shoulders running off the bottom
        of the window: what you are stood behind is a dog, not the top of one. */
     const k = Math.min(2.6, W * .46 / (SW * 2.2));
     g.save();
-    g.translate(x + Math.sin(ms / 900) * 5, y);
-    g.scale(k, k);
-    g.rotate(Math.sin(ms / 620) * .035);                 // it is watching, not asleep
+    g.translate(x + Math.sin(ms / 900) * 5 * (1 - bow), y + bow * 30);
+    g.scale(k, k * (1 - bow * .06));
+    /* Watching, not asleep - and when the wrong basin comes up, the head goes
+       down. It is the one thing a dog does that needs no explaining. */
+    g.rotate(Math.sin(ms / 620) * .035 * (1 - bow) + bow * .1);
 
     g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 24; g.shadowOffsetY = -8;
     g.fillStyle = B.shade;                               // the shoulders
@@ -3756,9 +3785,13 @@ const scaleY = () => H * .74;               // the counter it is stood on
 const scaleW = () => Math.min(272, W - 64); // and how wide the dial is
 /* Who is in. Nobody is drawn twice the same: a coat, a hat and a face off the
    same three lists is thirty-odd people, which is a Saturday. */
-const COATS = ['#5a6e8a', '#7a5a4a', '#6a7a58', '#8a6a7a', '#4a5a6a', '#7d6a4a'];
+const COATS = ['#5a6e8a', '#7a5a4a', '#6a7a58', '#8a6a7a', '#4a5a6a', '#7d6a4a',
+               '#9a4a4a', '#3f5f55', '#8a7a45', '#5f4a7a', '#2f4a60', '#a0785a'];
 const SKINS = ['#e5ab7e', '#c98552', '#8a5a3a', '#efc19b', '#6f4428', '#e0b48d'];
-const HATS  = ['#3a3630', '#7a3a3a', '#2e4a5a', 'none', 'none', '#5a4a2e'];
+const HAIRS = ['#2a2018', '#4a3428', '#7a4a2a', '#a8622a', '#d8cfc0', '#8a8a8a',
+               '#1f1712', '#c9a44c'];
+const SCARVES = ['#b8434a', '#3f8f6a', '#4a79b8', '#c9a44c', '#7a5aa8', 'none', 'none'];
+const HAT_KINDS = ['none', 'none', 'none', 'cap', 'bowler', 'beanie', 'scarf', 'bucket'];
 function scalesSet() {
     mini.served = 0; mini.run = 0; mini.puff = []; mini.splat = [];
     mini.cust = null;
@@ -3777,13 +3810,23 @@ function scalesNext() {
         band: Math.max(.13, .26 - n * .016),
         speed: .9 + n * .10,
         at: 0, stopped: false, ok: false, stop0: 0,
-        coat: pick(COATS), skin: pick(SKINS), hat: pick(HATS),
+        /* The sweet spot: a sliver in the middle of the mark worth double.
+           A band you either hit or do not is one decision; a band with a
+           middle to it is a decision about how greedy you are being. */
+        coat: pick(COATS), skin: pick(SKINS), hair: pick(HAIRS),
+        hat: pick(HAT_KINDS), hatCol: pick(HAIRS.concat(COATS)),
+        scarf: pick(SCARVES), specs: Math.random() < .3,
+        beard: Math.random() < .28, wide: .9 + Math.random() * .26,
         lean: Math.random() < .5 ? -1 : 1,
     };
+    mini.cust.bull = mini.cust.band * .28;
 }
 function scalesStep(dt) {
     const c = mini.cust;
-    mini.splat = mini.splat.filter(s => now() - s.t0 < 1700);
+    /* It stays. A mess that is gone before the next one is served is not a
+       mess, it is a flash - you are meant to be looking through the last one
+       while you weigh the next. */
+    mini.splat = mini.splat.filter(s => now() - s.t0 < 3600);
     mini.puff = mini.puff.filter(p => now() - p.t0 < 700);
     if (!c) return;
     if (c.stopped) {
@@ -4221,13 +4264,17 @@ function miniAt(x, y) {
         const c = mini.cust;
         if (!c || c.stopped) return;
         c.stopped = true; c.stop0 = now();
-        c.ok = Math.abs(c.at - c.want) <= c.band / 2;
+        const off = Math.abs(c.at - c.want);
+        c.ok = off <= c.band / 2;
+        c.spot = off <= c.bull / 2;
         if (c.ok) {
             mini.run++;
-            const pay = SCALE_PAY + Math.min(mini.run - 1, SCALE_CAP) * SCALE_RUN;
+            let pay = SCALE_PAY + Math.min(mini.run - 1, SCALE_CAP) * SCALE_RUN;
+            if (c.spot) pay *= 2;                       // dead on the mark
             mini.won += pay;
-            mini.puff.push({ x: W / 2, y: scaleY() - 150, t0: now(), run: mini.run });
-            chink(); if (mini.run > 1) ding();
+            mini.puff.push({ x: W / 2, y: scaleY() - 150, t0: now(),
+                             run: mini.run, spot: c.spot });
+            chink(); if (c.spot) { ding(); fanfare(3); } else if (mini.run > 1) ding();
         } else {
             mini.run = 0;
             /* It comes back at you, and it arrives on the glass rather than on
@@ -4247,10 +4294,12 @@ function miniAt(x, y) {
             for (let i = 0; i < 3; i++) drip.push({
                 x: (Math.random() - .5) * 44, w: 3.5 + Math.random() * 5,
                 len: 16 + Math.random() * 40, at: .2 + Math.random() * .5 });
-            mini.splat.push({ t0: now(), x: 54 + Math.random() * (W - 108),
-                              y: RAIL + 90 + Math.random() * (H - RAIL - 240),
-                              k: .85 + Math.random() * .55, a: Math.random() * 6.28,
-                              pud: Math.random() < .22, blob, fleck, drip });
+            const sp = { t0: now(), x: 54 + Math.random() * (W - 108),
+                         y: RAIL + 90 + Math.random() * (H - RAIL - 240),
+                         k: .85 + Math.random() * .55, a: Math.random() * 6.28,
+                         pud: Math.random() < .22, blob, fleck, drip };
+            mini.splat.push(sp);
+            c.fly = sp;                       // so it can be watched on its way
             splat(); yuck();
         }
         return;
@@ -4621,39 +4670,65 @@ function miniBack(ms) {
             }
         }
     } else if (mini.id === 'scales') {
-        /* Looking out of the shop rather than into it: the window, the street
-           going dark behind it, and the counter you are stood at. It is the
-           only one of them played from where a butcher actually spends the
-           week, which is with his back to the tiles. */
+        /* The shop, from behind the counter. The customer is stood in it, so
+           what is behind them is the rest of the shop rather than the street:
+           the tiled wall, the rail along it with the week's stock hanging off,
+           and the board on the wall that says what things cost. Out of the
+           window was a nicer picture and the wrong room - the shop is where
+           this happens. */
         const ty = scaleY();
-        const out = g.createLinearGradient(0, 0, 0, ty);
-        out.addColorStop(0, '#20304a'); out.addColorStop(1, '#3d4a5e');
-        g.fillStyle = out; g.fillRect(0, 0, W, ty);
-        /* The row opposite, which is what is out of a shop window at six on a
-           winter evening. */
-        g.fillStyle = '#16202e';
-        for (let x = -12, i = 0; x < W + 12; x += 53, i++) {
-            const h = 168 + ((i * 41) % 92);
-            g.fillRect(x, ty - 150 - h, 51, h + 150);
+        const wall = g.createLinearGradient(0, 0, 0, ty);
+        wall.addColorStop(0, '#2d7a5c'); wall.addColorStop(1, '#194836');
+        g.fillStyle = wall; g.fillRect(0, 0, W, ty);
+        g.fillStyle = 'rgba(8,30,20,.26)';                  // the grout
+        for (let x = (W % 54) / 2; x < W; x += 54) g.fillRect(x, 0, 2.5, ty);
+        for (let y = RAIL + 6; y < ty; y += 44) g.fillRect(0, y, W, 2.5);
+
+        /* The rail, and what is hanging off it. Four strings and a ham, which
+           is what is over a butcher's counter and nothing else is. */
+        const ry = RAIL + 128;
+        g.fillStyle = 'rgba(0,0,0,.22)'; g.fillRect(0, ry + 5, W, 7);
+        g.fillStyle = '#9aa0a4'; g.fillRect(0, ry, W, 6);
+        g.fillStyle = '#c3c8cf'; g.fillRect(0, ry, W, 2);
+        for (let i = 0; i < 7; i++) {
+            const hx = (i + .5) * (W / 7), kind = i % 3;
+            g.strokeStyle = '#7f858c'; g.lineWidth = 3; g.lineCap = 'round';
+            g.beginPath(); g.arc(hx, ry + 10, 6, Math.PI * .1, Math.PI * .9); g.stroke();
+            if (kind === 2) {                               // a ham on the hook
+                g.fillStyle = '#a8503a';
+                g.beginPath(); g.ellipse(hx, ry + 42, 15, 25, 0, 0, Math.PI * 2); g.fill();
+                g.fillStyle = '#e8dcc4';
+                g.beginPath(); g.roundRect(hx - 3, ry + 12, 6, 12, 3); g.fill();
+            } else {                                        // or a string of links
+                const n = 3 + kind;
+                for (let j = 0; j < n; j++) {
+                    g.save();
+                    g.translate(hx + Math.sin(j * 1.9 + i) * 4, ry + 22 + j * 15);
+                    g.rotate(Math.sin(j * 2.3 + i) * .3);
+                    g.fillStyle = (i + j) % 4 === 3 ? PUD.body : MEAT.body;
+                    g.beginPath(); g.roundRect(-8, -10, 16, 20, 8); g.fill();
+                    g.restore();
+                }
+            }
         }
-        /* Lit windows, scattered rather than stepped: a modulo on a counter
-           walks them down the screen in a diagonal line, which is the one
-           thing a row of houses does not do. */
-        g.fillStyle = 'rgba(255,222,150,.42)';
-        for (let i = 0; i < 26; i++) {
-            const wx = 6 + rnd(i, 3) * (W - 26), wy = ty - 306 + rnd(i, 4) * 238;
-            g.fillRect(wx | 0, wy | 0, 13, 17);
+        /* And the board, because a butcher writes his prices on one. Down the
+           wall rather than up by the rail: the name of the game is up there. */
+        const by = RAIL + 250;
+        g.fillStyle = 'rgba(0,0,0,.28)';
+        g.fillRect(22, by + 5, 116, 66);
+        g.fillStyle = '#1d1a16';
+        g.fillRect(18, by, 116, 66);
+        g.fillStyle = 'rgba(246,241,230,.26)';
+        g.fillRect(22, by + 4, 108, 2);
+        g.fillStyle = 'rgba(246,241,230,.5)';
+        for (let i = 0; i < 4; i++) {
+            g.fillRect(28, by + 14 + i * 13, 58 - (i % 2) * 16, 3.5);
+            g.fillRect(104, by + 14 + i * 13, 22, 3.5);
         }
-        /* The window itself: the frame, the glass, and the light of the shop
-           lying on it. */
-        g.fillStyle = 'rgba(255,240,206,.07)';
-        g.fillRect(0, 0, W, ty);
-        g.fillStyle = '#3c2a18';                            // the transom
-        g.fillRect(0, ty - 54, W, 10);
-        g.fillStyle = 'rgba(255,255,255,.05)';              // a streak on the glass
-        g.save(); g.translate(W * .18, 0); g.rotate(-.22);
-        g.fillRect(0, -40, 26, H); g.fillRect(40, -40, 11, H);
-        g.restore();
+        const lamp = g.createRadialGradient(W / 2, RAIL + 10, 10, W / 2, RAIL + 10, ty);
+        lamp.addColorStop(0, 'rgba(255,240,196,.2)');
+        lamp.addColorStop(1, 'rgba(255,240,196,0)');
+        g.fillStyle = lamp; g.fillRect(0, 0, W, ty);
         /* And the counter, which is the one in the shop. */
         g.fillStyle = 'rgba(0,0,0,.3)';
         g.fillRect(0, ty - 9, W, 9);
@@ -4825,6 +4900,28 @@ function drawFlier(x, y, ms) {
     }
     g.globalAlpha = 1;
     g.shadowColor = 'rgba(80,40,70,.3)'; g.shadowBlur = 16; g.shadowOffsetY = 8;
+
+    /* Legs, trailing. A man with an apron streaming behind him and nothing
+       under it is a man with a tail, or a ghost. They go in before the apron
+       so it covers the hips, and they kick, because he is asleep and dreaming
+       of flying rather than lying still. */
+    const kick = Math.sin(ms / 230);
+    for (let i = 0; i < 2; i++) {
+        const sgn = i ? -1 : 1, drop = i * 9;
+        const ex = -56 - i * 5, ey = 27 + drop + sgn * kick * 7;
+        g.strokeStyle = i ? '#27313b' : '#2f3a46';         // trousers
+        g.lineWidth = 11 - i * 1.4; g.lineCap = 'round';
+        g.beginPath();
+        g.moveTo(2, 9 + i * 5);
+        g.quadraticCurveTo(-26, 20 + drop + sgn * kick * 4, ex, ey);
+        g.stroke();
+        g.save();                                          // and a boot on the end
+        g.translate(ex - 4, ey + 1);
+        g.rotate(-.22 + sgn * kick * .22);
+        g.fillStyle = i ? '#1d1712' : '#241c16';
+        g.beginPath(); g.roundRect(-14, -6, 20, 12, [6, 3, 3, 6]); g.fill();
+        g.restore();
+    }
 
     /* The apron streaming out behind him, which is the thing that says flying.
        It is one shape with a wave in its back edge, waving on the clock. */
@@ -5113,25 +5210,66 @@ function drawMini(ms) {
             const cx = W / 2 + c.lean * 56, cy = ty - 112;   // cy is the shoulder line
             const paid = c.stopped && c.ok;
             const reach = paid ? Math.min(1, (now() - c.stop0) / 280) : 0;
-            const sq = c.stopped && !c.ok ? 1 : 0;
+            /* Throwing it back. The arm goes back over the shoulder, comes
+               through, and lets go - and the thing it lets go of is on its way
+               before the mess turns up on the glass. */
+            const thr = c.stopped && !c.ok ? Math.min(1.4, (now() - c.stop0) / 420) : 0;
+            const sq = thr > 0 ? 1 : 0;
+            const ease = x => x * x * (3 - 2 * x);
+            let arm = 1.15 - reach * .75;
+            if (thr > 0) {
+                if (thr < .34) arm = 1.15 + (-.75 - 1.15) * ease(thr / .34);
+                else if (thr < .52) arm = -.75 + 2.75 * ease((thr - .34) / .18);
+                else arm = 2.0 - .85 * ease(Math.min(1, (thr - .52) / .6));
+            }
             ctx.save();
             ctx.translate(cx, cy);
-            ctx.fillStyle = c.skin;                          // the arm out for it
+            ctx.rotate(c.lean * (thr < .34 ? -.1 * ease(thr / .34)
+                                           : -.1 + .22 * ease(Math.min(1, (thr - .34) / .25))));
+            ctx.fillStyle = c.skin;                          // the arm
             ctx.save();
-            ctx.translate(-c.lean * 48, 14);
-            ctx.rotate(c.lean * (1.15 - reach * .75));
+            ctx.translate(-c.lean * 48 * c.wide, 14);
+            ctx.rotate(c.lean * arm);
             ctx.beginPath(); ctx.roundRect(-11, 0, 22, 62 + reach * 14, 11); ctx.fill();
             ctx.restore();
             ctx.shadowColor = 'rgba(0,0,0,.3)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 8;
             ctx.fillStyle = c.coat;                          // the coat
-            ctx.beginPath(); ctx.roundRect(-52, 0, 104, 118, [34, 34, 8, 8]); ctx.fill();
+            ctx.beginPath();
+            ctx.roundRect(-52 * c.wide, 0, 104 * c.wide, 118, [34, 34, 8, 8]); ctx.fill();
             ctx.shadowColor = 'transparent';
+            if (c.scarf !== 'none') {                        // and a scarf on it
+                ctx.fillStyle = c.scarf;
+                ctx.beginPath(); ctx.roundRect(-27, -8, 54, 20, 10); ctx.fill();
+                ctx.beginPath();
+                ctx.roundRect(c.lean * 10 - 7, 6, 14, 40, [4, 4, 7, 7]); ctx.fill();
+            }
+            if (c.hat === 'none') {                          // hair, where there is no hat
+                ctx.fillStyle = c.hair;
+                ctx.beginPath();
+                ctx.ellipse(0, -46, 31, 26, 0, Math.PI, Math.PI * 2); ctx.fill();
+                for (const sx of [-1, 1]) {
+                    ctx.beginPath();
+                    ctx.ellipse(sx * 28, -34, 7, 18, sx * .2, 0, Math.PI * 2); ctx.fill();
+                }
+            }
             ctx.fillStyle = c.skin;                          // the head
             ctx.beginPath(); ctx.ellipse(0, -32, 30, 34, 0, 0, Math.PI * 2); ctx.fill();
+            if (c.beard) {                                   // some of them
+                ctx.fillStyle = c.hair;
+                ctx.beginPath(); ctx.ellipse(0, -14, 24, 18, 0, 0, Math.PI); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(0, -22, 13, 6, 0, 0, Math.PI * 2); ctx.fill();
+            }
             ctx.fillStyle = 'rgba(0,0,0,.7)';                // and a face on it
             for (const ex of [-11, 11]) {
                 ctx.beginPath();
                 ctx.ellipse(ex, -36, 3.6, 3.6 - sq * 2.4, 0, 0, Math.PI * 2); ctx.fill();
+            }
+            if (c.specs) {                                   // and glasses, some of them
+                ctx.strokeStyle = 'rgba(32,26,20,.75)'; ctx.lineWidth = 2.4;
+                for (const ex of [-11, 11]) {
+                    ctx.beginPath(); ctx.arc(ex, -36, 9, 0, Math.PI * 2); ctx.stroke();
+                }
+                ctx.beginPath(); ctx.moveTo(-2, -36); ctx.lineTo(2, -36); ctx.stroke();
             }
             ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
             ctx.beginPath();
@@ -5139,12 +5277,46 @@ function drawMini(ms) {
             else if (sq) { ctx.moveTo(-9, -17); ctx.quadraticCurveTo(0, -24, 9, -17); }
             else { ctx.moveTo(-8, -20); ctx.lineTo(8, -20); }
             ctx.stroke();
-            if (c.hat !== 'none') {                          // and a hat, half of them
-                ctx.fillStyle = c.hat;
-                ctx.beginPath(); ctx.roundRect(-30, -76, 60, 28, [13, 13, 3, 3]); ctx.fill();
-                ctx.beginPath(); ctx.roundRect(-39, -52, 78, 8, 4); ctx.fill();
+            ctx.fillStyle = c.hatCol;                        // and whatever is on top
+            if (c.hat === 'cap') {
+                ctx.beginPath(); ctx.ellipse(0, -56, 30, 20, 0, Math.PI, Math.PI * 2); ctx.fill();
+                ctx.beginPath();
+                ctx.roundRect(c.lean > 0 ? -48 : 0, -60, 48, 9, 4); ctx.fill();
+            } else if (c.hat === 'bowler') {
+                ctx.beginPath(); ctx.ellipse(0, -62, 23, 23, 0, Math.PI, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.roundRect(-36, -64, 72, 8, 4); ctx.fill();
+            } else if (c.hat === 'beanie') {
+                ctx.beginPath(); ctx.ellipse(0, -52, 30, 32, 0, Math.PI, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.roundRect(-31, -56, 62, 11, 5); ctx.fill();
+                ctx.beginPath(); ctx.arc(0, -84, 7, 0, Math.PI * 2); ctx.fill();
+            } else if (c.hat === 'scarf') {
+                ctx.beginPath(); ctx.ellipse(0, -44, 32, 30, 0, Math.PI * 1.08, Math.PI * 1.92);
+                ctx.fill();
+                ctx.beginPath(); ctx.roundRect(-10, -30, 20, 26, 8); ctx.fill();
+            } else if (c.hat === 'bucket') {
+                ctx.beginPath(); ctx.ellipse(0, -58, 26, 22, 0, Math.PI, Math.PI * 2); ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(-40, -58); ctx.lineTo(40, -58);
+                ctx.lineTo(28, -46); ctx.lineTo(-28, -46); ctx.closePath(); ctx.fill();
             }
             ctx.restore();
+            /* What they threw, on its way. It is in the air before the mess
+               arrives, so the mess is something that happened rather than
+               something that appeared. */
+            if (c.fly && thr > .46) {
+                const e3 = Math.min(1, (thr - .46) / .34);
+                const hx = cx - c.lean * 48 * c.wide, hy = cy + 72;
+                ctx.save();
+                ctx.translate(hx + (c.fly.x - hx) * e3, hy + (c.fly.y - hy) * e3);
+                ctx.rotate(thr * 11);
+                const gk = .35 + e3 * .85;
+                ctx.scale(gk, gk);
+                ctx.fillStyle = MEAT.body;
+                ctx.beginPath(); ctx.roundRect(-34, -13, 68, 26, 13); ctx.fill();
+                ctx.fillStyle = MEAT.lit;
+                ctx.beginPath(); ctx.roundRect(-25, -9, 42, 8, 4); ctx.fill();
+                ctx.restore();
+            }
         }
 
         /* The scales. A pan with the thing on it, the body under that, and the
@@ -5164,8 +5336,15 @@ function drawMini(ms) {
             ctx.beginPath();
             ctx.roundRect(d0 + dw * (c.want - c.band / 2), -35, dw * c.band, 20, 3);
             ctx.fill();
-            ctx.fillStyle = '#8fd6a2';
-            ctx.fillRect(d0 + dw * c.want - 1, -36, 2, 22);
+            /* And the middle of it, which pays double. A band you either hit
+               or do not is one decision; a band with a middle to it is a
+               decision about how greedy you are being. */
+            ctx.fillStyle = 'rgba(240,212,132,.6)';
+            ctx.beginPath();
+            ctx.roundRect(d0 + dw * (c.want - c.bull / 2), -35, dw * c.bull, 20, 2);
+            ctx.fill();
+            ctx.fillStyle = '#f0d484';
+            ctx.fillRect(d0 + dw * c.want - 1, -37, 2, 24);
         }
         ctx.fillStyle = 'rgba(246,241,230,.16)';              // the graduations
         for (let i = 0; i <= 10; i++) ctx.fillRect(d0 + dw * i / 10 - .6, -20, 1.2, 5);
@@ -5202,24 +5381,25 @@ function drawMini(ms) {
         for (const p of mini.puff) {
             const e2 = (now() - p.t0) / 700;
             ctx.globalAlpha = 1 - e2 * e2;
-            ctx.fillStyle = '#fff3d2';
-            ctx.font = '400 ' + (p.run > 1 ? 26 : 21) +
+            ctx.fillStyle = p.spot ? '#ffeab0' : '#fff3d2';
+            ctx.font = '400 ' + (p.spot ? 30 : p.run > 1 ? 26 : 21) +
                        'px "Staatliches", "Alfa Slab One", Georgia, serif';
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillText(p.run > 1 ? '\u00d7' + p.run : '\u2022', p.x, p.y - e2 * 46);
+            ctx.fillText(p.spot ? 'SPOT ON' : p.run > 1 ? '\u00d7' + p.run : '\u2022',
+                         p.x, p.y - e2 * 46);
             ctx.globalAlpha = 1;
         }
         /* And what is on the glass. It lands a beat after they throw it, and
            it is still there for the one after that. */
         for (const sp of mini.splat) {
             const e2 = (now() - sp.t0) / 1000;
-            if (e2 < .13) continue;
-            const land = Math.min(1, (e2 - .13) / .09);
+            if (e2 < .32) continue;           // it is still in the air
+            const land = Math.min(1, (e2 - .32) / .09);
             ctx.save();
             ctx.translate(sp.x, sp.y);
             ctx.rotate(sp.a);
             ctx.scale(sp.k * (1.5 - land * .5), sp.k * (1.5 - land * .5));
-            ctx.globalAlpha = Math.max(0, 1 - Math.pow(Math.max(0, e2 - .9) / .8, 2)) * .92;
+            ctx.globalAlpha = Math.max(0, 1 - Math.pow(Math.max(0, e2 - 2.3) / 1.2, 2)) * .92;
             const P = sp.pud ? PUD : MEAT;
             ctx.fillStyle = P.body;
             ctx.beginPath();                                  // the mess of it
@@ -5380,7 +5560,9 @@ function drawMini(ms) {
            thirty-eight pounds off the man who was trying to fool it. */
         const bob = mini.right && mini.phase === 'reveal'
                   ? Math.max(0, Math.sin(mini.pt * 11) * 26 * Math.exp(-mini.pt * 1.5)) : 0;
-        dogBack(ctx, W / 2, H - 72 - bob, ms);
+        const sad = mini.phase === 'reveal' && !mini.right
+                  ? Math.min(1, Math.max(0, (mini.pt - .55) / .45)) : 0;
+        dogBack(ctx, W / 2, H - 72 - bob, ms, sad * sad * (3 - 2 * sad));
     } else if (mini.id === 'dream') {
         /* What is coming at him, drawn out of the same pot as the rail so a
            black pudding in a dream is still a black pudding. */
@@ -6004,6 +6186,56 @@ const TIERS = [
       ear: 'prick', earCol: '#3f5c3a', skullW: 36, skullH: 40, jawW: 44, jawY: 18,
       chin: 46, snout: [28, 20, 16], eyes: [18, -13, 5], brow: .6, tongue: 1, look: 'up',
       cheeks: '#c4322a' },
+/* ---- and the two that will not fit through the door ----------------------
+   A Newfoundland is not a big dog, it is a small bear that has been talked
+   into being a dog, and the only way to draw one is to give it the widest
+   skull and the heaviest jaw in here and let it be. Its partner is the other
+   one of those. They are on the end rather than in among the sizes, so that
+   nobody who already has a dog finds a different one stood there. */
+],[
+    { name: 'Newfoundland', k: 1.5, speed: 1.5,
+      /* Broader than it is tall, a muzzle barely a shade off the rest of it,
+         small eyes set wide in a lot of head, and ears that hang forward and
+         close. Nothing about one of these is sharp. */
+      coat: '#2b2522', lit: '#443a33', shade: '#17130f', muzzle: '#332c26',
+      ear: 'drop', earCol: '#1c1715', skullW: 44, skullH: 47, jawW: 66, jawY: 24,
+      chin: 57, snout: [37, 26, 13], eyes: [21, -14, 4.6], brow: .18, tongue: 1,
+      look: 'soft' },
+    { name: 'St Bernard', k: 1.46, speed: 1.44,
+      coat: '#e8ddc6', lit: '#f8f0dc', shade: '#c0b096', muzzle: '#f8f0dc',
+      ear: 'drop', earCol: '#8a5a2e', skullW: 40, skullH: 45, jawW: 58, jawY: 22,
+      chin: 52, snout: [33, 23, 15], eyes: [20, -15, 5], brow: .35, tongue: 1,
+      look: 'soft', mask: '#9a6434' },
+/* ---- and the two at the other end of it --------------------------------
+   One of them is mostly ears and the other has had its face shut in a door.
+   Same parameters as everything else in here, so they wear every hat in the
+   shop and cut exactly the same. */
+],[
+    { name: 'Chihuahua', k: .62, speed: .7,
+      coat: '#f2ece0', lit: '#fdf9f0', shade: '#cdc2ae', muzzle: '#fdf9f0',
+      ear: 'prick', earCol: '#e3ac97', skullW: 25, skullH: 31, jawW: 26, jawY: 11,
+      chin: 31, snout: [19, 12, 17], eyes: [12, -14, 6], brow: .22, tongue: .7,
+      look: 'up' },
+    { name: 'Pug', k: .8, speed: .82,
+      /* A face with no snout on it at all: the muzzle is the whole lower half
+         and it is the colour of the mask, which is what a pug is. */
+      coat: '#dcb782', lit: '#f0d4a6', shade: '#a98353', muzzle: '#2d241f',
+      ear: 'fold', earCol: '#2d241f', skullW: 33, skullH: 32, jawW: 42, jawY: 15,
+      chin: 34, snout: [31, 21, 5], eyes: [17, -10, 6.2], brow: .15, tongue: 1,
+      look: 'flat', mask: '#2d241f' },
+],[
+    { name: 'Dalmatian', k: 1.18, speed: 1.22,
+      coat: '#f4efe4', lit: '#fdfaf2', shade: '#cbc3b2', muzzle: '#fdfaf2',
+      ear: 'drop', earCol: '#2a2623', skullW: 34, skullH: 44, jawW: 44, jawY: 18,
+      chin: 48, snout: [28, 21, 19], eyes: [18, -15, 5], brow: .32, tongue: 1,
+      look: 'soft',
+      spots: [[-27, -34, 6.5], [9, -39, 5], [29, -22, 6], [-7, -45, 4.4],
+              [31, 3, 5.4], [-31, 1, 6], [19, 15, 4], [-14, 19, 3.6], [2, -21, 3.2]] },
+    { name: 'Beagle', k: .98, speed: 1.02,
+      coat: '#ead9bc', lit: '#f9eed6', shade: '#bca888', muzzle: '#f9eed6',
+      ear: 'drop', earCol: '#7a4a22', skullW: 32, skullH: 40, jawW: 40, jawY: 17,
+      chin: 44, snout: [26, 19, 19], eyes: [17, -14, 5], brow: .4, tongue: 1,
+      look: 'soft', patch: '#7a4a22' },
 ]];
 /* Names a dog in a butcher's window would actually answer to: short, hard
    and shoutable across a shop floor. Nothing with three syllables in it. */
@@ -7034,6 +7266,11 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     });
     if (B.mask) blob(B.mask, () => ctx.ellipse(0, B.snout[2] - 2, B.snout[0] + 7, B.snout[1] + 9, 0, 0, Math.PI * 2));
     if (B.patch) blob(B.patch, () => ctx.ellipse(-B.eyes[0] - 3, B.eyes[1] - 3, 15, 16, .2, 0, Math.PI * 2));
+    /* Spots, given as a list rather than scattered at random: a Dalmatian
+       with a different face every time it is drawn is not a dog, it is a
+       pattern. */
+    if (B.spots) for (const [px, py, pr] of B.spots)
+        blob(B.spot || '#272320', () => ctx.ellipse(px, py, pr, pr * .86, .3, 0, Math.PI * 2));
     if (B.points) for (const sx of [-1, 1])
         blob(B.points, () => ctx.ellipse(sx * B.eyes[0], B.eyes[1] - 9, 9, 5, 0, 0, Math.PI * 2));
     // two round red cheeks, which is how he draws one that is pleased with itself
@@ -7403,7 +7640,7 @@ function drawKnife(ctx, x, y, ang, k, K) {
    drawn before the coat, or it paints over its own collar. */
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null,
                                    winded = false, bot = false, young = false,
-                                   wave = 0 } = {}) {
+                                   wave = 0, arms = null } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
     /* The apprentice is the lad. Whoever is behind the counter this week has a
        moustache or a beard half the time, and a seventeen-year-old on his
@@ -7417,7 +7654,10 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
     const SKIN = B.skin, SKIN_D = B.skinD, COAT = '#f7f3ea', COAT_D = '#e3dccc';
     const droop = happy ? 0 : 1;
-    const up = happy || holds === 'knife';
+    /* `arms: 'down'` is a cheerful man with his hands at his sides, which the
+       happy flag alone cannot say: that one puts an arm in the air and takes
+       the smile off his face in the same breath. */
+    const up = arms === 'down' ? false : (happy || holds === 'knife');
 
     for (const sx of [-1, 1]) {
         const raised = up && sx > 0;
@@ -8082,8 +8322,12 @@ function drawPreview(id, w, h, withMan) {
     const g = sharp(c, w, h);
     g.clearRect(0, 0, w, h);
     if (withMan) {
-        drawButcher(g, true, { cx: w * .33, cy: h * .84, k: .54, holds: 'knife' });
-        drawDog(g, w * .77, h * .80, .58 / cast.dog.k, { open: 0 }, 0, cast.dog, cast.kit);
+        /* Stood there with his hands at his sides. He is being introduced,
+           not demonstrating anything, and a knife over the head on the one
+           screen before the game has started is a man about to do something. */
+        drawButcher(g, true, { cx: w * .33, cy: h * .86, k: .62,
+                               holds: 'none', arms: 'down' });
+        drawDog(g, w * .78, h * .82, .66 / cast.dog.k, { open: 0 }, 0, cast.dog, cast.kit);
     } else {
         drawDog(g, w / 2, h * .66, .66 / cast.dog.k, { open: 0 }, 0, cast.dog, previewKit());
         /* Stood beside the dog rather than laid across it: the blade reaches
@@ -8175,16 +8419,25 @@ function payIn(from, to) {
     b.textContent = money2(from);
     step();
 }
+/* The number on its own. A till sat next to it all day every day said nothing
+   the number did not - it only has something to say on the one occasion money
+   is actually going into it, so it turns up for that and leaves again.
+
+   It writes into the number rather than replacing the line it is in. The line
+   is also where the week's takings go up - ten notes, eight coins, a bloom and
+   the figure that came in - and rebuilding it threw all of that on the floor.
+   And while the number is counting up to meet them it belongs to that count:
+   anything else setting it mid-climb is the climb starting again from the top
+   several times a second. */
 function showBank() {
-    /* The words were doing nothing the picture does not, and a label in front
-       of a number pushes the number off the middle of the screen. */
-    /* The number on its own. A till sat next to it all day every day said
-       nothing the number did not - it only has something to say on the one
-       occasion money is actually going into it, so it turns up for that and
-       leaves again. */
-    const t = `<b>${money2(save.bank)}</b>`;
-    bankLine.innerHTML = t;
-    document.getElementById('store-bank').innerHTML = t;
+    if (tillRaf) return;                 // the count-up has it
+    const t = money2(save.bank);
+    for (const el of [bankLine, document.getElementById('store-bank')]) {
+        if (!el) continue;
+        let b = el.querySelector('b');
+        if (!b) { b = document.createElement('b'); el.prepend(b); }
+        if (b.textContent !== t) b.textContent = t;
+    }
 }
 
 /* ---- picking your lot --------------------------------------------------- */
@@ -8361,24 +8614,17 @@ function drawTile(c, item, circle = true, k0 = .46) {
         }
         return;
     }
-    if (item.id === 'robot') {                        // a head, two eyes, an aerial
+    if (item.id === 'robot') {
+        /* The same head he actually wears, shrunk - not a second drawing of
+           one. A tile with its own squat version of a thing is a tile that
+           stops being a picture of that thing the moment the thing changes. */
         g.save();
-        g.translate(TILE_W / 2, TILE_H / 2 + 3);
         g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 8; g.shadowOffsetY = 4;
-        g.fillStyle = '#9aa0a8';
-        g.beginPath(); g.roundRect(-26, -22, 52, 44, 11); g.fill();
-        g.shadowColor = 'transparent';
-        g.fillStyle = '#6c727a';                      // the visor
-        g.beginPath(); g.roundRect(-20, -13, 40, 20, 8); g.fill();
-        g.fillStyle = '#7fe0a8';
-        for (const sx of [-1, 1]) {
-            g.beginPath(); g.ellipse(sx * 9, -3, 4.6, 5.2, 0, 0, Math.PI * 2); g.fill();
-        }
-        g.fillStyle = '#c3c8cf';                      // the aerial, and the jaw
-        g.fillRect(-2, -34, 4, 12);
-        g.beginPath(); g.arc(0, -36, 4.5, 0, Math.PI * 2); g.fill();
-        g.fillStyle = '#6c727a';
-        for (let i = -2; i <= 2; i++) g.fillRect(i * 8 - 2, 12, 4, 6);
+        g.translate(TILE_W / 2, TILE_H / 2);
+        const k = TILE_H * .92 / 152;                 // aerial to chin, and no more
+        g.scale(k, k);
+        g.translate(0, 126);
+        botHead(g);
         g.restore();
         return;
     }
@@ -8845,6 +9091,37 @@ document.getElementById('veg-back').addEventListener('click', () => {
     showBank();
     plop(3);
 });
+/* The word. It is not a secret worth keeping - it is a gate, so that the one
+   switch in here that hands you the whole shop takes more than a thumb. */
+const WORD = 'SNOSAGE';
+const codeEl = document.getElementById('code');
+function askWord() {
+    const inp = document.getElementById('code-in');
+    inp.value = '';
+    codeEl.classList.remove('wrong');
+    codeEl.hidden = false;
+    setTimeout(() => inp.focus(), 60);
+}
+function tryWord() {
+    const inp = document.getElementById('code-in');
+    if ((inp.value || '').trim().toUpperCase() !== WORD) {
+        codeEl.classList.remove('wrong'); void codeEl.offsetWidth;
+        codeEl.classList.add('wrong');
+        buzz();
+        inp.select();
+        return;
+    }
+    codeEl.hidden = true;
+    ding();
+    setDebug(true);
+}
+document.getElementById('code-go').addEventListener('click', tryWord);
+document.getElementById('code-in').addEventListener('keydown', e => {
+    if (e.key === 'Enter') tryWord();
+});
+document.getElementById('code-no').addEventListener('click', () => {
+    codeEl.hidden = true; plop(1);
+});
 function paintSettings() {
     // the back room's own door onto the shopfront, open only while debug is
     document.getElementById('to-mini').hidden = !save.debug;
@@ -8882,7 +9159,14 @@ function flip(what) {
         putSave(); paintSettings(); plop(2);
         return;
     }
-    save.debug = !save.debug;
+    /* Getting in is guarded, getting out is not: turning it off is a thing you
+       might want to do in a hurry, and a password on the way out is a password
+       between you and your own shop. */
+    if (!save.debug) { askWord(); return; }
+    setDebug(false);
+}
+function setDebug(on) {
+    save.debug = on;
     if (save.debug) {
         // everything switchable comes on, so one tap is a week with the lot
         for (const i of STOCK) if (SWITCHED.includes(i.kind) && !save.on.includes(i.id))
@@ -9633,9 +9917,11 @@ function drawShopfront() {
     // the knife is in hand and the dog is stood alongside, so the line
     // only has to introduce the two of them
     // and it is not Reg standing there with that head on, it is AI Reg
-    document.getElementById('cast-line').innerHTML =
-        `${running('robot') ? 'AI ' : ''}${cast.butcher.name} and ` +
-        `${cast.dog.dog} the ${cast.dog.name}`;
+    const who = `${running('robot') ? 'AI ' : ''}${cast.butcher.name} and ` +
+                `${cast.dog.dog} the ${cast.dog.name}`;
+    const line = document.getElementById('cast-line');
+    // only when it has actually changed: this runs on every frame of the idle
+    if (line.textContent !== who) line.textContent = who;
     showBank();
 }
 /* The hand landing, and a dog pleased about it: a soft thump under two notes
@@ -9667,8 +9953,23 @@ function checkTurn() {
     const on = sideways.matches;
     turnEl.hidden = !on;
     setPaused(on);
+    /* Coming back round, the window is a different shape from the one
+       everything was measured against, and a canvas whose backing store is
+       the wrong shape for its box is a stretched canvas. Measure it again -
+       and again a fifth of a second later, because a phone reports the size
+       it is halfway through turning as well as the size it ends up. */
+    if (!on) { reshape(); setTimeout(reshape, 180); setTimeout(reshape, 420); }
+}
+function reshape() {
+    if (!cast) return;                   // nothing is dealt yet
+    fit();                               // the game canvas, and the string on it
+    drawShopfront();
+    drawSignBoard();
+    drawPreview('preview', 330, 196, true);
+    if (!storeEl.hidden) paintStore();
 }
 sideways.addEventListener('change', checkTurn);
+addEventListener('orientationchange', () => { checkTurn(); setTimeout(reshape, 240); });
 checkTurn();
 for (const id of ['settings', 'confirm', 'minipick'])
     document.getElementById(id).style.backgroundImage = BRICK;

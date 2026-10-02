@@ -815,6 +815,19 @@ is not a title screen. The caps are a share of the screen rather than of the
 window, so they are a share of what is actually left after the notch and the
 home bar.
 
+There are **twenty-four** of them to choose from, counting his six. The six
+newest are the two that will not fit through the door - a **Newfoundland**,
+which is not a big dog but a small bear that has been talked into being one,
+and a **St Bernard** beside it - the two at the other end, a **Chihuahua**
+that is mostly ears and a **Pug** whose face has been shut in a door - and a
+**Dalmatian** with a **Beagle** for company. They are on the end of the list
+rather than in among the sizes, so that nobody who already has a dog opens the
+game and finds a different one stood there.
+
+The Dalmatian needed spots, which nothing in here had. They are a list of
+places rather than a scatter, because a Dalmatian with a different face every
+time it is drawn is not a dog, it is a pattern.
+
 There are seventy-four names for a dog and fifty-two for a shop. The dog's are
 short, hard and shoutable across a shop floor - nothing with three syllables in
 it - and the shop's are obliged by long tradition to be a pun, the worse the
@@ -930,6 +943,11 @@ more coming. It is the same pose the pat uses, so a pat lands on top of the
 idle rather than fighting it, and the whole thing redraws at about a third of
 the screen's rate because a breath does not need sixty frames a second.
 
+**A tile is a picture of the thing, not a second drawing of it.** The AI
+butcher's shelf tile was its own squat version of his head, which stops being a
+picture of him the moment the head changes - and it had. It is the same head,
+shrunk.
+
 **The shop opens like a shop.** Pressing the way in builds the shopfront behind
 the wall first, then rolls the wall away upward with the bottom rail of a
 shutter on the leading edge of it. The sign and the form drop out of it in the
@@ -968,6 +986,12 @@ the picture says it, and a line explaining what the picture says is the one
 thing that screen does not need - and one way out, which is **Back to the
 meat**, and taking it puts the setting back to Yes. You can go and pick No
 again. It will still be there.
+
+**Debug is not a setting, it is a door you know the word for.** It is the last
+of the three out the back, there is nothing written under it explaining what it
+does, and turning it on gets you one screen with one box on it. The word is
+SNOSAGE. Getting out again needs nothing at all: it is getting in that is
+guarded, and a password between a man and his own shop is not a safety feature.
 
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
 Reset game - which takes a whole screen to say what it is about to take rather
@@ -1335,7 +1359,9 @@ twenty-two pounds, about a third on top of a perfect week.
   one you watch from behind the dog, over the back of its head, because the dog
   is the one being had. The back of its head is built out of the same numbers
   the front of it is, off whichever breed is stood there: a generic lump at the
-  bottom of the screen is not your dog. His arm only goes up when it worked.
+  bottom of the screen is not your dog. His arm only goes up when it worked -
+  and when the wrong basin comes up, the dog's head goes down, which is the one
+  thing a dog does that needs no explaining.
 
   An egg with a paler egg inside it is a bald head. What makes it the back of a
   dog is the three things you would actually see: ears standing where that
@@ -1357,8 +1383,25 @@ twenty-two pounds, about a third on top of a perfect week.
   one of them and not the other is a game that opens to an empty counter.
 - **On the scales.** A queue, and every one of them wants a particular weight
   of it. **The needle runs across the dial and you stop it**: on the mark they
-  pay you, off it they throw the thing back and it is on the glass for the next
-  two customers to be served through. The mark narrows and the needle quickens
+  pay you, and there is a sliver in the middle of the mark that pays double - a
+  band you either hit or do not is one decision, a band with a middle to it is
+  a decision about how greedy you are being. Off the mark they throw the thing
+  back: the arm goes back over the shoulder, comes through, and what it lets go
+  of is in the air before the mess turns up on the glass, where it stays for
+  the next two customers to be served through.
+
+  It is played in the shop rather than out of the window - the tiled wall, the
+  rail along it with the week's stock hanging off, the board that says what
+  things cost. Looking out at the street was a nicer picture and the wrong
+  room. And nobody in the queue is anybody else: a coat, a scarf, hair or one
+  of five hats, glasses on a third of them and a beard on a quarter, in whatever
+  width they come.
+
+  The mark narrows and the needle quickens with every one you serve, but
+  neither of them runs away: it was tuned against a bot that anticipates the
+  needle the way a person does rather than one that reacts to it, because a
+  mark the needle crosses in less than the time it takes to see it is not a
+  harder game, it is a coin. A good run comes to twelve to eighteen pounds. The mark narrows and the needle quickens
   with every one you serve, but neither of them runs away - a mark the needle
   crosses in less than the time it takes to see it is not a harder game, it is
   a coin. The run is the game: the rail's own rule about holding a streak,
@@ -1428,6 +1471,10 @@ nothing kept between frames, so what moves is worked out from the clock.
   not line up down the street, the light out of the shop window lying across it
   in the shape of the window it came out of, and the kerb and the road along
   the bottom.
+He has legs in the dream, too. A man with an apron streaming out behind him and
+nothing under it is a man with a tail, or a ghost: they trail, they kick, and
+they go in before the apron so it covers the hips.
+
 - **Butcher's dream** is not a place at all, and uses none of the game's own
   colours to say so: a sherbet sky going from violet at the top to peach at the
   bottom, a sun that is not quite a sun, and three banks of cloud at three
