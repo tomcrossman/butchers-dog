@@ -134,6 +134,14 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger td.d { text-align: left; letter-spacing: .1em; text-transform: uppercase;
                font-size: 11px; opacity: .7; }
 #ledger td.w { text-align: left; font-weight: 400; opacity: .5; font-size: 11px; }
+/* What the day was made of, in the colour each thing actually is. */
+#ledger .cnt { display: inline-flex; align-items: center; gap: 3px;
+               margin-right: 11px; font-weight: 900; font-size: 12px; }
+#ledger .cnt svg { width: 13px; height: 13px; flex: none; }
+#ledger .cnt.meat  { color: #a8402a; } #ledger .cnt.meat svg  { fill: #c4472e; }
+#ledger .cnt.pud   { color: #4a3330; } #ledger .cnt.pud svg   { fill: #3d2724; }
+#ledger .cnt.steak { color: #8a3f52; } #ledger .cnt.steak svg { fill: #b2566c; }
+#ledger tr.extra td.w .cnt { opacity: .9; }
 #ledger td.m { text-align: right; font-family: var(--font-display); font-size: 15px; }
 #ledger tr.shut td { opacity: .35; }
 #ledger tr.best td.m { color: #1f7a3f; }
@@ -150,10 +158,14 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
    money in the right-hand column of it - so it runs across the two columns and
    only the number is picked out. */
 #ledger tr.extra.ate td { opacity: .55; }
-#ledger tr.extra.ate td.d { white-space: nowrap; }
+#ledger tr.extra.ate td.d, #ledger tr.extra.ate td.m { white-space: nowrap; }
 #ledger tr.extra.ate td.w { opacity: .8; padding-left: 12px; }
-#ledger tr.extra.ate b { font-family: var(--font-display); font-weight: 400;
-                         font-size: 13px; }
+/* A paw and a number, in the colour everything lost in this game is written
+   in. It reads down the rows as a column without being given one. */
+#ledger .got { display: inline-flex; align-items: center; gap: 2px;
+               margin-left: 7px; color: #b03a25; font-weight: 900; opacity: .85; }
+#ledger .pw { width: 10px; height: 10px; fill: #b03a25; flex: none; }
+#ledger td.m .got { font-family: var(--font); font-size: 12px; margin: 0; }
 /* the week that ended with a stone in it has no ledger worth printing */
 #card.grave #ledger { display: none; }
 /* nothing under the total on an ordinary week - but over a headstone the next
@@ -662,6 +674,13 @@ body.waiting #hud { display: none; }
     88%  { transform: translate(-50%, 0); }
     100% { transform: translate(-50%, -110%); }
 }
+/* The way in. Every butcher's on an English high street has a chain curtain
+   over the door in summer, and walking through one is the single most
+   butcher's-shop thing there is. It is drawn rather than faded, so the shop is
+   already behind it when the strands part. */
+#door { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 11;
+        pointer-events: none; }
+#door[hidden] { display: none; }
 #app.shake { animation: shake .42s cubic-bezier(.36,.07,.19,.97) both; }
 @keyframes shake {
     10%, 90% { transform: translate3d(-3px, 1px, 0); }
@@ -694,6 +713,22 @@ body.waiting #hud { display: none; }
         <path d="M 3.8 6.6 H 5.4 V 8 H 3.8 Z"/><path d="M 6.2 6.6 H 7.8 V 8 H 6.2 Z"/>
         <path d="M 8.6 6.6 H 10.2 V 8 H 8.6 Z"/><path d="M 3.8 9 H 5.4 V 10.4 H 3.8 Z"/>
         <path d="M 6.2 9 H 7.8 V 10.4 H 6.2 Z"/>
+    </symbol>
+    <!-- What a day is made of, for the ledger: a link, a steak. The black
+         pudding is the same link in a different colour, because it is. -->
+    <symbol id="i-link" viewBox="0 0 14 14">
+        <rect x="3.3" y=".9" width="7.4" height="12.2" rx="3.7"
+              transform="rotate(20 7 7)"/>
+    </symbol>
+    <!-- A steak is a third lozenge at thirteen pixels unless it has a bone in
+         it, so it has one: the eye knocked out, and the knuckle sticking out
+         of the side where a chop's does. -->
+    <symbol id="i-steak" viewBox="0 0 14 14">
+        <path fill-rule="evenodd"
+              d="M 2.6 6.2 C 2.6 2.9, 5.6 1, 8.4 1.5 C 11.7 2.1, 13.2 5.3, 12.3 8.4
+                 C 11.4 11.4, 7.9 13.4, 5.3 12.2 C 3.2 11.2, 2.6 8.6, 2.6 6.2 Z
+                 M 7.6 4.6 A 2 2 0 1 0 7.61 4.6 Z"/>
+        <path d="M 3 4.6 C 1 4.3, .6 6, 1.1 7 C 1.6 8.1, 3 8.1, 3.4 7.6 Z"/>
     </symbol>
     <!-- The shop till: a sign on top, a keypad knocked out of the body and
          the drawer under it. What the money in this game actually sits in. -->
@@ -756,6 +791,7 @@ body.waiting #hud { display: none; }
     <div id="banner"></div>
     <div id="tally"></div>
     <div id="gong" hidden></div>
+    <canvas id="door" hidden></canvas>
 
     <div id="intro">
         <div class="top">
@@ -854,7 +890,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v84';
+const APP_VERSION = 'v85';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1157,7 +1193,7 @@ function at(s) {
 /* `lost` is everything that did not get sold, the dog's share and the ones
    you halved with a bad cut alike. `ate` is the dog's share of it on its own,
    which is a different number and the one the week is judged on. */
-let pieces = [], loose = [], saved = 0, lost = 0, ate = 0, stole = 0;
+let pieces = [], loose = [], saved = 0, lost = 0, ate = 0, stole = 0, puds = 0;
 const TWIST = 15;               // how much of the string a twist takes up
 
 function layout() {
@@ -1201,7 +1237,7 @@ function makeString(day) {
         }
         for (const i of idx.slice(0, want)) string.pud[i] = true;
     }
-    loose = []; saved = 0; lost = 0; ate = 0; stole = 0; perfectToday = 0;
+    loose = []; saved = 0; lost = 0; ate = 0; stole = 0; puds = 0; perfectToday = 0;
     return n;
 }
 // the arc range a run of sausages covers, twists and all
@@ -1262,7 +1298,7 @@ const CHEER = [, , 'DOUBLE', 'TREBLE', 'FOUR AT ONCE', 'FIVE AT ONCE', 'SIX AT O
    all mean the same thing and they are all things a butcher would actually
    say, which is the only test any of the writing in here has to pass. */
 const GO_WORDS = ['CUT!', 'SLICE!', 'BUTCHER!', 'CHOP!', 'CARVE!', 'TRIM!',
-                  'GO ON!', 'SERVE!', 'GET ON!', 'OPEN UP!'];
+                  'SAUSAGES!'];
 
 /* ---- what the butcher does about it ------------------------------------
    Once a week somebody lobs the bone in, on a day nobody picked and at a
@@ -1688,6 +1724,7 @@ function free(bit, q) {
     const [a, b] = spanOf(bit);
     const [x, y] = at((a + b) / 2);
     saved++;
+    if (pudLink(bit.from)) puds++;        // for the ledger, which counts in pictures
     const p = priceOf(q) * (poshLink(bit.from) ? BLANKET_PAY : 1);
     money += p; roundMoney += p;
     showHud();
@@ -1712,6 +1749,13 @@ function ruin(p, k, x, y) {
     for (const bit of out) if (bit.from === bit.to) free(bit, 45);
     lost++; botched++; showHud();
     mess.push({ x, y, t0: now() });
+    /* And the half of it nobody will buy goes on the boards. It used to
+       vanish on the squelch, so a swipe through the middle of a sausage cost
+       you a pound and left no trace of having done it - the floor at the end
+       of a bad Friday is the most honest scoreboard in the game. */
+    floor.push({ x, y, vx: (Math.random() - .5) * 80, vy: -40 - Math.random() * 60,
+                 ang: Math.random() * 6, spin: (Math.random() - .5) * 9,
+                 from: k, down: 0, rest: H - 34 - Math.random() * 16 });
     squelch();
     jolt();
 }
@@ -1802,6 +1846,7 @@ function dogStep(dt) {
         const dropped = !spat && running('sawdust') && Math.random() < DROP_CHANCE;
         if (spat || dropped) {
             saved++;
+            if (spat) puds++;
             const q = spat ? PUD_Q : DROP_Q;
             const pay = priceOf(q) * (poshLink(k) ? BLANKET_PAY : 1);
             money += pay; roundMoney += pay;
@@ -1863,6 +1908,8 @@ const money0 = p => p % 100 === 0 ? '£' + commas(String(p / 100)) : money2(p);
 let round = 0, live = false, armed = false, tallying = false, roundT0 = 0;
 let money = 0, roundMoney = 0, ledger = [], steaks = 0;
 let cutFx = [], mess = [], shouts = [], chewing = null, swipe = null, blade = null, raf = 0, lastMs = 0;
+// the ones you halved, lying where they landed until the day is over
+let floor = [];
 let tallyT = 0, settleT = 0, showingIntro = true;
 
 
@@ -1887,6 +1934,7 @@ function startRound(n) {
     tallyEl.classList.remove('on');
     card.hidden = true; card.className = '';
     cutFx = []; mess = []; shouts = []; chewing = null; steak = null; hit = null;
+    floor = [];                   // the boards get swept between days
     swipe = null; blade = null;
     const D = DAYS[n - 1], count = makeString(n);
     roundMoney = 0; steaks = 0; pendingEnd = false;
@@ -1903,6 +1951,7 @@ function startRound(n) {
     // a week picks its own day for it, and Monday is as likely as Saturday
     if (n === 1) {
         toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
+        seenBreed();                                   // whoever is at the door
         fed = 0;                                       // a week starts owing nothing
         botched = 0;                                   // and having spoiled nothing
         miniTook = null;                               // last week's is spent
@@ -1998,7 +2047,7 @@ function endRound() {
     // every link off a Saturday string, which is eleven of them against a dog
     // at nearly twice Monday's speed. Monday's four is not the same feat.
     if (saved === string.n && round === DAYS.length) award('saturday');
-    ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, ate, steaks });
+    ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, ate, steaks, puds });
     tallying = true;
     /* Which of the three lines it gets is the dog's doing, not yours: THE DOG
        GOT NOTHING over a day where it got one, because you had also halved one
@@ -2021,6 +2070,16 @@ function endRound() {
    shopfront anyway. A tap takes you there now rather than waiting. */
 const HOLD_MS = 5000;
 let holdT = 0;
+/* What the dog had, in a column rather than in a sentence. "dog got 4" on
+   every other row and then "Got 8" again underneath is the same fact four
+   times in words; a paw and a number is a thing you can run your eye down. */
+const paw = n => `<span class="got"><svg class="pw"><use href="#i-paw"/></svg>${n}</span>`;
+/* A day in pictures. Four words of English per row - "7 sold &middot; 1 steak
+   &middot; dog got 1" - is a sentence to read six times over; a link, a pudding
+   and a steak with a number against each is a thing you take in at a glance,
+   and it is what was actually on the rail that day. */
+const tally6 = (cls, icon, n) =>
+    n ? `<span class="cnt ${cls}"><svg><use href="#i-${icon}"/></svg>${n}</span>` : '';
 /* The last line of the week's takings, which is one of two things. Either the
    hour after closing happened and here is what it came to - without it the six
    days above do not add up to the number underneath them - or it did not, and
@@ -2034,9 +2093,10 @@ function lastLine() {
                `<td class="m">+ ${money2(miniTook.won)}</td></tr>`;
     const off = fed;                     // off the rail, not the ones you spoiled
     if (!off) return '';                 // a clean week with no hour is not a thing
+    // the count is already down the rows, so this line is only the reason
     return `<tr class="extra ate"><td class="d">The dog</td>` +
-           `<td class="w" colspan="2">Got <b>${off}</b>. ` +
-           `A week it gets none buys an hour after closing.</td></tr>`;
+           `<td class="w">A week it gets none buys an hour after closing</td>` +
+           `<td class="m">${paw(off)}</td></tr>`;
 }
 function endWeek() {
     live = false; armed = false; tallying = false; dog.going = false; teaching = false;
@@ -2065,12 +2125,18 @@ function endWeek() {
     document.getElementById('ledger').innerHTML = ledger.map(r =>
         `<tr class="${r.took === top && top > 0 ? 'best' : ''}">` +
         `<td class="d">${r.day.short}</td>` +
-        `<td class="w">${r.sold} sold` +
-        `${r.steaks ? ` &middot; ${r.steaks} steak${r.steaks > 1 ? 's' : ''}` : ''}` +
-        `${r.ate ? ` &middot; dog got ${r.ate}` : ''}</td>` +
+        `<td class="w">` +
+        tally6('meat', 'link', r.sold - (r.puds || 0)) +
+        tally6('pud', 'link', r.puds || 0) +
+        tally6('steak', 'steak', r.steaks) +
+        `</td>` +
         `<td class="m">${money2(r.took)}</td></tr>`).join('') + lastLine();
+    /* One number, and a word under it. The till's running total is on the
+       shopfront you are about to be put back on, counting itself up out of a
+       till drawer, which is a better place for it than squeezed into a caption
+       next to a different number. */
     document.getElementById('score').innerHTML =
-        `${money2(money)}<span class="pc">banked &middot; ${money2(save.bank)} in the till</span>`;
+        `${money2(money)}<span class="pc">banked</span>`;
     card.className = 'timed' + (good ? ' good' : '');
     document.getElementById('cardtime').innerHTML = '<i></i>';   // restart the line
     // the canvas is drawn on more than once a session, and a butcher who was
@@ -2456,6 +2522,7 @@ const MINIS = [
     { id: 'jar',  name: 'Cash only', say: 'Catch the coins' },
     { id: 'sauce', name: 'Sauce on', say: 'Draw the ketchup down it', secs: 4.5 },
     { id: 'grill', name: 'On the barbecue', say: 'Tap them when they are done, not before' },
+    { id: 'ninja', name: 'Sausage samurai', say: 'Cut them out of the air' },
 ];
 let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
@@ -2469,6 +2536,8 @@ function startMini() {
     } else if (M.id === 'sauce') {
         mini.dogY = H * .54; mini.x0 = W * .18; mini.x1 = W * .82;
         mini.paint = []; mini.drawing = false; mini.begun = false;
+    } else if (M.id === 'ninja') {
+        mini.fly = []; mini.bits = []; mini.next = .35; mini.swipe = []; mini.hit = 0;
     } else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
@@ -2513,6 +2582,10 @@ function endMini() {
    about a third of a perfect week on top of it: sixteen to twenty-two pounds
    for a good run. */
 const COIN = 140, BANGER = 440, SAUCE_MAX = 2000;
+/* What one out of the air is worth, and what each extra one in the same stroke
+   adds on top. Two in a swipe is the same thing the whole game is about, so it
+   pays the way the rail pays it. */
+const KATANA = 150, KATANA_RUN = 110;
 const SAUCE_WAIT = 2600;        // the longest the ketchup will wait to be picked up
 /* How long a banger is worth taking off for. It was two and a fifth seconds,
    which is long enough to let all five come good and then take them off in one
@@ -2571,6 +2644,35 @@ function miniStep(dt) {
             }
             if (c.y > H + 40) mini.coins.splice(i, 1);
         }
+    } else if (mini.id === 'ninja') {
+        /* Thrown up from under the counter, two or three at a time, aimed so
+           they come into the window rather than up its edges. Gravity is the
+           same number the halved ones on the shop floor fall at, so the two
+           screens agree about how heavy a sausage is. */
+        mini.next -= dt;
+        if (mini.next <= 0 && left > 1.4) {
+            mini.next = .5 + Math.random() * .45;
+            const n = 1 + (Math.random() < .45 ? 1 : 0) + (Math.random() < .15 ? 1 : 0);
+            for (let i = 0; i < n; i++) {
+                const x = W * (.16 + Math.random() * .68);
+                mini.fly.push({ x, y: H + 40, vx: (W / 2 - x) * (.5 + Math.random() * .5),
+                                vy: -(760 + Math.random() * 210),
+                                ang: Math.random() * 6, spin: (Math.random() - .5) * 7,
+                                pud: Math.random() < .18 });
+            }
+        }
+        for (let i = mini.fly.length - 1; i >= 0; i--) {
+            const f = mini.fly[i];
+            f.vy += 1500 * dt; f.x += f.vx * dt; f.y += f.vy * dt; f.ang += f.spin * dt;
+            if (f.y > H + 70 && f.vy > 0) mini.fly.splice(i, 1);
+        }
+        for (let i = mini.bits.length - 1; i >= 0; i--) {
+            const h = mini.bits[i];
+            h.vy += 1500 * dt; h.x += h.vx * dt; h.y += h.vy * dt; h.ang += h.spin * dt;
+            if (h.y > H + 70) mini.bits.splice(i, 1);
+        }
+        // the stroke only counts for as long as it is a stroke
+        if (mini.swipe.length && now() - mini.swipeT > 110) { mini.swipe = []; mini.hit = 0; }
     } else if (mini.id === 'grill') {
         /* A grill makes a noise. It is the only thing on the screen, so it
            gets one - a quiet hiss every half second rather than one long
@@ -2592,9 +2694,45 @@ function miniStep(dt) {
     }
     if (left <= 0) endMini();
 }
+/* How near a point passes to a line segment. The whole of this game is that
+   one question asked of every sausage in the air, every time the finger moves. */
+function segNear(ax, ay, bx, by, px, py) {
+    const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy;
+    const t = L ? clamp(((px - ax) * dx + (py - ay) * dy) / L, 0, 1) : 0;
+    return Math.hypot(px - (ax + dx * t), py - (ay + dy * t));
+}
 function miniAt(x, y) {
     if (mini.done) return;
     if (mini.id === 'jar') { mini.jar = clamp(x, 56, W - 56); return; }
+    if (mini.id === 'ninja') {
+        /* Tested as the blade goes through rather than when the finger comes
+           off, the same as the steak on the shop floor: a sausage in the air
+           has moved on by the time you let go. */
+        const last = mini.swipe[mini.swipe.length - 1];
+        mini.swipeT = now();
+        if (last && Math.hypot(x - last[0], y - last[1]) < 4) return;
+        mini.swipe.push([x, y]);
+        if (mini.swipe.length > 14) mini.swipe.shift();
+        if (!last) { mini.hit = 0; return; }
+        for (let i = mini.fly.length - 1; i >= 0; i--) {
+            const f = mini.fly[i];
+            if (segNear(last[0], last[1], x, y, f.x, f.y) > 30) continue;
+            mini.fly.splice(i, 1);
+            mini.hit++;
+            // the two halves go off either side of the line that cut them
+            const a = Math.atan2(y - last[1], x - last[0]) + Math.PI / 2;
+            for (const sx of [-1, 1]) mini.bits.push({
+                x: f.x, y: f.y, pud: f.pud,
+                vx: f.vx * .4 + Math.cos(a) * sx * 150,
+                vy: f.vy * .4 + Math.sin(a) * sx * 150 - 60,
+                ang: f.ang, spin: f.spin + sx * 6 });
+            const pay = KATANA + (mini.hit - 1) * KATANA_RUN;
+            mini.won += pay;
+            mini.hit > 1 ? chink() : snick(70);
+            showHud();
+        }
+        return;
+    }
     if (mini.id === 'sauce') {
         // it only counts along the bun, and only going one way down it
         if (Math.abs(y - mini.dogY) > 46) return;
@@ -2627,6 +2765,7 @@ function sauceScore() {
     showHud();
 }
 function miniUp() {
+    if (mini && mini.id === 'ninja') { mini.swipe = []; mini.hit = 0; return; }
     if (!mini || mini.done || mini.id !== 'sauce' || !mini.paint.length) return;
     sauceScore();
     endMini();
@@ -2634,6 +2773,57 @@ function miniUp() {
 function drawMini(ms) {
     const left = miniLeft(), e = 1 - left / mini.secs;
     ctx.save();
+    if (mini.id === 'ninja') {
+        /* A whole one in the air, and the two halves of one that is not. The
+           same four flat colours as the rail, out of the same pot, so a black
+           pudding coming at you is still a black pudding. */
+        const link = (f, half) => {
+            const P = f.pud ? PUD : MEAT;
+            ctx.save();
+            ctx.translate(f.x, f.y);
+            ctx.rotate(f.ang);
+            ctx.shadowColor = 'rgba(0,0,0,.38)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
+            const L = half ? 19 : 38;
+            ctx.beginPath();
+            ctx.roundRect(-15, -L, 30, L * 2, half ? [15, 15, 3, 3] : 15);
+            ctx.fillStyle = P.body; ctx.fill();
+            ctx.shadowColor = 'transparent';
+            ctx.beginPath(); ctx.roundRect(-9, -L + 7, 8, L * 2 - 14, 4);
+            ctx.fillStyle = P.lit; ctx.fill();
+            ctx.beginPath(); ctx.roundRect(-8, -L + 9, 3.5, L * 2 - 20, 2);
+            ctx.fillStyle = P.fat; ctx.fill();
+            if (f.pud) {                               // the flecks, as on the rail
+                ctx.fillStyle = '#cdbfa6';
+                for (let j = 0; j < (half ? 5 : 10); j++) {
+                    const v = Math.sin(j * 12.9898) * 43758.5;
+                    ctx.beginPath();
+                    ctx.arc((v - Math.floor(v) - .5) * 20, -L + 6 + j * (L * 2 - 12) / (half ? 5 : 10),
+                            1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            ctx.restore();
+        };
+        for (const h of mini.bits) link(h, true);
+        for (const f of mini.fly) link(f, false);
+        /* The stroke, and the sword on the end of it. A katana because the
+           game is called what it is called: a long shallow curve, a flat back,
+           a round guard and a bound grip. */
+        if (mini.swipe.length > 1) {
+            ctx.save();
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            ctx.beginPath();
+            mini.swipe.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+            ctx.strokeStyle = 'rgba(255,240,196,.22)'; ctx.lineWidth = 16; ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,248,225,.9)'; ctx.lineWidth = 3.5; ctx.stroke();
+            ctx.restore();
+            const n = mini.swipe.length;
+            const [px, py] = mini.swipe[n - 1], [qx, qy] = mini.swipe[Math.max(0, n - 4)];
+            drawKatana(px, py, Math.atan2(py - qy, px - qx));
+        }
+        ctx.restore();
+        return;
+    }
     if (mini.id === 'jar') {
         for (const c of mini.coins) {                 // the coins
             ctx.save();
@@ -2788,6 +2978,35 @@ const yuck = () => safely(t => {
     tone(t, { freq: 150, dur: .16, type: 'sawtooth', vol: .09, at: .07 });
     hiss(t, { dur: .2, vol: .05, at: .05 });
 });
+/* The sword, pointing where the stroke is going. Blade, back, guard and grip,
+   drawn from the tip back the way the butcher's knife is, so it hangs off the
+   finger the same way. */
+function drawKatana(x, y, ang) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(ang + Math.PI);                    // the tip leads the stroke
+    ctx.beginPath();                              // the blade, with its curve
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(44, -6, 92, -9);
+    ctx.lineTo(94, -2);
+    ctx.quadraticCurveTo(46, 1, 0, 0);
+    ctx.fillStyle = '#e9edf2'; ctx.fill();
+    ctx.beginPath();                              // the back of it, in shadow
+    ctx.moveTo(2, -1.5);
+    ctx.quadraticCurveTo(46, -5, 92, -8);
+    ctx.lineTo(92, -6);
+    ctx.quadraticCurveTo(46, -3, 2, 0);
+    ctx.fillStyle = '#9ba6b3'; ctx.fill();
+    ctx.beginPath();                              // the guard
+    ctx.ellipse(96, -5, 4, 13, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#2a2118'; ctx.fill();
+    ctx.beginPath();                              // and the grip, bound
+    ctx.roundRect(99, -9, 38, 9, 4);
+    ctx.fillStyle = '#3a2f2a'; ctx.fill();
+    ctx.fillStyle = '#6e5a4e';
+    for (let i = 0; i < 4; i++) ctx.fillRect(103 + i * 8, -9, 3, 9);
+    ctx.restore();
+}
 const jingleUp = () => safely(t => {
     [523, 659, 784].forEach((f, i) => tone(t, { freq: f, dur: .2, type: 'triangle', vol: .15, at: i * .07 }));
 });
@@ -3388,7 +3607,7 @@ const FRESH = () => ({
        running counts that no other part of the game had a reason to keep. */
     got: [],
     tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0, trebles: 0, doubles: 0,
-             hours: 0, steaks: 0 },
+             hours: 0, steaks: 0, breeds: [] },
 });
 let save = FRESH(), started = false;
 function loadSave() {
@@ -3403,6 +3622,7 @@ function loadSave() {
             save.got = save.got.filter(id => ROSETTES.some(r => r.id === id));
             save.tally = Object.assign(FRESH().tally, save.tally || {});
             if (!Array.isArray(save.tally.minis)) save.tally.minis = [];
+            if (!Array.isArray(save.tally.breeds)) save.tally.breeds = [];
             // the chef's hat used to share an id with the butcher's knife
             if (save.worn.hat === 'chef') save.worn.hat = 'chefhat';
             // and the knife everyone starts with was saved under an id that
@@ -3473,7 +3693,7 @@ const ROSETTES = [
     { id: 'clean',   silk: 'green',  name: 'Not One Lost',   why: 'A whole week the dog got nothing.' },
     { id: 'clean5',  silk: 'green',  name: 'Ten Clean Weeks', why: 'And nine more like it.' },
     { id: 'after',   silk: 'green',  name: 'After Hours',    why: 'Ten hours after closing, which is ten clean weeks’ worth.' },
-    { id: 'three3',  silk: 'green',  name: 'All Three',      why: 'Play all three of the after-hours games.' },
+    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all four of the after-hours games.' },
     { id: 'noburn',  silk: 'red',    name: 'Nothing Burnt',  why: 'Five off the barbecue and not one black.' },
 
     { id: 'hundred', silk: 'brass',  name: 'A Hundred Pounds', why: 'A hundred in the till.' },
@@ -3503,6 +3723,10 @@ const ROSETTES = [
     { id: 'nowt',    silk: 'green',  name: 'Nothing Wasted',  why: 'A week without halving a single one yourself.' },
     { id: 'year',    silk: 'gold',   name: 'A Full Year',     why: 'Fifty-two weeks in the same shop.' },
     { id: 'loyal',   silk: 'pink',   name: 'Old Friends',     why: 'Ten weeks with the same dog.' },
+    /* Eighteen breeds exist. Ten of them is most of a career, and the usual
+       way you get there is not a happy one. */
+    { id: 'allsorts',silk: 'purple', name: 'All Sorts',
+      why: 'Ten different breeds stood in that window.' },
     { id: 'crew',    silk: 'purple', name: 'A Full Crew',     why: 'The bone, the cat and the lad, all at once.' },
     { id: 'pudding', silk: 'slate',  name: 'It Won’t Touch It', why: 'Watch the dog spit out a black pudding.' },
 
@@ -3568,6 +3792,16 @@ function award(id, quiet) {
 }
 /* The ones that are a fact about the shop rather than a thing that just
    happened. Cheap enough to run on every purchase and every Saturday. */
+/* Who has stood in that window. Counted at the top of a week rather than when
+   one is dealt, because a breed you clicked past on the setup screen never
+   opened the shop. */
+function seenBreed() {
+    const b = cast && cast.dog && cast.dog.name;
+    if (!b || save.tally.breeds.includes(b)) return;
+    save.tally.breeds.push(b);
+    putSave();
+    if (save.tally.breeds.length >= 10) award('allsorts');
+}
 function sweep(quiet) {
     const give = id => award(id, quiet);
     /* A shop with eighty perfect cuts in it plainly had a first one, and one
@@ -3591,8 +3825,9 @@ function sweep(quiet) {
     if (save.tally.clean >= 10) give('clean5');
     if (save.tally.pats >= 50) give('pats');
     if (save.tally.loyal >= 10) give('loyal');
+    if (save.tally.breeds.length >= 10) give('allsorts');
     if (save.tally.hours >= 10) give('after');
-    if (save.tally.minis.length >= 3) give('three3');
+    if (save.tally.minis.length >= 4) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');
     // the shelves, counted off what is actually on them rather than a number
     const bought = STOCK.filter(i => i.price > 0);
@@ -4244,6 +4479,42 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     ctx.restore();
 }
 
+/* A halved link on its way down: thrown clear, tumbling, one soft bounce and
+   then still. The spin dies with the bounce, so it lands flat rather than
+   spinning on the spot like a coin. */
+function floorStep(dt) {
+    for (const f of floor) {
+        if (f.down) continue;
+        f.vy += 1500 * dt;
+        f.x += f.vx * dt; f.y += f.vy * dt;
+        f.ang += f.spin * dt;
+        if (f.y >= f.rest) {
+            f.y = f.rest;
+            if (f.vy > 240) { f.vy *= -.32; f.vx *= .5; f.spin *= .4; }
+            else { f.down = 1; f.ang = Math.round(f.ang / Math.PI) * Math.PI + (Math.random() - .5) * .5; }
+        }
+        f.x = clamp(f.x, 22, W - 22);
+    }
+}
+function drawFloor() {
+    for (const f of floor) {
+        const P = potFor(f.from);
+        ctx.save();
+        ctx.translate(f.x, f.y);
+        ctx.rotate(f.ang);
+        ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 7; ctx.shadowOffsetY = 3;
+        // half a sausage: round at the end that was never cut, flat at the end
+        // that was, and the cut face a shade paler because it is the inside
+        ctx.beginPath(); ctx.roundRect(-9, -15, 18, 30, [9, 9, 2, 2]);
+        ctx.fillStyle = P.body; ctx.fill();
+        ctx.shadowColor = 'transparent';
+        ctx.beginPath(); ctx.roundRect(-5.5, -11, 5, 20, 3);
+        ctx.fillStyle = P.lit; ctx.fill();
+        ctx.beginPath(); ctx.roundRect(-8.5, 9, 17, 5, [1, 1, 2, 2]);
+        ctx.fillStyle = P.fat; ctx.fill();
+        ctx.restore();
+    }
+}
 function drawLoose(ms) {
     for (const l of loose) {
         const P = potFor(l.from);
@@ -4692,6 +4963,7 @@ function draw() {
     const head = pieces.find(p => p.from === 0);
     if (head) drawHook(at(0)[0] - 7, at(0)[1]);
 
+    drawFloor();
     for (const p of pieces) drawPiece(p);
     drawLoose(ms);
 
@@ -4873,12 +5145,14 @@ function tick() {
         lastMs = ms;
         if (mini) miniStep(dt);
         dogStep(dt);
+        floorStep(dt);
         steakStep(dt);
         knifeStep(dt);
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (mini || live || loose.length || cutFx.length || mess.length || shouts.length
-            || chewing || steak || (hit && !hit.settled) || cat || demoOn() || !resting) raf = requestAnimationFrame(step);
+            || chewing || steak || (hit && !hit.settled) || cat || demoOn() || !resting
+            || floor.some(f => !f.down)) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -5463,11 +5737,93 @@ function showShop() {
     }
     draw();
 }
+/* ---- through the door --------------------------------------------------
+   One strand of the chain curtain, drawn once into its own little canvas and
+   then blitted across the screen forty times with a transform each. Forty
+   strands of thirty links is twelve hundred circles a frame drawn the honest
+   way; this is one image forty times. */
+const DOOR_MS = 820, STRANDS = 26;
+let doorT0 = 0, doorRaf = 0, strand = null;
+function makeStrand() {
+    const c = document.createElement('canvas');
+    c.width = 18; c.height = Math.max(240, H);
+    const g = c.getContext('2d');
+    for (let y = 6; y < c.height; y += 13) {
+        // a link: a flattened ring, lit on the top left the way brass is
+        g.beginPath(); g.ellipse(9, y, 6.4, 7.4, 0, 0, Math.PI * 2);
+        g.fillStyle = '#8c7230'; g.fill();
+        g.beginPath(); g.ellipse(9, y, 3.6, 4.6, 0, 0, Math.PI * 2);
+        g.fillStyle = 'rgba(0,0,0,.34)'; g.fill();
+        g.beginPath(); g.ellipse(7, y - 2.4, 2.6, 2.2, -.5, 0, Math.PI * 2);
+        g.fillStyle = '#d9bd72'; g.fill();
+    }
+    return c;
+}
+/* The rail they hang off, so the curtain has a top rather than starting in
+   mid air, and a shadow under it for the doorway it is standing in. */
+function drawDoor() {
+    const c = document.getElementById('door'), g = c.getContext('2d');
+    const e = Math.min(1, (now() - doorT0) / DOOR_MS);
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.clearRect(0, 0, c.width, c.height);
+    const dpr = c.width / W;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (e >= 1) return;
+    /* Parting, not sliding: a strand's shove is how near the middle it hangs,
+       so the two in the doorway swing right out of the way and the ones at the
+       jambs barely move. Cubed, so nothing happens for a beat and then it all
+       happens, which is what pushing through one feels like. */
+    const push = Math.pow(e, 1.5), gap = W / (STRANDS - 1);
+    g.globalAlpha = 1 - Math.pow(e, 3.4);
+    for (let i = 0; i < STRANDS; i++) {
+        const x = i * gap;
+        const mid = 1 - Math.abs(x - W / 2) / (W / 2);
+        const away = Math.sign(x - W / 2 + .001) * Math.pow(mid, .7) * push * W * .78;
+        const sway = Math.sin(e * 9 + i * .8) * 7 * mid * (1 - e);
+        g.save();
+        g.translate(x + away + sway, -6);
+        g.rotate(Math.sign(x - W / 2 + .001) * mid * push * .34);
+        const k = 1 + push * .5;                   // and they come past you
+        g.scale(k, k);
+        g.drawImage(strand, -9, 0);
+        g.restore();
+    }
+    g.globalAlpha = 1;
+}
+function doorStep() {
+    doorRaf = 0;
+    if (!doorT0) return;
+    drawDoor();
+    if (now() - doorT0 > DOOR_MS) {
+        doorT0 = 0;
+        document.getElementById('door').hidden = true;
+        return;
+    }
+    doorRaf = requestAnimationFrame(doorStep);
+}
+// forty bits of brass knocking together, which is a chain curtain exactly
+const rattle = () => safely(t => {
+    for (let i = 0; i < 16; i++)
+        tone(t, { freq: 1500 + Math.random() * 1900, dur: .05 + Math.random() * .05,
+                  type: 'triangle', vol: .035, at: Math.random() * .42 });
+    hiss(t, { hp: 2600, lp: 11000, dur: .34, vol: .07 });
+});
+function throughTheDoor() {
+    const c = document.getElementById('door');
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    c.width = W * dpr; c.height = H * dpr;
+    strand = makeStrand();
+    c.hidden = false;
+    doorT0 = now();
+    rattle();
+    if (!doorRaf) doorRaf = requestAnimationFrame(doorStep);
+}
 function beginWeek() {
     startSession(); audioNow();
     showingIntro = false;
     document.getElementById('intro').hidden = true;
     document.body.classList.remove('waiting');
+    throughTheDoor();
     startRound(1);            // which sets the HUD, once there is a day to put in it
 }
 function openStore() {
@@ -5821,9 +6177,10 @@ document.getElementById('shopfront').addEventListener('pointerdown', e => {
 });
 /* Boot: whatever was saved, or a stranger who has to pick a shop first. */
 loadSave();
+deal();                           // the cast, before anything asks who the dog is
+if (started) seenBreed();         // and whoever is standing there already counts
 sweep(true);                      // whatever this shop already was owed
 paintSettings();                  // which also puts 'debug' on the version line
-deal();
 drawShopfront();
 fit();
 makeString(1);

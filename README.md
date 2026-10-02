@@ -29,6 +29,21 @@ is a parallel thread for a few pixels either side and shoulders back up to full
 on a smoothstep, which meets the thread flat, meets the sausage flat, and has
 no corner anywhere.
 
+## The way in
+
+Every butcher's on an English high street has a chain curtain over the door in
+summer, and walking through one is the single most butcher's-shop thing there
+is. So Open up shop goes through one. Twenty-six strands part and come past you,
+the ones hanging in the middle of the doorway swinging right out of the way and
+the ones at the jambs barely moving, with sixteen bits of brass knocking
+together over the top of it.
+
+It is a curtain rather than a fade: the shop is already behind it, the rail is
+up and the count has started, so the strands part onto a day that is already
+happening. One strand is drawn once into its own small canvas and blitted
+across the screen twenty-six times with a transform each, because twenty-six
+strands of sixty links drawn the honest way is fifteen hundred circles a frame.
+
 ## The cut
 
 A swipe is a knife. Where it crosses the string is where it cuts, and one
@@ -57,6 +72,13 @@ So a cut that merely lands on a twist pays something, and a cut dead through
 the middle at right angles pays everything. Both matter, which is why the
 string hangs with a sway in it rather than standing up straight: the angle you
 have to cut at is different at every twist, and more different every round.
+
+The half nobody will buy goes on the boards. It used to vanish on the squelch,
+so a swipe through the middle of a sausage cost you a pound and left no trace
+of having done it - and the floor at the end of a bad Friday is the most honest
+scoreboard in the game. It is thrown clear, tumbles, takes one soft bounce and
+lies there until the day is over. The spin dies with the bounce, so it lands
+flat rather than spinning on the spot like a coin.
 
 A piece of string with one sausage left in it is off the string and yours, and
 gets hung on the rail. So cutting both ends of the middle sausage frees it, and
@@ -114,9 +136,8 @@ always was.
 | Saturday | 11 | |
 
 The count ends on a different word every morning: CUT, SLICE, BUTCHER, CHOP,
-CARVE, TRIM, SERVE, GO ON, GET ON, OPEN UP. It was CUT every single day of
-every week, and a word you have read four hundred times is a word you no longer
-read.
+CARVE, TRIM, SAUSAGES. It was CUT every single day of every week, and a word
+you have read four hundred times is a word you no longer read.
 
 **Every week has the same thirty-nine sausages in it.** The till is the only
 score there is, so two weeks are only worth comparing if they were worth the
@@ -236,6 +257,23 @@ the day's total lands twenty seconds later with nothing else on the screen.
 So the only things that ever appear over the window are the things that are not
 money: PERFECT, a double, a greedy one, a prime cut, a link the dog dropped or
 spat out.
+
+The week's card says one number and one word under it: the takings, and
+`banked`. The till's running total used to be squeezed into that caption beside
+it, which is two different numbers in one line - and it is on the shopfront you
+are about to be put back on anyway, counting itself up out of a till drawer.
+
+**The ledger counts in pictures.** "7 sold &middot; 1 steak &middot; dog got 1"
+on every row is a sentence to read six times over; a link, a pudding and a
+steak with a number against each is a thing you take in at a glance, and it is
+what was actually on the rail that day. Each is the colour that thing is - a
+red link, a near-black pudding, a pink steak with the eye of the bone knocked
+out of it, because a steak is a third lozenge at thirteen pixels unless it has
+a bone in it.
+
+And the dog is on the card once rather than on every line of it: a paw and a
+number at the bottom, against the one sentence that matters, which is that a
+week it gets none buys an hour after closing.
 
 **The money is banked.** There is no best week and no high score: the week's
 takings go in the till and stay there, and what you did with the money is the
@@ -516,7 +554,7 @@ phone.
 
 A butcher's shop has rosettes on the wall. Not points, not a score, not a
 percentage - prize cards from shows nobody else remembers, pinned up and left
-there. So that is what these are. **Thirty-five of them**, and they buy
+there. So that is what these are. **Thirty-six of them**, and they buy
 nothing and unlock nothing: the whole reward is that the window fills up and
 the next person who looks at your shop can see what it has done.
 
@@ -558,7 +596,7 @@ find; and four in one swipe once, which the board tells you to try on a
 Saturday, because a straight line through two twists tops out at
 three anywhere from Monday to Friday and at five on a Saturday, measured over a
 hundred and twenty deals of each. A week the dog got nothing, ten of those, ten
-hours after closing, all three of its games, and a barbecue with nothing black
+hours after closing, all four of its games, and a barbecue with nothing black
 on it. A hundred pounds, a thousand, five thousand, and a hundred and twenty in one week - a shop with the rail stocked,
 the slab stocked and an hour after closing clears a hundred and thirty, and
 sixty was a middling Tuesday-to-Saturday. The
@@ -568,7 +606,9 @@ the shop. Selling every link on a Saturday - eleven of them against a dog at
 nearly twice Monday's speed, which Monday's four is not. Six perfect cuts in a
 day. Fifty steaks taken out of the air - three a week off a plain slab and
 twelve off a stocked one, and only the ones you get the blade to before the
-floor or the dog does. A week without halving one yourself. Ten weeks with the same dog. The
+floor or the dog does. A week without halving one yourself. Ten weeks with the
+same dog, and ten different breeds stood in that window - there are eighteen,
+and the usual way you get to ten of them is not a happy one. The
 bone, the cat and the lad all at once. Watching the dog find out what is in a
 black pudding. And **two** nobody would go looking for, which sit on the board
 as `? ? ?` with a line of their own apiece - *Nobody has bothered the butcher
@@ -632,7 +672,8 @@ sausages across six days, and the sixth is eleven of them with the dog coming
 at you at nearly twice Monday's speed - it is the rarest thing in this game and
 it cannot be fluked. One good Wednesday does not buy it.
 
-Three of them, one picked at random, nine seconds each, and it runs before the
+Four of them, one picked at random, nine seconds each (the ketchup gets four
+and a half), and it runs before the
 week is counted so whatever it makes is part of that week's takings.
 
 It says why it is happening. PERFECT WEEK lands across the middle of the screen
@@ -676,6 +717,13 @@ twenty-two pounds, about a third on top of a perfect week.
   if nobody picks the bottle up it starts without them. A clock that runs out
   mid-stroke pays for the half a line that is on there, rather than for
   nothing: the line used to be scored only when you lifted.
+- **Sausage samurai.** Links thrown up from under the counter, one to three at
+  a time, and a katana on the end of your finger. Cut them out of the air: a
+  pound fifty each and a pound ten on top for every extra one taken in the same
+  stroke, which is the rail's own rule carried through the back door. The two
+  halves go off either side of the line that cut them and fall, and a black
+  pudding comes at you about one time in six, flecks and all. Nothing is lost
+  for missing one - there is no scoreboard back here, only a till.
 - **On the barbecue.** Five sausages cooking at their own speeds, steaming,
   spitting fat at the bars and hissing every half second. Tap one while it is
   done and it is four forty; tap it early, or leave it until it is black,
