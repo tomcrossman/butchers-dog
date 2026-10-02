@@ -119,13 +119,14 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 /* The shop takes whatever height is going and scales to fit it, so the sign
    is at the top of the window on a tall phone and the whole thing still fits
    on a short one without a scrollbar or a squashed butcher. */
-#intro .front { flex: none; width: 100%; display: flex; justify-content: center; }
+#intro .front { flex: none; width: 100%; display: flex; justify-content: center;
+                overflow: hidden; }
 /* Both dimensions auto with a cap on each: the ratio is kept and it fits
    inside whichever of the two runs out first, which is the height on a phone
    and the width on a short wide one. */
 /* Width first, so it fills what it is given rather than stopping at the 340
    pixels the canvas happens to be; the height cap takes over on a short one. */
-#shopfront { width: min(94vw, 386px); height: auto; max-height: 52vh;
+#shopfront { width: 100%; height: auto; max-height: 54vh;
              animation: butcherIn .6s cubic-bezier(.2, 1.5, .4, 1) both; }
 /* the week's takings, day by day */
 #ledger { width: 100%; border-collapse: collapse; margin: 4px 0 10px;
@@ -243,7 +244,10 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     position: absolute; inset: 0; z-index: 12;
     display: flex; flex-direction: column; align-items: center;
     justify-content: space-between;
-    padding: 14px 22px 5%; text-align: center;
+    /* No gutter at the top or the sides: the shopfront is a shopfront, and a
+       shopfront with a strip of tiled wall round it is a photograph of one.
+       The two text blocks below it bring their own. */
+    padding: 0 0 5%; text-align: center;
     background: linear-gradient(transparent 4%, rgba(18,51,39,.85) 46%, #123327 62%);
     animation: introIn .5s ease-out both;
 }
@@ -261,6 +265,7 @@ body.waiting #hud { display: none; }
 #intro .top, #intro .mid, #intro .acts {
     width: 100%; display: flex; flex-direction: column; align-items: center; flex: none;
 }
+#intro .mid, #intro .acts { padding: 0 22px; }
 #intro .btn { margin-top: 14px; width: 100%; max-width: 236px; }
 /* The debug way in, and the four it offers. */
 .btn.try-mini { font-size: 12px; padding: 7px; opacity: .7; border-style: dashed; }
@@ -921,7 +926,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v90';
+const APP_VERSION = 'v91';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -4945,9 +4950,18 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
         });
         const hx = raised ? sx * 63 : sx * 53, hy = raised ? -122 : 52;
         if (raised && holds === 'knife') {                 // the tools of the trade
+            /* Held by the handle. A knife in this game is drawn from its point
+               - the tip is the origin, because on the shop floor the tip is
+               where your finger is - and the handle runs back along -x to
+               about -105. So putting that origin in his fist had him holding
+               the thing by the end of the blade, with the handle dangling
+               below his hand. It is backed off eighty-four, which is the
+               middle of the grip at this scale, so the fist closes round the
+               handle with the butt below it and the blade above. */
             ctx.save();
-            ctx.translate(hx - 2, hy - 2);
-            ctx.rotate(-1.45);
+            ctx.translate(hx, hy);
+            ctx.rotate(-1.52);
+            ctx.translate(84, 0);
             drawKnife(ctx, 0, 0, 0, .80, cast ? cast.knife : KNIVES[0]);
             ctx.restore();
         }

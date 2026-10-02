@@ -210,6 +210,18 @@ something to say on the one occasion money is actually going into it. It runs
 after a week and at no other time: opening the game to a till spitting money at
 you says nothing happened.
 
+**The shopfront goes to the edges and to the top.** There is no gutter round
+it: a shopfront with a strip of tiled wall either side of it is a photograph of
+a shopfront rather than one, and the sign is the first thing on the screen, so
+it gets the full width. The two lines of text under it bring their own padding.
+
+And he holds his knife by the handle. A knife in this game is drawn from its
+point - the tip is the origin, because on the shop floor the tip is where your
+finger is - so putting that origin in his fist had him holding the thing by the
+end of the blade with the handle dangling below his hand. It is backed off the
+middle of the grip now, so the fist closes round the handle with the butt below
+and the blade above, which is how a man holds a knife up.
+
 They are drawn as big as the window will hold them. There were ninety-odd dead
 pixels between the awning and his hat, and the canvas stopped at its own three
 hundred and forty rather than filling what it was given, so a phone showed two
