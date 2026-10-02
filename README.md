@@ -21,6 +21,18 @@ actually lit in a window. The bands are offset copies of the same centre line,
 so they follow every bend of the string for nothing. The dog is drawn on the
 same terms.
 
+A steak is drawn as a steak rather than as an ellipse with a smaller ellipse
+inside it: a blob with a lobe hanging off the bottom left and a notch above it,
+which is the shape a sirloin actually is, with the fat round the outside, a
+thin pale line where the fat meets the meat, the meat, and a three-pronged bit
+of gristle through the middle. The whole thing is one outline filled three
+times at three sizes, so the rim is even all the way round including the lobe,
+and half of one is the same steak with the other half clipped away - so the fat
+stops at the knife and the cut face is meat, which is what a cut steak looks
+like and what building a separate half-shape could never give. The icon on the
+week's receipt is the same silhouette with the gristle knocked out of it, so
+the one colour the ledger gives it still draws a steak.
+
 Each twist is a thread of skin with a bit of slack in it, not a pinch to a
 point. A straight taper into the middle draws two sausages meeting at an X,
 which is a diagram of sausages rather than sausages - the giveaway is that the
@@ -214,10 +226,35 @@ off the side of a phone, and a prop that leaves the screen on the good weeks is
 a prop that works on the ones nobody wants. The notes come out of the number
 itself now, which is where they are going anyway.
 
+**And it is the whole screen.** Five small notes creeping up over a second was
+the one moment in this game where something good is unambiguously happening,
+and it went past without anybody noticing it. There are ten notes and eight
+coins now, thrown up from below the fold and spread across the window; a bloom
+of gold behind the number; the number itself swelling and going white-hot while
+it counts; a run of chinks and the drawer twice; and **the figure that was
+added** riding up over the top of it in green, because a number that climbs
+from one total to another never says how far it climbed.
+
 **The shopfront goes to the edges and to the top.** There is no gutter round
 it: a shopfront with a strip of tiled wall either side of it is a photograph of
 a shopfront rather than one, and the sign is the first thing on the screen, so
 it gets the full width. The two lines of text under it bring their own padding.
+It took two goes. The board was still inset six pixels on three sides, which is
+a hairline of tiled wall between the sign and the top of the phone and reads as
+a gap because it is one. It is flush to the canvas now and the lettering has
+grown into the extra room.
+
+**And they are in a room rather than against a wall.** It was a sign, two
+figures and three hundred pixels of the same tiled wall the rest of the game is
+played on. Two things fix it and neither needs any space: the daylight coming
+in under the awning, which is the only light a shop like this has, washing down
+the tiles and falling off at the corners - and the **counter** across the
+bottom, which is what the two of them are stood behind. The dog's chin is over
+the top of it, which is where a dog puts its chin. Marble slab, a dark front
+that goes down into the colour the page carries on in so the counter runs off
+the bottom of the canvas rather than stopping at it, and three little black
+price tickets stood on it - the same plaque the day's takings come up on.
+Nothing else in one picture says butcher's counter.
 
 And he holds his knife by the handle. A knife in this game is drawn from its
 point - the tip is the origin, because on the shop floor the tip is where your
@@ -285,6 +322,19 @@ the day's total lands twenty seconds later with nothing else on the screen.
 So the only things that ever appear over the window are the things that are not
 money: PERFECT, a double, a greedy one, a prime cut, a link the dog dropped or
 spat out.
+
+**And the week is a receipt.** What the six days came to used to be a cream
+ticket with a heavy dark border and a gold hairline inside it - the same plate
+the shop signs are painted on - which made the end of a week look like a
+certificate somebody had awarded you. What a week actually produces is a strip
+of paper off a till, so that is what it is: white, narrow, monospaced, torn off
+the roll at both ends, with the shop's name at the top, what it says under the
+name on the fascia, the week number and who served you, the six days printed
+down it, a total under a dashed rule with the word on the left and the figure
+on the right the way a till prints one, and a barcode at the bottom grown out
+of the week's own numbers so no two weeks print the same strip. The red ribbon
+over the top became a rubber stamp banged on the corner, because a stamp is the
+only thing that ever gets added to a receipt after it has been printed.
 
 **The day is priced like a piece of meat.** What a day took used to go up on a
 dark green panel with a gold border round it and a gold number in it, which is
@@ -439,6 +489,14 @@ turns up at a different height every day reads as a thing the game is doing to
 you rather than as a cat. It hands back none of the ground it has made - it just stands
 there for a second and a half, which is what a dog does.
 
+**And you can see it has seen it.** The sway stops and a quiver takes its
+place, about the size of a held breath; the brows lift out of the way; the head
+cocks the way the cat is going; and the eyes open right up, pupils gone with
+them, with the white going in underneath so it reads as the eye widening rather
+than as a bigger dot painted on the face. A dog that has seen something is a dog
+with too much eye showing, and it used to stand there with exactly the same
+expression it has for an empty room.
+
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
 cut at the quality of somebody who has done it a hundred times and is not
@@ -531,7 +589,7 @@ reason, it is saved with everything else, and while it is on the version label
 in the corner says so.
 
 With it on there is one more button under the shelves: **a mini-game**, with the
-four of them to pick from, because the honest way to see the barbecue is to play
+five of them to pick from, because the honest way to see the barbecue is to play
 a perfect week and the honest way to see it twice is to play two. It puts you
 back on the shopfront when it is done rather than opening a week - it is not
 Saturday night, it is a man in the back room with the lights on.
@@ -676,7 +734,7 @@ find; and four in one swipe once, which the board tells you to try on a
 Saturday, because a straight line through two twists tops out at
 three anywhere from Monday to Friday and at five on a Saturday, measured over a
 hundred and twenty deals of each. A week the dog got nothing, ten of those, ten
-hours after closing, all four of its games, and a barbecue with nothing black
+hours after closing, all five of its games, and a barbecue with nothing black
 on it. A hundred pounds, a thousand, five thousand, and a hundred and twenty in one week - a shop with the rail stocked,
 the slab stocked and an hour after closing clears a hundred and thirty, and
 sixty was a middling Tuesday-to-Saturday. The
@@ -752,8 +810,7 @@ sausages across six days, and the sixth is eleven of them with the dog coming
 at you at nearly twice Monday's speed - it is the rarest thing in this game and
 it cannot be fluked. One good Wednesday does not buy it.
 
-Four of them, one picked at random, nine seconds each (the ketchup gets four
-and a half), and it runs before the
+Five of them, one picked at random, nine seconds each, and it runs before the
 week is counted so whatever it makes is part of that week's takings.
 
 It says why it is happening. PERFECT WEEK lands across the middle of the screen
@@ -789,27 +846,38 @@ twenty-two pounds, about a third on top of a perfect week.
   under it, looks exactly like a jar that does not work. The barbecue already
   ends when the grill is empty rather than when the clock says so; the jar ends
   when the last coin has landed, the same way.
-- **Sauce on.** One pass of ketchup down a hot dog. What it pays is how much of
-  the bun you covered and how closely you followed it, both - so a quick
-  scribble down the middle is worth less than one careful stroke. **The bun is
-  never the same bun twice**: it tilts one way or the other and bows up or down,
-  and the sauce has to go along it rather than across the screen. It was a
-  horizontal line on a horizontal bun, which is a straight line drawn with a
-  finger - the one thing a finger is good at - and it paid nearly full marks for
-  it. A flat stroke across the new one pays six pounds forty and following the
-  curve pays seventeen fifty, which is the gap the game was missing. The
-  tolerance is tighter with it, because the shape is now the thing being asked
-  for. Up to twenty pounds,
-  and **four and a half seconds**, not nine. The other two are nine seconds of
-  things coming at you; this one is a single stroke, and nine seconds to draw
-  one line is nine seconds to draw it as slowly and as carefully as you like,
-  which is a drawing exercise rather than a game. The four and a half start
-  when your finger lands on the bun rather than when the game opens - PERFECT
-  WEEK is across the middle of the screen for the first second and a half, and
-  a clock you spend a third of under a banner is not a clock, it is a tax - and
-  if nobody picks the bottle up it starts without them. A clock that runs out
-  mid-stroke pays for the half a line that is on there, rather than for
-  nothing: the line used to be scored only when you lifted.
+- **Sauce on.** A line of hot dogs down the counter and a bottle of ketchup.
+  One pass down each: what each pays is how much of the bun you covered and
+  how closely you followed it, both, so a quick scribble down the middle is
+  worth less than one careful stroke. Lift your finger and that one is scored,
+  paid and gone, and the next slides in.
+
+  **It used to be one bun and nine seconds**, which is nine seconds to draw one
+  line as slowly and as carefully as you like - a drawing exercise rather than
+  a game. Cutting the clock to four and a half helped and did not fix it,
+  because the question was still *how neat a line can you draw*, asked once. Now
+  it is *how good a line can you commit to in a second and a half*, asked six
+  times, and that is a game. The clock starts when your finger first lands
+  rather than when the thing opens - PERFECT WEEK is across the middle of the
+  screen for the first second and a half, and a clock you spend a third of
+  under a banner is not a clock, it is a tax - and if nobody picks the bottle
+  up it starts without them.
+
+  **The bun is never the same bun twice**: it tilts one way or the other and
+  bows up or down, so the sauce has to go along it rather than across the
+  screen, and there is nothing to learn on the first one that you can spend on
+  the sixth. A flat stroke across one pays six pounds forty and following the
+  curve pays seventeen fifty.
+
+  **The bottle is on the end of your finger**, nozzle first, trailing back the
+  way you are going - the same rule as the knife on the shop floor and the
+  katana next door. A game about squeezing a bottle with no bottle on the
+  screen is a game about dragging your finger. It squeaks while you squeeze,
+  the sauce goes down bright where you are on the bun and dull and thin where
+  you are not - so you can see the stroke going wrong while it is going wrong
+  rather than being handed a number for it afterwards - and some of it misses.
+  What comes off the nozzle falls, lands on the cloth and stays there, so by
+  the sixth bun the counter looks like somebody has been working at it.
 - **Sausage samurai.** Links thrown up from under the counter, one to three at
   a time, and a katana on the end of your finger. Cut them out of the air: a
   pound fifty each and a pound ten on top for every extra one taken in the same
@@ -824,6 +892,18 @@ twenty-two pounds, about a third on top of a perfect week.
   the butcher's own knife is on the shop floor: a game about a sword where the
   sword only appears once you are already swinging is a game that never told you
   it had one.
+- **Butcher's dream.** He has gone to sleep and he is flying, boater on, apron
+  streaming out behind him, through a sky with the week's work coming at him in
+  waves. **Hold anywhere to rise and let go to sink**, and that is the whole of
+  the input - the other four are a drag, a trace, a swipe and a tap, and this
+  one is the only verb left. You are not steering him, you are holding him up.
+
+  They come in runs of four to seven strung along a curve, so what you are
+  reading is the shape of a line rather than the position of a dot, and an
+  unbroken run pays more and more the longer you hold it - the rail's own rule
+  about taking two at once, carried through the back door again. One off the
+  back of a line breaks the run. Nothing is lost for missing: there is no
+  scoreboard back here, only a till.
 - **On the barbecue.** Five sausages cooking at their own speeds, steaming,
   spitting fat at the bars and hissing every half second. Tap one while it is
   done and it is four forty; tap it early, or leave it until it is black,
@@ -836,8 +916,8 @@ twenty-two pounds, about a third on top of a perfect week.
   watch on an empty barbecue.
 
 **None of them happens in the shop.** The bottle-green tiles are the wall you
-work against and they are behind every single thing in this game; four
-mini-games played on them is the same room four times over at the one moment
+work against and they are behind every single thing in this game; five
+mini-games played on them is the same room five times over at the one moment
 the game is meant to feel like a treat. So each has a backdrop of its own,
 drawn on the same terms as everything else - flat shapes, no outline, and
 nothing kept between frames, so what moves is worked out from the clock.
@@ -859,9 +939,14 @@ nothing kept between frames, so what moves is worked out from the clock.
   garden, the last of the sun behind it, the stars starting, and a lawn mown in
   stripes that widen as they come at you. Dark enough that a pink sausage and a
   black one are plainly two different things, which is the whole game.
+- **Butcher's dream** is not a place at all, and uses none of the game's own
+  colours to say so: a sherbet sky going from violet at the top to peach at the
+  bottom, a sun that is not quite a sun, and three banks of cloud at three
+  speeds so the sky has a depth to it. The clouds are sausages. Nobody says it
+  out loud and everybody sees it.
 
 All four darken under the top of the screen, because the name of the game and
-the clock sit up there and they have to read on all four.
+the clock sit up there and they have to read on all five.
 
 They run on the same canvas the day is played on. A second canvas means a
 second copy of everything that makes this one fit a phone, and by the time they

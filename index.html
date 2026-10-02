@@ -44,6 +44,8 @@
     --danger:  #d8462f;
     --good:    #74b985;
     --font:         "Lato", system-ui, -apple-system, sans-serif;
+    --mono:         ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+                    "Liberation Mono", monospace;
     --font-display: "Alfa Slab One", Georgia, serif;
 }
 * { box-sizing: border-box; touch-action: manipulation; -webkit-user-select: none; user-select: none;
@@ -129,11 +131,11 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #shopfront { width: 100%; height: auto; max-height: 54vh;
              animation: butcherIn .6s cubic-bezier(.2, 1.5, .4, 1) both; }
 /* the week's takings, day by day */
-#ledger { width: 100%; border-collapse: collapse; margin: 4px 0 10px;
-          font-size: 13px; font-weight: 700; }
-#ledger td { padding: 3px 0; border-bottom: 1px solid rgba(42,33,24,.14); }
-#ledger td.d { text-align: left; letter-spacing: .1em; text-transform: uppercase;
-               font-size: 11px; opacity: .7; }
+#ledger { width: 100%; border-collapse: collapse; margin: 2px 0 8px;
+          font-family: var(--mono); font-size: 12px; font-weight: 700; }
+#ledger td { padding: 3px 0; border-bottom: none; }
+#ledger td.d { text-align: left; letter-spacing: .06em; text-transform: uppercase;
+               font-size: 10.5px; opacity: .75; padding-right: 9px; white-space: nowrap; }
 #ledger td.w { text-align: left; font-weight: 400; opacity: .5; font-size: 11px; }
 /* What the day was made of, in the colour each thing actually is. */
 #ledger .cnt { display: inline-flex; align-items: center; gap: 3px;
@@ -143,7 +145,8 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger .cnt.pud   { color: #4a3330; } #ledger .cnt.pud svg   { fill: #3d2724; }
 #ledger .cnt.steak { color: #8a3f52; } #ledger .cnt.steak svg { fill: #b2566c; }
 #ledger tr.extra td.w .cnt { opacity: .9; }
-#ledger td.m { text-align: right; font-family: var(--font-display); font-size: 15px; }
+#ledger td.m { text-align: right; font-family: var(--mono); font-size: 13px;
+               font-weight: 700; font-variant-numeric: tabular-nums; }
 #ledger tr.shut td { opacity: .35; }
 #ledger tr.best td.m { color: #1f7a3f; }
 /* The hour after closing is not one of the six days, so it does not get a day
@@ -151,8 +154,8 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
    after the week was counted would be written in. The same line says why there
    was no hour after closing on the weeks there was not one, because a reward
    you only ever see by accident is not a reward, it is a bug. */
-#ledger tr.extra td { border-bottom: none; border-top: 2px solid rgba(42,33,24,.22);
-                      padding-top: 5px; }
+#ledger tr.extra td { border-bottom: none; border-top: 1.5px dashed rgba(38,33,28,.4);
+                      padding-top: 6px; }
 #ledger tr.extra.won td { color: #1f7a3f; }
 #ledger tr.extra td.w { opacity: .66; }
 /* The dog's line is a footnote rather than a row of accounts - there is no
@@ -176,7 +179,8 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #rating { display: none; }
 #card.grave #rating, #card.vet #rating, #card.hurt #rating { display: block; margin-top: 8px; }
 #card.grave #score { color: #5a564e; }
-#card.grave #ribbon { background: #4b4842; color: #efe7d4; }
+#card.grave #ribbon { color: #5a564e; border-color: #5a564e;
+                      box-shadow: inset 0 0 0 1px rgba(90,86,78,.3); }
 
 
 /* The count is the only thing on the screen that is about to matter, so it
@@ -272,8 +276,11 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
             text-transform: uppercase; color: rgba(246,241,230,.52); margin-top: 4px; }
 /* The red flash off the same window, for the one day in a while you get the
    whole string off. It is the only thing on the ticket that is not black. */
+/* Over the ticket, not under it. The keyline is an ::after and so paints over
+   every ordinary child, the flash included - which put a white hairline across
+   the middle of it. */
 #tally .flash {
-    position: absolute; top: -28px; left: -26px; width: 54px; height: 54px;
+    position: absolute; z-index: 2; top: -28px; left: -26px; width: 54px; height: 54px;
     display: flex; align-items: center; justify-content: center; padding: 5px;
     border-radius: 50%; background: #c4231f; color: #fff3e8;
     transform: rotate(-15deg);
@@ -336,21 +343,71 @@ body.waiting #hud { display: none; }
 .bank .ico { width: 17px; height: 17px; flex: none; fill: var(--gold); opacity: .55; }
 .bank b { font-family: var(--font-display); font-size: 17px; letter-spacing: .02em;
           color: var(--gold); }
-/* The week's takings going in. Notes come out of the till, arc across to
-   where the number sits and fade into it while the number counts up to meet
-   them - which is what the ledger card has just finished telling you, said
-   once more in the only other language this screen has. Only after a week:
-   opening the game to a till spitting money at you says nothing happened. */
+/* The week's takings going in. It was five small notes creeping up out of the
+   bottom of the number over a second, which is the one moment in the game
+   where something good is unambiguously happening and it went past without
+   anybody noticing it. It is the whole screen now: notes and coins thrown up
+   from below the fold, the figure that was added riding up over the top of
+   the number, a bloom of gold behind it, and the number itself swelling and
+   going white-hot while it counts. Only after a week: opening the game to
+   money flying at you says nothing happened. */
 #bank-line { margin-top: 13px; gap: 12px; position: relative; }
-#bank-line .note {
-    position: absolute; left: 0; top: 50%; width: 30px; height: 30px;
-    margin: -15px 0 0; fill: #74b985; pointer-events: none;
-    animation: noteOut .95s cubic-bezier(.3,.75,.45,1) var(--d) both;
+#bank-line .note, #bank-line .coin {
+    position: absolute; left: 0; top: 50%; pointer-events: none;
+    animation: noteOut 1.25s cubic-bezier(.26,.72,.35,1) var(--d) both;
+}
+#bank-line .note { width: 36px; height: 36px; margin: -18px 0 0; fill: #74b985; }
+#bank-line .coin {
+    width: 24px; height: 24px; margin: -12px 0 0; border-radius: 50%;
+    background: radial-gradient(circle at 36% 32%, #f0d484 0%, #dcab3e 58%, #a87c22 100%);
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,.22);
 }
 @keyframes noteOut {
-    0%   { transform: translate(0, 42px) scale(.5) rotate(0deg); opacity: 0; }
-    18%  { opacity: 1; }
-    100% { transform: translate(var(--dx), -6px) scale(1.05) rotate(var(--r)); opacity: 0; }
+    0%   { transform: translate(0, var(--from)) scale(.4) rotate(0deg); opacity: 0; }
+    12%  { opacity: 1; }
+    52%  { opacity: 1; }
+    100% { transform: translate(var(--dx), var(--to)) scale(1.12) rotate(var(--r)); opacity: 0; }
+}
+/* The bloom behind it, which is the whole of what the screen does with the
+   good news - there is nothing else on it to do anything with. */
+#bank-line .burst {
+    position: absolute; left: 50%; top: 50%; width: 300px; height: 300px;
+    margin: -150px 0 0 -150px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(240,212,132,.40) 0%,
+                                rgba(240,212,132,.14) 42%, rgba(240,212,132,0) 70%);
+    animation: burstOut 1.55s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes burstOut {
+    0%   { transform: scale(.18); opacity: 0; }
+    16%  { opacity: 1; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
+/* And what was actually added, said once, in the green everything gained in
+   this game is written in. A number that climbs from one total to another
+   never says how far it climbed. */
+#bank-line .added {
+    position: absolute; left: 50%; top: 50%; pointer-events: none; white-space: nowrap;
+    font-family: var(--font-display); font-size: clamp(20px, 7vw, 30px);
+    color: #8fd6a2; text-shadow: 0 3px 0 rgba(0,0,0,.5);
+    animation: addedUp 1.7s cubic-bezier(.22,.9,.3,1) both;
+}
+@keyframes addedUp {
+    0%   { transform: translate(-50%, 16px) scale(.5); opacity: 0; }
+    13%  { transform: translate(-50%, 0) scale(1.18); opacity: 1; }
+    30%  { transform: translate(-50%, -9px) scale(1); opacity: 1; }
+    70%  { transform: translate(-50%, -30px) scale(1); opacity: .95; }
+    100% { transform: translate(-50%, -54px) scale(.94); opacity: 0; }
+}
+#bank-line.paying b { animation: tillGlow 1.5s ease-out both; }
+@keyframes tillGlow {
+    0%   { transform: scale(.93); color: var(--gold);
+           text-shadow: 0 4px 0 rgba(0,0,0,.4); }
+    18%  { transform: scale(1.09); color: #fff6d8;
+           text-shadow: 0 4px 0 rgba(0,0,0,.4), 0 0 30px rgba(240,212,132,.95); }
+    68%  { transform: scale(1.04); color: #ffe9a8;
+           text-shadow: 0 4px 0 rgba(0,0,0,.4), 0 0 22px rgba(240,212,132,.55); }
+    100% { transform: scale(1); color: var(--gold);
+           text-shadow: 0 4px 0 rgba(0,0,0,.4); }
 }
 
 #bank-line .ico { width: 38px; height: 38px; opacity: .72; }
@@ -622,40 +679,78 @@ body.waiting #hud { display: none; }
 }
 @keyframes butcherIn { from { transform: translateY(26px) scale(.9); opacity: 0; }
                        to   { transform: none; opacity: 1; } }
+/* It is a till receipt. It used to be a cream ticket with a heavy dark border
+   and a gold hairline inside it - the same plate the shop signs are painted
+   on - which made the end of a week look like a certificate. What a week
+   actually produces is a strip of paper off a till, so that is what it is now:
+   white, narrow, monospaced, torn off at both ends, with the shop's name at
+   the top, the six days printed down it, a total under a dashed rule and a
+   barcode at the bottom. */
 #card .inner {
     position: relative; flex: none; pointer-events: auto;
     animation: sheetIn .34s cubic-bezier(.2, 1.3, .4, 1) .12s both;
-    width: 100%; max-width: 316px; padding: 22px 20px 20px;
-    background: linear-gradient(180deg, #faf4e6, #eadfc6);
-    border: 3px solid #2a2118; border-radius: 4px;
-    box-shadow: 0 10px 0 rgba(0,0,0,.30); text-align: center; color: #2a2118;
+    width: 100%; max-width: 292px; padding: 24px 20px 22px;
+    background: #fbfaf6;
+    /* torn off the roll at both ends, which is the one thing that says paper */
+    clip-path: polygon(0 8px, 4.5455% 0, 9.0909% 8px, 13.6364% 0, 18.1818% 8px, 22.7273% 0, 27.2727% 8px, 31.8182% 0, 36.3636% 8px, 40.9091% 0, 45.4545% 8px, 50.0000% 0, 54.5455% 8px, 59.0909% 0, 63.6364% 8px, 68.1818% 0, 72.7273% 8px, 77.2727% 0, 81.8182% 8px, 86.3636% 0, 90.9091% 8px, 95.4545% 0, 100.0000% 8px, 100% calc(100% - 8px), 95.4545% 100%, 90.9091% calc(100% - 8px), 86.3636% 100%, 81.8182% calc(100% - 8px), 77.2727% 100%, 72.7273% calc(100% - 8px), 68.1818% 100%, 63.6364% calc(100% - 8px), 59.0909% 100%, 54.5455% calc(100% - 8px), 50.0000% 100%, 45.4545% calc(100% - 8px), 40.9091% 100%, 36.3636% calc(100% - 8px), 31.8182% 100%, 27.2727% calc(100% - 8px), 22.7273% 100%, 18.1818% calc(100% - 8px), 13.6364% 100%, 9.0909% calc(100% - 8px), 4.5455% 100%, 0.0000% calc(100% - 8px));
+    filter: drop-shadow(0 7px 10px rgba(0,0,0,.42));
+    text-align: center; color: #26211c;
+    font-family: var(--mono);
 }
-#card .inner::after {
-    content: ''; position: absolute; inset: 6px; pointer-events: none;
-    border: 1.5px solid rgba(42,33,24,.35);
-}
+/* The shop's own name on the paper, the way it comes off a real one. */
+#till-head { margin: 17px 0 8px; }
+#till-head .sh { display: block; font-family: var(--font-display); font-size: 17px;
+                 line-height: 1.15; letter-spacing: .01em; }
+#till-head .fb { display: block; font-size: 8.5px; font-weight: 700; letter-spacing: .3em;
+                 text-transform: uppercase; opacity: .6; margin-top: 3px; }
+#till-head .wk { display: flex; justify-content: space-between; margin-top: 9px;
+                 padding-top: 7px; border-top: 1.5px dashed rgba(38,33,28,.4);
+                 font-size: 9.5px; letter-spacing: .04em; text-transform: uppercase;
+                 opacity: .66; }
+#card.vet #till-head, #card.hurt #till-head, #card.grave #till-head,
+#card.vet #barcode, #card.hurt #barcode, #card.grave #barcode,
+#card.vet #tillno, #card.hurt #tillno, #card.grave #tillno { display: none; }
+/* The strip of bars along the bottom, built out of the week's own takings so
+   no two weeks print the same one. It says nothing and scans as nothing, and
+   a receipt without one is not a receipt. */
+#barcode { margin: 14px 0 0; height: 34px; line-height: 0; white-space: nowrap;
+           overflow: hidden; }
+#barcode i { display: inline-block; height: 100%; background: #26211c; }
+#barcode + .no { display: block; font-size: 9px; letter-spacing: .28em;
+                 opacity: .55; margin-top: 4px; }
 @keyframes sheetIn { from { transform: translateY(26px); opacity: 0; }
                      to   { transform: translateY(0); opacity: 1; } }
+/* Not a ribbon over the top of a certificate any more - a rubber stamp
+   banged on the paper, which is the only thing that ever gets added to a
+   receipt after it is printed. */
 #ribbon {
-    position: absolute; top: -17px; left: 50%; transform: translateX(-50%);
-    font-family: var(--font-display); font-size: 14px; letter-spacing: .16em; white-space: nowrap;
-    padding: 5px 18px 4px; background: var(--danger); color: #fff5e6;
-    border: 2.5px solid #2a2118; border-radius: 2px; z-index: 3;
-    animation: ribbonIn .5s cubic-bezier(.2, 1.6, .4, 1) both;
+    position: absolute; top: 11px; right: 4px; transform: rotate(-8deg);
+    font-family: var(--mono); font-weight: 700; font-size: 9.5px; letter-spacing: .13em;
+    white-space: nowrap; padding: 4px 8px 3px; background: transparent;
+    color: #b3372b; border: 2.5px solid #b3372b; border-radius: 3px;
+    box-shadow: inset 0 0 0 1px rgba(179,55,43,.35); opacity: .88; z-index: 3;
+    animation: ribbonIn .4s cubic-bezier(.2, 1.9, .4, 1) .1s both;
 }
-@keyframes ribbonIn { from { transform: translateX(-50%) scale(.6); opacity: 0; }
-                      to   { transform: translateX(-50%) scale(1); opacity: 1; } }
-#card.good #ribbon { background: var(--gold); color: #2a2118; }
+@keyframes ribbonIn { from { transform: rotate(-8deg) scale(1.9); opacity: 0; }
+                      to   { transform: rotate(-8deg) scale(1); opacity: .88; } }
+#card.good #ribbon { color: #1f7a3f; border-color: #1f7a3f;
+                     box-shadow: inset 0 0 0 1px rgba(31,122,63,.35); }
+/* A till prints a total as a word on the left and a figure on the right under
+   a dashed rule, so that is how this one prints. The figure is still the
+   biggest thing on the paper, because it is still the only score. */
 #card #score {
-    display: block; font-family: var(--font-display); font-size: 48px; line-height: 1;
-    color: #b03a25; margin: 8px 0 0;
+    display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+    font-family: var(--mono); font-weight: 700; font-size: 36px; line-height: 1;
+    letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+    color: #b03a25; margin: 2px 0 0; padding-top: 10px;
+    border-top: 1.5px dashed rgba(38,33,28,.45);
 }
-#card.good #score { color: #a8791e; }
+#card.good #score { color: #1f7a3f; }
 /* The takings are a receipt, not a verdict, so the card does not wait to be
    dismissed: it holds long enough to read and then puts you back in the
    window. The line says how long that is rather than springing it on you. */
-#cardtime { display: none; height: 3px; margin: 14px -20px -20px;
-            background: rgba(42,33,24,.13); overflow: hidden; }
+#cardtime { display: none; height: 3px; margin: 13px 0 0;
+            background: rgba(38,33,28,.14); overflow: hidden; }
 #card.timed #cardtime { display: block; }
 /* The one card in the game that asks a question rather than reporting a
    result, so it is the one card with two different answers on it. */
@@ -678,15 +773,16 @@ body.waiting #hud { display: none; }
               transform-origin: left; animation: cardtime 5s linear both; }
 @keyframes cardtime { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 #card .btn.ghost {
-    background: transparent; color: #2a2118; border-color: #2a2118;
+    background: transparent; color: #26211c; border-color: #26211c;
     box-shadow: 0 3px 0 rgba(0,0,0,.22); font-size: 15px; padding: 10px; margin-top: 8px;
 }
 /* the caption sits under the number rather than beside it - "for the week"
    alongside a five-figure total wraps, and wraps badly */
-#score .pc { display: block; font-size: .24em; letter-spacing: .16em;
-             text-transform: uppercase; opacity: .6; margin-top: 4px; }
-#rating { margin: 6px 0 0; font-family: var(--font); font-weight: 900; font-size: 17px;
-          text-transform: uppercase; letter-spacing: .06em; }
+#score .pc { order: -1; font-family: var(--mono); font-weight: 700; font-size: .26em;
+             letter-spacing: .14em; text-transform: uppercase; color: #26211c;
+             opacity: .7; margin: 0; }
+#rating { margin: 9px 0 0; font-family: var(--mono); font-weight: 700; font-size: 11px;
+          text-transform: uppercase; letter-spacing: .1em; opacity: .75; }
 #pass { margin: 7px 0 0; font-size: 11px; font-weight: 700; letter-spacing: .12em;
         text-transform: uppercase; opacity: .55; }
 .btn {
@@ -787,12 +883,22 @@ body.waiting #hud { display: none; }
                  M 8.1 9.4 A 1.05 1.05 0 1 0 8.11 9.4 Z
                  M 10 12.1 A 1.05 1.05 0 1 0 10.01 12.1 Z"/>
     </symbol>
+    <!-- A steak is a blob with a lobe on it and a three-pronged bit of
+         gristle through the middle - not a rounded rectangle with a hole in
+         it, which is what the first one was and which reads as a domino. The
+         gristle is knocked out of the same path, so the one colour the ledger
+         gives it still draws a steak. -->
     <symbol id="i-steak" viewBox="0 0 16 16">
         <path fill-rule="evenodd"
-              d="M 6.2 1.4 C 10.6 .4 15 3.2 15.4 7.6 C 15.8 11.8 11.8 15.3 7.6 14.6
-                 C 4.1 14 4.4 11.4 4.6 8.6 C 4.8 5.6 3.7 2.1 6.2 1.4 Z
-                 M 10.1 5.6 A 2.5 2.5 0 1 0 10.11 5.6 Z"/>
-        <path d="M 4.6 4.4 C 1.9 3.6 .3 5.4 1 7.4 C 1.7 9.5 3.9 10 4.9 9.1 Z"/>
+              d="M 9.11 1.80
+                 C 14.29 2.11, 15.40 5.21, 15.25 7.69
+                 C 15.03 11.10, 11.70 13.27, 8.15 13.33
+                 C 5.41 13.39, 3.93 14.51, 2.23 13.89
+                 C 0.45 13.21, 0.23 10.60, 1.78 9.74
+                 C 3.19 8.99, 3.41 7.88, 2.67 6.64
+                 C 1.19 4.16, 4.30 1.80, 9.11 1.80 Z
+                 M 3.65 9.29 L 8.08 7.87 L 12.16 4.44 L 10.12 8.27
+                 L 11.23 12.00 L 8.46 8.88 Z"/>
     </symbol>
     <!-- The shop till: a sign on top, a keypad knocked out of the body and
          the drawer under it. What the money in this game actually sits in. -->
@@ -966,9 +1072,12 @@ body.waiting #hud { display: none; }
         <canvas id="butcher" width="330" height="300"></canvas>
         <div class="inner">
             <div id="ribbon">WEEK&rsquo;S TAKINGS</div>
+            <div id="till-head"></div>
             <table id="ledger"></table>
             <span id="score">0<span class="pc">for the week</span></span>
             <p id="rating">Butchered</p>
+            <div id="barcode"></div>
+            <span class="no" id="tillno">0000 0000 0000</span>
             <button class="btn" id="again">Back to the shop</button>
             <button class="btn" id="vet-pay">Vet&rsquo;s fees</button>
             <button class="btn ghost" id="vet-no">Say goodbye</button>
@@ -979,7 +1088,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v94';
+const APP_VERSION = 'v95';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1755,26 +1864,49 @@ const splat = () => safely(t => {
     tone(t, { freq: 120, to: 48, dur: .22, type: 'sine', vol: .18 });
 });
 // drawn at the origin, so the dog can be handed one as easily as the window can
+/* A steak, drawn as a steak rather than as an ellipse with a smaller ellipse
+   inside it. It is a blob with a lobe hanging off the bottom left and a notch
+   above it - the shape a sirloin actually is - with the fat round the outside,
+   a thin pale line inside the fat where the fat meets the meat, the meat, and
+   a three-pronged bit of gristle through the middle of it. Four flat shapes,
+   same as everything else in here, and the whole thing is one outline scaled
+   down three times so the rim is even all the way round including the lobe. */
 function steakShape(ctx, half) {
-        const RX = 52, RY = 40;
+    const RX = 52, RY = 40;
+    const lay = k => {
+        const X = RX * k, Y = RY * k;
         ctx.beginPath();
-        // a ribeye: the fat round most of the rim, the eye of it in the middle
-        if (half) { ctx.moveTo(0, -RY); ctx.quadraticCurveTo(RX * .9, -RY * .9, RX, 0);
-                    ctx.quadraticCurveTo(RX * .9, RY * .9, 0, RY); ctx.closePath(); }
-        else ctx.ellipse(0, 0, RX, RY, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#f0e2c6'; ctx.fill();               // the fat, as the whole rim
-        ctx.shadowColor = 'transparent';
-        ctx.save(); ctx.clip();
-        ctx.beginPath(); ctx.ellipse(-1, 1, RX - 7, RY - 7, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#9e3326'; ctx.fill();               // and the meat inside it
-        ctx.beginPath(); ctx.ellipse(-7, -8, RX - 19, RY - 17, -.3, 0, Math.PI * 2);
-        ctx.fillStyle = '#bb4a35'; ctx.fill();
-        ctx.strokeStyle = 'rgba(245,232,210,.5)'; ctx.lineWidth = 3.4; ctx.lineCap = 'round';
-        for (const [a, b2, c, d] of [[-22, -12, 6, -19], [-15, 7, 16, -3], [-4, 18, 22, 13]]) {
-            ctx.beginPath(); ctx.moveTo(a, b2); ctx.quadraticCurveTo((a + c) / 2, (b2 + d) / 2 - 5, c, d);
-            ctx.stroke();
-        }
-        ctx.restore();
+        ctx.moveTo(.15 * X, -1 * Y);
+        ctx.bezierCurveTo(.85 * X, -.95 * Y, 1 * X, -.45 * Y, .98 * X, -.05 * Y);
+        ctx.bezierCurveTo(.95 * X, .5 * Y, .5 * X, .85 * Y, .02 * X, .86 * Y);
+        ctx.bezierCurveTo(-.35 * X, .87 * Y, -.55 * X, 1.05 * Y, -.78 * X, .95 * Y);
+        ctx.bezierCurveTo(-1.02 * X, .84 * Y, -1.05 * X, .42 * Y, -.84 * X, .28 * Y);
+        ctx.bezierCurveTo(-.65 * X, .16 * Y, -.62 * X, -.02 * Y, -.72 * X, -.22 * Y);
+        ctx.bezierCurveTo(-.92 * X, -.62 * Y, -.5 * X, -1 * Y, .15 * X, -1 * Y);
+        ctx.closePath();
+    };
+    ctx.save();
+    /* Half of one is the same steak with the other half cut away, so the fat
+       stops at the knife and the cut face is meat - which is what a cut steak
+       looks like and what building a separate half-shape could never give. */
+    if (half) { ctx.beginPath(); ctx.rect(0, -RY * 1.4, RX * 1.5, RY * 2.8); ctx.clip(); }
+    lay(1); ctx.fillStyle = '#d9933f'; ctx.fill();          // the fat round the rim
+    ctx.shadowColor = 'transparent';
+    lay(.9); ctx.fillStyle = '#f2ece0'; ctx.fill();         // the line inside it
+    lay(.84); ctx.fillStyle = '#a8392a'; ctx.fill();        // and the meat
+    ctx.save(); lay(.84); ctx.clip();
+    ctx.beginPath();
+    ctx.ellipse(-RX * .18, -RY * .26, RX * .5, RY * .42, -.3, 0, Math.PI * 2);
+    ctx.fillStyle = '#bd4a34'; ctx.fill();                  // lit on the top left
+    ctx.restore();
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';          // the gristle through it
+    ctx.beginPath();
+    ctx.moveTo(-26, 9); ctx.lineTo(-1, 0); ctx.lineTo(27, -20);
+    ctx.lineTo(13, 2); ctx.lineTo(21, 24); ctx.lineTo(3, 6);
+    ctx.closePath();
+    ctx.fillStyle = '#f0e2c6'; ctx.fill();
+    ctx.strokeStyle = '#f0e2c6'; ctx.lineWidth = 3.2; ctx.stroke();
+    ctx.restore();
 }
 function drawSteak(ctx) {
     if (!steak) return;
@@ -2317,6 +2449,25 @@ function lastLine() {
            `</td>` +
            `<td class="m">&minus;${money2(Math.round(fedCost))}</td></tr>`;
 }
+/* The bars along the bottom of a receipt, grown from the week's own numbers
+   so no two weeks print the same strip. Every other bar is the gap. */
+function barcode(seed) {
+    let v = (seed | 0) + 7919, out = '';
+    for (let i = 0; i < 84; i++) {
+        v = (v * 1103515245 + 12345) & 0x7fffffff;
+        out += `<i style="width:${1 + ((v >> 17) % 3)}px` +
+               `${i % 2 ? ';background:transparent' : ''}"></i>`;
+    }
+    return out;
+}
+const tillNo = seed => {
+    let v = (seed | 0) + 104729, out = [];
+    for (let i = 0; i < 3; i++) {
+        v = (v * 1103515245 + 12345) & 0x7fffffff;
+        out.push(String((v >> 8) % 10000).padStart(4, '0'));
+    }
+    return out.join(' ');
+};
 function endWeek() {
     live = false; armed = false; tallying = false; dog.going = false; teaching = false;
     countT.forEach(clearTimeout); countT = []; clearTimeout(teachT);
@@ -2341,6 +2492,17 @@ function endWeek() {
     const top = Math.max(...ledger.map(r => r.took));
 
     document.getElementById('ribbon').textContent = 'WEEK’S TAKINGS';
+    /* What comes off the top of a till roll: whose shop it is, what it says
+       under the name on the fascia, and the two things a receipt always
+       carries - when it was and who served you. */
+    document.getElementById('till-head').innerHTML =
+        `<span class="sh">${save.shop}</span>` +
+        `<span class="fb">Family Butcher</span>` +
+        `<span class="wk"><span>Week ${save.weeks}</span>` +
+        `<span>Served by ${running('robot') ? 'AI ' : ''}${cast.butcher.name}</span></span>`;
+    const stamp = save.bank * 3 + save.weeks * 131 + money;
+    document.getElementById('barcode').innerHTML = barcode(stamp);
+    document.getElementById('tillno').textContent = tillNo(stamp);
     document.getElementById('ledger').innerHTML = ledger.map(r =>
         `<tr class="${r.took === top && top > 0 ? 'best' : ''}">` +
         `<td class="d">${r.day.short}</td>` +
@@ -2739,9 +2901,10 @@ function afterMini() {
 const MINI_S = 9;
 const MINIS = [
     { id: 'jar',  name: 'Cash only', say: 'Catch the coins' },
-    { id: 'sauce', name: 'Sauce on', say: 'Draw the ketchup down it', secs: 4.5 },
+    { id: 'sauce', name: 'Sauce on', say: 'One pass down each of them' },
     { id: 'grill', name: 'On the barbecue', say: 'Tap them when they are done, not before' },
     { id: 'ninja', name: 'Sausage samurai', say: 'Cut them out of the air' },
+    { id: 'dream', name: 'Butcher\u2019s dream', say: 'Hold to rise. Eat what you can' },
 ];
 let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
@@ -2753,16 +2916,11 @@ function startMini() {
     if (M.id === 'jar') {
         mini.jar = W / 2; mini.coins = []; mini.next = 0;
     } else if (M.id === 'sauce') {
-        /* A straight line down a straight bun is a ruler exercise. This one
-           lies at an angle and bows, differently every time, so the stroke is
-           a shape to follow rather than a distance to cover - and the margin
-           either side of it is tight enough that following it is the job. */
-        mini.dogY = H * .54; mini.x0 = W * .16; mini.x1 = W * .84;
-        mini.tilt = (Math.random() - .5) * 150;
-        mini.bow = (Math.random() < .5 ? -1 : 1) * (34 + Math.random() * 46);
-        mini.paint = []; mini.drawing = false; mini.begun = false;
+        sauceSet();
     } else if (M.id === 'ninja') {
         mini.fly = []; mini.bits = []; mini.next = .35; mini.swipe = []; mini.hit = 0;
+    } else if (M.id === 'dream') {
+        dreamSet();
     } else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
@@ -2777,7 +2935,7 @@ function endMini() {
     /* The clock going while a finger is still on the bun used to end it at
        nothing, because the line was only ever scored when you lifted. Half a
        line is half a line: it gets counted for what is on there. */
-    if (mini.id === 'sauce' && !mini.won) sauceScore();
+    if (mini.id === 'sauce' && mini.bun && mini.bun.paint.length) sauceScore();
     mini.done = true;
     save.tally.hours++;
     if (!save.tally.minis.includes(mini.id)) save.tally.minis.push(mini.id);
@@ -2809,16 +2967,56 @@ function endMini() {
    and a week without a single one lost is the rarest thing in here, so it pays
    about a third of a perfect week on top of it: sixteen to twenty-two pounds
    for a good run. */
-const COIN = 140, BANGER = 440, SAUCE_MAX = 2000;
+const COIN = 140, BANGER = 440, SAUCE_MAX = 340;
 /* What one out of the air is worth, and what each extra one in the same stroke
    adds on top. Two in a swipe is the same thing the whole game is about, so it
    pays the way the rail pays it. */
 const KATANA = 150, KATANA_RUN = 110;
+/* What one mouthful in the dream is worth, and what each one in an unbroken
+   run adds on top - the rail's own rule again, because a line of them taken
+   without dropping off the back of it is the only thing in there that asks
+   anything of you. The run bonus stops climbing at five so a single very good
+   wave cannot be the whole game. */
+const DREAM = 90, DREAM_RUN = 28, DREAM_CAP = 5;
+const DREAM_UP = 1550, DREAM_DOWN = 1150, DREAM_VMAX = 540;
 const SAUCE_WAIT = 2600;        // the longest the ketchup will wait to be picked up
 // how far off the middle of the bun still counts, and the width of the bun
 const SAUCE_TOL = 30;
-// where the middle of the bun is at a given fraction along it
-const bunY = t => mini.dogY + (t - .5) * mini.tilt + Math.sin(t * Math.PI) * mini.bow;
+const SAUCE_IN = .32;           // how long the next one takes to come along
+/* A fresh one on the board. It lies at an angle and bows, differently every
+   time, so the stroke is a shape to find rather than a distance to cover - and
+   you cannot learn one motion on the first and spend it on the other five. */
+const newBun = () => ({ tilt: (Math.random() - .5) * 150,
+                        bow: (Math.random() < .5 ? -1 : 1) * (34 + Math.random() * 46),
+                        paint: [], in: SAUCE_IN });
+// where the middle of a bun is at a given fraction along it
+const bunY = (t, b) => { b = b || mini.bun;
+    return mini.dogY + (t - .5) * b.tilt + Math.sin(t * Math.PI) * b.bow; };
+/* Setting the counter out. Both ways into this game go through here, so the
+   one started from the back room is the one you get after a clean week. */
+function sauceSet() {
+    mini.dogY = H * .54; mini.x0 = W * .16; mini.x1 = W * .84;
+    mini.bun = newBun(); mini.off = null; mini.made = 0;
+    mini.begun = false; mini.squeak = 0; mini.tip = null;
+    mini.drips = []; mini.splats = []; mini.dripT = 0;
+}
+/* Asleep on his feet. He hangs in the middle of the left-hand side and the
+   dream comes at him; all you have is up. */
+function dreamSet() {
+    mini.by = H * .52; mini.vy = 0; mini.hold = false;
+    mini.meat = []; mini.next = .35; mini.run = 0; mini.got = 0; mini.puff = [];
+}
+const DREAM_X = () => W * .3;
+// a soft swallow, which is what eating something in a dream sounds like
+const gulp = () => safely(t => {
+    tone(t, { freq: 420, to: 760, dur: .13, type: 'sine', vol: .1 });
+    tone(t, { freq: 210, to: 380, dur: .18, type: 'triangle', vol: .06, at: .02 });
+});
+/* A squeezy bottle makes a noise, and it is the only thing you are holding. */
+const squeeze = () => safely(t => {
+    hiss(t, { hp: 240, lp: 1500, dur: .15, vol: .05 });
+    tone(t, { freq: 160 + Math.random() * 70, dur: .11, type: 'sawtooth', vol: .02 });
+});
 /* How long a banger is worth taking off for. It was two and a fifth seconds,
    which is long enough to let all five come good and then take them off in one
    sweep at the end - the whole game was a colour change you could answer at
@@ -2910,6 +3108,70 @@ function miniStep(dt) {
         }
         // the stroke only counts for as long as it is a stroke
         if (mini.swipe.length && now() - mini.swipeT > 110) { mini.swipe = []; mini.hit = 0; }
+    } else if (mini.id === 'sauce') {
+        // one coming along the counter, and the one you have just done leaving
+        if (mini.bun.in > 0) mini.bun.in = Math.max(0, mini.bun.in - dt);
+        if (mini.off) { mini.off.out += dt; if (mini.off.out > .42) mini.off = null; }
+        if (mini.squeak > 0) mini.squeak -= dt;
+        /* Nobody has ever squeezed a bottle of ketchup without some of it
+           going on the table. What comes off the nozzle falls, lands on the
+           cloth and stays there, so by the sixth bun the counter looks like
+           somebody has been working at it. */
+        mini.dripT -= dt;
+        const cloth = H * .84;
+        for (let i = mini.drips.length - 1; i >= 0; i--) {
+            const d = mini.drips[i];
+            d.v += 980 * dt; d.y += d.v * dt;
+            if (d.y < cloth) continue;
+            mini.drips.splice(i, 1);
+            mini.splats.push({ x: d.x + (Math.random() - .5) * 9, y: cloth,
+                               r: d.r * (1.5 + Math.random() * .9), a: Math.random() * 6 });
+            if (mini.splats.length > 26) mini.splats.shift();
+        }
+    } else if (mini.id === 'dream') {
+        /* Hold and he rises, let go and he sinks, and the dream slides past
+           him at a steady rate - which is the one verb none of the other four
+           use. He cannot fall out of the window or go up through the title. */
+        mini.vy += (mini.hold ? -DREAM_UP : DREAM_DOWN) * dt;
+        mini.vy = clamp(mini.vy, -DREAM_VMAX, DREAM_VMAX);
+        mini.by += mini.vy * dt;
+        const top = RAIL + 110, bot = H - 76;
+        if (mini.by < top) { mini.by = top; mini.vy = Math.max(0, mini.vy); }
+        if (mini.by > bot) { mini.by = bot; mini.vy = Math.min(0, mini.vy); }
+        /* It comes in waves rather than one at a time: a run of them strung
+           along a curve, so the thing you are reading is the shape of the line
+           and not the position of a dot. */
+        mini.next -= dt;
+        if (mini.next <= 0 && left > 1.5) {
+            mini.next = .86 + Math.random() * .44;
+            const n = 4 + ((Math.random() * 4) | 0);
+            const base = top + 40 + Math.random() * (bot - top - 80);
+            const amp = (Math.random() < .5 ? -1 : 1) * (28 + Math.random() * 54);
+            const ph = Math.random() * 6;
+            for (let i = 0; i < n; i++) {
+                const y = clamp(base + Math.sin(ph + i * .78) * amp, top + 10, bot - 10);
+                mini.meat.push({ x: W + 50 + i * 52, y, kind: Math.random() < .16 ? 'pud'
+                                 : Math.random() < .22 ? 'steak' : 'link',
+                                 ang: (Math.random() - .5) * 2 });
+            }
+        }
+        const bx = DREAM_X();
+        for (let i = mini.meat.length - 1; i >= 0; i--) {
+            const m = mini.meat[i];
+            m.x -= 280 * dt; m.ang += dt * .5;
+            if (Math.hypot(m.x - bx, m.y - mini.by) < 42) {
+                mini.meat.splice(i, 1);
+                mini.run++; mini.got++;
+                mini.won += DREAM + Math.min(mini.run - 1, DREAM_CAP) * DREAM_RUN;
+                mini.puff.push({ x: m.x, y: m.y, t0: now(), run: mini.run });
+                mini.run > 1 ? chink() : gulp();
+                showHud();
+                continue;
+            }
+            // one off the back of the line breaks the run
+            if (m.x < -50) { mini.meat.splice(i, 1); mini.run = 0; }
+        }
+        mini.puff = mini.puff.filter(p => now() - p.t0 < 620);
     } else if (mini.id === 'grill') {
         /* A grill makes a noise. It is the only thing on the screen, so it
            gets one - a quiet hiss every half second rather than one long
@@ -2947,6 +3209,10 @@ function segNear(ax, ay, bx, by, px, py) {
 }
 function miniAt(x, y) {
     if (mini.done) return;
+    /* The whole of the dream is whether a finger is down. It does not matter
+       where, which is the point: you are not steering him, you are holding
+       him up. */
+    if (mini.id === 'dream') { mini.hold = true; return; }
     if (mini.id === 'jar') { mini.jar = clamp(x, 56, W - 56); return; }
     if (mini.id === 'ninja') {
         /* Tested as the blade goes through rather than when the finger comes
@@ -2978,12 +3244,23 @@ function miniAt(x, y) {
         return;
     }
     if (mini.id === 'sauce') {
+        if (mini.bun.in > 0) return;                 // this one is still coming
         // it only counts along the bun, and the bun is not a straight line
         const t = clamp((x - mini.x0) / (mini.x1 - mini.x0), 0, 1);
         const off = Math.abs(y - bunY(t));
+        const last = mini.tip;
+        mini.tip = { x, y, ang: last ? Math.atan2(y - last.y, x - last.x) : 0 };
+        if (last) mini.tip.ang = Math.hypot(x - last.x, y - last.y) > 2
+                               ? mini.tip.ang : last.ang;
         if (off > SAUCE_TOL + 24) return;            // right off it: nothing lands
         if (!mini.begun) { mini.begun = true; mini.t0 = now(); }
-        mini.paint.push({ t, y, miss: Math.min(1, off / SAUCE_TOL) });
+        mini.bun.paint.push({ t, y, miss: Math.min(1, off / SAUCE_TOL) });
+        if (mini.squeak <= 0) { mini.squeak = .13; squeeze(); }
+        if (mini.dripT <= 0) {                       // and some of it misses
+            mini.dripT = .10 + Math.random() * .22;
+            mini.drips.push({ x, y: y + 7, v: 30 + Math.random() * 70,
+                              r: 2.8 + Math.random() * 2.4 });
+        }
         return;
     }
     for (const b of mini.bangers) {                  // the grill: tap one
@@ -2995,24 +3272,37 @@ function miniAt(x, y) {
     }
 }
 /* What a line of ketchup is worth: how much of the bun it covers and how
-   straight it was kept. Both, so a quick scribble down the middle is worth
-   less than one careful pass. */
+   closely it followed it. Both, so a quick scribble down the middle is worth
+   less than one careful pass.
+
+   It pays per bun and then sends the next one along, which is the whole of
+   what was wrong with this game: one bun and nine seconds to draw one line is
+   nine seconds to draw it as slowly as you like. Six of them in nine seconds
+   is a different question - how good a line can you commit to in a second and
+   a half - and that is a game. */
 function sauceScore() {
-    if (!mini || !mini.paint || !mini.paint.length) return;
+    if (!mini || !mini.bun || !mini.bun.paint.length) return;
     const seen = new Set();
     let miss = 0;
     // t reaches exactly 1 at the far end, which is a twenty-fifth bucket out
     // of twenty-four - and a maximum you can go over is not a maximum
-    for (const p of mini.paint) { seen.add(Math.min(23, Math.floor(p.t * 24))); miss += p.miss; }
-    const cover = seen.size / 24, neat = 1 - Math.min(1, miss / mini.paint.length * 1.6);
-    mini.won = Math.round(SAUCE_MAX * cover * (.45 + .55 * neat) / 5) * 5;
-    showHud();
+    for (const p of mini.bun.paint) {
+        seen.add(Math.min(23, Math.floor(p.t * 24))); miss += p.miss;
+    }
+    const cover = seen.size / 24;
+    const neat = 1 - Math.min(1, miss / mini.bun.paint.length * 1.6);
+    const paid = Math.round(SAUCE_MAX * cover * (.45 + .55 * neat) / 5) * 5;
+    mini.won += paid; mini.made++;
+    chink(); showHud();
+    mini.off = Object.assign({ out: 0 }, mini.bun);   // it goes off down the counter
+    mini.bun = newBun();
 }
 function miniUp() {
+    if (mini && mini.id === 'dream') { mini.hold = false; return; }
     if (mini && mini.id === 'ninja') { mini.swipe = []; mini.hit = 0; return; }
-    if (!mini || mini.done || mini.id !== 'sauce' || !mini.paint.length) return;
+    if (!mini || mini.done || mini.id !== 'sauce') return;
+    mini.tip = null;
     sauceScore();
-    endMini();
 }
 /* ============================================================
    SOMEWHERE ELSE
@@ -3153,6 +3443,47 @@ function miniBack(ms) {
         }
         g.globalAlpha = 1;
 
+    } else if (mini.id === 'dream') {
+        /* A dream, so none of the game's own colours. Warm sherbet sky, a sun
+           that is not quite a sun, and clouds that are the wrong shape on
+           purpose: this is the one screen in here that is not a real place,
+           and everything on it should be saying so before you have read the
+           title. */
+        const sky = g.createLinearGradient(0, 0, 0, H);
+        sky.addColorStop(0, '#5a4f93'); sky.addColorStop(.38, '#b07099');
+        sky.addColorStop(.72, '#e59a85'); sky.addColorStop(1, '#f6c98c');
+        g.fillStyle = sky; g.fillRect(0, 0, W, H);
+
+        const sx2 = W * .72, sy2 = H * .3, sr = Math.min(W, H) * .17;
+        for (let i = 12; i > 0; i--) {                   // the glow off it
+            g.fillStyle = 'rgba(255,235,185,' + (.02 * (13 - i) / 12) + ')';
+            g.beginPath(); g.arc(sx2, sy2, sr + i * 13, 0, Math.PI * 2); g.fill();
+        }
+        g.fillStyle = '#ffe9b8';
+        g.beginPath(); g.arc(sx2, sy2, sr, 0, Math.PI * 2); g.fill();
+
+        /* The clouds are sausages. Nobody will say it out loud and everybody
+           will know. Three banks of them at three speeds, so the sky has a
+           depth to it rather than being a flat sheet sliding past. */
+        for (const [k, sp, al, yy] of [[.55, 14, .16, .22], [.8, 26, .22, .52],
+                                       [1.15, 44, .3, .8]]) {
+            g.fillStyle = 'rgba(255,245,235,' + al + ')';
+            for (let i = 0; i < 5; i++) {
+                const span = W + 420;
+                const cx = ((i * span / 5) - (ms / 1000 * sp) % span + span) % span - 210;
+                const cy = H * yy + Math.sin(i * 2.3) * H * .07;
+                g.save();
+                g.translate(cx, cy);
+                g.rotate(Math.sin(i * 1.7) * .3);
+                g.scale(k, k);
+                for (let j = 0; j < 3; j++) {            // a link, bent, in cloud
+                    g.beginPath();
+                    g.roundRect(-74 + j * 52, -16 + Math.sin(j * 1.6) * 12, 56, 32, 16);
+                    g.fill();
+                }
+                g.restore();
+            }
+        }
     } else {
         /* Out the back of the shop at dusk, which is where a barbecue
            actually happens. Dark enough that a pink sausage and a black one
@@ -3216,6 +3547,147 @@ function miniBack(ms) {
     scrim.addColorStop(.62, 'rgba(8,18,14,.42)');
     scrim.addColorStop(1, 'rgba(8,18,14,0)');
     g.fillStyle = scrim; g.fillRect(0, 0, W, RAIL + 88);
+    g.restore();
+}
+
+/* A squeezy ketchup bottle, drawn from the nozzle: the tip is the origin,
+   because on this screen the tip is where your finger is, and the body trails
+   back behind it along the way you are going. Same rule as the knife. */
+function drawBottle(x, y, ang) {
+    const g = ctx;
+    g.save();
+    g.translate(x, y);
+    g.rotate(ang);
+    g.shadowColor = 'rgba(0,0,0,.35)'; g.shadowBlur = 10; g.shadowOffsetY = 5;
+    g.fillStyle = '#7d1b16';                              // the nozzle
+    g.beginPath();
+    g.moveTo(2, 0); g.lineTo(-15, -5.5); g.lineTo(-15, 5.5);
+    g.closePath(); g.fill();
+    g.fillStyle = '#9a241c';                              // the cap
+    g.beginPath(); g.roundRect(-30, -9, 16, 18, 3); g.fill();
+    g.fillStyle = '#c4231f';                              // the shoulder and the body
+    g.beginPath(); g.moveTo(-30, -9); g.lineTo(-44, -23); g.lineTo(-44, 23); g.lineTo(-30, 9);
+    g.closePath(); g.fill();
+    g.beginPath(); g.roundRect(-100, -23, 58, 46, [8, 3, 3, 8]); g.fill();
+    g.shadowColor = 'transparent';
+    g.fillStyle = '#e4564a';                              // the light down one side
+    g.beginPath(); g.roundRect(-96, -18, 48, 9, 4.5); g.fill();
+    g.fillStyle = '#f3e9d6';                              // and a label on it
+    g.beginPath(); g.roundRect(-92, -7, 40, 20, 3); g.fill();
+    g.fillStyle = '#c4231f';
+    g.beginPath(); g.roundRect(-87, -2, 30, 4, 2); g.fill();
+    g.beginPath(); g.roundRect(-87, 5, 20, 3.5, 1.75); g.fill();
+    g.restore();
+}
+
+/* The man himself, asleep and horizontal, arms out in front of him and the
+   apron streaming behind. He is not drawn through drawButcher: that one is a
+   man stood behind a counter, and nothing in it bends this far. This is six
+   flat shapes and a hat, which at this size is all a flying man needs. */
+function drawFlier(x, y, ms) {
+    const g = ctx;
+    const B = cast ? cast.butcher : null;
+    const skin = B ? B.skin : '#e5ab7e', dark = B ? B.skinD : '#c98a5e';
+    const apron = B ? B.apron : '#4a79b8', hair = B ? B.hair : '#4a3428';
+    const bob = Math.sin(ms / 420) * 5;
+    const lean = clamp((mini.vy || 0) / 1000, -.35, .35);
+    g.save();
+    g.translate(x, y + bob);
+    g.rotate(lean);
+
+    for (let i = 0; i < 5; i++) {              // the trail he is leaving behind
+        const t = ((ms / 900) + i * .2) % 1;
+        g.globalAlpha = (1 - t) * .4;
+        g.fillStyle = '#fff3d2';
+        g.beginPath(); g.arc(-74 - t * 110, 6 + Math.sin(t * 7 + i) * 18,
+                             3 + t * 9, 0, Math.PI * 2); g.fill();
+    }
+    g.globalAlpha = 1;
+    g.shadowColor = 'rgba(80,40,70,.3)'; g.shadowBlur = 16; g.shadowOffsetY = 8;
+
+    /* The apron streaming out behind him, which is the thing that says flying.
+       It is one shape with a wave in its back edge, waving on the clock. */
+    const flap = Math.sin(ms / 220) * 9;
+    g.fillStyle = '#f2ece0';
+    g.beginPath();
+    g.moveTo(4, -17); g.lineTo(4, 17);
+    g.quadraticCurveTo(-34, 30 + flap, -74, 14 - flap);
+    g.quadraticCurveTo(-40, 0, -34, -19);
+    g.closePath();
+    g.fill();
+    g.shadowColor = 'transparent';
+    g.save(); g.clip();                        // in his own stripes
+    g.fillStyle = apron;
+    for (let sx = -74; sx < 6; sx += 15) g.fillRect(sx, -34, 7, 76);
+    g.restore();
+
+    g.fillStyle = skin;                        // the shoulders
+    g.beginPath(); g.ellipse(6, 0, 16, 15, 0, 0, Math.PI * 2); g.fill();
+    /* Sleeves, not bare arms. Two bars in the same tan as his face right
+       next to his face is a muddle; a white coat sleeve with a hand on the
+       end of it is an arm. */
+    /* Both arms stream forward under his chin rather than across his face:
+       the head is the thing you are reading and an arm over it is an arm over
+       it. Sleeves, not bare arms - two bars in the same tan as his face right
+       next to his face is a muddle, and a white coat sleeve with a hand on
+       the end of it is unmistakably an arm. */
+    g.fillStyle = '#ded7c8';                   // the far one, underneath
+    g.beginPath(); g.roundRect(10, 19, 40, 11, 5.5); g.fill();
+    g.fillStyle = dark;
+    g.beginPath(); g.arc(53, 24.5, 6.5, 0, Math.PI * 2); g.fill();
+
+    g.fillStyle = skin;                        // and the head out in front
+    g.beginPath(); g.arc(30, -8, 17, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(45, -3, 7, 6, 0, 0, Math.PI * 2); g.fill();   // the nose
+    g.fillStyle = dark;                        // a cheek, so the face has a side
+    g.beginPath(); g.ellipse(36, 1, 6, 4.5, 0, 0, Math.PI * 2); g.fill();
+
+    g.strokeStyle = '#3a2a20'; g.lineWidth = 2.6; g.lineCap = 'round';
+    g.beginPath();                             // fast asleep
+    g.moveTo(35, -12); g.quadraticCurveTo(40, -9, 35, -6);
+    g.stroke();
+    if (!B || B.face === 'tash') {
+        g.fillStyle = hair;
+        g.beginPath(); g.ellipse(42, 4, 8, 3.6, .25, 0, Math.PI * 2); g.fill();
+    } else if (B.face === 'beard') {
+        g.fillStyle = hair;
+        g.beginPath(); g.ellipse(37, 8, 12, 8, .25, 0, Math.PI * 2); g.fill();
+    }
+
+    g.save();                                  // the hat, still on, tipped back
+    g.translate(27, -21); g.rotate(-.22);
+    const hat = B ? B.hat : 'boater';
+    if (hat === 'cap') {
+        g.fillStyle = '#5e6b74';
+        g.beginPath(); g.ellipse(0, 0, 16, 11, 0, Math.PI, 0); g.fill();
+        g.beginPath(); g.roundRect(2, -3, 22, 6, 3); g.fill();
+    } else if (hat === 'trilby') {
+        g.fillStyle = '#fbf8f0';
+        g.beginPath(); g.ellipse(0, -2, 13, 13, 0, Math.PI, 0); g.fill();
+        g.beginPath(); g.ellipse(0, -1, 22, 5, 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = apron;
+        g.beginPath(); g.roundRect(-13, -7, 26, 4, 2); g.fill();
+    } else {
+        g.fillStyle = '#e8cf92';
+        g.beginPath(); g.ellipse(0, -1, 14, 11, 0, Math.PI, 0); g.fill();
+        g.beginPath(); g.ellipse(0, -1, 22, 5, 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = apron;
+        g.beginPath(); g.roundRect(-14, -6, 28, 4, 2); g.fill();
+    }
+    g.restore();
+
+    g.fillStyle = '#f7f3ea';                   // the near one, over the top
+    g.beginPath(); g.roundRect(6, 8, 46, 12, 6); g.fill();
+    g.fillStyle = skin;
+    g.beginPath(); g.arc(56, 14, 7.5, 0, Math.PI * 2); g.fill();
+
+    const zt = (ms / 1400) % 1;                // and the one word for asleep
+    g.globalAlpha = Math.min(1, (1 - zt) * 2.2);
+    g.fillStyle = 'rgba(255,245,220,.92)';
+    g.font = '400 ' + (13 + zt * 12) + 'px "Alfa Slab One", Georgia, serif';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('z', 16 + zt * 14, -38 - zt * 36);
+    g.globalAlpha = 1;
     g.restore();
 }
 
@@ -3303,29 +3775,125 @@ function drawMini(ms) {
         ctx.fillStyle = 'rgba(255,255,255,.22)';
         ctx.beginPath(); ctx.roundRect(mini.jar - 38, jy - 10, 9, 56, 4); ctx.fill();
     } else if (mini.id === 'sauce') {
-        /* The bun is a stroked line now rather than a rounded rectangle,
-           because it bends - the bread, the cut face, the sausage and the lit
-           side of the sausage are the same curve stroked four times at
-           decreasing widths, which is how everything in this game is drawn. */
+        /* The bun is a stroked line rather than a rounded rectangle, because
+           it bends - the bread, the cut face, the sausage and the lit side of
+           the sausage are the same curve stroked four times at decreasing
+           widths, which is how everything in this game is drawn. */
         const x0 = mini.x0, x1 = mini.x1;
-        const lay = () => {
-            ctx.beginPath();
-            for (let t = 0; t <= 1.0001; t += .02) {
-                const px = x0 + (x1 - x0) * t;
-                t ? ctx.lineTo(px, bunY(t)) : ctx.moveTo(px, bunY(t));
+        const bun = (b, dx, alpha) => {
+            ctx.save();
+            ctx.globalAlpha = alpha; ctx.translate(dx, 0);
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            const lay = () => {
+                ctx.beginPath();
+                for (let t = 0; t <= 1.0001; t += .02) {
+                    const px = x0 + (x1 - x0) * t;
+                    t ? ctx.lineTo(px, bunY(t, b)) : ctx.moveTo(px, bunY(t, b));
+                }
+            };
+            for (const [col, w] of [['#e8bd72', 68], ['#c98f45', 46],
+                                    ['#b8552f', 34], ['#d0693c', 13]]) {
+                lay(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.stroke();
             }
+            /* And whatever you have put on it, laid down a bit at a time so
+               the bit that went wide is a different colour from the bit that
+               did not. You can see the stroke going off while it is going off,
+               rather than being handed a number for it afterwards. */
+            for (let i = 1; i < b.paint.length; i++) {
+                const a2 = b.paint[i - 1], c2 = b.paint[i];
+                const m = (a2.miss + c2.miss) / 2;
+                ctx.beginPath();
+                ctx.moveTo(x0 + (x1 - x0) * a2.t, a2.y);
+                ctx.lineTo(x0 + (x1 - x0) * c2.t, c2.y);
+                ctx.strokeStyle = m < .45 ? '#c4231f' : m < .85 ? '#a8392c' : '#7f4033';
+                ctx.lineWidth = 14 - m * 6;
+                ctx.stroke();
+            }
+            ctx.restore();
         };
-        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-        for (const [col, w] of [['#e8bd72', 68], ['#c98f45', 46], ['#b8552f', 34], ['#d0693c', 13]]) {
-            lay(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.stroke();
+        /* What has already gone on the cloth, under everything else, because
+           it is on the cloth and the buns are on top of it. */
+        ctx.fillStyle = '#b11f1c';
+        for (const sp of mini.splats) {
+            ctx.beginPath();
+            ctx.ellipse(sp.x, sp.y, sp.r, sp.r * .62, 0, 0, Math.PI * 2);
+            ctx.fill();
+            for (let k = 0; k < 3; k++) {            // and the bits that went with it
+                const a3 = sp.a + k * 2.1;
+                ctx.beginPath();
+                ctx.ellipse(sp.x + Math.cos(a3) * sp.r * 1.7,
+                            sp.y + Math.sin(a3) * sp.r * .9,
+                            sp.r * .3, sp.r * .22, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
-        ctx.strokeStyle = '#c4231f'; ctx.lineWidth = 13;  // and whatever you have put on it
-        ctx.beginPath();
-        mini.paint.forEach((p, i) => {
-            const px = x0 + (x1 - x0) * p.t;
-            i ? ctx.lineTo(px, p.y) : ctx.moveTo(px, p.y);
-        });
-        ctx.stroke();
+        // the one you have just done, going off down the counter
+        if (mini.off) {
+            const k = mini.off.out / .42;
+            bun(mini.off, -k * k * W * .9, 1 - k * k);
+        }
+        // and the next one arriving
+        const inn = mini.bun.in / SAUCE_IN;
+        bun(mini.bun, inn * inn * W * .95, 1);
+        /* The bottle is on the end of your finger, nozzle first, the way the
+           knife is on the shop floor and the katana is next door. A game about
+           squeezing a bottle where there is no bottle on the screen is a game
+           about dragging your finger. */
+        ctx.fillStyle = '#c4231f';                // and what is on its way down
+        for (const d of mini.drips) {
+            ctx.beginPath();
+            ctx.ellipse(d.x, d.y, d.r * .85, d.r * (1 + Math.min(.9, d.v / 420)), 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        if (mini.tip) {
+            drawBottle(mini.tip.x, mini.tip.y, mini.tip.ang);
+            // one hanging off the nozzle, swelling and letting go
+            const sw = (Math.sin(ms / 190) + 1) / 2;
+            ctx.fillStyle = '#c4231f';
+            ctx.beginPath();
+            ctx.ellipse(mini.tip.x, mini.tip.y + 5 + sw * 4, 3 + sw * 1.6, 4 + sw * 3.4,
+                        0, 0, Math.PI * 2);
+            ctx.fill();
+        } else drawBottle(W - 56, H - 128, -2.3);
+    } else if (mini.id === 'dream') {
+        /* What is coming at him, drawn out of the same pot as the rail so a
+           black pudding in a dream is still a black pudding. */
+        for (const m of mini.meat) {
+            ctx.save();
+            ctx.translate(m.x, m.y);
+            ctx.rotate(m.ang);
+            ctx.shadowColor = 'rgba(90,40,70,.3)'; ctx.shadowBlur = 12; ctx.shadowOffsetY = 6;
+            if (m.kind === 'steak') { ctx.scale(.42, .42); steakShape(ctx, 0); }
+            else {
+                const P = m.kind === 'pud' ? PUD : MEAT;
+                ctx.beginPath(); ctx.roundRect(-13, -30, 26, 60, 13);
+                ctx.fillStyle = P.body; ctx.fill();
+                ctx.shadowColor = 'transparent';
+                ctx.beginPath(); ctx.roundRect(-8, -24, 7, 48, 3.5);
+                ctx.fillStyle = P.lit; ctx.fill();
+                if (m.kind === 'pud') {
+                    ctx.fillStyle = '#cdbfa6';
+                    for (let j = 0; j < 7; j++) {
+                        const v = Math.sin(j * 12.9898 + m.y) * 43758.5;
+                        ctx.beginPath();
+                        ctx.arc((v - Math.floor(v) - .5) * 17, -24 + j * 7, 1.6, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+            ctx.restore();
+        }
+        // what each mouthful was worth, where it went in
+        for (const p of mini.puff) {
+            const e2 = (now() - p.t0) / 620;
+            ctx.globalAlpha = 1 - e2 * e2;
+            ctx.fillStyle = '#fff3d2';
+            ctx.font = '400 ' + (p.run > 1 ? 24 : 19) + 'px "Alfa Slab One", Georgia, serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(p.run > 1 ? '\u00d7' + p.run : '\u2022', p.x, p.y - e2 * 40);
+            ctx.globalAlpha = 1;
+        }
+        drawFlier(DREAM_X(), mini.by, ms);
     } else {
         const gy = H * .52, gx0 = W * .08, gx1 = W * .92;   // something to cook on
         ctx.fillStyle = '#2a2620';
@@ -4186,7 +4754,7 @@ const ROSETTES = [
     { id: 'clean',   silk: 'green',  name: 'Not One Lost',   why: 'A whole week the dog got nothing.' },
     { id: 'clean5',  silk: 'green',  name: 'Ten Clean Weeks', why: 'And nine more like it.' },
     { id: 'after',   silk: 'green',  name: 'After Hours',    why: 'Ten hours after closing, which is ten clean weeks’ worth.' },
-    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all four of the after-hours games.' },
+    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all five of the after-hours games.' },
     { id: 'noburn',  silk: 'red',    name: 'Nothing Burnt',  why: 'Five off the barbecue and not one black.' },
 
     { id: 'hundred', silk: 'brass',  name: 'A Hundred Pounds', why: 'A hundred in the till.' },
@@ -4320,7 +4888,7 @@ function sweep(quiet) {
     if (save.tally.loyal >= 10) give('loyal');
     if (save.tally.breeds.length >= 10) give('allsorts');
     if (save.tally.hours >= 10) give('after');
-    if (save.tally.minis.length >= 4) give('three3');
+    if (save.tally.minis.length >= 5) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');
     // the shelves, counted off what is actually on them rather than a number
     const bought = STOCK.filter(i => i.price > 0);
@@ -4788,13 +5356,16 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
        is in the save. This used to be left undefined, so the only dog in the
        game wearing the shopping was the one in the window. */
     if (kit === undefined) kit = cast ? cast.kit : null;
-    const o = pose.open, sq = pose.squash || 0;
+    const o = pose.open, sq = pose.squash || 0, st = pose.stare || 0;
     // how it feels about the week, which is the opposite of how he feels
     const glum = pose.mood === 'glum', gone = pose.mood === 'gone';
     ctx.save();
     ctx.translate(x, y - (pose.reach || 0));
     ctx.scale(k * B.k * (1 + sq * .07), k * B.k * (1 - sq * .05));
-    ctx.rotate((pose.tilt || 0) + Math.sin(ms / 170) * .04);
+    /* While it is watching a cat it stops swaying and starts quivering, which
+       is a different thing entirely and about the size of a held breath. */
+    ctx.rotate((pose.tilt || 0) + Math.sin(ms / 170) * .04 * (1 - st * .8)
+               + st * Math.sin(ms / 52) * .016);
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
     /* The head, drawn the way a nine-year-old draws a dog: square, flat on
@@ -4879,7 +5450,7 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
     ctx.restore();
     // the brow, which is where a dog keeps its opinion
     if (B.brow > .05 || glum) for (const sx of [-1, 1]) {
-        const bw = Math.max(.55, B.brow), e = B.eyes[1];
+        const bw = Math.max(.55, B.brow), e = B.eyes[1] - st * 10;
         /* Straight, heavy and angled, drawn as a bar with corners on it. An
            arc reads as a raised eyebrow; a bar reads as an opinion - but they
            do not all have the same opinion. Which way the bar tilts is the
@@ -4911,8 +5482,18 @@ function drawDog(ctx, x, y, k, pose, ms, B, kit) {
             ctx.restore();
             blob('#ffb3b3', () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2] * .42, 0, Math.PI * 2));
         } else {
-            blob(B.iris || '#201814', () => ctx.arc(sx * B.eyes[0], B.eyes[1], B.eyes[2], 0, Math.PI * 2));
-            blob('#fdf7e8', () => ctx.arc(sx * B.eyes[0] - B.eyes[2] * .35, B.eyes[1] - B.eyes[2] * .4, B.eyes[2] * .33, 0, Math.PI * 2));
+            /* Watching a cat. The eye opens right up round a pupil that has
+               gone with it, which is the whole of the expression - a dog that
+               has seen something is a dog with too much eye showing. The white
+               goes in first and underneath, so it reads as the eye widening
+               rather than as a bigger dot being painted on the face. */
+            const er = B.eyes[2] * (1 + st * .85);
+            if (st > .02)
+                blob('#fdfaf2', () => ctx.arc(sx * B.eyes[0], B.eyes[1] - st * 2,
+                                              er + 3 + st * 4.5, 0, Math.PI * 2));
+            blob(B.iris || '#201814', () => ctx.arc(sx * B.eyes[0], B.eyes[1] - st * 2, er, 0, Math.PI * 2));
+            blob('#fdf7e8', () => ctx.arc(sx * B.eyes[0] - er * .35, B.eyes[1] - st * 2 - er * .4,
+                                          er * .33, 0, Math.PI * 2));
         }
     }
     // the muzzle, the nose, and whatever the mouth is doing
@@ -5665,6 +6246,12 @@ function draw() {
         const pose = dog.chomp > 0 ? chompPose(1 - dog.chomp / CHOMP)
                    : (dog.toy > 0 && !toyFly) ? { open: .5, reach: 0, tilt: 0, squash: 0 }
                    : { open: 0, reach: 0, tilt: 0, squash: 0 };
+        /* A dog that has seen a cat. It eases in over the first fifth of the
+           stare and holds, and the head cocks the way the cat is going. */
+        if (dog.stare > 0) {
+            pose.stare = Math.min(1, (STARE_S - dog.stare) / (STARE_S * .22));
+            pose.tilt = (pose.tilt || 0) + pose.stare * (cat ? cat.dir : 1) * .12;
+        }
         drawDog(ctx, x, y, 1.02, pose, ms, breedFor());
     }
     drawToy(ms);                      // over the dog, because it is in its mouth
@@ -5757,19 +6344,48 @@ function payIn(from, to) {
        where money goes when it is being put away. */
     const lr = line.getBoundingClientRect(), br = b.getBoundingClientRect();
     const midX = br.left + br.width / 2 - lr.left;
-    for (let i = 0; i < 5; i++) {
+    const put = (el, i, n) => {
+        el.style.setProperty('--dx', ((Math.random() - .5) * 110).toFixed(1) + 'px');
+        el.style.setProperty('--r', ((Math.random() - .5) * 170).toFixed(0) + 'deg');
+        el.style.setProperty('--d', (i * 62 + Math.random() * 40).toFixed(0) + 'ms');
+        el.style.setProperty('--from', (120 + Math.random() * 150).toFixed(0) + 'px');
+        // they do not all pile up on the same spot on top of the number
+        el.style.setProperty('--to', (-46 + Math.random() * 68).toFixed(0) + 'px');
+        el.style.left = (midX - 18 + (Math.random() - .5) * 150).toFixed(1) + 'px';
+        line.appendChild(el);
+        setTimeout(() => el.remove(), 2300 + i * 70);
+    };
+    for (let i = 0; i < 10; i++) {
         const n = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         n.setAttribute('class', 'note');
         n.setAttribute('viewBox', '0 0 14 14');
         n.innerHTML = '<use href="#i-cash"/>';
-        n.style.setProperty('--dx', ((Math.random() - .5) * 70).toFixed(1) + 'px');
-        n.style.setProperty('--r', ((Math.random() - .5) * 90).toFixed(0) + 'deg');
-        n.style.setProperty('--d', (i * 85) + 'ms');
-        n.style.left = (midX - 15 + (Math.random() - .5) * 58).toFixed(1) + 'px';
-        line.appendChild(n);
-        setTimeout(() => n.remove(), 1800 + i * 95);
+        put(n, i);
     }
+    for (let i = 0; i < 8; i++) {                      // and the shrapnel with them
+        const c = document.createElement('span');
+        c.className = 'coin';
+        put(c, i + 2);
+    }
+    const burst = document.createElement('span');      // the bloom behind the lot
+    burst.className = 'burst';
+    line.appendChild(burst);
+    setTimeout(() => burst.remove(), 1800);
+    if (to > from) {                                   // and what it came to
+        const add = document.createElement('span');
+        add.className = 'added';
+        add.textContent = '+ ' + money2(to - from);
+        line.appendChild(add);
+        setTimeout(() => add.remove(), 1900);
+    }
+    line.classList.remove('paying');
+    void line.offsetWidth;                             // so it runs again next week
+    line.classList.add('paying');
+    setTimeout(() => line.classList.remove('paying'), 1700);
     till();
+    // a run of them going in, rather than one drawer and then silence
+    for (let i = 1; i <= 5; i++) setTimeout(chink, 150 + i * 165);
+    setTimeout(till, 1180);
     // and the number climbs to meet them
     const t0 = now(), SPAN = 1150;
     cancelAnimationFrame(tillRaf);
@@ -6441,12 +7057,10 @@ document.getElementById('minilist').addEventListener('click', e => {
                           won: 0, t0: now(), lone: true,
                           begun: M.id === 'sauce' ? false : undefined });
     if (M.id === 'jar') { mini.jar = W / 2; mini.coins = []; mini.next = 0; }
-    else if (M.id === 'sauce') { mini.dogY = H * .54; mini.x0 = W * .16; mini.x1 = W * .84;
-                                 mini.tilt = (Math.random() - .5) * 150;
-                                 mini.bow = (Math.random() < .5 ? -1 : 1) * (34 + Math.random() * 46);
-                                 mini.paint = []; mini.drawing = false; }
+    else if (M.id === 'sauce') { sauceSet(); }
     else if (M.id === 'ninja') { mini.fly = []; mini.bits = []; mini.next = .3;
                                  mini.swipe = []; mini.hit = 0; }
+    else if (M.id === 'dream') { dreamSet(); }
     else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
@@ -6467,30 +7081,33 @@ document.getElementById('minilist').addEventListener('click', e => {
    can draw that says shop. The awning takes the butcher's own apron colour,
    so the shop belongs to whoever is behind the counter. */
 function drawFascia(g, name, apron) {
-    const x0 = 6, x1 = 334, y0 = 6, y1 = 62;
+    /* Right out to the edges and right up to the top. There was a six-pixel
+       strip of tiled wall round three sides of it, which is a photograph of a
+       shop sign rather than a shop sign: a fascia board is fixed to the front
+       of the building and the building stops where it stops. */
+    const x0 = 0, x1 = 340, y0 = 0, y1 = 70;
     g.save();
     g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = 12; g.shadowOffsetY = 6;
     g.fillStyle = '#241a16';
-    g.beginPath(); g.roundRect(x0, y0, x1 - x0, y1 - y0, 2); g.fill();
+    g.beginPath(); g.rect(x0, y0, x1 - x0, y1 - y0); g.fill();
     g.shadowColor = 'transparent';
     g.fillStyle = '#c59430';                            // a beaded gold edge
-    g.beginPath(); g.roundRect(x0, y0, x1 - x0, 4, 1); g.fill();
-    g.beginPath(); g.roundRect(x0, y1 - 4, x1 - x0, 4, 1); g.fill();
+    g.fillRect(x0, y1 - 4, x1 - x0, 4);
     g.strokeStyle = 'rgba(220,171,62,.45)'; g.lineWidth = 1;
-    g.strokeRect(x0 + 7, y0 + 8, x1 - x0 - 14, y1 - y0 - 16);
+    g.strokeRect(x0 + 8, y0 + 7, x1 - x0 - 16, y1 - y0 - 19);
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.font = '400 26px "Alfa Slab One", Georgia, serif';
-    const room = x1 - x0 - 34, w = g.measureText(name).width;
+    g.font = '400 31px "Alfa Slab One", Georgia, serif';
+    const room = x1 - x0 - 36, w = g.measureText(name).width;
     g.save();
-    g.translate((x0 + x1) / 2, y0 + 26);
+    g.translate((x0 + x1) / 2, y0 + 30);
     if (w > room) g.scale(room / w, 1);
     g.fillStyle = '#e8c15a';
     g.fillText(name, 0, 0);
     g.restore();
-    g.font = '900 9px Lato, system-ui, sans-serif';     // and what the trade is
+    g.font = '900 10px Lato, system-ui, sans-serif';    // and what the trade is
     g.fillStyle = 'rgba(232,193,90,.62)';
     g.save();
-    g.translate((x0 + x1) / 2, y0 + 45);
+    g.translate((x0 + x1) / 2, y0 + 53);
     g.scale(1, 1);
     for (let i = 0; i < 1; i++) g.fillText('F A M I L Y   B U T C H E R', 0, 0);
     g.restore();
@@ -6518,6 +7135,54 @@ function drawFascia(g, name, apron) {
     g.fillRect(x0 - 8, ay, x1 - x0 + 16, 5);
     g.restore();
     g.restore();
+}
+/* The room they are stood in, rather than a wall they are stood against.
+
+   The shopfront used to be a sign, two figures and three hundred pixels of
+   the same tiled wall the rest of the game is played on, which is a wall and
+   not a shop. Two things fix it and neither needs any room: the light coming
+   in under the awning, which is the only light a shop like this has, and the
+   counter across the bottom of it, which is what the two of them are stood
+   behind. The dog's chin is over the top of it, which is where a dog puts its
+   chin.
+*/
+function drawRoom(g) {
+    const wash = g.createLinearGradient(0, 96, 0, 300);  // the daylight off the street
+    wash.addColorStop(0, 'rgba(255,238,196,.16)');
+    wash.addColorStop(1, 'rgba(255,238,196,0)');
+    g.fillStyle = wash; g.fillRect(0, 96, 340, 210);
+    g.fillStyle = 'rgba(8,24,18,.22)';                   // and the corners going off
+    g.fillRect(0, 96, 26, 304); g.fillRect(314, 96, 26, 304);
+}
+function drawCounter(g) {
+    const ty = 364;
+    g.fillStyle = 'rgba(8,24,18,.26)';                   // it casts onto their aprons
+    g.fillRect(0, ty - 7, 340, 8);
+    /* The front of it goes down into the colour the page carries on in, so the
+       counter runs off the bottom of the canvas rather than stopping at it. */
+    const front = g.createLinearGradient(0, ty + 11, 0, 400);
+    front.addColorStop(0, '#1a4033'); front.addColorStop(1, '#143529');
+    g.fillStyle = front; g.fillRect(0, ty + 11, 340, 400 - ty - 11);
+    g.fillStyle = '#e6e0d1';                             // the slab across the top
+    g.fillRect(0, ty, 340, 11);
+    g.fillStyle = '#fbf8f0';
+    g.fillRect(0, ty, 340, 3.5);
+    g.fillStyle = '#b9b1a0';
+    g.fillRect(0, ty + 9.5, 340, 2.5);
+    /* And three tickets stood on it, the same black plaque the day's takings
+       come up on. Nothing else in one picture says butcher's counter. */
+    for (const [x, w] of [[26, 34], [208, 30], [296, 32]]) {
+        g.fillStyle = '#9aa0a4';
+        g.fillRect(x + w / 2 - 1, ty - 6, 2, 8);
+        g.fillStyle = '#15120f';
+        g.beginPath(); g.roundRect(x, ty - 25, w, 20, 2.5); g.fill();
+        g.strokeStyle = 'rgba(246,241,230,.5)'; g.lineWidth = .8;
+        g.strokeRect(x + 2.5, ty - 22.5, w - 5, 15);
+        g.fillStyle = 'rgba(246,241,230,.85)';           // the price on it
+        g.fillRect(x + 6, ty - 19, w - 12, 5);
+        g.fillStyle = 'rgba(246,241,230,.4)';
+        g.fillRect(x + 6, ty - 12, (w - 12) * .6, 2.5);
+    }
 }
 /* A prize rosette: two ribbon tails, a ring of pleated silk and a button in
    the middle of it. Twelve pleats, because eight reads as a cog and twenty
@@ -6666,6 +7331,7 @@ const ouch = () => safely(t => {
 function drawShopfront() {
     const c = document.getElementById('shopfront'), g = c.getContext('2d');
     g.clearRect(0, 0, 340, 400);
+    drawRoom(g);
     drawFascia(g, cast.shop, cast.butcher.apron);
     /* Pinned to the wall under the awning, behind the two of them, because
        that is where a butcher puts them and because the wall is the one part
@@ -6769,6 +7435,7 @@ function drawShopfront() {
                  reach: -Math.abs(Math.sin(e * Math.PI * 2.4)) * 5 * fade };
     }
     drawDog(g, DOG_AT[0], DOG_AT[1], .96 / cast.dog.k, pose, ms, cast.dog);
+    drawCounter(g);                   // in front of the pair of them
     if (petting) for (const h of petting.hearts) {
         const e = (now() - h.t0) / 1150;
         if (e < 0 || e > 1) continue;
