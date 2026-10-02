@@ -745,103 +745,76 @@ body.waiting #hud { display: none; }
     color: #2a2118; opacity: 1;
 }
 .tabs button.on::after { border-color: rgba(42,33,24,.4); }
-/* Every tile on these shelves is a thing with a price on it, which is exactly
-   what a counter ticket is for - so they are counter tickets: the black plaque
-   with the white keyline that the day's takings come up on, with the thing
-   drawn on it and the price written the way a price is written on a card,
-   pounds the size of the ticket and the pence up in the corner.
+/* There is no tray any more. The thing lies on the bed of kale the way it does
+   in the case, and what you are actually reading is the plaque propped in
+   front of it - the same black plaque with the white keyline that the day's
+   takings come up on, with the price written the way a price is written on a
+   card: pounds the size of the card, the pence up in the corner, and no pence
+   at all when there are none, because nobody writes £190.00 on a card.
 
-   They were green panels with gold edges on a green tiled wall, which is the
-   flat-sheet problem again: the shelves and the wall behind them were made of
-   the same thing and the eye had nothing to catch on. The wall stays green,
-   because a butcher's shop has a green tiled wall. What is on it does not. */
-/* A tray. Black enamel with a steel lip catching the light off the top of the
-   case, squarer than a card because a tray is squarer than a card, and the
-   thing lies in it. */
+   A box round the lot was a box round the lot. A counter has no boxes in it,
+   only things and the tickets in front of them. */
 .buy {
     position: relative;
     display: flex; flex-direction: column; align-items: stretch;
-    padding: 0 0 7px; cursor: pointer;
-    background: linear-gradient(168deg, #333a3d 0%, #222729 52%, #181c1e 100%);
-    border: none; border-radius: 5px; color: #f6f1e6;
-    box-shadow: 0 2px 7px rgba(5,16,8,.6), 0 2px 0 rgba(8,20,11,.5),
-                inset 0 0 0 1.5px rgba(206,226,236,.2),
-                inset 0 2px 0 rgba(236,248,255,.16);
+    padding: 0; cursor: pointer; background: none; border: none;
+    color: #f6f1e6;
     font-family: var(--font); font-weight: 700; font-size: 13px;
 }
-.buy .why { display: block; font-size: 10px; font-weight: 700; line-height: 1.32;
-            opacity: .62; padding: 1px 2px 0; }
-/* The hairline inside the edge, which is the thing that makes it a ticket.
-   It goes under the contents rather than over them - what is drawn on a tile
-   is drawn on a transparent canvas, so the line still shows through
-   everywhere the item is not, which is what a line ruled on a card does. */
-.tabs button::after, .pin::after {
-    content: ''; position: absolute; inset: 4px; pointer-events: none;
-    border: 1.5px solid rgba(246,241,230,.42); border-radius: 4px;
-}
-.pin > * { position: relative; z-index: 1; }
-/* The thing itself, lying in the tray. It is drawn on a transparent canvas and
-   everything in this shop was drawn to be looked at against a dark background -
-   a knife is a white blade, the sawdust is pale flecks - so the tray being
-   black is what makes the goods readable, which is also why real ones are. */
-.buy canvas { width: 100%; height: auto; display: block; }
-/* And the ticket on the front of it: a little black card, knocked a degree or
-   two off square the way one stuck in on a wire always is, with a frill of
-   curly kale poking out from behind it. */
+.buy canvas { width: 100%; height: auto; display: block;
+              filter: drop-shadow(0 4px 6px rgba(4,14,7,.45)); }
+/* The plaque. Knocked a degree or two off square the way one stuck in on a
+   wire always is, and it is the thing that goes gold when the thing behind it
+   is the one you have on. */
 .buy .tik {
     position: relative; z-index: 2; display: block;
-    margin: -11px 5px 0; padding: 5px 5px 6px; text-align: center;
-    background: linear-gradient(180deg, #1b1917, #0a0908);
-    border-radius: 3px; transform: rotate(-1.4deg);
-    box-shadow: 0 4px 7px rgba(0,0,0,.55), inset 0 0 0 1px rgba(246,241,230,.34);
+    margin: -10px 3px 0; padding: 7px 6px 8px; text-align: center;
+    background: linear-gradient(180deg, #1d1a16, #0a0908);
+    border-radius: 7px; transform: rotate(-1.3deg);
+    box-shadow: 0 5px 10px rgba(4,14,7,.62);
 }
-.buy:nth-child(2n) .tik { transform: rotate(1.3deg); }
-/* Curly kale, which is what is actually under the meat in a real one. Just
-   the tops of it showing over the back of the ticket: any more and it stops
-   being a garnish and becomes a hedge. Three sizes at three heights so the
-   edge of it is ragged rather than a row of identical scallops. */
-
-.buy .pr { display: block; font-family: var(--font-display); font-size: 17px;
+.buy:nth-child(2n) .tik { transform: rotate(1.2deg); }
+.buy .tik::after {
+    content: ''; position: absolute; inset: 4px; pointer-events: none;
+    border: 1.5px solid rgba(246,241,230,.45); border-radius: 4px;
+}
+.buy .pr { display: block; font-family: var(--font-display); font-size: 19px;
            color: #f6f1e6; line-height: 1.05; letter-spacing: .01em; }
 .buy .pr i { font-style: normal; font-size: .52em; letter-spacing: 0;
              position: relative; top: -.86em; margin-left: .06em; }
-.buy .tag { display: block; font-size: 8px; font-weight: 900; letter-spacing: .08em;
+.buy .tag { display: block; font-size: 8.5px; font-weight: 900; letter-spacing: .1em;
             text-transform: uppercase; line-height: 1.5; }
-/* What it has on now: a gold edge round the tray and a tick in the corner.
-   There was a gold strip along the bottom of it as well, which was one more
-   thing saying the same thing as the tick above it. */
-.buy.worn { box-shadow: 0 2px 7px rgba(5,16,8,.6), 0 0 0 2.5px var(--gold),
-                        inset 0 2px 0 rgba(236,248,255,.13); }
-.buy.worn .tik { box-shadow: 0 4px 7px rgba(0,0,0,.55), inset 0 0 0 1px var(--gold); }
+.buy .why { display: block; font-size: 10px; font-weight: 700; line-height: 1.32;
+            opacity: .6; padding: 2px 2px 0; }
+/* What it has on now: the plaque is edged in gold and a tick lands on the
+   corner of the thing itself. */
+.buy.worn .tik::after { border-color: var(--gold); }
 .buy.worn .tag { color: #8fd6a2; }
-.buy .tick {
-    position: absolute; z-index: 3; top: 7px; right: 7px; width: 16px; height: 16px;
-    border-radius: 50%; background: #3fa564; color: #0d2b1d;
-    box-shadow: 0 0 0 1.5px rgba(13,43,29,.45);
-    font-size: 10px; font-weight: 900; line-height: 15px; text-align: center;
-}
-.buy.got .tag { color: #f6f1e6; opacity: .6; }
 /* Trying something on is not owning it, so it does not look like owning it:
-   the ticket on the front goes gold side out, the way a thing taken out and
-   put on the counter does. */
+   the plaque goes gold side out, the way a thing on the counter does. */
 .buy.trying .tik { background: linear-gradient(180deg, #f0d484, #d8a93c);
-                   box-shadow: 0 4px 7px rgba(0,0,0,.55), inset 0 0 0 1px rgba(42,33,24,.5);
                    color: #2a2118; }
-.buy.trying { box-shadow: 0 2px 7px rgba(5,16,8,.6), 0 0 0 2.5px var(--gold),
-                          inset 0 2px 0 rgba(236,248,255,.13); }
+.buy.trying .tik::after { border-color: rgba(42,33,24,.45); }
 .buy.trying .pr { color: #2a2118; }
 .buy.trying .tag { color: #2a2118; }
 .buy.trying .why { opacity: .8; }
-/* One you cannot afford is still one you have to be able to read: at under
-   half it was a smudge, and the point of showing it at all is that you can see
-   what you are saving up for. The price is what goes quiet, not the goods. */
-.buy.poor { opacity: .82; }
-.buy.poor canvas { opacity: .5; }
+.buy .tick {
+    position: absolute; z-index: 3; top: -9px; right: -7px; width: 21px; height: 21px;
+    border-radius: 50%; background: #3fa564; color: #0d2b1d;
+    box-shadow: 0 0 0 2.5px rgba(8,20,11,.6);
+    font-size: 12px; font-weight: 900; line-height: 21px; text-align: center;
+}
+.buy .tik { overflow: visible; }
+/* One you cannot afford is still one you can read: at under half it was a
+   smudge, and the point of showing it at all is that you can see what you are
+   saving up for. The goods go quiet and the price goes grey; the words stay. */
+.buy.poor { opacity: .9; }
+.buy.poor canvas { opacity: .42; }
 .buy.poor .pr { color: rgba(246,241,230,.55); }
 .buy.poor .why { opacity: .4; }
-.buy:active { transform: translateY(2px);
-               box-shadow: 0 1px 3px rgba(5,16,8,.6),
-                           inset 0 0 0 1.5px rgba(206,226,236,.2); }
+.buy:active .tik { transform: translateY(2px) rotate(-1.3deg);
+                   box-shadow: 0 2px 5px rgba(4,14,7,.62); }
+.buy:nth-child(2n):active .tik { transform: translateY(2px) rotate(1.2deg); }
 
 /* Nothing is bought by tapping a tile. What you tapped comes down here, on
    the dog, with the price on it and two ways out - which is the whole point,
@@ -857,7 +830,7 @@ body.waiting #hud { display: none; }
 }
 @keyframes barIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
 #tryon[hidden] { display: none; }
-#store.trying { padding-bottom: 176px; }
+#store.trying { padding-bottom: 208px; }
 /* On its own little tray, like it was on the shelf. It used to be drawn
    straight onto the near-black counter, and a pair of dark glasses on a
    near-black counter is two dark dots - the one thing you are being asked to
@@ -868,6 +841,9 @@ body.waiting #hud { display: none; }
     box-shadow: inset 0 0 0 1.5px rgba(206,226,236,.22),
                 inset 0 2px 0 rgba(236,248,255,.16);
 }
+/* The dog wearing it needs more than a tray's worth, and the counter gives it
+   up: there is nothing else on that bar but a name and two buttons. */
+#tryon canvas.pooch { width: 122px; }
 #tryon .said { flex: 1; min-width: 0; text-align: left; }
 #tryon .nm { display: block; font-family: var(--font-display); font-size: 19px;
              color: var(--cream); line-height: 1.2; }
@@ -1279,8 +1255,6 @@ body.waiting #hud { display: none; }
     <div id="store" hidden>
         <button class="shut" id="store-done" aria-label="Close">&times;</button>
         <div id="stock-head">
-            <canvas id="stock-dog" width="230" height="118"></canvas>
-            <div class="who" id="stock-who">Nipper</div>
             <div class="bank" id="store-bank"></div>
             <div class="tabs" id="stock-tabs"></div>
         </div>
@@ -1347,7 +1321,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v107';
+const APP_VERSION = 'v108';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1802,26 +1776,72 @@ function drawCat(ms) {
     /* Ginger rather than black. A black cat on a bottle-green wall is a
        cat-shaped piece of wall, and the whole of this upgrade is that the dog
        stops to look at it - which is no good if you cannot. */
-    const ink = '#b8692c', lit = '#d98f4f';
-    const blob = (fill, path) => { ctx.beginPath(); path(); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); };
-    ctx.save();                                       // the tail, up and curling
-    ctx.strokeStyle = ink; ctx.lineWidth = 7; ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(-24, -4);
-    ctx.quadraticCurveTo(-46, -8 + step * 4, -40, -36 + step * 5);
-    ctx.stroke();
-    ctx.restore();
-    for (const [lx, ph] of [[-15, 0], [-8, 2.1], [12, 1], [19, 3.2]])   // legs
-        blob(ink, () => ctx.roundRect(lx - 3, 6, 6, 16 + Math.sin(e * 46 + ph) * 4, 3));
-    blob(ink, () => ctx.ellipse(0, -2, 26, 14, 0, 0, Math.PI * 2));      // body
-    blob(lit, () => ctx.ellipse(-2, -8, 20, 6, 0, 0, Math.PI * 2));
-    blob(ink, () => ctx.ellipse(24, -12, 12, 11, 0, 0, Math.PI * 2));    // head
-    for (const sx of [-1, 1])                                           // ears
-        blob(ink, () => { const ex = 24 + sx * 6;
-            ctx.moveTo(ex - 5, -20); ctx.lineTo(ex + 2, -32); ctx.lineTo(ex + 6, -18); });
-    blob('#e8d46a', () => ctx.ellipse(29, -13, 2.6, 3.2, 0, 0, Math.PI * 2));
+    catShape(ctx, step, e * 46, CATS[0]);
     ctx.restore();
 }
+/* Three of them, because a yard full of one cat is a yard full of one cat. */
+const CATS = [['#b8692c', '#d98f4f'], ['#6e6a63', '#938d83'], ['#3a3440', '#565065']];
+/* Drawn at the origin, facing right, so the one that walks past the window and
+   the ones you chase round the shop at night are the same cat. */
+function catShape(g, step, legPh, coat) {
+    const [ink, lit] = coat;
+    const blob = (fill, path) => { g.beginPath(); path(); g.closePath(); g.fillStyle = fill; g.fill(); };
+    g.save();                                         // the tail, up and curling
+    g.strokeStyle = ink; g.lineWidth = 8; g.lineCap = 'round';
+    g.beginPath();
+    g.moveTo(-24, -4);
+    g.quadraticCurveTo(-48, -10 + step * 4, -42, -38 + step * 5);
+    g.stroke();
+    g.strokeStyle = lit; g.lineWidth = 7;             // with a pale tip on it
+    g.beginPath();
+    g.moveTo(-43.5, -31 + step * 4.7);
+    g.quadraticCurveTo(-44, -35 + step * 5, -42, -38 + step * 5);
+    g.stroke();
+    g.restore();
+    for (const [lx, ph] of [[-15, 0], [-8, 2.1], [12, 1], [19, 3.2]]) {   // legs
+        const h = 15 + Math.sin(legPh + ph) * 4;
+        blob(ink, () => g.roundRect(lx - 3.5, 5, 7, h, 3.5));
+        blob(lit, () => g.ellipse(lx, 5 + h, 4.2, 2.8, 0, 0, Math.PI * 2));
+    }
+    blob(ink, () => g.ellipse(0, -2, 26, 14, 0, 0, Math.PI * 2));         // body
+    blob(lit, () => g.ellipse(-1, 6, 20, 6, 0, 0, Math.PI * 2));          // belly
+    g.save();                                         // and tabby over the back
+    g.beginPath(); g.ellipse(0, -2, 26, 14, 0, 0, Math.PI * 2); g.clip();
+    g.fillStyle = 'rgba(0,0,0,.2)';
+    for (const sx of [-15, -5, 5]) { g.beginPath(); g.roundRect(sx, -18, 5, 15, 2.5); g.fill(); }
+    g.restore();
+    blob(lit, () => g.ellipse(17, 2, 9, 9, 0, 0, Math.PI * 2));           // the chest
+    for (const sx of [-1, 1])                                            // ears
+        blob(ink, () => { const ex = 24 + sx * 6.5;
+            g.moveTo(ex - 5, -19); g.lineTo(ex + sx * 2.5, -33); g.lineTo(ex + 6, -17); });
+    blob('#d98a96', () => {                           // the near one is lined
+        g.moveTo(28, -20); g.lineTo(32, -29); g.lineTo(34, -19); });
+    blob(ink, () => g.ellipse(25, -12, 12.5, 11.5, 0, 0, Math.PI * 2));   // head
+    blob(lit, () => g.ellipse(30, -7, 7.5, 5.5, 0, 0, Math.PI * 2));      // muzzle
+    g.save();                                         // whiskers, under the nose
+    g.strokeStyle = 'rgba(250,246,236,.5)'; g.lineWidth = 1.1; g.lineCap = 'round';
+    for (const [a1, a2] of [[-11, -17], [-9, -10], [-7, -3]]) {
+        g.beginPath(); g.moveTo(34, a1); g.quadraticCurveTo(44, a1 - 1, 50, a2); g.stroke();
+    }
+    g.restore();
+    blob('#2a2228', () => g.ellipse(35, -10, 2.4, 1.9, .2, 0, Math.PI * 2));
+    g.save();
+    g.strokeStyle = 'rgba(42,34,40,.7)'; g.lineWidth = 1.4; g.lineCap = 'round';
+    g.beginPath();
+    g.moveTo(35, -8.4); g.lineTo(35, -6);
+    g.moveTo(35, -6); g.quadraticCurveTo(32.6, -4.4, 31, -6.4);
+    g.stroke();
+    g.restore();
+    blob('#e8d46a', () => g.ellipse(29, -14, 4, 4.4, 0, 0, Math.PI * 2));  // the eye
+    blob('#211b22', () => g.ellipse(29.6, -14, 1.3, 4, 0, 0, Math.PI * 2));
+    blob('#fdf7e8', () => g.ellipse(27.8, -16, 1.1, 1.1, 0, 0, Math.PI * 2));
+    /* A bar over it, the same as the dogs have. An arc is a raised eyebrow; a
+       bar is an opinion, and a cat has one of those. */
+    blob('rgba(0,0,0,.38)', () => {
+        g.moveTo(24.5, -20.5); g.lineTo(33, -19.2);
+        g.lineTo(33, -17.6); g.lineTo(24.5, -18.9); });
+}
+
 let toyDay = 0, toyFly = null;
 const squeak = () => safely(t => {
     tone(t, { freq: 900, to: 1900, dur: .13, type: 'square', vol: .12 });
@@ -6084,8 +6104,13 @@ function drawKnife(ctx, x, y, ang, k, K) {
    mouth, which is the whole difference between the two of them. The neck is
    drawn before the coat, or it paints over its own collar. */
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null,
-                                   winded = false, bot = false } = {}) {
+                                   winded = false, bot = false, young = false } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
+    /* The apprentice is the lad. Whoever is behind the counter this week has a
+       moustache or a beard half the time, and a seventeen-year-old on his
+       first Saturday has neither - so he borrows the face and loses the hair
+       on it. */
+    if (young) B = { ...B, face: 'none' };
     ctx.save();
     ctx.translate(cx, cy);
     ctx.scale(k, k);
@@ -6862,19 +6887,58 @@ function drawTile(c, item, circle = true, k0 = .46) {
     }
     if (item.id === 'cat') {                          // sat down, looking at you
         g.save();
-        g.translate(TILE_W / 2 + 6, TILE_H / 2 + 16);
-        g.scale(1.15, 1.15);
-        const ink = '#b8692c';           // the same ginger that walks the floor
+        g.translate(TILE_W / 2 + 2, TILE_H / 2 + 20);
+        g.scale(1.05, 1.05);
+        const [ink, lit] = CATS[0];      // the same ginger that walks the floor
         const blob = (fill, path) => { g.beginPath(); path(); g.closePath(); g.fillStyle = fill; g.fill(); };
-        g.strokeStyle = ink; g.lineWidth = 6; g.lineCap = 'round';
-        g.beginPath(); g.moveTo(-10, 6); g.quadraticCurveTo(-30, 4, -26, -20); g.stroke();
-        blob(ink, () => { g.moveTo(-14, 8); g.quadraticCurveTo(-16, -18, 0, -18);
-                          g.quadraticCurveTo(14, -18, 12, 8); });
-        blob(ink, () => g.ellipse(2, -26, 13, 12, 0, 0, Math.PI * 2));
-        for (const sx of [-1, 1]) blob(ink, () => { const ex = 2 + sx * 7;
-            g.moveTo(ex - 5, -34); g.lineTo(ex + sx * 2, -46); g.lineTo(ex + 6, -32); });
+        g.lineCap = 'round';
+        g.strokeStyle = ink; g.lineWidth = 7;         // the tail, round the side
+        g.beginPath(); g.moveTo(9, 7); g.quadraticCurveTo(32, 8, 27, -15); g.stroke();
+        g.strokeStyle = lit; g.lineWidth = 6;
+        g.beginPath(); g.moveTo(28.5, -8); g.quadraticCurveTo(29, -12, 27, -15); g.stroke();
+        blob(ink, () => { g.moveTo(-16, 9); g.quadraticCurveTo(-18, -19, 0, -19);
+                          g.quadraticCurveTo(18, -19, 16, 9); });
+        blob(lit, () => g.ellipse(0, -3, 8, 14, 0, 0, Math.PI * 2));      // the chest
+        for (const sx of [-1, 1]) {                                      // front legs
+            blob(ink, () => g.roundRect(sx * 7.5 - 4, -3, 8, 12, 4));
+            blob(lit, () => g.ellipse(sx * 7.5, 9, 5, 3.4, 0, 0, Math.PI * 2));
+        }
+        for (const sx of [-1, 1])                                        // ears
+            blob(ink, () => { const ex = sx * 8;
+                g.moveTo(ex - sx * 5, -32); g.lineTo(ex + sx * 3, -47); g.lineTo(ex + sx * 8, -30); });
         for (const sx of [-1, 1])
-            blob('#e8d46a', () => g.ellipse(2 + sx * 5, -27, 2.8, 3.4, 0, 0, Math.PI * 2));
+            blob('#d98a96', () => { const ex = sx * 8;
+                g.moveTo(ex - sx * 2, -32); g.lineTo(ex + sx * 2.5, -42); g.lineTo(ex + sx * 5.5, -31); });
+        blob(ink, () => g.ellipse(0, -26, 14, 12.5, 0, 0, Math.PI * 2));  // head
+        g.fillStyle = 'rgba(0,0,0,.2)';                                  // tabby
+        for (const sx of [-4.6, 0, 4.6]) {
+            g.beginPath(); g.roundRect(sx - 1.4, -38, 2.8, 7, 1.4); g.fill();
+        }
+        g.strokeStyle = 'rgba(250,246,236,.5)'; g.lineWidth = 1.1;        // whiskers
+        for (const sx of [-1, 1]) for (const [y1, y2] of [[-23, -28], [-21, -21], [-19, -14]]) {
+            g.beginPath(); g.moveTo(sx * 7, y1);
+            g.quadraticCurveTo(sx * 17, y1, sx * 25, y2); g.stroke();
+        }
+        blob(lit, () => g.ellipse(0, -20, 9, 6, 0, 0, Math.PI * 2));      // muzzle
+        blob('#2a2228', () => { g.moveTo(-2.6, -24); g.lineTo(2.6, -24); g.lineTo(0, -21.3); });
+        g.strokeStyle = 'rgba(42,34,40,.7)'; g.lineWidth = 1.5;
+        g.beginPath();
+        g.moveTo(0, -21.3); g.lineTo(0, -19.4);
+        g.moveTo(0, -19.4); g.quadraticCurveTo(-3, -17.5, -4.8, -19.8);
+        g.moveTo(0, -19.4); g.quadraticCurveTo(3, -17.5, 4.8, -19.8);
+        g.stroke();
+        for (const sx of [-1, 1]) {                                       // the eyes
+            blob('#e8d46a', () => g.ellipse(sx * 5.6, -28, 4.2, 4.6, 0, 0, Math.PI * 2));
+            blob('#211b22', () => g.ellipse(sx * 5.6, -28, 1.4, 4.1, 0, 0, Math.PI * 2));
+            blob('#fdf7e8', () => g.ellipse(sx * 5.6 - 1.4, -30, 1.1, 1.1, 0, 0, Math.PI * 2));
+        }
+        g.fillStyle = 'rgba(0,0,0,.34)';              // and a bar over each one
+        for (const sx of [-1, 1]) {
+            g.beginPath();
+            g.moveTo(sx * 1.6, -34.6); g.lineTo(sx * 10.6, -33.1);
+            g.lineTo(sx * 10.6, -31.5); g.lineTo(sx * 1.6, -33);
+            g.closePath(); g.fill();
+        }
         g.restore();
         return;
     }
@@ -6892,14 +6956,20 @@ function drawTile(c, item, circle = true, k0 = .46) {
         return;
     }
     if (item.id === 'apprentice') {                   // and the lad himself
-        drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 18, k: .23, holds: 'knife' });
+        drawButcher(g, false, { cx: TILE_W / 2, cy: TILE_H - 18, k: .23, holds: 'knife',
+                                young: true });
         return;
     }
     if (item.kind === 'knife') {
+        /* A knife is drawn from its tip, so placing that tip in the middle of
+           the tile hangs the whole thing off the bottom left of it. Half its
+           length back along its own angle puts the knife in the middle
+           instead of its point. */
         g.save();
         g.translate(TILE_W / 2, TILE_H / 2);
         g.rotate(-.5);
-        drawKnife(g, 0, 0, 0, .58, item);
+        g.translate(34, 2);
+        drawKnife(g, 0, 0, 0, .66, item);
         g.restore();
         return;
     }
@@ -6975,8 +7045,6 @@ function drawWorn(g, item, circle, k0 = .46) {
 function paintStore() {
     deal();
     showBank();
-    drawPreview('stock-dog', 230, 118, false);
-    document.getElementById('stock-who').textContent = cast.dog.dog;
     document.getElementById('stock-tabs').innerHTML = TABS.map(t =>
         `<button class="${t.id === shelfTab ? 'on' : ''}" data-tab="${t.id}">${t.label}</button>`
     ).join('');
@@ -6999,7 +7067,7 @@ function paintStore() {
                inside the ticket - a transformed box is the containing block
                for anything positioned inside it, and it ended up stuck to the
                ticket instead of to the tray. */
-            const tick = on ? `<span class="tick">&#10003;</span>` : '';
+            const tick = on ? `<span class="tick">&#10003;</span>` : '';   // on the plaque
             /* Owning a hat needs no word on it: no price is the word. It used
                to get a non-breaking space to keep the old tiles the same
                height, which on a tray with a ticket propped on the front of it
@@ -7011,9 +7079,13 @@ function paintStore() {
                       : `<span class="pr">${ticket0(i.price)}</span>`;
             const why = i.why ? `<span class="why">${i.why}</span>` : '';
             return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
-                   `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>${tick}` +
-                   // and no ticket at all when there is nothing to write on one
-                   (tag || why ? `<span class="tik">${tag}${why}</span>` : '') +
+                   `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>` +
+                   /* No plaque at all when there is nothing to write on one -
+                      a hat you already own says nothing, and a blank card
+                      propped in front of the goods is the one thing a real
+                      counter never has on it. The one you have on always gets
+                      one, because the tick is pinned to the plaque. */
+                   (tag || why || on ? `<span class="tik">${tick}${tag}${why}</span>` : '') +
                    `</button>`;
         }).join('');
         return `<div class="shelf"><h3>${label}</h3>` +
@@ -7066,8 +7138,16 @@ function paintTryOn() {
         return;
     }
     const can = save.bank >= tryOn.price;
+    /* Anything that goes on the dog is shown on the dog. It used to be a plain
+       circle standing in for the head down here and the real dog pinned to the
+       top of the shop - which is the one thing you are deciding about sat at
+       the far end of the screen from the button you decide with. The circle is
+       for the shelf, where there are thirty of them and a rack of dogs would be
+       a rack of dogs; on the counter there is one of it. */
+    const wears = ['hat', 'face', 'collar'].includes(tryOn.kind);
     bar.innerHTML =
-        `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>` +
+        `<canvas class="${wears ? 'pooch' : ''}" width="${wears ? 128 : TILE_W}" ` +
+        `height="${wears ? 116 : TILE_H}"></canvas>` +
         `<span class="said">` +
         `<span class="nm">${tryOn.name}</span>` +
         (tryOn.why ? `<span class="does">${tryOn.why}</span>` : '') +
@@ -7078,11 +7158,17 @@ function paintTryOn() {
         `${can ? `Buy it &middot; ${money0(tryOn.price)}` : money0(tryOn.price)}</button></span>`;
     bar.hidden = false;
     storeEl.classList.add('trying');
-    /* On the counter it keeps its head and gets bigger with it. Without the
-       disc under it the dark half of the wardrobe - a brown moustache, an eye
-       patch, a pair of round glasses - was a smudge on a black bar, which is
-       a poor look at the one thing you are being asked to pay for. */
-    drawTile(bar.querySelector('canvas'), tryOn, true, .62);
+    const cv = bar.querySelector('canvas');
+    if (wears) {
+        const g = cv.getContext('2d');
+        g.clearRect(0, 0, 128, 116);
+        drawDog(g, 64, 78, .68 / cast.dog.k, { open: 0 }, 0, cast.dog, previewKit());
+    } else {
+        /* A knife or a thing for the rail has no dog to go on, so it keeps its
+           tray, big enough to see: a pair of round glasses at twenty pixels on
+           a near-black bar was two dots. */
+        drawTile(cv, tryOn, true, .62);
+    }
 }
 const till = () => safely(t => {
     tone(t, { freq: 1200, dur: .08, type: 'square', vol: .13 });
