@@ -262,6 +262,8 @@ body.waiting #hud { display: none; }
     width: 100%; display: flex; flex-direction: column; align-items: center; flex: none;
 }
 #intro .btn { margin-top: 14px; width: 100%; max-width: 236px; }
+/* TEMPORARY, with the button above it. */
+.btn.try-mini { font-size: 12px; padding: 7px; opacity: .7; border-style: dashed; }
 #intro .acts .btn:first-child { margin-top: 0; }
 .btn.ghost {
     background: linear-gradient(180deg, #1a4636, #123327); color: var(--gold);
@@ -818,6 +820,10 @@ body.waiting #hud { display: none; }
         <div class="acts">
             <button class="btn" id="play">Open up shop</button>
             <button class="btn ghost" id="to-shop">Upgrades</button>
+            <!-- TEMPORARY: a door straight into the samurai game so it can be
+                 played without earning a clean week first. Delete this button,
+                 its handler and its rule when it has been looked at enough. -->
+            <button class="btn ghost try-mini" id="try-ninja">Try: sausage samurai</button>
         </div>
         <button id="to-set" aria-label="Settings">
             <svg viewBox="0 0 14 14"><use href="#i-gear"/></svg>
@@ -903,7 +909,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v86';
+const APP_VERSION = 'v87';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1321,6 +1327,9 @@ const GO_WORDS = ['CUT!', 'SLICE!', 'BUTCHER!', 'CHOP!', 'CARVE!', 'TRIM!',
    dead - it turns round and goes after the bone, which is a few seconds of it
    walking away from the string and giving back everything it had climbed. */
 const TOY_S = 3.2, LAD_Q = 74;
+/* What a machine cuts like: good, even, and never better than that. No
+   perfect, no doubles, no bonus seconds off the dog. */
+const BOT_Q = 70;
 /* It saunters across the window and the dog forgets what it was doing. It does
    not walk off with the ground the dog had made, the way the bone does - it is
    a couple of seconds of standing still, once a day, and that is all. */
@@ -1447,6 +1456,68 @@ function ladCut() {
         const p = pieceAt(string.twists[k]);
         if (p && p.from <= k && p.to > k) { splitAt(p, k, LAD_Q); return; }
     }
+}
+/* The machine takes the bottom link off the string, over and over, until there
+   is nothing left on it. The same cut the lad makes, made as often as it takes.
+   It stops the moment the day does. */
+let botArm = null;
+const BOT_MS = 300;
+function botCut() {
+    if (!live || !armed) return;
+    const reach = k => { const [x, y] = at(string.twists[Math.min(k, string.n - 2)]);
+                         botArm = { t0: now(), x, y }; servo(); };
+    for (let k = string.n - 2; k >= 0; k--) {
+        const p = pieceAt(string.twists[k]);
+        if (p && p.from <= k && p.to > k) { reach(k); splitAt(p, k, BOT_Q); return; }
+    }
+    // nothing joined left: the last single link comes off too
+    const last = pieces.find(q => q.from === q.to);
+    if (last) {
+        reach(last.from);
+        free(last, BOT_Q); pieces.splice(pieces.indexOf(last), 1);
+        if (!pieces.length) finishDay();
+    }
+}
+// a servo, which is the only sound in this game that is not made of meat
+const servo = () => safely(t => {
+    tone(t, { freq: 320, to: 1150, dur: .07, type: 'square', vol: .05 });
+    tone(t, { freq: 1150, to: 420, dur: .09, type: 'square', vol: .04, at: .07 });
+});
+/* The arm it reaches with: two segments off a mount at the right-hand jamb,
+   with the elbow worked out from the two ends so it bends like an arm rather
+   than stretching like a rubber band. It is only on the screen for the third
+   of a second it takes to make the cut, because a machine that is always
+   there is scenery and this one is an event. */
+function drawBot(ms) {
+    if (!botArm) return;
+    const e = (ms - botArm.t0) / BOT_MS;
+    if (e >= 1) { botArm = null; return; }
+    const reach = e < .3 ? e / .3 : 1 - (e - .3) / .7 * .25;
+    const mx = W + 14, my = RAIL + 92;                 // where it is bolted on
+    const tx = mx + (botArm.x - mx) * reach, ty = my + (botArm.y - my) * reach;
+    const dx = tx - mx, dy = ty - my, d = Math.hypot(dx, dy) || 1;
+    const L = Math.max(d, 1) / 2 + 34;                 // each segment, elbow out
+    const h = Math.sqrt(Math.max(0, L * L - (d / 2) * (d / 2)));
+    const ex = (mx + tx) / 2 - dy / d * h, ey = (my + ty) / 2 + dx / d * h;
+    ctx.save();
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#8f949b'; ctx.lineWidth = 11;
+    ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(ex, ey); ctx.lineTo(tx, ty); ctx.stroke();
+    ctx.strokeStyle = '#c3c8cf'; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(ex, ey); ctx.lineTo(tx, ty); ctx.stroke();
+    for (const [jx, jy] of [[mx, my], [ex, ey]]) {     // the joints
+        ctx.beginPath(); ctx.arc(jx, jy, 7, 0, Math.PI * 2);
+        ctx.fillStyle = '#5c6168'; ctx.fill();
+        ctx.beginPath(); ctx.arc(jx, jy, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#d8dde3'; ctx.fill();
+    }
+    ctx.save();                                        // and the blade on the end
+    ctx.translate(tx, ty);
+    ctx.rotate(Math.atan2(ty - ey, tx - ex) + Math.PI / 2);
+    ctx.beginPath(); ctx.moveTo(-3, -14); ctx.lineTo(3, -12); ctx.lineTo(2, 14); ctx.lineTo(-2, 14);
+    ctx.closePath(); ctx.fillStyle = '#eef2f6'; ctx.fill();
+    ctx.restore();
+    ctx.restore();
 }
 /* Where its head is on the page, and how big, so everything that needs to
    know can ask - the blade, the steak, and the drawing. The lunge is in here
@@ -1965,7 +2036,7 @@ function startRound(n) {
        are admiring the string. */
     dog.s = string.len + dog.speed * 1.25; dog.going = false;
     dog.chomp = 0; dog.keen = 0; dog.grabX = null; dog.toy = 0; dog.stare = 0;
-    toyFly = null; cat = null;
+    toyFly = null; cat = null; botArm = null;
     // a week picks its own day for it, and Monday is as likely as Saturday
     if (n === 1) {
         toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
@@ -2024,6 +2095,14 @@ function countdown(n) {
         // the lad gets to it about halfway down the string
         if (running('apprentice')) countT.push(setTimeout(ladCut,
             string.len / dog.speed * 450));
+        /* And the machine, if the shop has one, just gets on with it: the
+           whole string at an even pace, finishing a comfortable margin before
+           the dog would have reached the top of it. */
+        if (running('robot')) {
+            const every = string.len / dog.speed * 1000 * .72 / (string.n + 1);
+            for (let c = 1; c <= string.n; c++)
+                countT.push(setTimeout(botCut, 260 + every * c));
+        }
         // and on one day of the week the bone comes in, somewhere in the middle
         if (n === toyDay) countT.push(setTimeout(throwToy,
             string.len / dog.speed * (250 + Math.random() * 400)));
@@ -2846,11 +2925,14 @@ function drawMini(ms) {
             const n = mini.swipe.length;
             const [px, py] = mini.swipe[n - 1], [qx, qy] = mini.swipe[Math.max(0, n - 4)];
             drawKatana(px, py, Math.atan2(py - qy, px - qx));
+        } else {
+            /* Parked in the corner between strokes, the way the butcher's own
+               knife is on the shop floor. A game about a sword where the sword
+               is only on screen while you are already swinging it is a game
+               that never told you it had one. */
+            drawKatana(W - 122, H - 176, -2.3);
         }
-        ctx.restore();
-        return;
-    }
-    if (mini.id === 'jar') {
+    } else if (mini.id === 'jar') {
         for (const c of mini.coins) {                 // the coins
             ctx.save();
             ctx.translate(c.x, c.y);
@@ -3586,6 +3668,14 @@ const KIT = [
       why: 'One walks past every day. The dog stops to watch.' },
     { id: 'insure',    kind: 'help',  name: 'Dog insurance',    price: 120000,
       why: 'The dog is immune to your cuts. The day still ends.' },
+    /* The last thing in the shop, and the only one that takes the game away
+       from you. It cuts the whole string on its own, steadily, at the quality
+       of a machine - which is to say never perfectly and never two at once,
+       so a butcher who can still be bothered earns more by hand. That is the
+       joke and it is also the balance: it buys you the afternoon off, not a
+       better week. */
+    { id: 'robot',     kind: 'help',  name: 'AI butcher',       price: 250000,
+      why: 'It does the cutting. You watch.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -5075,6 +5165,7 @@ function draw() {
     drawSteak(ctx);
 
     drawToy(ms);
+    drawBot(ms);
     drawCat(ms);
     if (demoOn()) drawDemo(ms);
 
@@ -5178,7 +5269,7 @@ function tick() {
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
         if (mini || live || loose.length || cutFx.length || mess.length || shouts.length
             || chewing || steak || (hit && !hit.settled) || cat || demoOn() || !resting
-            || floor.some(f => !f.down)) raf = requestAnimationFrame(step);
+            || botArm || floor.some(f => !f.down)) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 }
@@ -5407,6 +5498,27 @@ function drawTile(c, item, circle = true) {
         } else {
             drawBlanket(g, TILE_W / 2, TILE_H / 2, .82, -.36);
         }
+        return;
+    }
+    if (item.id === 'robot') {                        // a head, two eyes, an aerial
+        g.save();
+        g.translate(TILE_W / 2, TILE_H / 2 + 3);
+        g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 8; g.shadowOffsetY = 4;
+        g.fillStyle = '#9aa0a8';
+        g.beginPath(); g.roundRect(-26, -22, 52, 44, 11); g.fill();
+        g.shadowColor = 'transparent';
+        g.fillStyle = '#6c727a';                      // the visor
+        g.beginPath(); g.roundRect(-20, -13, 40, 20, 8); g.fill();
+        g.fillStyle = '#7fe0a8';
+        for (const sx of [-1, 1]) {
+            g.beginPath(); g.ellipse(sx * 9, -3, 4.6, 5.2, 0, 0, Math.PI * 2); g.fill();
+        }
+        g.fillStyle = '#c3c8cf';                      // the aerial, and the jaw
+        g.fillRect(-2, -34, 4, 12);
+        g.beginPath(); g.arc(0, -36, 4.5, 0, Math.PI * 2); g.fill();
+        g.fillStyle = '#6c727a';
+        for (let i = -2; i <= 2; i++) g.fillRect(i * 8 - 2, 12, 4, 6);
+        g.restore();
         return;
     }
     if (item.id === 'insure') {                       // a plaster, on its own
@@ -5799,20 +5911,27 @@ function drawDoor() {
        so the two in the doorway swing right out of the way and the ones at the
        jambs barely move. Cubed, so nothing happens for a beat and then it all
        happens, which is what pushing through one feels like. */
+    /* They hang off a rail, so they hinge at the top and swing out at the
+       bottom: the offset is nothing at the ceiling and everything at the
+       floor, squared, which is the shape a curtain makes when somebody walks
+       through it. Blitted in slices rather than as one image, because a
+       strand that bends cannot be one drawImage. */
     const push = Math.pow(e, 1.5), gap = W / (STRANDS - 1);
+    const SL = 18, sh = Math.ceil(H / SL);
     g.globalAlpha = 1 - Math.pow(e, 3.4);
     for (let i = 0; i < STRANDS; i++) {
         const x = i * gap;
         const mid = 1 - Math.abs(x - W / 2) / (W / 2);
-        const away = Math.sign(x - W / 2 + .001) * Math.pow(mid, .7) * push * W * .78;
-        const sway = Math.sin(e * 9 + i * .8) * 7 * mid * (1 - e);
-        g.save();
-        g.translate(x + away + sway, -6);
-        g.rotate(Math.sign(x - W / 2 + .001) * mid * push * .34);
-        const k = 1 + push * .5;                   // and they come past you
-        g.scale(k, k);
-        g.drawImage(strand, -9, 0);
-        g.restore();
+        const dir = Math.sign(x - W / 2 + .001);
+        const away = dir * Math.pow(mid, .6) * push * W * 1.05;
+        const sway = Math.sin(e * 9 + i * .8) * 9 * mid * (1 - e);
+        for (let k = 0; k < SL; k++) {
+            const y = k * sh, t = Math.min(1, (y + sh / 2) / H);
+            const off = away * t * t + sway * t;
+            const wide = 18 * (1 + push * .55 * t);    // and nearer at the bottom
+            g.drawImage(strand, 0, y, 18, sh + 1,
+                        x + off - wide / 2, y, wide, sh + 1);
+        }
     }
     g.globalAlpha = 1;
 }
@@ -5881,6 +6000,22 @@ document.getElementById('again').addEventListener('click', e => {
 document.getElementById('play').addEventListener('click', e => {
     e.stopPropagation();
     beginWeek();
+});
+/* TEMPORARY, with the button. It opens the hour after closing on its own: no
+   week, no clean sheet, and whatever it pays goes nowhere. */
+document.getElementById('try-ninja').addEventListener('click', e => {
+    e.stopPropagation();
+    startSession(); audioNow();
+    showingIntro = false;
+    document.getElementById('intro').hidden = true;
+    document.body.classList.remove('waiting');
+    round = 1; live = false; money = 0;
+    showHud();
+    startMini();
+    const M = MINIS.find(m => m.id === 'ninja');
+    Object.assign(mini, { id: M.id, name: M.name, say: M.say, secs: MINI_S,
+                          won: 0, t0: now(), begun: undefined });
+    mini.fly = []; mini.bits = []; mini.next = .3; mini.swipe = []; mini.hit = 0;
 });
 
 /* Who you are this week, what you are cutting with, and the six of them

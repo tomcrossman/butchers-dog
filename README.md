@@ -38,6 +38,12 @@ the ones hanging in the middle of the doorway swinging right out of the way and
 the ones at the jambs barely moving, with sixteen bits of brass knocking
 together over the top of it.
 
+They **hinge at the rail**, because that is what a thing hanging off a rail
+does: the offset is nothing at the ceiling and everything at the floor, squared,
+which is the shape a curtain makes when somebody walks through it. A strand that
+bends cannot be one `drawImage`, so each one goes down in eighteen slices with
+its own offset, widening as it comes.
+
 It is a curtain rather than a fade: the shop is already behind it, the rail is
 up and the count has started, so the strands part onto a day that is already
 happening. One strand is drawn once into its own small canvas and blitted
@@ -356,8 +362,18 @@ They were a heading each over a single tile, which is three headings over three
 things that are all the same thing anyway: somebody or something else taking a
 bit of the week off you.
 
-**Dog insurance** is the most expensive thing in the shop and the only one that is
-not about money. Twelve hundred pounds, and cutting the dog stops being the end
+**AI butcher**, two and a half thousand, is the last thing in the shop and the
+only one that takes the game away from you. It cuts the whole string on its own,
+steadily, at the quality of a machine - which is to say never perfectly and
+never two at once, so a butcher who can still be bothered earns more by hand.
+That is the joke and it is also the balance: it buys you the afternoon off, not
+a better week. An arm comes off a mount at the right-hand jamb for the third of
+a second each cut takes, two segments with the elbow worked out from the two
+ends so it bends like an arm rather than stretching like a rubber band, and a
+servo - the only sound in this game that is not made of meat.
+
+**Dog insurance** is the second most expensive thing in the shop and the only
+other one that is not about money. Twelve hundred pounds, and cutting the dog stops being the end
 of it: it is hurt, the day ends there, and it lives. No vet, no bill, no stone,
 no new dog on Monday - the week carries on with everything taken so far. It
 does not make the dog harder to hit; it makes hitting it something you survive.
@@ -729,7 +745,11 @@ twenty-two pounds, about a third on top of a perfect week.
   stroke, which is the rail's own rule carried through the back door. The two
   halves go off either side of the line that cut them and fall, and a black
   pudding comes at you about one time in six, flecks and all. Nothing is lost
-  for missing one - there is no scoreboard back here, only a till.
+  for missing one - there is no scoreboard back here, only a till. The sword is
+  on the screen whether you are swinging it or not, parked in the corner the way
+  the butcher's own knife is on the shop floor: a game about a sword where the
+  sword only appears once you are already swinging is a game that never told you
+  it had one.
 - **On the barbecue.** Five sausages cooking at their own speeds, steaming,
   spitting fat at the bars and hissing every half second. Tap one while it is
   done and it is four forty; tap it early, or leave it until it is black,
