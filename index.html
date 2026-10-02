@@ -432,8 +432,7 @@ body.waiting #hud { display: none; }
 .btn.try-mini { font-size: 12px; padding: 7px; opacity: .7; border-style: dashed; }
 .btn.try-mini[hidden] { display: none; }
 #minipick .btn { width: 100%; max-width: 280px; }
-#minipick h2 { margin-bottom: 2px; }
-#minipick .note { max-width: 300px; margin: 2px 0 10px; }
+#minipick h2 { margin-bottom: 14px; }
 #intro .acts .btn:first-child { margin-top: 0; }
 .btn.ghost {
     background: linear-gradient(180deg, #1a4636, #123327); color: var(--gold);
@@ -708,7 +707,7 @@ body.waiting #hud { display: none; }
 }
 #to-set svg { width: 100%; height: 100%; fill: var(--cream); }
 #to-set:active { opacity: .7; }
-#setup h2, #settings h2, #confirm h2 {
+#setup h2, #settings h2, #confirm h2, #minipick h2 {
     margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
     font-size: 35px; letter-spacing: .02em;
     color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.4);
@@ -755,8 +754,19 @@ body.waiting #hud { display: none; }
 }
 /* The same width as the form it sits under: two things stacked with their
    sides not lining up is the one thing you notice about them. */
+/* The one button on the one screen where nothing else is happening, so every
+   few seconds it asks. It stops the moment it is pressed. */
 #setup .btn { max-width: 330px;
-              box-shadow: 0 4px 0 rgba(0,0,0,.35), 0 8px 16px rgba(28,20,14,.4); }
+              box-shadow: 0 4px 0 rgba(0,0,0,.35), 0 8px 16px rgba(28,20,14,.4);
+              animation: askMe 4.4s ease-in-out 1.8s infinite; }
+#setup .btn:active { animation: none; }
+@keyframes askMe {
+    0%, 74%, 100% { transform: none; }
+    78% { transform: translateY(-6px) rotate(-1.3deg); }
+    83% { transform: translateY(0) rotate(1.1deg); }
+    88% { transform: translateY(-3px) rotate(-.7deg); }
+    93% { transform: translateY(0) rotate(.3deg); }
+}
 #setup .row input { background: rgba(0,0,0,.34); }
 #preview { margin-top: 2px; }
 #setup .btn { margin-top: 12px; }
@@ -882,6 +892,10 @@ body.waiting #hud { display: none; }
 }
 .nudge svg { width: 17px; height: 17px; fill: currentColor; display: block; }
 .nudge:active { opacity: 1; transform: translateY(1px); }
+.nudge.rolled svg { animation: rollit .56s cubic-bezier(.25, .9, .3, 1) both; }
+@keyframes rollit { from { transform: rotate(0) scale(1); }
+                    60%  { transform: rotate(560deg) scale(1.22); }
+                    to   { transform: rotate(720deg) scale(1); } }
 #stock { width: 100%; max-width: 330px; margin: 8px 0 4px; }
 .shelf { margin-bottom: 10px; }
 .shelf { margin-bottom: 10px; }
@@ -1618,7 +1632,6 @@ body.waiting #hud { display: none; }
 
     <div id="minipick" hidden>
         <h2>After hours</h2>
-        <p class="note">Out the back only. Whatever it pays goes nowhere.</p>
         <div id="minilist"></div>
         <button class="btn ghost" id="mini-no">Not now</button>
     </div>
@@ -1656,7 +1669,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v128';
+const APP_VERSION = 'v129';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3552,6 +3565,7 @@ const MINIS = [
     { id: 'dream', name: 'Butcher\u2019s dream', say: 'Hold to rise. Eat what you can' },
     { id: 'cats',  name: 'After the cats', say: 'Drag the dog. Run them out' },
     { id: 'shell', name: 'Find it', say: 'Watch his hands. One go', secs: 14 },
+    { id: 'scales', name: 'On the scales', say: 'Stop it on the mark', secs: 11 },
 ];
 let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
@@ -3567,6 +3581,7 @@ function miniSetup(id) {
     else if (id === 'dream') dreamSet();
     else if (id === 'cats') catsSet();
     else if (id === 'shell') shellSet();
+    else if (id === 'scales') scalesSet();
     else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
@@ -3711,6 +3726,62 @@ function dogBack(g, x, y, ms) {
     for (const sx of [-1, 1]) ear(sx, true);
     g.restore();
 }
+/* ---- On the scales ------------------------------------------------------
+   A queue, and every one of them wants a particular weight of it. The needle
+   runs across the dial and you stop it; on the mark they pay you, off it they
+   throw the thing back and you wear it. The mark gets narrower and the needle
+   gets quicker with every one you serve, so the run is the game: it is the
+   rail's own rule - the longer you hold it the more each one is worth - asked
+   with a different finger.
+
+   And it is the one game in here you play from behind the counter looking out,
+   which is where a butcher spends the other forty hours of the week. */
+const SCALE_PAY = 300, SCALE_RUN = 80, SCALE_CAP = 4;
+const SCALE_HOLD = 1000;                    // how long they take over paying
+const scaleY = () => H * .74;               // the counter it is stood on
+const scaleW = () => Math.min(272, W - 64); // and how wide the dial is
+/* Who is in. Nobody is drawn twice the same: a coat, a hat and a face off the
+   same three lists is thirty-odd people, which is a Saturday. */
+const COATS = ['#5a6e8a', '#7a5a4a', '#6a7a58', '#8a6a7a', '#4a5a6a', '#7d6a4a'];
+const SKINS = ['#e5ab7e', '#c98552', '#8a5a3a', '#efc19b', '#6f4428', '#e0b48d'];
+const HATS  = ['#3a3630', '#7a3a3a', '#2e4a5a', 'none', 'none', '#5a4a2e'];
+function scalesSet() {
+    mini.served = 0; mini.run = 0; mini.puff = []; mini.splat = [];
+    mini.cust = null;
+    scalesNext();
+}
+function scalesNext() {
+    const n = mini.served;
+    mini.cust = {
+        t0: now(),
+        /* Never hard against an end, where you could hold the finger down and
+           wait for the needle to turn round in the mark. */
+        want: .24 + Math.random() * .52,
+        /* The mark narrows and the needle quickens, but neither of them runs
+           away: a mark the needle crosses in less than the time it takes to
+           see it is not a harder game, it is a coin. */
+        band: Math.max(.13, .26 - n * .016),
+        speed: .9 + n * .10,
+        at: 0, stopped: false, ok: false, stop0: 0,
+        coat: pick(COATS), skin: pick(SKINS), hat: pick(HATS),
+        lean: Math.random() < .5 ? -1 : 1,
+    };
+}
+function scalesStep(dt) {
+    const c = mini.cust;
+    mini.splat = mini.splat.filter(s => now() - s.t0 < 1700);
+    mini.puff = mini.puff.filter(p => now() - p.t0 < 700);
+    if (!c) return;
+    if (c.stopped) {
+        if (now() - c.stop0 > SCALE_HOLD && miniLeft() > .5) {
+            mini.served++; scalesNext();
+        }
+        return;
+    }
+    // a triangle wave, so it runs across and comes back at the same rate
+    const p = (now() - c.t0) / 1000 * c.speed;
+    c.at = Math.abs((p % 2) - 1);
+}
 /* ---- Find it ------------------------------------------------------------
    The one game in here you cannot get better at by being quicker. He puts a
    sausage under one of three covers, shuffles them, and you have one go. It
@@ -3720,7 +3791,7 @@ function dogBack(g, x, y, ms) {
 
    And you are behind the dog for it, over the back of its head, because the
    dog is the one being fooled. */
-const SHELL_PAY = 3800;          // what finding it is worth, which is a week's work
+const SHELL_PAY = 5000;          // what finding it is worth, which is a week's work
 const SHELL_SWAPS = 7;
 const SHELL_SHOW = 1.5, SHELL_DROP = .55, SHELL_SWAP = .46;
 const shellY = () => H * .58;                      // the counter he does it on
@@ -4025,6 +4096,8 @@ function miniStep(dt) {
             if (m.x < -50) { mini.meat.splice(i, 1); mini.run = 0; }
         }
         mini.puff = mini.puff.filter(p => now() - p.t0 < 620);
+    } else if (mini.id === 'scales') {
+        scalesStep(dt);
     } else if (mini.id === 'shell') {
         shellStep(dt);
     } else if (mini.id === 'cats') {
@@ -4130,6 +4203,44 @@ function miniAt(x, y) {
        him up. */
     if (mini.id === 'dream') { mini.hold = true; return; }
     if (mini.id === 'cats') { mini.tx = x; mini.ty = y; mini.held = true; return; }
+    if (mini.id === 'scales') {
+        const c = mini.cust;
+        if (!c || c.stopped) return;
+        c.stopped = true; c.stop0 = now();
+        c.ok = Math.abs(c.at - c.want) <= c.band / 2;
+        if (c.ok) {
+            mini.run++;
+            const pay = SCALE_PAY + Math.min(mini.run - 1, SCALE_CAP) * SCALE_RUN;
+            mini.won += pay;
+            mini.puff.push({ x: W / 2, y: scaleY() - 150, t0: now(), run: mini.run });
+            chink(); if (mini.run > 1) ding();
+        } else {
+            mini.run = 0;
+            /* It comes back at you, and it arrives on the glass rather than on
+               the counter: you are the one who sold it to them. */
+            /* Thrown, not stamped: the shape of it is worked out once, here,
+               so every one that lands is a different mess. */
+            const blob = [], fleck = [], drip = [];
+            for (let i = 0; i < 7; i++) blob.push({
+                x: (Math.random() - .5) * 46, y: (Math.random() - .5) * 32,
+                rx: 11 + Math.random() * 21, ry: 9 + Math.random() * 16,
+                a: Math.random() * 6.28 });
+            for (let i = 0; i < 9; i++) {
+                const a = Math.random() * 6.28, r = 34 + Math.random() * 46;
+                fleck.push({ x: Math.cos(a) * r, y: Math.sin(a) * r * .78,
+                             rx: 2.5 + Math.random() * 7, ry: 2 + Math.random() * 5, a });
+            }
+            for (let i = 0; i < 3; i++) drip.push({
+                x: (Math.random() - .5) * 44, w: 3.5 + Math.random() * 5,
+                len: 16 + Math.random() * 40, at: .2 + Math.random() * .5 });
+            mini.splat.push({ t0: now(), x: 54 + Math.random() * (W - 108),
+                              y: RAIL + 90 + Math.random() * (H - RAIL - 240),
+                              k: .85 + Math.random() * .55, a: Math.random() * 6.28,
+                              pud: Math.random() < .22, blob, fleck, drip });
+            splat(); yuck();
+        }
+        return;
+    }
     /* One go, and only once he has stopped. A tap while they are still moving
        is not a guess, it is a misfire. */
     if (mini.id === 'shell') {
@@ -4495,6 +4606,51 @@ function miniBack(ms) {
                 g.restore();
             }
         }
+    } else if (mini.id === 'scales') {
+        /* Looking out of the shop rather than into it: the window, the street
+           going dark behind it, and the counter you are stood at. It is the
+           only one of them played from where a butcher actually spends the
+           week, which is with his back to the tiles. */
+        const ty = scaleY();
+        const out = g.createLinearGradient(0, 0, 0, ty);
+        out.addColorStop(0, '#20304a'); out.addColorStop(1, '#3d4a5e');
+        g.fillStyle = out; g.fillRect(0, 0, W, ty);
+        /* The row opposite, which is what is out of a shop window at six on a
+           winter evening. */
+        g.fillStyle = '#16202e';
+        for (let x = -12, i = 0; x < W + 12; x += 53, i++) {
+            const h = 168 + ((i * 41) % 92);
+            g.fillRect(x, ty - 150 - h, 51, h + 150);
+        }
+        /* Lit windows, scattered rather than stepped: a modulo on a counter
+           walks them down the screen in a diagonal line, which is the one
+           thing a row of houses does not do. */
+        g.fillStyle = 'rgba(255,222,150,.42)';
+        for (let i = 0; i < 26; i++) {
+            const wx = 6 + rnd(i, 3) * (W - 26), wy = ty - 306 + rnd(i, 4) * 238;
+            g.fillRect(wx | 0, wy | 0, 13, 17);
+        }
+        /* The window itself: the frame, the glass, and the light of the shop
+           lying on it. */
+        g.fillStyle = 'rgba(255,240,206,.07)';
+        g.fillRect(0, 0, W, ty);
+        g.fillStyle = '#3c2a18';                            // the transom
+        g.fillRect(0, ty - 54, W, 10);
+        g.fillStyle = 'rgba(255,255,255,.05)';              // a streak on the glass
+        g.save(); g.translate(W * .18, 0); g.rotate(-.22);
+        g.fillRect(0, -40, 26, H); g.fillRect(40, -40, 11, H);
+        g.restore();
+        /* And the counter, which is the one in the shop. */
+        g.fillStyle = 'rgba(0,0,0,.3)';
+        g.fillRect(0, ty - 9, W, 9);
+        const front = g.createLinearGradient(0, ty + 17, 0, H);
+        front.addColorStop(0, '#9a6f3e'); front.addColorStop(1, '#5d3d1d');
+        g.fillStyle = front; g.fillRect(0, ty + 17, W, H - ty);
+        g.fillStyle = 'rgba(26,15,6,.34)';
+        for (let x = (W % 74) / 2; x < W; x += 74) g.fillRect(x, ty + 17, 5, H - ty);
+        g.fillStyle = '#e6e0d1'; g.fillRect(0, ty, W, 17);
+        g.fillStyle = '#fbf8f0'; g.fillRect(0, ty, W, 5);
+        g.fillStyle = '#b9b1a0'; g.fillRect(0, ty + 14, W, 3);
     } else if (mini.id === 'shell') {
         /* The shop, from the wrong side of the counter. Everything else in
            here is played from where the butcher stands; this one is played
@@ -4934,6 +5090,147 @@ function drawMini(ms) {
                 { open: .3, tilt: clamp(mini.vx * mini.face / 2600, -.26, .26) },
                 ms, cast.dog, cast.kit);
         ctx.restore();
+    } else if (mini.id === 'scales') {
+        const ty = scaleY(), c = mini.cust, DW = scaleW();
+        /* Whoever is next. A coat, a hat and a face, leaning on the counter,
+           and an arm out for it when they have been given what they asked
+           for. */
+        if (c) {
+            const cx = W / 2 + c.lean * 56, cy = ty - 112;   // cy is the shoulder line
+            const paid = c.stopped && c.ok;
+            const reach = paid ? Math.min(1, (now() - c.stop0) / 280) : 0;
+            const sq = c.stopped && !c.ok ? 1 : 0;
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.fillStyle = c.skin;                          // the arm out for it
+            ctx.save();
+            ctx.translate(-c.lean * 48, 14);
+            ctx.rotate(c.lean * (1.15 - reach * .75));
+            ctx.beginPath(); ctx.roundRect(-11, 0, 22, 62 + reach * 14, 11); ctx.fill();
+            ctx.restore();
+            ctx.shadowColor = 'rgba(0,0,0,.3)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 8;
+            ctx.fillStyle = c.coat;                          // the coat
+            ctx.beginPath(); ctx.roundRect(-52, 0, 104, 118, [34, 34, 8, 8]); ctx.fill();
+            ctx.shadowColor = 'transparent';
+            ctx.fillStyle = c.skin;                          // the head
+            ctx.beginPath(); ctx.ellipse(0, -32, 30, 34, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'rgba(0,0,0,.7)';                // and a face on it
+            for (const ex of [-11, 11]) {
+                ctx.beginPath();
+                ctx.ellipse(ex, -36, 3.6, 3.6 - sq * 2.4, 0, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+            ctx.beginPath();
+            if (paid) ctx.arc(0, -24, 10, .2, Math.PI - .2);
+            else if (sq) { ctx.moveTo(-9, -17); ctx.quadraticCurveTo(0, -24, 9, -17); }
+            else { ctx.moveTo(-8, -20); ctx.lineTo(8, -20); }
+            ctx.stroke();
+            if (c.hat !== 'none') {                          // and a hat, half of them
+                ctx.fillStyle = c.hat;
+                ctx.beginPath(); ctx.roundRect(-30, -76, 60, 28, [13, 13, 3, 3]); ctx.fill();
+                ctx.beginPath(); ctx.roundRect(-39, -52, 78, 8, 4); ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        /* The scales. A pan with the thing on it, the body under that, and the
+           dial across the front with the mark on it and the needle running. */
+        const sy = ty - 6;
+        ctx.save();
+        ctx.translate(W / 2, sy);
+        ctx.fillStyle = 'rgba(0,0,0,.25)';
+        ctx.beginPath(); ctx.ellipse(0, 2, DW * .5, 8, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#2b2520';                            // the body
+        ctx.beginPath(); ctx.roundRect(-DW / 2, -46, DW, 46, [8, 8, 3, 3]); ctx.fill();
+        ctx.fillStyle = '#17120f';                            // the dial set into it
+        ctx.beginPath(); ctx.roundRect(-DW / 2 + 9, -38, DW - 18, 26, 5); ctx.fill();
+        const d0 = -DW / 2 + 13, dw = DW - 26;
+        if (c) {
+            ctx.fillStyle = 'rgba(143,214,162,.34)';          // what they asked for
+            ctx.beginPath();
+            ctx.roundRect(d0 + dw * (c.want - c.band / 2), -35, dw * c.band, 20, 3);
+            ctx.fill();
+            ctx.fillStyle = '#8fd6a2';
+            ctx.fillRect(d0 + dw * c.want - 1, -36, 2, 22);
+        }
+        ctx.fillStyle = 'rgba(246,241,230,.16)';              // the graduations
+        for (let i = 0; i <= 10; i++) ctx.fillRect(d0 + dw * i / 10 - .6, -20, 1.2, 5);
+        if (c) {                                              // and the needle
+            const nx = d0 + dw * c.at;
+            ctx.fillStyle = c.stopped ? (c.ok ? '#8fd6a2' : '#e8836a') : '#f0d484';
+            ctx.beginPath(); ctx.roundRect(nx - 1.8, -39, 3.6, 29, 1.8); ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(nx - 6, -43); ctx.lineTo(nx + 6, -43); ctx.lineTo(nx, -36);
+            ctx.closePath(); ctx.fill();
+        }
+        ctx.fillStyle = '#c9a44c';                            // the pan it sits under
+        ctx.beginPath();
+        ctx.moveTo(-DW * .30, -46); ctx.lineTo(DW * .30, -46);
+        ctx.lineTo(DW * .34, -56); ctx.lineTo(-DW * .34, -56);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#e4c069';
+        ctx.fillRect(-DW * .345, -58, DW * .69, 3);
+        ctx.restore();
+        /* What is on the pan, until they take it or throw it. */
+        if (c && !(c.stopped && !c.ok)) {
+            const gone = c.stopped && c.ok ? Math.min(1, (now() - c.stop0) / 420) : 0;
+            ctx.save();
+            ctx.translate(W / 2, sy - 64 - gone * 46);
+            ctx.globalAlpha = 1 - gone * gone;
+            ctx.rotate(-.1 + gone * .5);
+            ctx.fillStyle = MEAT.body;
+            ctx.beginPath(); ctx.roundRect(-34, -13, 68, 26, 13); ctx.fill();
+            ctx.fillStyle = MEAT.lit;
+            ctx.beginPath(); ctx.roundRect(-25, -9, 42, 8, 4); ctx.fill();
+            ctx.restore();
+        }
+        /* What each one was worth, where it was handed over. */
+        for (const p of mini.puff) {
+            const e2 = (now() - p.t0) / 700;
+            ctx.globalAlpha = 1 - e2 * e2;
+            ctx.fillStyle = '#fff3d2';
+            ctx.font = '400 ' + (p.run > 1 ? 26 : 21) +
+                       'px "Staatliches", "Alfa Slab One", Georgia, serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(p.run > 1 ? '\u00d7' + p.run : '\u2022', p.x, p.y - e2 * 46);
+            ctx.globalAlpha = 1;
+        }
+        /* And what is on the glass. It lands a beat after they throw it, and
+           it is still there for the one after that. */
+        for (const sp of mini.splat) {
+            const e2 = (now() - sp.t0) / 1000;
+            if (e2 < .13) continue;
+            const land = Math.min(1, (e2 - .13) / .09);
+            ctx.save();
+            ctx.translate(sp.x, sp.y);
+            ctx.rotate(sp.a);
+            ctx.scale(sp.k * (1.5 - land * .5), sp.k * (1.5 - land * .5));
+            ctx.globalAlpha = Math.max(0, 1 - Math.pow(Math.max(0, e2 - .9) / .8, 2)) * .92;
+            const P = sp.pud ? PUD : MEAT;
+            ctx.fillStyle = P.body;
+            ctx.beginPath();                                  // the mess of it
+            for (const bl of sp.blob) {
+                ctx.ellipse(bl.x, bl.y, bl.rx, bl.ry, bl.a, 0, Math.PI * 2);
+                ctx.closePath();
+            }
+            ctx.fill();
+            for (const f of sp.fleck) {                        // what went with it
+                ctx.beginPath();
+                ctx.ellipse(f.x, f.y, f.rx, f.ry, f.a, 0, Math.PI * 2); ctx.fill();
+            }
+            for (const d of sp.drip) {                         // and what runs down
+                const run = Math.max(0, Math.min(1, (e2 - d.at) / 1.1)) * d.len;
+                if (run < 2) continue;
+                ctx.beginPath();
+                ctx.roundRect(d.x - d.w / 2, 14, d.w, run, d.w / 2); ctx.fill();
+                ctx.beginPath();
+                ctx.arc(d.x, 14 + run, d.w * .62, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.fillStyle = P.lit;                             // the shine on it
+            ctx.beginPath(); ctx.ellipse(-9, -8, 15, 9, -.3, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+            ctx.globalAlpha = 1;
+        }
     } else if (mini.id === 'shell') {
         const ty = shellY();
         /* A cover is a pudding basin upside down: a dome, a knob on the top of
@@ -5037,13 +5334,11 @@ function drawMini(ms) {
             ctx.beginPath();
             ctx.roundRect(h.x - 16, hy - (20 + h.grip * 22), 32, 20 + h.grip * 10, 9);
             ctx.fill();
-            ctx.fillStyle = cast.butcher.skinD;               // fingers down the side
-            for (const fx of [-10, -3.5, 3.5, 10]) {
-                ctx.beginPath();
-                ctx.roundRect(h.x + fx - 3, hy - 4, 6, 8 + h.grip * 14, 3); ctx.fill();
-            }
-            ctx.fillStyle = cast.butcher.skin;                // and the back of the hand
-            ctx.beginPath(); ctx.ellipse(h.x, hy - 8, 19, 13, 0, 0, Math.PI * 2); ctx.fill();
+            /* The back of the hand and nothing else. Four fingers at this
+               size are four pink sticks hanging off a lid. */
+            ctx.fillStyle = cast.butcher.skin;
+            ctx.beginPath();
+            ctx.ellipse(h.x, hy - 6, 20, 14 + h.grip * 3, 0, 0, Math.PI * 2); ctx.fill();
         }
         /* What it was worth, where it was. */
         /* Only when it was under the one you picked. Getting it wrong lifts
@@ -5995,7 +6290,7 @@ const ROSETTES = [
     { id: 'clean',   silk: 'green',  name: 'Not One Lost',   why: 'A whole week the dog got nothing.' },
     { id: 'clean5',  silk: 'green',  name: 'Ten Clean Weeks', why: 'And nine more like it.' },
     { id: 'after',   silk: 'green',  name: 'After Hours',    why: 'Ten hours after closing, which is ten clean weeks’ worth.' },
-    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all seven of the after-hours games.' },
+    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all eight of the after-hours games.' },
     { id: 'noburn',  silk: 'red',    name: 'Nothing Burnt',  why: 'Five off the barbecue and not one black.' },
 
     { id: 'hundred', silk: 'brass',  name: 'A Hundred Pounds', why: 'A hundred in the till.' },
@@ -6146,7 +6441,7 @@ function sweep(quiet) {
     if (save.tally.loyal >= 10) give('loyal');
     if (save.tally.breeds.length >= 10) give('allsorts');
     if (save.tally.hours >= 10) give('after');
-    if (save.tally.minis.length >= 7) give('three3');
+    if (save.tally.minis.length >= 8) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');
     // the shelves, counted off what is actually on them rather than a number
     const bought = STOCK.filter(i => i.price > 0);
@@ -7239,20 +7534,23 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
 function botHead(g) {
     const blob = (fill, path) => { g.beginPath(); path(); g.closePath(); g.fillStyle = fill; g.fill(); };
     // wide enough to cover the one he had, which is drawn before this and in skin
-    blob('#4a515a', () => { g.roundRect(-15, -80, 30, 30, 4); });
-    blob('#9aa0a8', () => { g.roundRect(-42, -158, 84, 92, 20); });     // the head
-    blob('#7b818a', () => { g.roundRect(-42, -158, 84, 14, [20, 20, 2, 2]); });
-    blob('#2e343c', () => { g.roundRect(-33, -132, 66, 34, 14); });     // the visor
+    /* Taller than it is wide, the way a head is. It was eighty-four across
+       and ninety-two down with a visor through the middle of it, which from
+       the shop floor is a letterbox. */
+    blob('#4a515a', () => { g.roundRect(-15, -82, 30, 32, 4); });
+    blob('#9aa0a8', () => { g.roundRect(-38, -168, 76, 104, 20); });    // the head
+    blob('#7b818a', () => { g.roundRect(-38, -168, 76, 14, [20, 20, 2, 2]); });
+    blob('#2e343c', () => { g.roundRect(-30, -140, 60, 36, 14); });     // the visor
     for (const sx of [-1, 1])                                          // the lamps
-        blob('#7fe0a8', () => g.ellipse(sx * 15, -115, 7.5, 8.5, 0, 0, Math.PI * 2));
+        blob('#7fe0a8', () => g.ellipse(sx * 14, -122, 7.5, 8.5, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1])
-        blob('#d8fbe8', () => g.ellipse(sx * 15 - 2.5, -118, 2.6, 3, 0, 0, Math.PI * 2));
-    blob('#6c727a', () => { g.roundRect(-22, -90, 44, 14, 5); });       // the grille
-    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 8 - 1.5, -90, 3, 14); });
-    blob('#c3c8cf', () => { g.roundRect(-2.5, -182, 5, 26, 2); });      // the aerial
-    blob('#7fe0a8', () => g.arc(0, -186, 5.5, 0, Math.PI * 2));
+        blob('#d8fbe8', () => g.ellipse(sx * 14 - 2.5, -125, 2.6, 3, 0, 0, Math.PI * 2));
+    blob('#6c727a', () => { g.roundRect(-21, -96, 42, 15, 5); });       // the grille
+    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 8 - 1.5, -96, 3, 15); });
+    blob('#c3c8cf', () => { g.roundRect(-2.5, -192, 5, 28, 2); });      // the aerial
+    blob('#7fe0a8', () => g.arc(0, -196, 5.5, 0, Math.PI * 2));
     for (const sx of [-1, 1])                                          // and the ears
-        blob('#6c727a', () => { g.roundRect(sx * 42 - (sx > 0 ? 0 : 7), -124, 7, 22, 3); });
+        blob('#6c727a', () => { g.roundRect(sx * 38 - (sx > 0 ? 0 : 7), -132, 7, 24, 3); });
 }
 
 /* ---- showing you how ----------------------------------------------------
@@ -7868,12 +8166,27 @@ document.querySelectorAll('.nudge[data-pick]').forEach(btn => btn.addEventListen
     paintSetup();
     plop(2);
 }));
-document.getElementById('roll-dog').addEventListener('click', () => {
-    document.getElementById('in-dog').value = pick(DOG_NAMES); plop(3);
-});
-document.getElementById('roll-shop').addEventListener('click', () => {
-    document.getElementById('in-shop').value = pick(SHOPS); plop(4);
-});
+/* It does not simply land on one. The die turns over and the name goes past
+   eight of them, slowing down, and stops - which is the difference between
+   being given a name and watching one come up. */
+let rollT = [];
+function reroll(btn, inputId, list) {
+    rollT.forEach(clearTimeout); rollT = [];
+    const input = document.getElementById(inputId);
+    btn.classList.remove('rolled'); void btn.offsetWidth; btn.classList.add('rolled');
+    const land = pick(list), steps = 8;
+    for (let i = 0; i < steps; i++) {
+        const at = 30 + Math.pow(i / (steps - 1), 2.1) * 450;
+        rollT.push(setTimeout(() => {
+            input.value = i === steps - 1 ? land : pick(list);
+            if (i === steps - 1) plop(4); else if (i % 2 === 0) plop(1);
+        }, at));
+    }
+}
+document.getElementById('roll-dog').addEventListener('click', e =>
+    reroll(e.currentTarget, 'in-dog', DOG_NAMES));
+document.getElementById('roll-shop').addEventListener('click', e =>
+    reroll(e.currentTarget, 'in-shop', SHOPS));
 document.getElementById('setup-done').addEventListener('click', () => {
     startSession(); audioNow();
     save.dogName = (document.getElementById('in-dog').value || '').trim().slice(0, 12) || pick(DOG_NAMES);
@@ -8546,6 +8859,7 @@ function showShop() {
     drawShopfront();
     showingIntro = true;
     document.getElementById('intro').hidden = false;
+    startIdle();
     document.body.classList.add('waiting');
     if (tillFrom !== null) {
         const was = tillFrom;
@@ -8751,19 +9065,19 @@ function drawFascia(g, name, apron) {
         g.closePath();
         g.strokeStyle = c; g.stroke();
     };
-    g.lineWidth = 2;  frame(9, 6, 322, 56, 'rgba(220,171,62,.72)');
-    g.lineWidth = 1;  frame(14, 11, 312, 46, 'rgba(220,171,62,.3)');
+    g.lineWidth = 2;  frame(7, 5, 326, 58, 'rgba(220,171,62,.72)');
+    g.lineWidth = 1;  frame(12, 10, 316, 48, 'rgba(220,171,62,.3)');
     const mid = (x0 + x1) / 2;
     g.fillStyle = 'rgba(220,171,62,.72)';               // a diamond on each corner
-    for (const [dx, dy] of [[14, 11], [326, 11], [14, 57], [326, 57]]) {
+    for (const [dx, dy] of [[12, 10], [328, 10], [12, 58], [328, 58]]) {
         g.save(); g.translate(dx, dy); g.rotate(Math.PI / 4);
         g.fillRect(-2.6, -2.6, 5.2, 5.2); g.restore();
     }
     g.textAlign = 'center'; g.textBaseline = 'middle';
     /* The name in the same bold condensed caps the game's own name is in,
        which is what is actually painted on one of these. */
-    g.font = '400 30px "Staatliches", "Alfa Slab One", Georgia, serif';
-    const room = x1 - x0 - 52, w = g.measureText(name.toUpperCase()).width;
+    g.font = '400 34px "Staatliches", "Alfa Slab One", Georgia, serif';
+    const room = x1 - x0 - 44, w = g.measureText(name.toUpperCase()).width;
     g.save();
     g.translate(mid, y0 + 28);
     if (w > room) g.scale(room / w, 1);
@@ -8780,7 +9094,7 @@ function drawFascia(g, name, apron) {
        rosette is on the wall inside with thirty-five others, and the one
        thing you would actually do with it is paint it on the sign. */
     const best = won('best');
-    g.font = '900 9px Lato, system-ui, sans-serif';
+    g.font = '900 10px Lato, system-ui, sans-serif';
     const trade = best ? 'B U T C H E R   O F   T H E   Y E A R'
                        : 'F A M I L Y   B U T C H E R';
     const bar = 200;                                    // all the rule has room for
@@ -8976,6 +9290,18 @@ function petDog() {
     if (save.tally.pats >= 50) { award('pats'); } else putSave();
     if (!petRaf) petRaf = requestAnimationFrame(petStep);
 }
+/* One loop for the shopfront while it is up, at about a third of the screen's
+   rate: a breath does not need sixty frames a second, and this one runs for as
+   long as the window is open. It stands down while the pat or the oof has its
+   own loop going, so the canvas is never drawn twice in a frame. */
+let idleRaf = 0, idleLast = 0;
+function idleStep() {
+    idleRaf = requestAnimationFrame(idleStep);
+    const el = document.getElementById('intro');
+    if (!el || el.hidden || pauseAt) return;              // nothing to breathe on
+    if (!petting && !oofT0 && now() - idleLast > 42) { idleLast = now(); drawShopfront(); }
+}
+function startIdle() { if (!idleRaf) idleRaf = requestAnimationFrame(idleStep); }
 function petStep() {
     petRaf = 0;
     if (!petting) return;                    // switched off from somewhere else
@@ -9064,6 +9390,9 @@ function sharp(c, w, h) {
 function drawShopfront() {
     const c = document.getElementById('shopfront'), g = sharp(c, 340, 400);
     g.clearRect(0, 0, 340, 400);
+    /* Nobody stands still for a quarter of an hour. Both of them breathe off
+       this one number. */
+    const it = now(), sway = Math.sin(it / 1300);
     drawRoom(g);
     drawFascia(g, cast.shop, cast.butcher.apron);
     /* Pinned to the wall under the awning, behind the two of them, because
@@ -9097,8 +9426,15 @@ function drawShopfront() {
        both of them have grown into it. They stand on the same line at the
        bottom of the canvas and the gap between them is what is left. */
     if (!oofT0) {
-        drawButcher(g, true, { cx: 112, cy: 312, k: .88, holds: 'knife',
+        /* He breathes and shifts his weight, pivoting on his boots. A man
+           stood behind a counter for an hour does both. */
+        g.save();
+        g.translate(BUT_AT[0], BUT_AT[1] + 96 * .88);
+        g.rotate(Math.sin(it / 2900) * .012);
+        g.translate(-BUT_AT[0], -(BUT_AT[1] + 96 * .88));
+        drawButcher(g, true, { cx: 112, cy: 312 + sway * 1.8, k: .88, holds: 'knife',
                                bot: running('robot') });
+        g.restore();
     } else {
         /* It lands in a tenth of a second and comes back out over the rest,
            and the face and the dropped arm go with the fold rather than
@@ -9159,7 +9495,16 @@ function drawShopfront() {
        goes, and settles. All three run off the same number and all three fade
        out on the same one, so a tap half a second in tops up one animation
        rather than fighting with it. */
-    let pose = { open: 0 }, ms = 0;
+    /* And every seven seconds or so the dog has a look about: a quick tilt of
+       the head one way and back. It is the same pose the pat uses, so a pat
+       lands on top of it rather than fighting it. */
+    const look = (it / 7000) % 1;
+    const perk = look < .1 ? Math.sin(look / .1 * Math.PI) : 0;
+    const way = Math.floor(it / 7000) % 2 ? 1 : -1;
+    let pose = { open: 0,
+                 squash: Math.sin(it / 1150) * .07,
+                 tilt: Math.sin(it / 2600) * .04 + perk * way * .2,
+                 reach: perk * 4 }, ms = it;
     if (petting) {
         const e = Math.min(1, (now() - petting.t0) / PET_MS), fade = 1 - e * e;
         ms = now();
@@ -9231,6 +9576,7 @@ draw();
 /* Whatever is at the top of the screen on boot - and before there is a shop
    that is the brick wall the sign hangs on, not the tiles you play against. */
 theme(started ? FASCIA : WALL_RED);
+startIdle();
 if (!started) openSetup();
 </script>
 </body>

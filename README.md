@@ -911,6 +911,13 @@ timed off one counter, and while that counter is stopped it reads the same
 number every time, so even something waking up on a timer finds that no time
 has passed. Phones only: a laptop in landscape is not a phone on its side.
 
+**The two of them breathe.** Nobody stands still for a quarter of an hour, and
+the shopfront is a screen you sit on: he shifts his weight on his boots and she
+has a look about every seven seconds or so, a tilt of the head one way and
+back. It is the same pose the pat uses, so a pat lands on top of it rather than
+fighting it, and the whole thing redraws at about a third of the screen's rate
+because a breath does not need sixty frames a second.
+
 **Out the back is a back room.** The same brickwork the front of the building
 is made of, one bulb over the door and nothing on the walls, with the version
 screwed to the bottom of it rather than floating under whatever the last thing
@@ -1292,7 +1299,7 @@ twenty-two pounds, about a third on top of a perfect week.
   back of a line breaks the run. Nothing is lost for missing: there is no
   scoreboard back here, only a till.
 - **Find it.** He puts a sausage under one of three covers, shuffles them, and
-  **you get one tap**. Find it and it pays thirty-eight pounds, which is more
+  **you get one tap**. Find it and it pays fifty pounds, which is more
   than any other hour after closing has ever paid - and the biggest single
   thing that happens in this game, so it is paid like one: the cover is thrown
   off the top of the window end over end, the sausage comes up after it
@@ -1325,6 +1332,16 @@ twenty-two pounds, about a third on top of a perfect week.
   And how each of the seven is set up lives in one place now. There was a
   second copy of that chain behind the debug door, and a seventh game added to
   one of them and not the other is a game that opens to an empty counter.
+- **On the scales.** A queue, and every one of them wants a particular weight
+  of it. **The needle runs across the dial and you stop it**: on the mark they
+  pay you, off it they throw the thing back and it is on the glass for the next
+  two customers to be served through. The mark narrows and the needle quickens
+  with every one you serve, but neither of them runs away - a mark the needle
+  crosses in less than the time it takes to see it is not a harder game, it is
+  a coin. The run is the game: the rail's own rule about holding a streak,
+  asked with a different finger. It is also the only one played from behind the
+  counter looking out, which is where a butcher spends the other forty hours of
+  the week.
 - **After the cats.** The shop after dark, and something is in it that should
   not be. **Drag anywhere and the dog goes where your finger is** - not where it
   is, where it is heading, because he is a dog and not a cursor: he builds up
