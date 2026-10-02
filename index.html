@@ -373,8 +373,21 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     padding: 0 0 5%; text-align: center;
     /* The counter front, carrying on from where the canvas leaves off - the
        canvas paints its own wall now, so what is behind it here only ever
-       shows below it, and it picks up the exact colour the counter ends on. */
-    background: linear-gradient(180deg, #3b2616 0%, #30200f 56%, #241709 100%);
+       shows below it, and it picks up the exact colour the counter ends on.
+       Panelled, because that is what the front of a counter is: stiles, a
+       groove between each pair and the panel between them sitting back. It
+       was flat near-black, which made the bottom half of the screen a hole
+       with two buttons in it rather than the front of anything. */
+    background:
+        linear-gradient(180deg, rgba(0,0,0,.06) 0 3px, transparent 3px),
+        repeating-linear-gradient(90deg,
+            rgba(255,228,186,.07) 0 2px,
+            rgba(58,36,16,.42) 2px 5px,
+            rgba(26,15,6,.5) 5px 8px,
+            rgba(255,228,186,.09) 8px 11px,
+            transparent 11px 74px),
+        repeating-linear-gradient(90deg, rgba(255,232,196,.028) 0 1px, transparent 1px 9px),
+        linear-gradient(180deg, #8a6136 0%, #78522b 48%, #5d3d1d 100%);
     animation: introIn .5s ease-out both;
 }
 @keyframes introIn { from { opacity: 0; } to { opacity: 1; } }
@@ -576,30 +589,31 @@ body.waiting #hud { display: none; }
 #setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden],
 #minipick[hidden] { display: none; }
 #settings, #confirm, #minipick { justify-content: center; }
-/* Out the back is out the back: match-boarding, a bulb over the door and
-   nothing on the walls. It was the same tiled green as the shop floor, which
-   made the one room in this building that is not for customers look like the
-   one room that is. Boards rather than brick, because a brick bond has to be
-   staggered to read as brick and a stack bond reads as a grid - and a back
-   room is boarded anyway. */
+/* Out the back is out the back: the same brickwork as the front of the
+   building, one bulb over the door and nothing on the walls. It was
+   match-boarding, which made the back room a different building from the one
+   the shop is in - it is the same wall, it is just round the back and it has
+   not been painted since. */
 #settings, #confirm, #minipick {
-    background:
-        radial-gradient(70% 26% at 50% 0%, rgba(255,230,174,.2) 0%, transparent 70%),
-        radial-gradient(130% 90% at 50% 46%, transparent 40%, rgba(0,0,0,.45) 100%),
-        repeating-linear-gradient(90deg,
-            rgba(255,240,214,.05) 0 1.5px,
-            rgba(0,0,0,.34) 1.5px 4px,
-            rgba(255,240,214,.035) 4px 6px,
-            transparent 6px 34px),
-        repeating-linear-gradient(90deg, rgba(255,246,228,.018) 0 1px, transparent 1px 7px),
-        linear-gradient(180deg, #4d4038 0%, #382e29 46%, #231c18 100%);
+    background-color: #6b655c;
+    background-position: 0 0;
+    background-repeat: repeat;
 }
+#settings::before, #confirm::before, #minipick::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+        radial-gradient(72% 28% at 50% 0%, rgba(255,226,166,.26) 0%, transparent 66%),
+        radial-gradient(135% 95% at 50% 42%, rgba(44,30,18,.42) 24%, rgba(16,11,7,.84) 100%),
+        linear-gradient(180deg, rgba(74,50,30,.4), rgba(28,19,11,.5));
+}
+#settings > *:not(.shut), #confirm > *:not(.shut),
+#minipick > *:not(.shut) { position: relative; z-index: 1; }
 #settings .rows, #confirm .rows {
     background: linear-gradient(180deg, #3e2c1c, #241910);
 }
 /* And the version is screwed to the bottom of the wall rather than floating
    under whatever the last thing on the screen happens to be. */
-#settings .ver { position: absolute; left: 0; right: 0;
+#settings .ver { position: absolute; z-index: 1; left: 0; right: 0;
                  bottom: calc(14px + env(safe-area-inset-bottom)); margin: 0; }
 /* The one screen in the game that can undo a month, so it gets a whole screen
    and says what it will take rather than a red line that asks twice. */
@@ -661,11 +675,28 @@ body.waiting #hud { display: none; }
 }
 #setup > * { position: relative; z-index: 1; }
 /* The sign itself: the dark plate with the gold rule inside it that every one
-   of these is, hung on the wall with a shadow under it. */
+   of these is - and actually hung, off two eye-bolts in the brickwork, with
+   its shadow on the wall below it. A sign flat against a wall with a shadow
+   under it is a poster; a sign on two short chains is a sign. */
+#setup .hung { position: relative; padding-top: 30px; margin-bottom: 4px; }
+#setup .chain {
+    position: absolute; top: 0; width: 7px; height: 36px; border-radius: 3px;
+    background: repeating-linear-gradient(180deg,
+        #8c8276 0 4px, #332e28 4px 6px, #a29889 6px 10px, #262220 10px 12px);
+    box-shadow: 1px 0 2px rgba(0,0,0,.3), inset -1.5px 0 0 rgba(0,0,0,.28);
+}
+#setup .chain.l { left: 19%; }
+#setup .chain.r { right: 19%; }
+#setup .chain::before {                                /* the bolt in the brick */
+    content: ''; position: absolute; top: -5px; left: 50%;
+    width: 14px; height: 14px; margin-left: -7px; border-radius: 50%;
+    background: radial-gradient(circle at 36% 30%, #a39a90, #4c463e 68%, #2a2621);
+    box-shadow: 0 2px 3px rgba(0,0,0,.4);
+}
 #setup .board {
-    position: relative; margin: 0 0 6px; padding: 20px 26px 17px;
+    position: relative; margin: 0; padding: 20px 26px 22px;
     background: linear-gradient(180deg, #241a15, #140e0b);
-    border-radius: 7px; box-shadow: 0 10px 22px rgba(28,20,14,.55);
+    border-radius: 7px; box-shadow: 0 13px 24px rgba(28,20,14,.5);
 }
 #setup .board::after {
     content: ''; position: absolute; inset: 7px; pointer-events: none;
@@ -683,9 +714,12 @@ body.waiting #hud { display: none; }
 }
 #setup .btn { box-shadow: 0 4px 0 rgba(0,0,0,.35), 0 8px 16px rgba(28,20,14,.4); }
 #setup .row input { background: rgba(0,0,0,.34); }
+/* And the strapline is on the wall under the sign rather than squeezed onto
+   the bottom of it, so it is painted the colour anything painted on brick is. */
 #setup .sub {
     margin: 16px 0 0; font-size: 13px; font-weight: 900; letter-spacing: .18em;
-    text-transform: uppercase; color: var(--cream); opacity: .6;
+    text-transform: uppercase; color: #4a4239; opacity: .85;
+    text-shadow: 0 1px 0 rgba(255,255,255,.45);
 }
 #preview { margin-top: 2px; }
 #preview { width: min(76vw, 300px); height: auto; }
@@ -1362,10 +1396,11 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="setup" hidden>
-        <div class="board">
-            <h1>Butcher&rsquo;s<br>Dog</h1>
-            <p class="sub">Start your shop</p>
+        <div class="hung">
+            <i class="chain l"></i><i class="chain r"></i>
+            <div class="board"><h1>Butcher&rsquo;s<br>Dog</h1></div>
         </div>
+        <p class="sub">Start your shop</p>
         <canvas id="preview" width="330" height="196"></canvas>
         <div class="rows">
             <div class="row"><span class="lab">Butcher</span>
@@ -1455,7 +1490,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v113';
+const APP_VERSION = 'v114';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -8024,8 +8059,12 @@ function drawCounter(g) {
        the top half of it. A counter front is a different material from the
        wall behind it, and once it is, everything under the slab reads as the
        front of the counter rather than as more wall. */
+    /* Lighter oak than it was. Near-black mahogany made the bottom half of
+       the shopfront a hole with two buttons in it; a counter front is wood
+       somebody has to keep clean, and it is panelled, which the page below
+       carries on into. */
     const front = g.createLinearGradient(0, ty + 11, 0, 400);
-    front.addColorStop(0, '#5a3a22'); front.addColorStop(1, '#3b2616');
+    front.addColorStop(0, '#9a6f3e'); front.addColorStop(1, '#8a6136');
     g.fillStyle = front; g.fillRect(0, ty + 11, 340, 400 - ty - 11);
     g.fillStyle = 'rgba(0,0,0,.2)';                      // under the lip of the slab
     g.fillRect(0, ty + 11, 340, 3);
@@ -8336,7 +8375,10 @@ document.getElementById('shopfront').addEventListener('pointerdown', e => {
     if (x >= bx0 && x <= bx1 && y >= by0 && y <= by1) windButcher('ribs');
 });
 /* Boot: whatever was saved, or a stranger who has to pick a shop first. */
-setupEl.style.backgroundImage = 'url(' + brickTile() + ')';
+const BRICK = 'url(' + brickTile() + ')';
+setupEl.style.backgroundImage = BRICK;
+for (const id of ['settings', 'confirm', 'minipick'])
+    document.getElementById(id).style.backgroundImage = BRICK;
 loadSave();
 deal();                           // the cast, before anything asks who the dog is
 if (started) seenBreed();         // and whoever is standing there already counts

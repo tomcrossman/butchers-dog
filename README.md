@@ -726,6 +726,13 @@ will not be pressed.
 The button that opens the shop is a word and nothing else; a cleaver on it was
 tried and looked like a small appliance.
 
+The counter front under the window is **panelled oak**, light enough to be
+wood somebody has to keep clean: stiles, a groove between each pair and the
+panel sitting back between them, starting in the canvas and carrying on down
+the page in the same colour the canvas ends on. It was near-black mahogany,
+which made the bottom half of the shopfront a hole with two buttons in it
+rather than the front of anything.
+
 The shopfront is two blocks rather than five: the sign, the two of them and the
 till are one thing being shown and they stay together at the top, and the way
 in is the footer at the bottom. The shop
@@ -752,6 +759,13 @@ a different wash on every brick, one in four older and warmer than the rest, is
 three lines of canvas and a fortnight of gradients. The wear on them is barely
 there on purpose - a tile repeats, and a mark you can pick out is a mark you
 then see in a grid all the way up the wall.
+
+The board is actually hung: two eye-bolts in the brickwork, two short chains
+and the sign swinging off them with its shadow on the wall below. A sign flat
+against a wall with a shadow under it is a poster. START YOUR SHOP is painted
+on the bricks under it rather than squeezed onto the bottom of the board, which
+is where that line goes on a real one - the board carries the name and nothing
+else.
 
 The name is in **Staatliches**, bold condensed caps, which is what is actually
 painted on a butcher's: MEATS, FINEST CUTS, BUTCHERSON, PREMIUM QUALITY. A
@@ -783,13 +797,14 @@ room's two switches and the reset screen's. The die that rolls you a name is
 drawn as a die now: it was the character for one, and a phone that has not got
 that glyph draws an empty box instead.
 
-**Out the back is a back room.** Match-boarding, a bulb over the door and
-nothing on the walls, with the version screwed to the bottom of it rather than
-floating under whatever the last thing on the screen happens to be. It was the
-same tiled green as the shop floor, which made the one room in this building
-that is not for customers look like the one room that is. Boards rather than
-brick: a brick bond has to be staggered to read as brick, a stack bond reads as
-a grid, and a back room is boarded anyway.
+**Out the back is a back room.** The same brickwork the front of the building
+is made of, one bulb over the door and nothing on the walls, with the version
+screwed to the bottom of it rather than floating under whatever the last thing
+on the screen happens to be. It was the same tiled green as the shop floor,
+which made the one room in this building that is not for customers look like
+the one room that is; then it was match-boarding, which made the back room a
+different building from the shop. It is the same wall as the setup screen, one
+tile, round the back and not painted since.
 
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
 Reset game - which takes a whole screen to say what it is about to take rather
