@@ -15,7 +15,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lato:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Rye&family=Lato:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
@@ -47,6 +47,11 @@
     --mono:         ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
                     "Liberation Mono", monospace;
     --font-display: "Alfa Slab One", Georgia, serif;
+    /* The game's own name, and nothing else. Rye is a Victorian slab with
+       spurs on it - the face a signwriter would have used on a fascia board in
+       1910, which is the one thing on that screen the whole game is named
+       after. */
+    --font-title:   "Rye", "Alfa Slab One", Georgia, serif;
 }
 * { box-sizing: border-box; touch-action: manipulation; -webkit-user-select: none; user-select: none;
     -webkit-tap-highlight-color: transparent; }
@@ -565,10 +570,39 @@ body.waiting #hud { display: none; }
             11px 2px/19px 17px,
         #17391e;
 }
-#store .shut { background: linear-gradient(180deg, #553820, #33200f); }
+#store .shut, #settings .shut, #confirm .shut, #minipick .shut {
+    background: linear-gradient(180deg, #553820, #33200f);
+}
 #setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden],
 #minipick[hidden] { display: none; }
 #settings, #confirm, #minipick { justify-content: center; }
+/* Out the back is out the back: match-boarding, a bulb over the door and
+   nothing on the walls. It was the same tiled green as the shop floor, which
+   made the one room in this building that is not for customers look like the
+   one room that is. Boards rather than brick, because a brick bond has to be
+   staggered to read as brick and a stack bond reads as a grid - and a back
+   room is boarded anyway. */
+#settings, #confirm, #minipick {
+    background:
+        radial-gradient(70% 26% at 50% 0%, rgba(255,230,174,.2) 0%, transparent 70%),
+        radial-gradient(130% 90% at 50% 46%, transparent 40%, rgba(0,0,0,.45) 100%),
+        repeating-linear-gradient(90deg,
+            rgba(255,240,214,.05) 0 1.5px,
+            rgba(0,0,0,.34) 1.5px 4px,
+            rgba(255,240,214,.035) 4px 6px,
+            transparent 6px 34px),
+        repeating-linear-gradient(90deg, rgba(255,246,228,.018) 0 1px, transparent 1px 7px),
+        linear-gradient(180deg, #4d4038 0%, #382e29 46%, #231c18 100%);
+}
+#settings .rows, #confirm .rows {
+    background: linear-gradient(180deg, #3e2c1c, #241910);
+    border-color: var(--gold-d);
+}
+#settings .row { border-top-color: rgba(220,171,62,.2); }
+/* And the version is screwed to the bottom of the wall rather than floating
+   under whatever the last thing on the screen happens to be. */
+#settings .ver { position: absolute; left: 0; right: 0;
+                 bottom: calc(14px + env(safe-area-inset-bottom)); margin: 0; }
 /* The one screen in the game that can undo a month, so it gets a whole screen
    and says what it will take rather than a red line that asks twice. */
 #confirm { z-index: 14; }
@@ -606,13 +640,36 @@ body.waiting #hud { display: none; }
     margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
     font-size: 30px; color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.4);
 }
-/* The setup screen is the first thing anyone sees, so it wears the name
-   rather than a heading that could belong to any screen. */
-#setup h1 {
-    margin: 0; font-family: var(--font-display); font-weight: 400; color: var(--gold);
-    font-size: clamp(34px, 12.5vw, 56px); line-height: .96; letter-spacing: .01em;
-    text-shadow: 0 4px 0 rgba(0,0,0,.45);
+/* The setup screen is the first thing anyone sees, so it is the shop's own
+   fascia board: the dark signwritten plate with gold beading along the top and
+   the bottom of it, and the game's name painted on it the size a name on a
+   fascia is painted. Tiles were the wall you play against, which is the inside
+   of a shop you have not got yet. */
+#setup {
+    background:
+        radial-gradient(120% 56% at 50% 14%, rgba(255,226,160,.09) 0%, transparent 66%),
+        radial-gradient(120% 100% at 50% 50%, transparent 38%, rgba(0,0,0,.5) 100%),
+        repeating-linear-gradient(90deg, rgba(255,232,196,.016) 0 2px, transparent 2px 9px),
+        linear-gradient(180deg, #2e221b 0%, #1d1512 52%, #120c0a 100%);
+    box-shadow: inset 0 6px 0 var(--brass), inset 0 -6px 0 var(--brass);
 }
+#setup h1 {
+    margin: 0; font-family: var(--font-title); font-weight: 400; color: var(--gold);
+    font-size: clamp(38px, 15vw, 70px); line-height: 1.04; letter-spacing: .005em;
+    text-shadow: 0 4px 0 rgba(0,0,0,.5), 0 0 26px rgba(220,171,62,.22);
+}
+/* The gold hairline a signwriter rules inside the edge of a board. */
+#setup h1::after {
+    content: ''; display: block; width: 72%; height: 2px; margin: 14px auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold-d) 20%,
+                                var(--gold-d) 80%, transparent);
+}
+#setup .rows {
+    background: linear-gradient(180deg, #4a3220, #2d1d10);
+    border-color: var(--gold-d);
+}
+#setup .row { border-top-color: rgba(220,171,62,.2); }
+#setup .row input { background: rgba(0,0,0,.3); }
 #setup .sub {
     margin: 9px 0 0; font-size: 13px; font-weight: 900; letter-spacing: .18em;
     text-transform: uppercase; color: var(--cream); opacity: .6;
@@ -732,18 +789,25 @@ body.waiting #hud { display: none; }
           text-shadow: 0 1px 3px rgba(5,16,8,.9); }
 .pin .w { display: block; font-size: 10px; font-weight: 700; line-height: 1.35;
           opacity: .38; margin-top: 1px; text-shadow: 0 1px 3px rgba(5,16,8,.9); }
-/* And a gold edge round the ones you have got. The name going gold is the
-   difference when you are reading a row; a box round it is the difference when
-   you are looking at the shelf from the top of the screen, which is what you
-   are actually doing on a board of thirty-six. */
+/* The ones you have got are certificates. Everything else on this board is a
+   line of dim text on the bed; a won one is the card that came with the
+   rosette - laid paper, a brass rule round the edge and a hairline inside it,
+   the name set in the serif and the whole thing sat on top of the list rather
+   than in it. Which is what a prize card is: the thing you keep. */
 .pin.up {
-    border: 2px solid rgba(220,171,62,.7); border-radius: 5px;
-    background: rgba(220,171,62,.07);
-    padding: 5px 7px 5px 1px;
+    border: 2.5px solid #a87c22; border-radius: 4px;
+    background: linear-gradient(170deg, #f8f2df 0%, #efe6cd 55%, #e4d8b8 100%);
+    box-shadow: 0 3px 7px rgba(4,14,7,.45);
+    padding: 7px 10px 7px 3px; color: #3c2d12;
 }
+.pin.up::after {
+    content: ''; position: absolute; inset: 3px; pointer-events: none;
+    border: 1px solid rgba(168,124,34,.5); border-radius: 2px;
+}
+.pin.up canvas { filter: drop-shadow(0 2px 3px rgba(60,45,18,.3)); }
 .pin.up + .pin { border-top-color: transparent; }
-.pin.up .n { color: var(--gold); }
-.pin.up .w { opacity: .82; }
+.pin.up .n { color: #4a3514; text-shadow: none; }
+.pin.up .w { opacity: .72; color: #4a3514; text-shadow: none; }
 /* Two rooms, and the tabs are the door between them. */
 .tabs { display: flex; gap: 6px; width: 100%; max-width: 330px; margin: 9px 0 0; }
 .tabs button {
@@ -1346,7 +1410,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v110';
+const APP_VERSION = 'v111';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3546,6 +3610,7 @@ function miniStep(dt) {
                 continue;
             }
             if (d < CAT_SEES) {                // it has seen him and it is off
+                if (!c.seen) miaow();          // and says so on the way
                 c.seen = true;
                 c.vx += ax / d * 950 * dt; c.vy += ay / d * 950 * dt;
             } else {
@@ -3840,33 +3905,66 @@ function miniBack(ms) {
         g.globalAlpha = 1;
 
     } else if (mini.id === 'cats') {
-        /* The shop after dark, which is the one time the rest of this game is
-           not in it. The same tiled wall with the lights off, a shaft of
-           street lamp through the window, and the counter across the bottom:
-           it is the only backdrop in here that is allowed to be the shop,
-           because the whole point of it is that something is in the shop that
-           should not be. */
-        const wall = g.createLinearGradient(0, 0, 0, H);
-        wall.addColorStop(0, '#1d3f36'); wall.addColorStop(.5, '#17322b');
-        wall.addColorStop(1, '#0d1f1b');
-        g.fillStyle = wall; g.fillRect(0, 0, W, H);
-        g.fillStyle = '#0b1c19';
-        for (let y = 0; y < H; y += 52) g.fillRect(0, y, W, 2.4);
-        for (let x = 0; x < W; x += 64) g.fillRect(x, 0, 2.4, H);
-        g.save();                                    // the light off the street
+        /* The street outside, after closing. They are not in the shop - they
+           are on the pavement in front of it, which is where cats are, and
+           which gives this one somewhere of its own rather than the same
+           tiled wall with the lights off. */
+        const sky = g.createLinearGradient(0, 0, 0, H * .34);
+        sky.addColorStop(0, '#121a2e'); sky.addColorStop(1, '#2b3550');
+        g.fillStyle = sky; g.fillRect(0, 0, W, H * .34);
+        g.fillStyle = 'rgba(246,240,214,.09)';           // a moon over the roofs
+        g.beginPath(); g.arc(W * .82, H * .10, 44, 0, Math.PI * 2); g.fill();
+        g.fillStyle = 'rgba(248,243,222,.95)';           // lit, not veiled: the
+        g.beginPath();                                   // halo goes on first
+        g.arc(W * .82, H * .10, 15, 0, Math.PI * 2); g.fill();
+
+        /* The row opposite, which is a silhouette and a few windows somebody
+           has left on. Two tile widths that share no factors, so the roofline
+           is not a comb. */
+        const base = H * .30;
+        g.fillStyle = '#0e1622';
+        for (let x = -10, i = 0; x < W + 10; x += 47, i++) {
+            const h = 52 + ((i * 37) % 44);
+            g.fillRect(x, base - h, 45, h);
+        }
+        g.fillStyle = 'rgba(255,224,150,.5)';
+        for (let x = 4, i = 0; x < W; x += 31, i++)
+            if ((i * 7) % 5 < 2) g.fillRect(x, base - 34 - ((i * 23) % 36), 9, 11);
+
+        /* The pavement, in slabs, bonded the way slabs are so the joints do
+           not all line up down the street. */
+        g.fillStyle = '#3d3e3c'; g.fillRect(0, base, W, H - base);
+        const top2 = g.createLinearGradient(0, base, 0, H * .9);
+        top2.addColorStop(0, 'rgba(10,14,20,.5)'); top2.addColorStop(1, 'rgba(10,14,20,0)');
+        g.fillStyle = top2; g.fillRect(0, base, W, H * .9 - base);
+        g.fillStyle = 'rgba(14,16,18,.55)';
+        let row = 0;
+        for (let y = base + 40; y < H; y += 46, row++) {
+            g.fillRect(0, y, W, 2.4);
+            for (let x = (row % 2) * 40; x < W; x += 80) g.fillRect(x, y - 46, 2.4, 46);
+        }
+        /* The light out of the shop window, lying across the pavement in the
+           shape of the window it came out of. */
+        g.save();
         g.beginPath();
-        g.moveTo(W * .08, 0); g.lineTo(W * .52, 0);
-        g.lineTo(W * .92, H); g.lineTo(W * .34, H);
+        g.moveTo(W * .04, base); g.lineTo(W * .42, base);
+        g.lineTo(W * .66, H); g.lineTo(-W * .1, H);
         g.closePath();
-        const sh = g.createLinearGradient(0, 0, 0, H);
-        sh.addColorStop(0, 'rgba(226,240,210,.13)');
-        sh.addColorStop(1, 'rgba(226,240,210,.02)');
-        g.fillStyle = sh; g.fill();
+        const spill = g.createLinearGradient(0, base, 0, H);
+        spill.addColorStop(0, 'rgba(255,214,132,.2)');
+        spill.addColorStop(1, 'rgba(255,214,132,.03)');
+        g.fillStyle = spill; g.fill();
         g.restore();
-        g.fillStyle = '#2a1a0f';                     // and the counter they are on
-        g.fillRect(0, H - 52, W, 52);
-        g.fillStyle = '#4a3522'; g.fillRect(0, H - 52, W, 4);
-        g.fillStyle = 'rgba(8,20,16,.4)'; g.fillRect(0, H - 58, W, 7);
+        g.fillStyle = 'rgba(255,216,140,.8)';            // and the window itself
+        g.fillRect(W * .06, base - 46, W * .3, 46);
+        g.fillStyle = '#0e1622';
+        g.fillRect(W * .06, base - 50, W * .3, 6);
+        g.fillStyle = 'rgba(14,22,34,.55)';
+        for (let x = W * .06; x < W * .36; x += 26) g.fillRect(x, base - 46, 3, 46);
+
+        g.fillStyle = '#4e5250';                         // the kerb and the road
+        g.fillRect(0, H - 54, W, 7);
+        g.fillStyle = '#1a1c1e'; g.fillRect(0, H - 47, W, 47);
     } else if (mini.id === 'dream') {
         /* A dream, so none of the game's own colours. Warm sherbet sky, a sun
            that is not quite a sun, and clouds that are the wrong shape on
@@ -4512,6 +4610,26 @@ function drawKatana(x, y, ang) {
     ctx.fillStyle = '#3a332e'; ctx.fill();
     ctx.restore();
 }
+/* The one bit of music in here. Everything else is a noise something makes -
+   a blade, a jaw, a till - but the shop window has nothing happening on it,
+   and a butcher on his way in at six in the morning is whistling. Ten notes
+   over a bar and a half, with a bass note under every other one and the whole
+   thing an octave up in a thin sine so it reads as whistling rather than as a
+   fanfare. It runs when you come back to the window, which is about once a
+   week, and never while anything is being played. */
+const TUNE = [[0, 523.25, .15], [.15, 659.25, .15], [.30, 783.99, .15],
+              [.45, 659.25, .13], [.58, 698.46, .17], [.75, 880.00, .19],
+              [.94, 783.99, .26], [1.26, 523.25, .15], [1.41, 659.25, .15],
+              [1.56, 1046.50, .36]];
+const TUNE_BASS = [[0, 130.81], [.45, 174.61], [.94, 196.00], [1.26, 130.81], [1.56, 130.81]];
+const shopTune = () => safely(t => {
+    for (const [at, f, d] of TUNE) {
+        tone(t, { freq: f, dur: d, type: 'triangle', vol: .055, at });
+        tone(t, { freq: f * 2, dur: d * .55, type: 'sine', vol: .018, at });
+    }
+    for (const [at, f] of TUNE_BASS)
+        tone(t, { freq: f, dur: .26, type: 'square', vol: .035, at });
+});
 const jingleUp = () => safely(t => {
     [523, 659, 784].forEach((f, i) => tone(t, { freq: f, dur: .2, type: 'triangle', vol: .15, at: i * .07 }));
 });
@@ -4897,9 +5015,13 @@ const TIERS = [
       ear: 'prick', earCol: '#b39d4c', skullW: 38, skullH: 42, jawW: 48, jawY: 20,
       chin: 48, snout: [30, 20, 16], eyes: [20, -13, 5], brow: 1, tongue: .9, look: 'cross' },
 ],[
+    /* He drew this one dark green, and dark green is the colour of the wall it
+       is stood against - so a Midnight in the window was a dog-shaped piece of
+       tile. It has gone round to the blue side of dark, which is the same dog
+       at night and is a different thing from a glazed tile. */
     { name: 'Midnight',   k: .92, speed: 1,
-      coat: '#1f3a30', lit: '#2d5044', shade: '#12241d', muzzle: '#6f7a72',
-      ear: 'fold', earCol: '#12241d', skullW: 36, skullH: 38, jawW: 40, jawY: 16,
+      coat: '#28334e', lit: '#3a4769', shade: '#171d2e', muzzle: '#7b8290',
+      ear: 'fold', earCol: '#171d2e', skullW: 36, skullH: 38, jawW: 40, jawY: 16,
       chin: 42, snout: [26, 19, 15], eyes: [17, -12, 5.6], brow: .2, tongue: .9, look: 'flat', ruff: 0 },
     { name: 'Punch',      k: 1.04, speed: 1,
       coat: '#8e5a4a', lit: '#a86e5a', shade: '#5e392e', muzzle: '#f2e4c8',
@@ -7485,6 +7607,7 @@ const FASCIA = '#241a16', TILE = '#235c46';
 
 function showShop() {
     theme(FASCIA);
+    shopTune();                       // somebody whistling on their way in
     money = 0; ledger = []; fed = 0;
     round = 0; live = false; armed = false; tallying = false; teaching = false;
     dog.going = false; dog.chomp = 0; dog.toy = 0; dog.stare = 0;

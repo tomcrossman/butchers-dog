@@ -731,6 +731,14 @@ has gone with it - it was there to separate the shop from the text under it,
 and a marble slab across the whole window is a stronger line than a line is.
 Two of them stacked is one too many.
 
+**The setup screen is the fascia board.** It is the first thing anybody sees
+and it was the tiled wall you play against, which is the inside of a shop you
+have not got yet. It is the dark signwritten plate instead, gold beading along
+the top and the bottom of the screen, the form in the counter's own mahogany,
+and the game's name painted on it the size a name on a fascia is painted - in
+**Rye**, a Victorian slab with spurs on it, which is the face a signwriter would
+have reached for in 1910 and the only place in the game that uses it.
+
 The game's name is on the setup screen and nowhere else: once the shop is
 yours, the sign over the window is the one that matters, so the shopfront gets
 the room the title used to have and the till under it is the score.
@@ -739,6 +747,14 @@ You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the game's own name, with a die
 to roll if you cannot think of one - and that, the till and the wardrobe are
 saved. It is one object under one key.
+
+**Out the back is a back room.** Match-boarding, a bulb over the door and
+nothing on the walls, with the version screwed to the bottom of it rather than
+floating under whatever the last thing on the screen happens to be. It was the
+same tiled green as the shop floor, which made the one room in this building
+that is not for customers look like the one room that is. Boards rather than
+brick: a brick bond has to be staggered to read as brick, a stack bond reads as
+a grid, and a back room is boarded anyway.
 
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
 Reset game - which takes a whole screen to say what it is about to take rather
@@ -1112,7 +1128,8 @@ twenty-two pounds, about a third on top of a perfect week.
 
   It is your own dog, in whatever you have bought him, with his mouth open
   because he is having the time of his life - and there are three coats of cat,
-  because a shop full of one cat is a shop full of one cat.
+  because a shop full of one cat is a shop full of one cat. One that has just
+  seen him says so on its way.
 - **On the barbecue.** Five sausages cooking at their own speeds, steaming,
   spitting fat at the bars and hissing every half second. Tap one while it is
   done and it is four forty; tap it early, or leave it until it is black,
@@ -1148,10 +1165,12 @@ nothing kept between frames, so what moves is worked out from the clock.
   garden, the last of the sun behind it, the stars starting, and a lawn mown in
   stripes that widen as they come at you. Dark enough that a pink sausage and a
   black one are plainly two different things, which is the whole game.
-- **After the cats** is the only one that is allowed to be the shop, because
-  the whole point of it is that something is in the shop that should not be.
-  The same tiled wall with the lights off, a shaft of street lamp through the
-  window, and the counter across the bottom.
+- **After the cats** is the street outside after closing, because that is where
+  cats are: the row opposite as a silhouette with a few windows somebody has
+  left on, a moon over the roofs, the pavement in slabs bonded so the joints do
+  not line up down the street, the light out of the shop window lying across it
+  in the shape of the window it came out of, and the kerb and the road along
+  the bottom.
 - **Butcher's dream** is not a place at all, and uses none of the game's own
   colours to say so: a sherbet sky going from violet at the top to peach at the
   bottom, a sun that is not quite a sun, and three banks of cloud at three
@@ -1226,6 +1245,14 @@ The dog comes in two parts: it starts growling as it lifts off the string - a
 low buzz that will not sit still, which is three detuned saws with a rasp of
 noise dragged across them - and the snap lands a moment later, followed by the
 two chews and the gulp it takes to get one down.
+
+**There is one bit of music.** Everything else in here is a noise something
+makes - a blade, a jaw, a till, a jaw again - but the shop window has nothing
+happening on it, and a butcher on his way in at six in the morning is
+whistling. Ten notes over a bar and a half with a bass note under every other
+one, doubled an octave up in a thin sine so it reads as whistling rather than
+as a fanfare. It runs when you come back to the window, which is about once a
+week, and never while anything is being played.
 
 The title page with its Play button is not decoration. Safari on iOS will not
 open an audio session on the first touch a page receives - it neither grants
