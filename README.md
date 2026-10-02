@@ -531,7 +531,13 @@ does not make the dog harder to hit; it makes hitting it something you survive.
 one walks along the floor every day at a moment nobody picked, and the dog
 stops dead to watch it go. It is ginger. It was black, and a black cat on a
 bottle-green wall is a cat-shaped piece of the wall - which is no good at all
-when the whole of the upgrade is that you watch the dog watch it. Along the floor every time - it used to walk past
+when the whole of the upgrade is that you watch the dog watch it.
+
+And it is drawn the way the dogs are now rather than as a silhouette: tabby
+stripes over the back, a pale belly and chest, pink-lined ears, a muzzle with a
+nose and a mouth under it, whiskers, a pale tip on the tail, paws on the ends
+of the legs, and an almond eye with a slit pupil, a catchlight and a bar over
+it - because a bar is an opinion, and a cat has one of those too. Along the floor every time - it used to walk past
 seventy pixels under wherever the dog happened to be, which put it halfway up
 the tiles on a Monday and off the bottom edge on a Saturday, and a cat that
 turns up at a different height every day reads as a thing the game is doing to
@@ -549,7 +555,9 @@ expression it has for an empty room.
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
 cut at the quality of somebody who has done it a hundred times and is not
-trying to impress. He is a spare pair of hands, not a better player than you.
+trying to impress. He borrows whoever is behind the counter this week and
+loses the hair on his face, because half of them have a moustache or a beard
+and a seventeen-year-old on his first Saturday has neither. He is a spare pair of hands, not a better player than you.
 
 **The shop is a display counter**, and a display counter is a specific thing
 rather than a mood: black enamel trays packed edge to edge in a lit chiller, a
@@ -567,14 +575,12 @@ the shopfront, because the case is set into the counter. It was steel, which
 made the top of that screen a second material for no reason and left the two
 screens looking like two shops.
 
-So the screen is the case you are looking into. Cold steel, lit from the top,
-with the glass catching the light across one corner, and everything in it
-darker than it is so the trays sit *in* it rather than on it. Each tile is a
-**tray**: black enamel with a steel lip along the top edge, squarer than a card
-because a tray is squarer than a card, and the thing lies in it. The tray being
-black is what makes the goods readable, which is also why real ones are black -
-a knife in this game is a white blade and the sawdust is pale flecks, and both
-of them vanish on anything lighter.
+So the screen is the case you are looking into, and **there is no tray round
+anything**. A box round each item was a box round each item; a counter has no
+boxes in it, only things and the tickets in front of them. Everything lies
+straight on the bed of kale the way it does in the case, with a little shadow
+under it, and the thing you are actually reading is the plaque propped in
+front of it.
 
 Over the front of each tray, a **ticket**: a little black card knocked a degree
 or two off square the way one stuck in on a wire always is, carrying the price
@@ -647,8 +653,8 @@ Nothing on the shelves is named. Every item is a square tile with the thing
 itself drawn in it, because seventeen hats written out is seventeen words to
 read and a rack of pictures is one glance.
 
-The wearables are drawn the way his accessories sheet drew them: the item on a
-plain **filled** circle standing in for the head. It was an outline, which is
+On the shelf, the wearables are drawn the way his accessories sheet drew them:
+the item on a plain **filled** circle standing in for the head. It was an outline, which is
 enough to hold a hat in the right place and no help at all to a brown moustache
 on a black tray - and the dark ones are most of the face shelf. A pale disc is
 the skull: hats sit on top of it against the tray, and everything that goes on
@@ -665,9 +671,13 @@ near-black counter is two dots, which is a poor look at the thing you are being
 asked to pay for. It sits on a little tray of its own, the same as it did on
 the shelf.
 
-The dog is pinned to the top of the shop and does not scroll away with the
-first shelf, so whatever you try goes on in front of you without scrolling back
-up for a look. What it has on already is filled in, gold all the way round
+**The dog is on the counter, not over the shop.** It used to be pinned to the
+top of the screen so whatever you tried went on in front of you - but that put
+the one thing you are deciding about at the far end of the screen from the
+button you decide with, and took the top of every shelf to do it. Tap anything
+that goes on the dog and the dog comes up on the counter wearing it, next to
+its name and the price, which is where the deciding happens. A knife or a thing
+for the rail has no dog to go on, so it keeps its tray down there. What it has on already is filled in, gold all the way round
 and ticked in the corner - an outline on its own was not enough to find among
 thirty tiles. It had a gold strip along the bottom of it as well, which was one
 more thing saying what the tick above it had already said.
