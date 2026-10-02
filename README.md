@@ -278,9 +278,9 @@ slim bent banger; a pudding is the same bend with four white flecks knocked out
 of it, which is how it is drawn on the rail as well; a steak is a wide chop
 with the eye of the bone through it and the knuckle out of one side.
 
-And the dog's line reads like the day lines above it. A paw and a number for
-what it had off the rail, a steak for any it took out of the air, and in the
-money column what that came to - **in red, with a minus on it**, because it is
+And the dog's line reads like the day lines above it, in the same pictures: a
+link for every one it had off the rail, a steak for any it took out of the air,
+and in the money column what that came to - **in red, with a minus on it**, because it is
 the one number on the card that went the other way. A link is counted at what
 an ordinary cut would have fetched and a steak at a steak, which is as near as
 anybody can say what you would have got for it. The only words left on that row
@@ -370,7 +370,13 @@ That is the joke and it is also the balance: it buys you the afternoon off, not
 a better week. An arm comes off a mount at the right-hand jamb for the third of
 a second each cut takes, two segments with the elbow worked out from the two
 ends so it bends like an arm rather than stretching like a rubber band, and a
-servo - the only sound in this game that is not made of meat.
+servo - the only sound in this game that is not made of meat. It is built the
+way the small blue ones on a bench are: a bare steel tube for the bone of each
+segment with a moulded shell over the end of it, black hubs at the joints and a
+two-finger gripper on the wrist. And with it switched on, the man on the
+shopfront has its head: a visor, two green lamps, an aerial and a grille,
+standing there in his apron holding his knife, which is the joke of the upgrade
+said in one picture. It does not catch steaks either, and the shelf says so.
 
 **Dog insurance** is the second most expensive thing in the shop and the only
 other one that is not about money. Twelve hundred pounds, and cutting the dog stops being the end
@@ -720,12 +726,17 @@ twelve hundred, so the paying end moved instead: a good run is sixteen to
 twenty-two pounds, about a third on top of a perfect week.
 
 - **Cash only.** A jar you slide along the bottom and coins coming down at it.
-  A pound forty a coin, and about sixteen come down. Nothing new drops in the
-  last second and a bit - a coin leaving the top of the window with four tenths
-  of a second on the clock was never catchable, and a shower of those at the
-  buzzer is a game asking you to fail - and the ones still in the air when the
-  time goes keep falling rather than hanging where they are, which is the one
-  frame in here that looked broken rather than finished.
+  A pound forty a coin, and about fifteen come down. Nothing new drops in the
+  last second and a half - a coin leaving the top of the window with four
+  tenths of a second on the clock was never catchable.
+
+  **And it waits for the last one.** The clock running out is not the last coin
+  landing: one that left the top with a second to go is still three quarters of
+  the way down when the buzzer goes, and it used to drop straight through the
+  jar and be worth nothing - which from where you are standing, with the jar
+  under it, looks exactly like a jar that does not work. The barbecue already
+  ends when the grill is empty rather than when the clock says so; the jar ends
+  when the last coin has landed, the same way.
 - **Sauce on.** One pass of ketchup down a hot dog. What it pays is how much of
   the bun you covered and how straight you kept it, both - so a quick scribble
   down the middle is worth less than one careful stroke. Up to twenty pounds,
@@ -744,8 +755,11 @@ twenty-two pounds, about a third on top of a perfect week.
   pound fifty each and a pound ten on top for every extra one taken in the same
   stroke, which is the rail's own rule carried through the back door. The two
   halves go off either side of the line that cut them and fall, and a black
-  pudding comes at you about one time in six, flecks and all. Nothing is lost
-  for missing one - there is no scoreboard back here, only a till. The sword is
+  pudding comes at you about one time in six, flecks and all. They are thrown
+  hard enough to clear most of the window, and the sword is a katana drawn as
+  one: an angled kissaki, the ridge line down the blade, a brass habaki, a
+  round black tsuba and a wrapped grip with red diamonds down it. Nothing is
+  lost for missing one - there is no scoreboard back here, only a till. The sword is
   on the screen whether you are swinging it or not, parked in the corner the way
   the butcher's own knife is on the shop floor: a game about a sword where the
   sword only appears once you are already swinging is a game that never told you

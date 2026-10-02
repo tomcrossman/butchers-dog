@@ -160,7 +160,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger tr.extra.ate td { opacity: .72; }
 #ledger tr.extra.ate td.d, #ledger tr.extra.ate td.m { white-space: nowrap; }
 #ledger tr.extra.ate td.m { color: #b03a25; }
-#ledger .cnt.paw { color: #b03a25; } #ledger .cnt.paw svg { fill: #b03a25; }
+#ledger .cnt.lost { color: #b03a25; } #ledger .cnt.lost svg { fill: #b03a25; }
 #ledger .near { font-size: 10px; font-weight: 700; opacity: .55; font-style: italic; }
 /* A paw and a number, in the colour everything lost in this game is written
    in. It reads down the rows as a column without being given one. */
@@ -262,8 +262,12 @@ body.waiting #hud { display: none; }
     width: 100%; display: flex; flex-direction: column; align-items: center; flex: none;
 }
 #intro .btn { margin-top: 14px; width: 100%; max-width: 236px; }
-/* TEMPORARY, with the button above it. */
+/* The debug way in, and the four it offers. */
 .btn.try-mini { font-size: 12px; padding: 7px; opacity: .7; border-style: dashed; }
+.btn.try-mini[hidden] { display: none; }
+#minipick .btn { width: 100%; max-width: 280px; }
+#minipick h2 { margin-bottom: 2px; }
+#minipick .note { max-width: 300px; margin: 2px 0 10px; }
 #intro .acts .btn:first-child { margin-top: 0; }
 .btn.ghost {
     background: linear-gradient(180deg, #1a4636, #123327); color: var(--gold);
@@ -313,7 +317,7 @@ body.waiting #hud { display: none; }
                text-shadow: 0 4px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
-#setup, #store, #settings, #confirm {
+#setup, #store, #settings, #confirm, #minipick {
     position: absolute; inset: 0; z-index: 13; overflow-y: auto;
     /* safe centring: a shelf taller than the window centres its own top off
        the screen, and no amount of scrolling gets it back */
@@ -327,8 +331,9 @@ body.waiting #hud { display: none; }
         linear-gradient(180deg, #1c4a39 0%, #16402f 60%, #102b21 100%);
     animation: introIn .3s ease-out both;
 }
-#setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden] { display: none; }
-#settings, #confirm { justify-content: center; }
+#setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden],
+#minipick[hidden] { display: none; }
+#settings, #confirm, #minipick { justify-content: center; }
 /* The one screen in the game that can undo a month, so it gets a whole screen
    and says what it will take rather than a red line that asks twice. */
 #confirm { z-index: 14; }
@@ -820,10 +825,10 @@ body.waiting #hud { display: none; }
         <div class="acts">
             <button class="btn" id="play">Open up shop</button>
             <button class="btn ghost" id="to-shop">Upgrades</button>
-            <!-- TEMPORARY: a door straight into the samurai game so it can be
-                 played without earning a clean week first. Delete this button,
-                 its handler and its rule when it has been looked at enough. -->
-            <button class="btn ghost try-mini" id="try-ninja">Try: sausage samurai</button>
+            <!-- Out the back only: with debug on, a way into the hour after
+                 closing without earning a clean week for it. It is hidden
+                 otherwise, which is the whole of its safety. -->
+            <button class="btn ghost try-mini" id="to-mini" hidden>After hours&hellip;</button>
         </div>
         <button id="to-set" aria-label="Settings">
             <svg viewBox="0 0 14 14"><use href="#i-gear"/></svg>
@@ -884,6 +889,13 @@ body.waiting #hud { display: none; }
         <div class="ver" id="set-ver">v1</div>
     </div>
 
+    <div id="minipick" hidden>
+        <h2>After hours</h2>
+        <p class="note">Out the back only. Whatever it pays goes nowhere.</p>
+        <div id="minilist"></div>
+        <button class="btn ghost" id="mini-no">Not now</button>
+    </div>
+
     <div id="confirm" hidden>
         <h2>Reset game</h2>
         <p class="note">This clears the till, the wardrobe, the name over the
@@ -909,7 +921,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v87';
+const APP_VERSION = 'v90';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1499,23 +1511,47 @@ function drawBot(ms) {
     const L = Math.max(d, 1) / 2 + 34;                 // each segment, elbow out
     const h = Math.sqrt(Math.max(0, L * L - (d / 2) * (d / 2)));
     const ex = (mx + tx) / 2 - dy / d * h, ey = (my + ty) / 2 + dx / d * h;
+    /* Built the way the small blue ones on a bench are: a bare steel tube for
+       the bone of each segment with a moulded shell over the end of it, black
+       hubs at the joints, and a two-finger gripper on the wrist. */
+    const BLUE = '#1f6fd0', BLUE_D = '#15508f', HUB = '#20242a', TUBE = '#c6ccd4';
     ctx.save();
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#8f949b'; ctx.lineWidth = 11;
-    ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(ex, ey); ctx.lineTo(tx, ty); ctx.stroke();
-    ctx.strokeStyle = '#c3c8cf'; ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(ex, ey); ctx.lineTo(tx, ty); ctx.stroke();
-    for (const [jx, jy] of [[mx, my], [ex, ey]]) {     // the joints
-        ctx.beginPath(); ctx.arc(jx, jy, 7, 0, Math.PI * 2);
-        ctx.fillStyle = '#5c6168'; ctx.fill();
-        ctx.beginPath(); ctx.arc(jx, jy, 3, 0, Math.PI * 2);
-        ctx.fillStyle = '#d8dde3'; ctx.fill();
+    const limb = (ax, ay, bx, by) => {
+        const a = Math.atan2(by - ay, bx - ax), L = Math.hypot(bx - ax, by - ay);
+        ctx.save();
+        ctx.translate(ax, ay); ctx.rotate(a);
+        ctx.fillStyle = TUBE;                          // the steel between them
+        ctx.beginPath(); ctx.roundRect(0, -6, L, 12, 6); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,.5)';
+        ctx.beginPath(); ctx.roundRect(4, -4.5, Math.max(0, L - 8), 3.5, 2); ctx.fill();
+        ctx.fillStyle = BLUE;                          // and the shell over each end
+        ctx.beginPath(); ctx.roundRect(-3, -11, Math.min(26, L * .5), 22, 8); ctx.fill();
+        ctx.beginPath(); ctx.roundRect(L - Math.min(23, L * .45), -10, Math.min(26, L * .5), 20, 7); ctx.fill();
+        ctx.fillStyle = BLUE_D;
+        ctx.beginPath(); ctx.roundRect(-3, 3, Math.min(26, L * .5), 8, [0, 0, 7, 7]); ctx.fill();
+        ctx.restore();
+    };
+    limb(mx, my, ex, ey);
+    limb(ex, ey, tx, ty);
+    for (const [jx, jy, r] of [[mx, my, 13], [ex, ey, 11], [tx, ty, 8]]) {
+        ctx.beginPath(); ctx.arc(jx, jy, r, 0, Math.PI * 2);
+        ctx.fillStyle = HUB; ctx.fill();
+        ctx.beginPath(); ctx.arc(jx, jy, r * .42, 0, Math.PI * 2);
+        ctx.fillStyle = '#4b525b'; ctx.fill();
     }
-    ctx.save();                                        // and the blade on the end
+    ctx.save();                                        // the gripper, and a blade in it
     ctx.translate(tx, ty);
-    ctx.rotate(Math.atan2(ty - ey, tx - ex) + Math.PI / 2);
-    ctx.beginPath(); ctx.moveTo(-3, -14); ctx.lineTo(3, -12); ctx.lineTo(2, 14); ctx.lineTo(-2, 14);
-    ctx.closePath(); ctx.fillStyle = '#eef2f6'; ctx.fill();
+    ctx.rotate(Math.atan2(ty - ey, tx - ex));
+    ctx.fillStyle = HUB;
+    for (const sy of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(2, sy * 4); ctx.lineTo(17, sy * 9); ctx.lineTo(21, sy * 7); ctx.lineTo(6, sy * 1);
+        ctx.closePath(); ctx.fill();
+    }
+    ctx.fillStyle = '#eef2f6';
+    ctx.beginPath(); ctx.moveTo(10, -2.5); ctx.lineTo(30, -1.5); ctx.lineTo(30, 1.5); ctx.lineTo(10, 2.5);
+    ctx.closePath(); ctx.fill();
     ctx.restore();
     ctx.restore();
 }
@@ -2197,8 +2233,12 @@ function lastLine() {
        one or two of the hour, which is the only time it is worth saying. */
     return `<tr class="extra ate"><td class="d">The dog</td>` +
            `<td class="w">` +
-           `<span class="cnt paw"><svg><use href="#i-paw"/></svg>${off - stoleWeek}</span>` +
-           (stoleWeek ? `<span class="cnt steak"><svg><use href="#i-steak"/></svg>${stoleWeek}</span>` : '') +
+           /* What it ate, drawn as the thing it ate rather than as a paw: the
+              same link and the same steak as the rows above, in the colour
+              everything lost in this game is written in. A paw says a dog was
+              involved, which the words at the left already say. */
+           `<span class="cnt lost"><svg><use href="#i-link"/></svg>${off - stoleWeek}</span>` +
+           (stoleWeek ? `<span class="cnt lost"><svg><use href="#i-steak"/></svg>${stoleWeek}</span>` : '') +
            (off <= 2 ? `<span class="near">so near the hour</span>` : '') +
            `</td>` +
            `<td class="m">&minus;${money2(Math.round(fedCost))}</td></tr>`;
@@ -2735,7 +2775,7 @@ function miniStep(dt) {
            of the window with four tenths of a second on the clock was never
            catchable, and a shower of those at the buzzer is a game asking you
            to fail. */
-        if (mini.next <= 0 && left > 1.2) {
+        if (mini.next <= 0 && left > 1.6) {
             mini.next = .34 + Math.random() * .3;
             mini.coins.push({ x: 40 + Math.random() * (W - 80), y: -30,
                               v: 300 + Math.random() * 190, spin: Math.random() * 6 });
@@ -2760,8 +2800,13 @@ function miniStep(dt) {
             const n = 1 + (Math.random() < .45 ? 1 : 0) + (Math.random() < .15 ? 1 : 0);
             for (let i = 0; i < n; i++) {
                 const x = W * (.16 + Math.random() * .68);
-                mini.fly.push({ x, y: H + 40, vx: (W / 2 - x) * (.5 + Math.random() * .5),
-                                vy: -(760 + Math.random() * 210),
+                /* High enough to clear most of the window: at this gravity a
+                   kick of thirteen hundred is the best part of six hundred
+                   pixels of rise, which puts the top of the arc up by the
+                   title rather than down by your thumb, and leaves them in the
+                   air the best part of two seconds. */
+                mini.fly.push({ x, y: H + 40, vx: (W / 2 - x) * (.42 + Math.random() * .42),
+                                vy: -(1290 + Math.random() * 240),
                                 ang: Math.random() * 6, spin: (Math.random() - .5) * 7,
                                 pud: Math.random() < .18 });
             }
@@ -2797,7 +2842,14 @@ function miniStep(dt) {
         // nothing left to cook is the end of it, whatever the clock says
         if (mini.bangers.every(b => b.taken)) { endMini(); return; }
     }
-    if (left <= 0) endMini();
+    /* The clock running out is not the last coin landing. A coin that left the
+       top with a second and a bit to go is still three quarters of the way
+       down when the buzzer goes, and it used to drop straight through the jar
+       and be worth nothing - which from where you are standing, with the jar
+       under it, looks exactly like a jar that does not work. The barbecue
+       already ends when the grill is empty rather than when the clock says so;
+       the jar waits for the last one the same way. */
+    if (left <= 0 && !(mini.id === 'jar' && mini.coins.length)) endMini();
 }
 /* How near a point passes to a line segment. The whole of this game is that
    one question asked of every sausage in the air, every time the finger moves. */
@@ -2930,7 +2982,7 @@ function drawMini(ms) {
                knife is on the shop floor. A game about a sword where the sword
                is only on screen while you are already swinging it is a game
                that never told you it had one. */
-            drawKatana(W - 122, H - 176, -2.3);
+            drawKatana(W - 150, H - 210, -2.35);
         }
     } else if (mini.id === 'jar') {
         for (const c of mini.coins) {                 // the coins
@@ -3093,26 +3145,52 @@ function drawKatana(x, y, ang) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(ang + Math.PI);                    // the tip leads the stroke
-    ctx.beginPath();                              // the blade, with its curve
-    ctx.moveTo(0, 0);
-    ctx.quadraticCurveTo(44, -6, 92, -9);
-    ctx.lineTo(94, -2);
-    ctx.quadraticCurveTo(46, 1, 0, 0);
-    ctx.fillStyle = '#e9edf2'; ctx.fill();
-    ctx.beginPath();                              // the back of it, in shadow
-    ctx.moveTo(2, -1.5);
-    ctx.quadraticCurveTo(46, -5, 92, -8);
-    ctx.lineTo(92, -6);
-    ctx.quadraticCurveTo(46, -3, 2, 0);
-    ctx.fillStyle = '#9ba6b3'; ctx.fill();
-    ctx.beginPath();                              // the guard
-    ctx.ellipse(96, -5, 4, 13, 0, 0, Math.PI * 2);
-    ctx.fillStyle = '#2a2118'; ctx.fill();
-    ctx.beginPath();                              // and the grip, bound
-    ctx.roundRect(99, -9, 38, 9, 4);
-    ctx.fillStyle = '#3a2f2a'; ctx.fill();
-    ctx.fillStyle = '#6e5a4e';
-    for (let i = 0; i < 4; i++) ctx.fillRect(103 + i * 8, -9, 3, 9);
+    ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 9; ctx.shadowOffsetY = 4;
+    /* The blade, tip first: a long shallow curve with the angled kissaki a
+       real one has, which is the whole difference between a katana and a
+       bread knife at this size. */
+    ctx.beginPath();
+    ctx.moveTo(0, 2);
+    ctx.lineTo(13, -9);
+    ctx.quadraticCurveTo(70, -17, 132, -16);
+    ctx.lineTo(132, -2);
+    ctx.quadraticCurveTo(70, -3, 0, 2);
+    ctx.closePath();
+    ctx.fillStyle = '#eef2f7'; ctx.fill();
+    ctx.shadowColor = 'transparent';
+    ctx.beginPath();                              // the shinogi, the ridge line
+    ctx.moveTo(12, -8);
+    ctx.quadraticCurveTo(70, -14.5, 132, -13.5);
+    ctx.lineTo(132, -10);
+    ctx.quadraticCurveTo(70, -11, 12, -5);
+    ctx.closePath();
+    ctx.fillStyle = '#aab4c0'; ctx.fill();
+    ctx.beginPath();                              // the habaki, in brass
+    ctx.roundRect(130, -17, 12, 16, 2);
+    ctx.fillStyle = '#c59430'; ctx.fill();
+    ctx.beginPath();                              // the tsuba, round and black
+    ctx.ellipse(146, -9, 6, 19, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#241f1c'; ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(146, -9, 2.6, 8, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#5b5248'; ctx.fill();
+    ctx.beginPath();                              // the tsuka, and the wrap on it
+    ctx.roundRect(150, -16, 56, 14, 5);
+    ctx.fillStyle = '#211c1a'; ctx.fill();
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(150, -16, 56, 14, 5); ctx.clip();
+    ctx.fillStyle = '#9d2b24';
+    for (let i = 0; i < 6; i++) {                 // the red diamonds down it
+        ctx.beginPath();
+        const cx = 155 + i * 8.6;
+        ctx.moveTo(cx, -9); ctx.lineTo(cx + 3.4, -13); ctx.lineTo(cx + 6.8, -9);
+        ctx.lineTo(cx + 3.4, -5);
+        ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+    ctx.beginPath();                              // and the kashira on the end
+    ctx.roundRect(203, -17, 6, 16, 2);
+    ctx.fillStyle = '#3a332e'; ctx.fill();
     ctx.restore();
 }
 const jingleUp = () => safely(t => {
@@ -3675,7 +3753,7 @@ const KIT = [
        joke and it is also the balance: it buys you the afternoon off, not a
        better week. */
     { id: 'robot',     kind: 'help',  name: 'AI butcher',       price: 250000,
-      why: 'It does the cutting. You watch.' },
+      why: 'It does the cutting. No perfects, no steaks. You watch.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -4840,7 +4918,7 @@ function drawKnife(ctx, x, y, ang, k, K) {
    mouth, which is the whole difference between the two of them. The neck is
    drawn before the coat, or it paints over its own collar. */
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null,
-                                   winded = false } = {}) {
+                                   winded = false, bot = false } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
     ctx.save();
     ctx.translate(cx, cy);
@@ -4905,6 +4983,10 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     ctx.restore();
     blob('rgba(0,0,0,.10)', () => { ctx.rect(-40, 88, 80, 8); });
 
+    /* With the machine switched on it is the machine standing there, in his
+       apron, holding his knife. That is the joke of the upgrade said in one
+       picture and it costs nothing to say. */
+    if (bot) { botHead(ctx); ctx.restore(); return; }
     // the head
     blob(SKIN, () => ctx.ellipse(0, -106, 41, 48, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1]) blob(SKIN_D, () => ctx.ellipse(sx * 40, -104, 7, 10, 0, 0, Math.PI * 2));
@@ -4998,6 +5080,29 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     ctx.restore();
 }
 
+/* The head that replaces his, drawn to the same space his takes: a visor
+   across where the eyes go, two green lamps behind it, an aerial, and the
+   grille where a mouth would be. Everything on it is a rounded rectangle,
+   because that is what this sort of thing is actually made of. */
+function botHead(g) {
+    const blob = (fill, path) => { g.beginPath(); path(); g.closePath(); g.fillStyle = fill; g.fill(); };
+    // wide enough to cover the one he had, which is drawn before this and in skin
+    blob('#4a515a', () => { g.roundRect(-15, -80, 30, 30, 4); });
+    blob('#9aa0a8', () => { g.roundRect(-42, -158, 84, 92, 20); });     // the head
+    blob('#7b818a', () => { g.roundRect(-42, -158, 84, 14, [20, 20, 2, 2]); });
+    blob('#2e343c', () => { g.roundRect(-33, -132, 66, 34, 14); });     // the visor
+    for (const sx of [-1, 1])                                          // the lamps
+        blob('#7fe0a8', () => g.ellipse(sx * 15, -115, 7.5, 8.5, 0, 0, Math.PI * 2));
+    for (const sx of [-1, 1])
+        blob('#d8fbe8', () => g.ellipse(sx * 15 - 2.5, -118, 2.6, 3, 0, 0, Math.PI * 2));
+    blob('#6c727a', () => { g.roundRect(-22, -90, 44, 14, 5); });       // the grille
+    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 8 - 1.5, -90, 3, 14); });
+    blob('#c3c8cf', () => { g.roundRect(-2.5, -182, 5, 26, 2); });      // the aerial
+    blob('#7fe0a8', () => g.arc(0, -186, 5.5, 0, Math.PI * 2));
+    for (const sx of [-1, 1])                                          // and the ears
+        blob('#6c727a', () => { g.roundRect(sx * 42 - (sx > 0 ? 0 : 7), -124, 7, 22, 3); });
+}
+
 /* ---- showing you how ----------------------------------------------------
    Nobody reads an instruction. So on Monday, while the count is running and
    there is nothing else to do with the screen, a ghost knife walks the cut
@@ -5080,8 +5185,11 @@ function draw() {
     if (head) drawHook(at(0)[0] - 7, at(0)[1]);
 
     drawFloor();
-    for (const p of pieces) drawPiece(p);
+    /* The ones on the hooks go up before the ones still on the string, so the
+       string hangs in front of them. It is the thing you are working on; the
+       sold ones are stock on a wall behind it. */
     drawLoose(ms);
+    for (const p of pieces) drawPiece(p);
 
     // where you cut, flashing white for a moment
     for (let i = cutFx.length - 1; i >= 0; i--) {
@@ -5785,6 +5893,8 @@ document.getElementById('to-shop').addEventListener('click', openStore);
    shop for testing, and the one button in the game that can undo a month. */
 const setEl = document.getElementById('settings');
 function paintSettings() {
+    // the back room's own door onto the shopfront, open only while debug is
+    document.getElementById('to-mini').hidden = !save.debug;
     document.getElementById('set-sound').textContent = soundOn ? 'On' : 'Off';
     document.getElementById('set-debug').textContent = save.debug ? 'On' : 'Off';
     document.getElementById('set-ver').textContent =
@@ -6001,21 +6111,43 @@ document.getElementById('play').addEventListener('click', e => {
     e.stopPropagation();
     beginWeek();
 });
-/* TEMPORARY, with the button. It opens the hour after closing on its own: no
-   week, no clean sheet, and whatever it pays goes nowhere. */
-document.getElementById('try-ninja').addEventListener('click', e => {
+/* The way in from out the back. It opens whichever of the four you pick on its
+   own: no week, no clean sheet, and whatever it pays goes nowhere. */
+const pickEl = document.getElementById('minipick');
+document.getElementById('to-mini').addEventListener('click', e => {
     e.stopPropagation();
     startSession(); audioNow();
+    document.getElementById('minilist').innerHTML = MINIS.map(m =>
+        `<button class="btn" data-mini="${m.id}">${m.name}</button>`).join('');
+    pickEl.hidden = false;
+});
+document.getElementById('mini-no').addEventListener('click', () => { pickEl.hidden = true; plop(1); });
+document.getElementById('minilist').addEventListener('click', e => {
+    const btn = e.target.closest('[data-mini]');
+    if (!btn) return;
+    pickEl.hidden = true;
     showingIntro = false;
     document.getElementById('intro').hidden = true;
     document.body.classList.remove('waiting');
     round = 1; live = false; money = 0;
     showHud();
+    /* startMini picks one of the four at random; this puts the chosen one over
+       the top of it, set up the way its own branch would have. */
     startMini();
-    const M = MINIS.find(m => m.id === 'ninja');
-    Object.assign(mini, { id: M.id, name: M.name, say: M.say, secs: MINI_S,
-                          won: 0, t0: now(), begun: undefined });
-    mini.fly = []; mini.bits = []; mini.next = .3; mini.swipe = []; mini.hit = 0;
+    const M = MINIS.find(m => m.id === btn.dataset.mini);
+    Object.assign(mini, { id: M.id, name: M.name, say: M.say, secs: M.secs || MINI_S,
+                          won: 0, t0: now(), begun: M.id === 'sauce' ? false : undefined });
+    if (M.id === 'jar') { mini.jar = W / 2; mini.coins = []; mini.next = 0; }
+    else if (M.id === 'sauce') { mini.dogY = H * .54; mini.x0 = W * .18; mini.x1 = W * .82;
+                                 mini.paint = []; mini.drawing = false; }
+    else if (M.id === 'ninja') { mini.fly = []; mini.bits = []; mini.next = .3;
+                                 mini.swipe = []; mini.hit = 0; }
+    else {
+        mini.bangers = [];
+        for (let i = 0; i < 5; i++)
+            mini.bangers.push({ x: W * (.5 + (i - 2) * .17), y: H * .52 + (i % 2) * 34,
+                                done: 0, ready: 2.4 + Math.random() * 3, gone: false, taken: false });
+    }
 });
 
 /* Who you are this week, what you are cutting with, and the six of them
@@ -6255,7 +6387,8 @@ function drawShopfront() {
        both of them have grown into it. They stand on the same line at the
        bottom of the canvas and the gap between them is what is left. */
     if (!oofT0) {
-        drawButcher(g, true, { cx: 112, cy: 312, k: .88, holds: 'knife' });
+        drawButcher(g, true, { cx: 112, cy: 312, k: .88, holds: 'knife',
+                               bot: running('robot') });
     } else {
         /* It lands in a tenth of a second and comes back out over the rest,
            and the face and the dropped arm go with the fold rather than
