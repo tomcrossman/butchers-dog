@@ -1290,7 +1290,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v104';
+const APP_VERSION = 'v105';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -6921,15 +6921,21 @@ function paintStore() {
                for anything positioned inside it, and it ended up stuck to the
                ticket instead of to the tray. */
             const tick = on ? `<span class="tick">&#10003;</span>` : '';
+            /* Owning a hat needs no word on it: no price is the word. It used
+               to get a non-breaking space to keep the old tiles the same
+               height, which on a tray with a ticket propped on the front of it
+               is an empty ticket - a blank card in front of the goods saying
+               nothing, which is the one thing a real one never does. */
             const tag = trying ? `<span class="tag">Trying</span>`
-                      : on ? `<span class="tag">${shopUp ? 'On' : '&nbsp;'}</span>`
-                      // owning a hat needs no word on it: no price is the word
-                      : got ? `<span class="tag">${shopUp ? 'Off' : '&nbsp;'}</span>`
+                      : on ? (shopUp ? `<span class="tag">On</span>` : '')
+                      : got ? (shopUp ? `<span class="tag">Off</span>` : '')
                       : `<span class="pr">${ticket0(i.price)}</span>`;
             const why = i.why ? `<span class="why">${i.why}</span>` : '';
             return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
                    `<canvas width="${TILE_W}" height="${TILE_H}"></canvas>${tick}` +
-                   `<span class="tik">${tag}${why}</span></button>`;
+                   // and no ticket at all when there is nothing to write on one
+                   (tag || why ? `<span class="tik">${tag}${why}</span>` : '') +
+                   `</button>`;
         }).join('');
         return `<div class="shelf"><h3>${label}</h3>` +
                `<div class="tiles">${tiles}</div></div>`;

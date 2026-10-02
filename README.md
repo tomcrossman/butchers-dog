@@ -605,7 +605,11 @@ ones you own on and off, any number at a time, and the tile says On or Off
 rather than Worn or Wear. A line under each says what it does, on the shelf and
 again on the counter, because a hat is a hat and needs no caption but a sawdust
 floor does. A hat you already own says nothing at all: no price is the word, and
-thirty tiles reading Wear was thirty times the same word.
+thirty tiles reading Wear was thirty times the same word - and it gets no
+ticket at all rather than an empty one. It used to carry a non-breaking space
+to keep the old tiles the same height, which on a tray with a ticket propped on
+the front of it is a blank card in front of the goods saying nothing, and that
+is the one thing a real counter never has on it.
 
 The shop is two rooms behind two tabs, **The shop** and **The pooch**, with tiles
 two to a row. Seven shelves in one column was a scroll nobody reached the bottom
