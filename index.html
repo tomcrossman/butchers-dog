@@ -1619,7 +1619,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v124';
+const APP_VERSION = 'v125';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3687,6 +3687,7 @@ function shellSet() {
        between every swap, which is not a man shuffling three basins, it is
        four hands appearing and disappearing in six places. */
     mini.hands = [{ x: shellRest(0), y: 0, grip: 0 }, { x: shellRest(1), y: 0, grip: 0 }];
+    mini.spark = [];
 }
 /* Out past the covers. Resting them at the outer two slots put a hand on top
    of each of them for the whole game, which is a man holding two basins. */
@@ -3760,11 +3761,17 @@ function shellStep(dt) {
             m.swap = null;
         }
     } else if (m.phase === 'reveal') {
-        m.pots[m.pick].lift = Math.min(1, m.pt / .3);
+        /* A right one does not lift, it goes. The cover is thrown off the top
+           of the window end over end, and the sausage comes up after it. */
+        m.pots[m.pick].lift = m.right ? m.pt * 5.5 : Math.min(1, m.pt / .3);
         // a wrong one gets shown where it actually was, which is the whole point
         if (!m.right && m.pt > .6)
             m.pots[m.under].lift = Math.min(1, (m.pt - .6) / .3);
-        if (m.pt > 1.7) { shellHands(dt); endMini(); return; }
+        for (const k of m.spark) {                      // what came out with it
+            k.vy += 1500 * dt;
+            k.x += k.vx * dt; k.y += k.vy * dt; k.a += k.sp * dt;
+        }
+        if (m.pt > (m.right ? 2.2 : 1.7)) { shellHands(dt); endMini(); return; }
     }
     shellHands(dt);
 }
@@ -4088,8 +4095,23 @@ function miniAt(x, y) {
         mini.pick = best;
         mini.right = best === mini.under;
         mini.phase = 'reveal'; mini.pt = 0;
-        if (mini.right) { mini.won = SHELL_PAY; ding(); yelp(); }
-        else buzz();
+        if (mini.right) {
+            mini.won = SHELL_PAY;
+            /* Thirty-eight pounds out of a basin is the biggest single thing
+               that happens in this game. It gets the till, the bell and a
+               fanfare at once, and everything on the counter comes up with
+               it. */
+            ding(); yelp(); sold(); fanfare(4);
+            const [sx] = shellAt(best);
+            for (let i = 0; i < 26; i++) {
+                const a = -Math.PI / 2 + (Math.random() - .5) * 2.1;
+                const v = 320 + Math.random() * 540;
+                mini.spark.push({ x: sx, y: shellY() - 14,
+                                  vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+                                  a: Math.random() * 6.28, sp: (Math.random() - .5) * 18,
+                                  r: 4 + Math.random() * 5, gold: Math.random() < .62 });
+            }
+        } else buzz();
         return;
     }
     if (mini.id === 'jar') { mini.jar = clamp(x, 56, W - 56); return; }
@@ -4870,13 +4892,15 @@ function drawMini(ms) {
            it and a rim where it meets the slab. Enamel, because a butcher's
            back shelf is enamel and because a white dome on a white slab still
            reads once it has a shadow under it. */
-        const cover = (x, y, lift) => {
+        const cover = (x, y, lift, spin) => {
             const up = lift * 86;
             ctx.save();
             ctx.translate(x, y - up);
-            ctx.fillStyle = 'rgba(0,0,0,.26)';               // on the slab under it
+            if (spin) ctx.rotate(spin);
+            const sh = Math.min(1, lift);                    // on the slab under it
+            ctx.fillStyle = `rgba(0,0,0,${.26 - sh * .14})`;
             ctx.beginPath();
-            ctx.ellipse(0, up + 4, 44 - lift * 8, 9 - lift * 3, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, up + 4, 44 - sh * 8, 9 - sh * 3, 0, 0, Math.PI * 2);
             ctx.fill();
             ctx.beginPath();                                 // the dome
             ctx.moveTo(-43, 0);
@@ -4914,11 +4938,45 @@ function drawMini(ms) {
             ctx.fillStyle = MEAT.lit; ctx.fill();
             ctx.restore();
         };
+        /* The burst behind it all, which goes out before anything else does */
+        if (mini.right && mini.phase === 'reveal' && mini.pt < .72) {
+            const e = mini.pt / .72, [bx] = shellAt(mini.pick);
+            ctx.save();
+            ctx.globalAlpha = (1 - e) * .5;
+            ctx.translate(bx, ty - 20);
+            ctx.rotate(mini.pt * 1.6);
+            ctx.fillStyle = '#ffdf8a';
+            for (let i = 0; i < 12; i++) {
+                const a = i * Math.PI / 6;
+                ctx.beginPath(); ctx.moveTo(0, 0);
+                ctx.arc(0, 0, 70 + e * 260, a, a + .13);
+                ctx.closePath(); ctx.fill();
+            }
+            ctx.restore();
+        }
         for (let i = 0; i < 3; i++) {
             const [x, y] = shellAt(i);
+            const won = mini.right && mini.phase === 'reveal' && i === mini.pick;
             // and it is only there to be seen when the cover is off it
-            if (i === mini.under && mini.pots[i].lift > .05) banger(x, ty + y);
-            cover(x, ty + y, mini.pots[i].lift);
+            if (i === mini.under && mini.pots[i].lift > .05) {
+                // on a win it comes up off the slab after the cover
+                const hop = won ? Math.max(0, mini.pt * 560 - mini.pt * mini.pt * 760) : 0;
+                ctx.save();
+                ctx.translate(0, -hop);
+                if (won) { ctx.translate(x, ty + y); ctx.rotate(mini.pt * 3.4);
+                           ctx.translate(-x, -(ty + y)); }
+                banger(x, ty + y);
+                ctx.restore();
+            }
+            cover(x, ty + y, mini.pots[i].lift, won ? mini.pt * 6.5 : 0);
+        }
+        for (const k of mini.spark) {                   // and what came out with it
+            ctx.save();
+            ctx.translate(k.x, k.y); ctx.rotate(k.a);
+            ctx.fillStyle = k.gold ? '#f0d484' : '#fff3d2';
+            ctx.beginPath(); ctx.roundRect(-k.r, -k.r * .42, k.r * 2, k.r * .84, k.r * .42);
+            ctx.fill();
+            ctx.restore();
         }
         /* His hands, on whichever two are moving. Nothing else on the screen
            says it is him doing it rather than the covers doing it themselves. */
@@ -4940,22 +4998,33 @@ function drawMini(ms) {
             ctx.beginPath(); ctx.ellipse(h.x, hy - 8, 19, 13, 0, 0, Math.PI * 2); ctx.fill();
         }
         /* What it was worth, where it was. */
-        if (mini.phase === 'reveal' && mini.pt > .35) {
+        if (mini.phase === 'reveal' && mini.pt > .3) {
             const [x] = shellAt(mini.right ? mini.pick : mini.under);
-            const e2 = Math.min(1, (mini.pt - .35) / .7);
-            ctx.globalAlpha = mini.right ? 1 - Math.pow(e2, 3) * .3 : .85;
-            ctx.fillStyle = mini.right ? '#ffeab0' : '#e8836a';
-            ctx.font = '400 ' + (mini.right ? 34 : 24) +
-                       'px "Staatliches", "Alfa Slab One", Georgia, serif';
+            const e2 = Math.min(1, (mini.pt - .3) / .55);
+            const pop = e2 < 1 ? 1.35 - .35 * (e2 * e2 * (3 - 2 * e2)) : 1;
+            const txt = mini.right ? money0(SHELL_PAY) : 'THERE';
+            const y = ty - 178 - e2 * 26;
+            ctx.save();
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillText(mini.right ? money0(SHELL_PAY) : 'THERE',
-                         x, ty - 182 - e2 * 22);
-            ctx.globalAlpha = 1;
+            ctx.globalAlpha = mini.right ? 1 : .9;
+            ctx.translate(x, y);
+            if (mini.right) ctx.scale(pop, pop);
+            ctx.font = '400 ' + (mini.right ? 50 : 26) +
+                       'px "Staatliches", "Alfa Slab One", Georgia, serif';
+            ctx.fillStyle = 'rgba(14,34,24,.55)';           // cut in behind it
+            ctx.fillText(txt, 0, 4);
+            ctx.fillStyle = mini.right ? '#ffeab0' : '#e8836a';
+            ctx.fillText(txt, 0, 0);
+            ctx.restore();
         }
         /* And the back of its head, which is the one thing in this game you
            never see otherwise: you are stood behind the dog watching the man
            do it to the dog. */
-        dogBack(ctx, W / 2, H - 72, ms);
+        /* And the dog comes up off its front paws, because it has just won
+           thirty-eight pounds off the man who was trying to fool it. */
+        const bob = mini.right && mini.phase === 'reveal'
+                  ? Math.max(0, Math.sin(mini.pt * 11) * 26 * Math.exp(-mini.pt * 1.5)) : 0;
+        dogBack(ctx, W / 2, H - 72 - bob, ms);
     } else if (mini.id === 'dream') {
         /* What is coming at him, drawn out of the same pot as the rail so a
            black pudding in a dream is still a black pudding. */
@@ -8367,9 +8436,20 @@ const setEl = document.getElementById('settings');
    move it back to: every answer is yes, and the only thing being chosen is how
    much you mean it. It changes nothing whatsoever, which is the point of it. */
 const AYE = ['Yes', 'Hell yes', 'Of course', 'Damn right', 'Always', 'Too right',
-              'Go on then', 'Obviously', 'Aye', 'Naturally', 'God yes', 'Every time',
-              'Oh go on', 'Rather', 'Certainly', 'You know it', 'Why not',
-              'Absolutely', 'If you insist', 'Yes please'];
+             'Go on then', 'Obviously', 'Aye', 'Naturally', 'God yes', 'Every time',
+             'Oh go on', 'Rather', 'Certainly', 'You know it', 'Why not',
+             'Absolutely', 'If you insist', 'Yes please',
+             /* and the one at the end of it, which you have to go looking for,
+                select, and then walk out of the room still holding. */
+             'No'];
+const noMeat = () => AYE[save.meat || 0] === 'No';
+/* The one screen in the game you are not shown, you choose. */
+function goVegan() {
+    theme('#c9c8c2');
+    drawVegan();
+    vegEl.hidden = false;
+    buzz();
+}
 /* Everything drains out of the game for one screen. No brick, no gold, no
    green, no shadow worth the name - the drabbest thing the stylesheet has ever
    been asked for, and one way out of it. */
@@ -8401,9 +8481,12 @@ function drawVegan() {
 }
 const vegEl = document.getElementById('vegan');
 document.getElementById('veg-back').addEventListener('click', () => {
+    save.meat = 0; putSave();                   // and that is the end of that
     vegEl.hidden = true;
-    theme(WALL_RED);
-    paintSettings();
+    theme(FASCIA);
+    deal();
+    drawShopfront();
+    showBank();
     plop(3);
 });
 function paintSettings() {
@@ -8423,6 +8506,10 @@ document.getElementById('to-set').addEventListener('click', e => {
 });
 document.getElementById('set-done').addEventListener('click', () => {
     setEl.hidden = true;
+    /* You do not get shown it for touching it. You have to pick it, and then
+       walk out of the back room with it picked, and then there it is. */
+    if (noMeat()) { goVegan(); return; }
+    theme(FASCIA);
     deal();
     drawShopfront();
     showBank();
@@ -8435,20 +8522,8 @@ document.querySelectorAll('.nudge[data-flip]').forEach(btn =>
 function flip(what) {
     if (what === 'sound') { toggleSound(); paintSettings(); return; }
     if (what === 'meat') {
-        const n = ((save.meat || 0) + 1) % (AYE.length + 1);
-        /* The one past the end of the list. It is not kept - you are put back
-           on Yes the moment you look away from it - because it is not a
-           setting, it is a warning. */
-        if (n === AYE.length) {
-            save.meat = 0; putSave();
-            document.getElementById('set-meat').textContent = 'No';
-            theme('#c9c8c2');
-            drawVegan();
-            vegEl.hidden = false;
-            buzz();
-            return;
-        }
-        save.meat = n; putSave(); paintSettings(); plop(2);
+        save.meat = ((save.meat || 0) + 1) % AYE.length;
+        putSave(); paintSettings(); plop(2);
         return;
     }
     save.debug = !save.debug;

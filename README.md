@@ -1288,7 +1288,12 @@ twenty-two pounds, about a third on top of a perfect week.
   scoreboard back here, only a till.
 - **Find it.** He puts a sausage under one of three covers, shuffles them, and
   **you get one tap**. Find it and it pays thirty-eight pounds, which is more
-  than any other hour after closing has ever paid; miss and it pays nothing and
+  than any other hour after closing has ever paid - and the biggest single
+  thing that happens in this game, so it is paid like one: the cover is thrown
+  off the top of the window end over end, the sausage comes up after it
+  tumbling, six and twenty bits of gold go out with them, a burst goes out
+  behind the lot, the dog comes up off its front paws, and the till, the bell
+  and a fanfare all go at once. Miss and it pays nothing and
   you are shown where it actually was. A third of the time you were always
   going to be wrong, and the only thing that improves it is paying attention -
   which is the one thing none of the other six ask of you. It is also the only
