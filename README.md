@@ -484,6 +484,53 @@ string starting straight underneath. The string is about five per cent longer
 for it, which is the same thing that happens when you play on a slightly taller
 phone.
 
+## The wall
+
+A butcher's shop has rosettes on the wall. Not points, not a score, not a
+percentage - prize cards from shows nobody else remembers, pinned up and left
+there. So that is what these are. **Thirty-three of them**, and they buy
+nothing and unlock nothing: the whole reward is that the window fills up and
+the next person who looks at your shop can see what it has done.
+
+They go up under the awning, behind the butcher and the dog, because that is
+where a butcher puts them and because the wall is the one part of that window
+with nothing on it. The row tightens as it fills and past fourteen the oldest
+come down - the full board is in the shop, under **The wall**, and a window is
+a window rather than an archive.
+
+One landing drops a ticket in from under the rail in the same hand as the
+week's takings, with a bell over it. It reports, it does not ask: nothing to
+press, and the day does not stop for it. Three can land on the same Saturday -
+the week, the clean week and the thousand in the till - so they queue rather
+than sit on top of each other.
+
+A rosette is two ribbon tails, a ring of twelve pleats and a button. Twelve,
+because eight reads as a cog and twenty reads as a circle. It is drawn like
+everything else in here and it works at nine pixels and at ninety.
+
+What they are for: opening up, a week's work, spending some of it. A perfect
+cut and fifty of them. Two, three and four twists in one swipe. A week the dog
+got nothing, five of those, the hour after closing, all three of its games, and
+a barbecue with nothing black on it. A hundred pounds, a thousand, ten
+thousand, and sixty in one week. The vet's bill paid, a dog buried, twenty pats,
+and a dog in a bought hat, face and collar at once. Every knife, everything on
+the rail, and every single thing in the shop. Selling a whole string in a day,
+and doing it on a Saturday. Six perfect cuts in a day. A week without halving
+one yourself. Fifty-two weeks, ten of them with the same dog. The bone, the cat
+and the lad all at once. Watching the dog find out what is in a black pudding.
+And one nobody would go looking for, which stays dots until it happens.
+
+The board shows the unwon ones and what they want, because a locked row that
+will not say what it is is a thing to look up rather than a thing to go and do.
+The one secret is the exception, and it is the one that is a joke rather than a
+goal.
+
+A shop that was going before any of this existed gets its wall swept in on the
+way through the door, quietly: ten cards one after another is a parade nobody
+asked for, and they are simply up when you look. The counts imply the rosettes
+underneath them, too - a shop with eighty perfect cuts in it plainly had a
+first one.
+
 ## After hours
 
 Get through a whole week without the dog taking a single one off you and there
