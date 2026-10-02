@@ -46,7 +46,13 @@
     --font:         "Lato", system-ui, -apple-system, sans-serif;
     --mono:         ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
                     "Liberation Mono", monospace;
-    --font-display: "Alfa Slab One", Georgia, serif;
+    /* The buttons, the titles and every price are in the sign's own face.
+       Alfa Slab One is a slab with spurs on it, which reads fairground; this
+       is what is actually painted on a butcher's window. It is caps only,
+       which is also what is painted on one, and it sets narrower than the
+       slab did - so everything set in it is a size or two up from where the
+       slab had it. */
+    --font-display: "Staatliches", "Alfa Slab One", Georgia, serif;
     /* The game's own name, and nothing else. Bold condensed caps, which is
        what is actually painted on a butcher's: MEATS, BUTCHERSON, FINEST CUTS.
        A Victorian spurred slab was the other way to go and reads as a fairground
@@ -99,7 +105,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 }
 .plate {
     display: flex; align-items: center; gap: 7px; padding: 6px 11px 5px;
-    font-family: var(--font-display); font-size: 17px; letter-spacing: .01em;
+    font-family: var(--font-display); font-size: 20px; letter-spacing: .02em;
     color: #f6f1e6; text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
 /* every icon in the row is the same size, wherever it hangs - left to itself
@@ -122,7 +128,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     margin-left: auto;
     display: flex; align-items: center;
     gap: 0; padding: 6px 11px 5px; white-space: nowrap;
-    font-family: var(--font-display); font-size: 17px; color: #f6f1e6;
+    font-family: var(--font-display); font-size: 20px; color: #f6f1e6;
     text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
 
@@ -334,7 +340,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 }
 #tally .n {
     display: flex; align-items: center; justify-content: center; gap: 9px;
-    font-family: var(--font-display); font-size: clamp(38px, 12.5vw, 54px);
+    font-family: var(--font-display); font-size: clamp(43px, 14vw, 61px);
     line-height: 1.04; color: #f6f1e6;
 }
 #tally .n .cut { width: 42px; height: 42px; flex: none; fill: #f6f1e6; opacity: .95; }
@@ -438,7 +444,7 @@ body.waiting #hud { display: none; }
 .bank { display: flex; align-items: center; justify-content: center; gap: 7px;
         margin-top: 14px; }
 .bank .ico { width: 17px; height: 17px; flex: none; fill: var(--gold); opacity: .55; }
-.bank b { font-family: var(--font-display); font-size: 17px; letter-spacing: .02em;
+.bank b { font-family: var(--font-display); font-size: 20px; letter-spacing: .02em;
           color: var(--gold); }
 /* The week's takings going in. It was five small notes creeping up out of the
    bottom of the number over a second, which is the one moment in the game
@@ -496,7 +502,7 @@ body.waiting #hud { display: none; }
    screen where something good is happening gets the screen to itself. */
 #bank-line .added {
     position: absolute; left: 50%; top: 50%; pointer-events: none; white-space: nowrap;
-    font-family: var(--font-display); font-size: clamp(20px, 7vw, 30px);
+    font-family: var(--font-display); font-size: clamp(23px, 8vw, 34px);
     color: #8fd6a2; text-shadow: 0 3px 0 rgba(0,0,0,.5);
     animation: addedUp 1.7s cubic-bezier(.22,.9,.3,1) both;
 }
@@ -618,9 +624,14 @@ body.waiting #hud { display: none; }
     background: linear-gradient(180deg, #3e2c1c, #241910);
 }
 /* And the version is screwed to the bottom of the wall rather than floating
-   under whatever the last thing on the screen happens to be. */
+   under whatever the last thing on the screen happens to be - with the one
+   button that can undo a month directly above it, which is where a thing you
+   are not meant to press by accident goes. */
 #settings .ver { position: absolute; z-index: 1; left: 0; right: 0;
                  bottom: calc(14px + env(safe-area-inset-bottom)); margin: 0; }
+#settings .wipe { position: absolute; z-index: 1; left: 0; right: 0;
+                  bottom: calc(36px + env(safe-area-inset-bottom)); margin: 0;
+                  padding: 8px 0; }
 /* The one screen in the game that can undo a month, so it gets a whole screen
    and says what it will take rather than a red line that asks twice. */
 #confirm { z-index: 14; }
@@ -662,7 +673,8 @@ body.waiting #hud { display: none; }
 #to-set:active { opacity: .7; }
 #setup h2, #settings h2, #confirm h2 {
     margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
-    font-size: 30px; color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.4);
+    font-size: 35px; letter-spacing: .02em;
+    color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.4);
 }
 /* The setup screen is the first thing anyone sees, so it is the shop's own
    fascia board: the dark signwritten plate with gold beading along the top and
@@ -697,9 +709,16 @@ body.waiting #hud { display: none; }
     background: linear-gradient(180deg, #3a2615, #24170c);
     box-shadow: 0 9px 20px rgba(28,20,14,.5), inset 0 1px 0 rgba(255,240,214,.09);
 }
-#setup .btn { box-shadow: 0 4px 0 rgba(0,0,0,.35), 0 8px 16px rgba(28,20,14,.4); }
+/* The same width as the form it sits under: two things stacked with their
+   sides not lining up is the one thing you notice about them. */
+#setup .btn { max-width: 330px;
+              box-shadow: 0 4px 0 rgba(0,0,0,.35), 0 8px 16px rgba(28,20,14,.4); }
 #setup .row input { background: rgba(0,0,0,.34); }
 #preview { margin-top: 2px; }
+/* The bottom sixth of that canvas is empty - it is where their feet are, and
+   they stand on them - so the form comes up to meet it. A gap there has them
+   floating over the thing they are standing on. */
+#setup .rows { margin-top: calc(min(94vw, 368px) * -.093); }
 /* The two of them are what you are choosing, so they get the room: they were
    small enough on this screen to be a decoration rather than the thing the
    four lines underneath are about. */
@@ -741,7 +760,7 @@ body.waiting #hud { display: none; }
     pointer-events: none;
     background: linear-gradient(180deg, rgba(6,10,12,.6), rgba(6,10,12,0));
 }
-#stock-head .who { font-family: var(--font-display); font-size: 19px; color: var(--cream);
+#stock-head .who { font-family: var(--font-display); font-size: 22px; color: var(--cream);
                    line-height: 1; margin-top: 1px; }
 /* With the dog gone off the top of this screen the till is the only thing on
    that rail, so it gets the size and the room. */
@@ -760,7 +779,7 @@ body.waiting #hud { display: none; }
    and the arrows are painted straight on. */
 .rows {
     position: relative;
-    width: 100%; max-width: 320px; margin: 12px 0 4px;
+    width: 100%; max-width: 330px; margin: 12px 0 4px;
     background: linear-gradient(180deg, #1a4636, #123327);
     border-radius: 5px;
     box-shadow: 0 7px 18px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,240,214,.09);
@@ -776,17 +795,17 @@ body.waiting #hud { display: none; }
 /* And nothing between them. The hairlines were the last of the ruling: the
    rule round the plate already says where the plate ends, and four lines on
    one plate read as four lines without being fenced off from each other. */
-.row .lab { flex: none; width: 72px; text-align: left; font-size: 11px; font-weight: 900;
+.row .lab { flex: none; width: 76px; text-align: left; font-size: 11px; font-weight: 900;
             letter-spacing: .1em; text-transform: uppercase; opacity: .55; }
-.row b { flex: 1; font-family: var(--font-display); font-weight: 400; font-size: 17px;
+.row b { flex: 1; font-family: var(--font-display); font-weight: 400; font-size: 20px;
          color: var(--cream); letter-spacing: .02em; }
 /* Cut into the plate: no line round it, just the shadow of an edge. */
 .row input {
     flex: 1; min-width: 0; background: rgba(0,0,0,.3); color: var(--cream);
     border: 0; border-radius: 2px;
     box-shadow: inset 0 2px 4px rgba(0,0,0,.45), inset 0 0 0 1px rgba(220,171,62,.14);
-    font-family: var(--font-display); font-weight: 400; font-size: 16px;
-    padding: 6px 8px; text-align: center; letter-spacing: .02em;
+    font-family: var(--font-display); font-weight: 400; font-size: 19px;
+    padding: 5px 8px; text-align: center; letter-spacing: .02em;
 }
 .row input:focus {
     outline: none;
@@ -795,7 +814,7 @@ body.waiting #hud { display: none; }
 .nudge {
     flex: none; width: 32px; padding: 5px 0; cursor: pointer;
     background: none; color: var(--gold); border: 0; opacity: .68;
-    font-family: var(--font-display); font-size: 23px; line-height: 1;
+    font-family: var(--font); font-size: 23px; line-height: 1;
 }
 .nudge svg { width: 17px; height: 17px; fill: currentColor; vertical-align: -3px; }
 .nudge:active { opacity: 1; transform: translateY(1px); }
@@ -813,7 +832,7 @@ body.waiting #hud { display: none; }
 /* How far down the board you are, over the top of the eight shelves it is
    split into. */
 #stock .tot {
-    margin: 2px 0 10px; font-family: var(--font-display); font-size: 16px;
+    margin: 2px 0 10px; font-family: var(--font-display); font-size: 19px;
     letter-spacing: .02em; color: #eaf4ec; opacity: .82; text-align: center;
     text-shadow: 0 1px 3px rgba(5,16,8,.8);
 }
@@ -834,11 +853,13 @@ body.waiting #hud { display: none; }
    with a hairline between one and the next and nothing else. Won is gold and
    full strength, unwon is dim: that is the whole of the difference and it does
    not need a box to make it. */
-.pins { display: flex; flex-direction: column; gap: 2px; }
+/* Room between them. With nothing ruled between one row and the next they
+   need the air instead, and a certificate wants a bit of wall round it. */
+.pins { display: flex; flex-direction: column; gap: 9px; }
 .pin {
     position: relative;
     display: flex; align-items: center; gap: 9px; text-align: left;
-    padding: 7px 8px 7px 2px; color: #f6f1e6;
+    padding: 4px 8px 4px 2px; color: #f6f1e6;
     background: none; border: none; border-radius: 0; box-shadow: none;
 }
 /* Nothing between them, same as the questions on the setup screen: a list on
@@ -846,7 +867,7 @@ body.waiting #hud { display: none; }
    it a table. */
 .pin canvas { width: 38px; height: 46px; flex: none;
               filter: drop-shadow(0 2px 4px rgba(4,14,7,.6)); }
-.pin .n { display: block; font-family: var(--font-display); font-size: 14px;
+.pin .n { display: block; font-family: var(--font-display); font-size: 16.5px;
           line-height: 1.2; color: rgba(246,241,230,.44);
           text-shadow: 0 1px 3px rgba(5,16,8,.9); }
 .pin .w { display: block; font-size: 10px; font-weight: 700; line-height: 1.35;
@@ -925,14 +946,59 @@ body.waiting #hud { display: none; }
     content: ''; position: absolute; inset: 4px; pointer-events: none;
     border: 1.5px solid rgba(246,241,230,.45); border-radius: 4px;
 }
-.buy .pr { display: block; font-family: var(--font-display); font-size: 19px;
+.buy .pr { display: block; font-family: var(--font-display); font-size: 23px;
            color: #f6f1e6; line-height: 1.05; letter-spacing: .01em; }
 .buy .pr i { font-style: normal; font-size: .52em; letter-spacing: 0;
              position: relative; top: -.86em; margin-left: .06em; }
-.buy .tag { display: block; font-size: 8.5px; font-weight: 900; letter-spacing: .1em;
-            text-transform: uppercase; line-height: 1.5; }
-.buy .why { display: block; font-size: 10px; font-weight: 700; line-height: 1.32;
-            opacity: .6; padding: 2px 2px 0; }
+/* A ticket on a counter is read at arm's length, not with a magnifier. */
+.buy .tag { display: block; font-size: 10.5px; font-weight: 900; letter-spacing: .1em;
+            text-transform: uppercase; line-height: 1.45; }
+.buy .why { display: block; font-size: 11px; font-weight: 700; line-height: 1.34;
+            opacity: .62; padding: 2px 2px 0; }
+/* Bought. The thing drops onto the kale and settles, the plaque is stamped
+   down in front of it, and the gold goes round it once and out. A shelf where
+   the only sign you have spent two hundred pounds is that a word has changed
+   from a price to Yours is a shelf that has not noticed. */
+.buy canvas { position: relative; z-index: 1; }
+.buy.landed canvas { animation: gotIt .6s cubic-bezier(.3, 1.5, .4, 1) both; }
+.buy.landed .tik { animation: stampL .46s cubic-bezier(.3, 1.6, .4, 1) both; }
+.buy.landed:nth-child(2n) .tik { animation: stampR .46s cubic-bezier(.3, 1.6, .4, 1) both; }
+.buy.landed::before {
+    content: ''; position: absolute; left: 50%; top: 34%; z-index: 0;
+    pointer-events: none; border-radius: 50%; border: 3px solid rgba(240,212,132,.9);
+    animation: ringOut .6s ease-out both;
+}
+@keyframes gotIt { 0% { transform: translateY(-15px) scale(1.16); }
+                   58% { transform: translateY(3px) scale(.985); }
+                   100% { transform: none; } }
+@keyframes stampL { 0% { transform: rotate(-1.3deg) scale(.72); opacity: 0; }
+                    55% { transform: rotate(-1.3deg) scale(1.07); opacity: 1; }
+                    100% { transform: rotate(-1.3deg) scale(1); opacity: 1; } }
+@keyframes stampR { 0% { transform: rotate(1.2deg) scale(.72); opacity: 0; }
+                    55% { transform: rotate(1.2deg) scale(1.07); opacity: 1; }
+                    100% { transform: rotate(1.2deg) scale(1); opacity: 1; } }
+@keyframes ringOut { from { width: 14px; height: 14px; margin: -7px 0 0 -7px; opacity: .95; }
+                     to   { width: 160px; height: 160px; margin: -80px 0 0 -80px; opacity: 0; } }
+/* And it comes off the till, which is where it actually went. */
+#stock-head .bank { position: relative; }
+#stock-head .bank.knock b { animation: knock .36s ease-out both; }
+@keyframes knock { 0% { transform: none; } 35% { transform: scale(.9) translateY(2px); }
+                   100% { transform: none; } }
+/* It drops out of the till rather than rising out of it: the till is at the
+   very top of the screen, so anything going up goes off it - and money
+   leaving goes down anyway. */
+.spent {
+    position: absolute; left: 50%; top: 100%; z-index: 7;
+    font-family: var(--font-display); font-size: 20px; font-style: normal;
+    white-space: nowrap; pointer-events: none; color: #e8836a;
+    text-shadow: 0 2px 0 rgba(0,0,0,.6);
+    animation: spentOff 1s cubic-bezier(.22,.9,.3,1) both;
+}
+@keyframes spentOff {
+    0%   { opacity: 0; transform: translate(-50%, -8px) scale(.8); }
+    20%  { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, 26px) scale(1); }
+}
 /* What it has on now: the plaque is edged in gold and a tick lands on the
    corner of the thing itself. */
 .buy.worn .tik::after { border-color: var(--gold); }
@@ -995,7 +1061,7 @@ body.waiting #hud { display: none; }
    up: there is nothing else on that bar but a name and two buttons. */
 #tryon canvas.pooch { width: 122px; }
 #tryon .said { flex: 1; min-width: 0; text-align: left; }
-#tryon .nm { display: block; font-family: var(--font-display); font-size: 19px;
+#tryon .nm { display: block; font-family: var(--font-display); font-size: 22px;
              color: var(--cream); line-height: 1.2; }
 #tryon .does { display: block; font-size: 11.5px; font-weight: 700; line-height: 1.35;
                opacity: .75; margin-top: 2px; }
@@ -1063,7 +1129,7 @@ body.waiting #hud { display: none; }
 }
 /* The shop's own name on the paper, the way it comes off a real one. */
 #till-head { margin: 17px 0 8px; }
-#till-head .sh { display: block; font-family: var(--font-display); font-size: 17px;
+#till-head .sh { display: block; font-family: var(--font-display); font-size: 20px;
                  line-height: 1.15; letter-spacing: .01em; }
 #till-head .fb { display: block; font-size: 8.5px; font-weight: 700; letter-spacing: .3em;
                  text-transform: uppercase; opacity: .6; margin-top: 3px; }
@@ -1159,7 +1225,7 @@ body.waiting #hud { display: none; }
         text-transform: uppercase; opacity: .55; }
 .btn {
     margin-top: 16px; width: 100%;
-    font-family: var(--font-display); font-size: 17px; font-weight: 400; letter-spacing: .04em;
+    font-family: var(--font-display); font-size: 20px; font-weight: 400; letter-spacing: .05em;
     padding: 13px; color: #2a2118;
     background: linear-gradient(180deg, #e8be55, var(--brass));
     border: 2.5px solid #2a2118; border-radius: 3px;
@@ -1185,7 +1251,7 @@ body.waiting #hud { display: none; }
 #gong canvas { width: 38px; height: 46px; flex: none; }
 #gong .t { display: block; font-size: 9px; font-weight: 900; letter-spacing: .16em;
            text-transform: uppercase; opacity: .55; }
-#gong .n { display: block; font-family: var(--font-display); font-size: 17px;
+#gong .n { display: block; font-family: var(--font-display); font-size: 20px;
            line-height: 1.15; margin-top: 1px; }
 #gong .w { display: block; font-size: 10.5px; font-weight: 700; opacity: .62;
            line-height: 1.35; margin-top: 2px; }
@@ -1396,7 +1462,7 @@ body.waiting #hud { display: none; }
     </div>
 
     <div id="setup" hidden>
-        <canvas id="signboard" width="340" height="300"></canvas>
+        <canvas id="signboard" width="340" height="348"></canvas>
         <canvas id="preview" width="330" height="196"></canvas>
         <div class="rows">
             <div class="row"><span class="lab">Butcher</span>
@@ -1410,7 +1476,7 @@ body.waiting #hud { display: none; }
             <div class="row"><span class="lab">Dog name</span>
                 <input id="in-dog" maxlength="12" autocomplete="off" spellcheck="false">
                 <button class="nudge" id="roll-dog" aria-label="Another name"><svg viewBox="0 0 14 14"><use href="#i-dice"/></svg></button></div>
-            <div class="row"><span class="lab">Shop</span>
+            <div class="row"><span class="lab">Shop name</span>
                 <input id="in-shop" maxlength="26" autocomplete="off" spellcheck="false">
                 <button class="nudge" id="roll-shop" aria-label="Another name"><svg viewBox="0 0 14 14"><use href="#i-dice"/></svg></button></div>
         </div>
@@ -1486,7 +1552,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v116';
+const APP_VERSION = 'v117';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -7034,7 +7100,7 @@ function drawSignBoard() {
     const g = c.getContext('2d');
     const W = c.width, H = c.height, TAU = Math.PI * 2;
     g.clearRect(0, 0, W, H);
-    const cx = W / 2, R = 100, cy = H - R - 14;
+    const cx = W / 2, R = 114, cy = H - R - 14;
     const IRON = '#231f1c', IRON_H = '#4a443d';
     const RING = '400 15px "Staatliches", "Alfa Slab One", Georgia, serif';
 
@@ -7076,23 +7142,23 @@ function drawSignBoard() {
         }
     }
 
-    /* ---- The board, and it is cut out of a sheet rather than painted on one:
-       a ring, the name standing in it and the wall showing through everywhere
-       the iron is not. That is what these signs are, and it is the one thing
-       a drawn-on disc cannot do - you can see the brick through the letters. ---- */
+    /* ---- The board: an iron ring with the trade cut out of it, and an oak
+       panel set into the ring with the name burnt into that. The ring is a
+       cutout, so the brick shows through the lettering on it; the middle is
+       a board, which is what the name wants to be on. All iron and the name
+       had to be welded to a bar to stop it floating, and the inside of the
+       ring was brick, which left the one thing you are meant to read sitting
+       on a wall rather than on a sign. ---- */
     g.save();
     g.shadowColor = 'rgba(30,16,10,.55)'; g.shadowBlur = 9; g.shadowOffsetY = 5;
     g.fillStyle = IRON;
-    /* One band the whole way round with the words cut out of it, not two arcs
-       with the ring showing between them: a band that stops halfway reads as a
-       piece that has broken off. */
+    /* One band the whole way round, not two arcs with the ring showing
+       between them: a band that stops halfway reads as a piece that has
+       broken off. */
     g.beginPath();
     g.arc(cx, cy, R, 0, TAU);
-    g.arc(cx, cy, R - 26, TAU, 0, true);
+    g.arc(cx, cy, R - 27, TAU, 0, true);
     g.closePath(); g.fill();
-    g.lineWidth = 3;                                    // and the hoop inside it
-    g.strokeStyle = IRON;
-    g.beginPath(); g.arc(cx, cy, R - 33, 0, TAU); g.stroke();
     g.restore();
 
     g.textAlign = 'center'; g.textBaseline = 'middle';
@@ -7118,35 +7184,60 @@ function drawSignBoard() {
     g.save();
     g.globalCompositeOperation = 'destination-out';
     g.fillStyle = '#000';
-    arc('QUALITY MEATS', R - 13, -Math.PI / 2, true, RING);
-    arc('EST. 2026', R - 13, Math.PI / 2, false, RING);
+    arc('QUALITY MEATS', R - 13.5, -Math.PI / 2, true, RING);
+    arc('EST. 2026', R - 13.5, Math.PI / 2, false, RING);
     for (const sx of [-1, 1]) {                         // a diamond between them
-        g.save(); g.translate(cx + sx * (R - 13), cy); g.rotate(Math.PI / 4);
-        g.fillRect(-3.2, -3.2, 6.4, 6.4); g.restore();
+        g.save(); g.translate(cx + sx * (R - 13.5), cy); g.rotate(Math.PI / 4);
+        g.fillRect(-3.4, -3.4, 6.8, 6.8); g.restore();
     }
     g.restore();
 
-    /* ---- and the name, welded to a bar across the middle. Letters floating
-       loose inside a ring is a sign that has not been made: a cutout hangs
-       off something, so there is a bar for it to hang off. ---- */
+    /* ---- the oak panel set into the ring ---- */
+    const PR = R - 26;
     g.save();
-    g.shadowColor = 'rgba(30,16,10,.5)'; g.shadowBlur = 7; g.shadowOffsetY = 4;
-    g.fillStyle = IRON;
+    g.beginPath(); g.arc(cx, cy, PR, 0, TAU); g.clip();
+    const oak = g.createLinearGradient(0, cy - PR, 0, cy + PR);
+    oak.addColorStop(0, '#c49456'); oak.addColorStop(.52, '#ae7c3f');
+    oak.addColorStop(1, '#8d5f2b');
+    g.fillStyle = oak; g.fillRect(cx - PR, cy - PR, PR * 2, PR * 2);
+    /* The grain. Drawn across the board the way a board is cut, not round the
+       circle - a disc with rings in it is a tree stump. */
+    const rnd = i => { const v = Math.sin(i * 12.9898) * 43758.5; return v - Math.floor(v); };
+    for (let i = 0; i < 26; i++) {
+        const k = rnd(i + 3);
+        const y = cy - PR + (i + k * .8) * (PR * 2 / 26);
+        g.strokeStyle = `rgba(86,54,22,${.06 + k * .13})`;
+        g.lineWidth = .7 + k * 1.5;
+        g.beginPath();
+        g.moveTo(cx - PR, y);
+        g.bezierCurveTo(cx - PR / 3, y + (k - .5) * 5, cx + PR / 3, y - (k - .5) * 6, cx + PR, y);
+        g.stroke();
+    }
+    g.fillStyle = 'rgba(70,42,16,.3)';                  // it sits down in the ring
+    g.beginPath(); g.arc(cx, cy, PR, 0, TAU);
+    g.arc(cx, cy, PR - 7, TAU, 0, true); g.fill();
+    g.restore();
+    g.strokeStyle = 'rgba(58,36,14,.5)'; g.lineWidth = 1.6;   // a line burnt inside the edge
+    g.beginPath(); g.arc(cx, cy, PR - 13, 0, TAU); g.stroke();
+
+    /* ---- and the name burnt into it ---- */
+    g.save();
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    const bar = R - 33;
-    g.fillRect(cx - bar, cy - 3, bar * 2, 4.4);
     const paint = (text, y, size, room) => {
         g.font = `400 ${size}px "Staatliches", "Alfa Slab One", Georgia, serif`;
         const w = g.measureText(text).width;
         g.save();
         g.translate(cx, cy + y);
         if (w > room) g.scale(room / w, 1);
+        g.fillStyle = 'rgba(255,230,190,.26)';          // the edge the iron left
+        g.fillText(text, 0, 1.4);
+        g.fillStyle = '#3d2710';
         g.fillText(text, 0, 0);
         g.restore();
     };
-    paint('BUTCHER\u2019S', -21, 34, (R - 38) * 2);
-    paint('DOG', 23, 40, (R - 52) * 2);
-    /* A bone at each end of the bar, where everybody else puts a pig. */
+    paint('BUTCHER\u2019S', -22, 33, (PR - 16) * 2);
+    paint('DOG', 24, 39, (PR - 30) * 2);
+    /* A bone either side of a rule, where everybody else puts a pig. */
     const bone = (bx, by, k) => {
         g.save(); g.translate(bx, by); g.scale(k, k);
         g.beginPath(); g.rect(-5, -1.6, 10, 3.2);
@@ -7154,7 +7245,9 @@ function drawSignBoard() {
         g.arc(5.6, -2.6, 2.5, 0, TAU); g.arc(5.6, 2.6, 2.5, 0, TAU);
         g.fill(); g.restore();
     };
-    bone(cx - bar + 11, cy - .8, 1); bone(cx + bar - 11, cy - .8, 1);
+    g.fillStyle = '#3d2710';
+    g.fillRect(cx - 22, cy - 1.4, 44, 2.2);
+    bone(cx - 38, cy - .3, .95); bone(cx + 38, cy - .3, .95);
     g.restore();
 }
 function drawPreview(id, w, h, withMan) {
@@ -7586,6 +7679,9 @@ function drawWorn(g, item, circle, k0 = .46) {
     if (grow > 1.05) { const big = box(.62 * grow); if (big) b = big; }
     g.drawImage(scratch, TILE_W / 2 - (b[0] + b[2]) / 2, TILE_H / 2 - (b[1] + b[3]) / 2);
 }
+/* The one thing on this screen that is worth an animation: you have just
+   spent money on it. */
+let justBought = null;
 function paintStore() {
     deal();
     showBank();
@@ -7603,8 +7699,9 @@ function paintStore() {
             const on = shopUp ? save.on.includes(i.id) : save.worn[kind] === i.id;
             const trying = tryOn && tryOn.id === i.id;
             const canAfford = save.bank >= i.price;
-            const cls = trying ? 'buy trying' : on ? 'buy worn' : got ? 'buy got'
-                      : canAfford ? 'buy' : 'buy poor';
+            const cls = (trying ? 'buy trying' : on ? 'buy worn' : got ? 'buy got'
+                      : canAfford ? 'buy' : 'buy poor') +
+                      (i.id === justBought ? ' landed' : '');
             // the tick in the corner already says it is on the dog; a word
             // under it as well is the same thing said twice
             /* The tick is pinned to the corner of the tray, so it is not
@@ -7628,7 +7725,7 @@ function paintStore() {
                       : on ? (free ? `<span class="pr">Free</span>`
                                    : `<span class="tag">On</span>`)
                       : got ? (free ? `<span class="pr">Free</span>`
-                                    : `<span class="tag">${shopUp ? 'Off' : 'Yours'}</span>`)
+                                    : `<span class="tag">${shopUp ? 'Off' : 'Purchased'}</span>`)
                       : `<span class="pr">${ticket0(i.price)}</span>`;
             const why = i.why ? `<span class="why">${i.why}</span>` : '';
             return `<button class="${cls}" data-item="${i.id}" title="${i.name}">` +
@@ -7641,6 +7738,7 @@ function paintStore() {
     }).join('');
     document.querySelectorAll('#stock .buy').forEach(btn =>
         drawTile(btn.querySelector('canvas'), itemById(btn.dataset.item)));
+    justBought = null;          // it only lands the once
     paintTryOn();
 }
 /* The whole board, won and unwon. The unwon ones are there on purpose and
@@ -7726,6 +7824,29 @@ const till = () => safely(t => {
 });
 // the sound of not having enough for it, which the shop referred to and
 // never had: tapping something out of reach used to throw instead of buzz
+/* The counter: the drawer, the stamp on the ticket and the bell on top of
+   it. It was the same sweep every other button on the screen makes, which is
+   the one place in the shop where that is not enough. */
+const sold = () => safely(t => {
+    hiss(t, { hp: 900, lp: 5200, dur: .07, vol: .2 });                 // the stamp
+    tone(t, { freq: 150, to: 70, dur: .12, type: 'square', vol: .12 });
+    tone(t, { freq: 1046, dur: .42, type: 'sine', vol: .13, at: .07 }); // and the bell
+    tone(t, { freq: 1568, dur: .34, type: 'sine', vol: .08, at: .085 });
+    tone(t, { freq: 2093, dur: .26, type: 'sine', vol: .045, at: .1 });
+});
+/* What it cost, coming off the till rather than the number simply being
+   smaller the next time you look at it. */
+function spent(price) {
+    const bank = document.getElementById('store-bank');
+    if (!bank) return;
+    const chip = document.createElement('i');
+    chip.className = 'spent';
+    chip.textContent = '\u2212' + money0(price);
+    bank.appendChild(chip);
+    bank.classList.add('knock');
+    setTimeout(() => bank.classList.remove('knock'), 400);
+    setTimeout(() => chip.remove(), 1300);
+}
 const buzz = () => safely(t => {
     tone(t, { freq: 190, to: 120, dur: .16, type: 'square', vol: .12 });
     tone(t, { freq: 140, to: 96, dur: .22, type: 'square', vol: .1, at: .1 });
@@ -7776,7 +7897,9 @@ document.getElementById('tryon').addEventListener('click', e => {
     if (SWITCHED.includes(item.kind)) save.on.push(item.id);   // bought is switched on
     else save.worn[item.kind] = item.id;
     tryOn = null;
-    till(); putSave(); sweep(); paintStore();
+    justBought = item.id;
+    till(); putSave(); sold(); paintStore();
+    spent(item.price);
 });
 document.getElementById('to-shop').addEventListener('click', openStore);
 /* ---- out the back ------------------------------------------------------

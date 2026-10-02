@@ -634,15 +634,16 @@ heights is a row of tickets somebody has knocked; each tile stretches to the
 tallest in its row and the plaque takes whatever is left with its words sat in
 the middle. The ones that cost nothing say **Free**, which is what is written on
 a card in a window when a thing is thrown in, and one you own but have not got
-on says **Yours** - which is the truth, and is not the word Wear thirty times
+on says **Purchased** - which is the truth, and is not the word Wear thirty times
 over.
 
 The board on the wall has no plaque at all. The shelves are things lying on the
 kale with a ticket in front of them, and thirty-six black slabs beside that is a
 different shop again: it is a list written straight on the bed, nothing between
-one row and the next, and dim for one you have not got. The hairlines went the
-same way the ones on the setup screen did - fencing each line off from the next
-one turns a list into a table.
+one row and the next but a bit of air, and dim for one you have not got. The
+hairlines went the same way the ones on the setup screen did - fencing each
+line off from the next one turns a list into a table - and the gap went up when
+they did, because a certificate wants some wall round it.
 
 The ones you have got are **boxed in gold** with a wash of it behind them. The
 name going gold is the difference when you are reading a row; a box round it is
@@ -775,15 +776,20 @@ them. A bracket out of one side was tried first: it leaves the arm ending in
 mid-air and the sign hanging off to one side of everything else on the screen.
 
 It is drawn rather than built out of divs for two reasons: the lettering goes
-round the ring, and nothing in CSS sets type on a circle; and it is a
-**cutout** - the ring, the bar and the letters are the only iron there is, and
-the brick shows through everywhere else. One band the whole way round with
+round the ring, and nothing in CSS sets type on a circle; and the ring is a
+**cutout** - the iron and the letters on it are all there is of it, and the
+brick shows straight through the words. One band the whole way round with
 QUALITY MEATS and EST. 2026 knocked out of it, not two arcs with the ring
 showing between them, because a band that stops halfway reads as a piece that
-has broken off. And the name is welded to a bar across the middle with a bone
-at each end of it, where everybody else puts a pig: letters floating loose
-inside a ring is a sign nobody has made, because a cutout has to hang off
-something.
+has broken off.
+
+The middle is **an oak panel set into the ring**, with the name burnt into it
+and a bone either side of the rule where everybody else puts a pig. All iron
+was tried first and the name had to be welded to a bar to stop it floating,
+with brick showing through behind it - which left the one thing you are meant
+to read sitting on a wall rather than on a sign. The grain runs across the
+panel the way a board is cut, not round it: a disc with rings in it is a tree
+stump.
 
 The name is in **Staatliches**, bold condensed caps, which is what is actually
 painted on a butcher's: MEATS, FINEST CUTS, BUTCHERSON, PREMIUM QUALITY. A
@@ -797,7 +803,11 @@ the room the title used to have and the till under it is the score.
 
 The two of them are stood under the sign at a size you can actually see them
 at - they are what you are choosing, and small enough they were a decoration
-rather than the thing the four lines underneath are about.
+rather than the thing the four lines underneath are about. They stand *on* the
+form rather than above it: the bottom sixth of that canvas is empty, because
+it is where their feet are, so the plate comes up to meet it. And the plate
+and the button under it are the same width, because two things stacked with
+their sides not lining up is the one thing you notice about them.
 
 You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the sign, with a die to roll if
@@ -818,6 +828,14 @@ that the day's takings come up on, which is the one piece of signwriting a
 butcher's actually has. They were green with a gold line round them, which is
 the wall they are stood against with a line drawn on it.
 
+**Everything in the game is signwritten in the same face.** The buttons, the
+titles and every price are in **Staatliches**, the face on the sign. It was
+Alfa Slab One, a slab with spurs on it, which reads fairground; this is what
+is actually painted on a butcher's window, and it is caps only, which is also
+what is painted on one. It sets narrower than the slab did, so everything in
+it went up a size or two at the same time - and the plaque on a shelf tile
+went up more than that, because a ticket on a counter is read at arm's length.
+
 **The four lines are one plate, not five rectangles a line.** Every question
 used to be a bordered field with a bordered brass button either side of it,
 inside a bordered panel, which is the look of a form someone has to fill in. A
@@ -832,10 +850,20 @@ room's two switches and the reset screen's. The die that rolls you a name is
 drawn as a die now: it was the character for one, and a phone that has not got
 that glyph draws an empty box instead.
 
+Buying a thing in the shop is the one moment on that screen worth an
+animation, because it is the one where you have just spent money. The thing
+drops onto the kale and settles, the plaque is stamped down in front of it,
+the gold goes round it once and out, what it cost drops out of the till at the
+top, and the counter makes the noise a counter makes - the stamp, the drawer
+and the bell. A shelf whose only sign you have spent two hundred pounds is
+that a word has changed from a price to Purchased is a shelf that has not
+noticed.
+
 **Out the back is a back room.** The same brickwork the front of the building
 is made of, one bulb over the door and nothing on the walls, with the version
 screwed to the bottom of it rather than floating under whatever the last thing
-on the screen happens to be. It was the same tiled green as the shop floor,
+on the screen happens to be, and Reset game directly above it - which is where
+a button that can undo a month goes. It was the same tiled green as the shop floor,
 which made the one room in this building that is not for customers look like
 the one room that is; then it was match-boarding, which made the back room a
 different building from the shop. It is the same wall as the setup screen, one
