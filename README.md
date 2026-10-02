@@ -562,6 +562,11 @@ place: a ticket on a wall is a ticket on a wall, and you are stood at a
 counter. A cream label with a dark window in it was right about the card and
 wrong about everything round it.
 
+The rail over the top of it is the same mahogany as the front of the counter on
+the shopfront, because the case is set into the counter. It was steel, which
+made the top of that screen a second material for no reason and left the two
+screens looking like two shops.
+
 So the screen is the case you are looking into. Cold steel, lit from the top,
 with the glass catching the light across one corner, and everything in it
 darker than it is so the trays sit *in* it rather than on it. Each tile is a
@@ -643,18 +648,22 @@ itself drawn in it, because seventeen hats written out is seventeen words to
 read and a rack of pictures is one glance.
 
 The wearables are drawn the way his accessories sheet drew them: the item on a
-plain circle standing in for the head. Thirty tiles of the same dog in thirty
+plain **filled** circle standing in for the head. It was an outline, which is
+enough to hold a hat in the right place and no help at all to a brown moustache
+on a black tray - and the dark ones are most of the face shelf. A pale disc is
+the skull: hats sit on top of it against the tray, and everything that goes on
+a face goes on it, which is exactly where the contrast was missing. Thirty tiles of the same dog in thirty
 hats is thirty pictures of a dog. The circle is the skull the item is placed
 against, so everything still lands where it lands on a real one - hats on top,
 faces on the eye line, collars at the chin - and Nothing on its head is an
 empty circle, which is exactly right. The counter at the bottom draws the same
 item without the circle - there is one thing on the screen down there and its
 name beside it - and seeing it on the dog is what the pinned preview at the top
-is for. It is drawn **at whatever scale fills the space**: a pair of round
+is for. It keeps its head down there too, and gets bigger with it: a pair of round
 glasses measures twenty pixels across, and twenty pixels of dark grey on a
 near-black counter is two dots, which is a poor look at the thing you are being
-asked to pay for. It is measured, scaled to fit, measured again and put in the
-middle, on a little tray of its own.
+asked to pay for. It sits on a little tray of its own, the same as it did on
+the shelf.
 
 The dog is pinned to the top of the shop and does not scroll away with the
 first shelf, so whatever you try goes on in front of you without scrolling back
