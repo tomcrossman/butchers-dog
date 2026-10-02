@@ -774,7 +774,7 @@ fishmonger; a butcher's is on a red brick corner.
 **The sign is the plaque that goes on a brick wall**: the signwritten
 cartouche with its ends swept out to a point and a crown on the top and the
 bottom edge, fixed flat to the brick, cream on near-black, with QUALITY MEATS
-arched over the name and MEAT & PROVISION under a ruled line beneath it.
+arched over the name and EST. 2026 under a ruled line beneath it.
 
 It was a round board hung off a wrought-iron bracket on two chains before
 that, which is a lovely thing and the wrong thing. A hanging sign is what
@@ -901,6 +901,15 @@ screen's resolution - which is exactly as blurry as that sounds. The backing
 store is sized to what the thing will actually be shown at and the drawing
 keeps its own coordinates, so nothing in it had to change. The sign, the two of
 them on the setup screen, the shelf tiles and the week's card all got it.
+
+**A phone on its side gets one screen and no game under it.** The shop is a
+window with a sausage hanging down the middle of it, which is a tall thing in a
+tall frame: on its side there is no room above the rail for the string and none
+below it for the dog. So landscape gets **Turn it back**, and it stops the
+clock rather than letting the day run on behind it - everything in here is
+timed off one counter, and while that counter is stopped it reads the same
+number every time, so even something waking up on a timer finds that no time
+has passed. Phones only: a laptop in landscape is not a phone on its side.
 
 **Out the back is a back room.** The same brickwork the front of the building
 is made of, one bulb over the door and nothing on the walls, with the version

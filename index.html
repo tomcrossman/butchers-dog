@@ -545,7 +545,7 @@ body.waiting #hud { display: none; }
                text-shadow: 0 4px 0 rgba(0,0,0,.4); }
 
 /* ---- picking your lot, and spending what you have ---------------------- */
-#setup, #store, #settings, #confirm, #minipick, #vegan {
+#setup, #store, #settings, #confirm, #minipick, #vegan, #turn {
     position: absolute; inset: 0; z-index: 13; overflow-y: auto;
     /* safe centring: a shelf taller than the window centres its own top off
        the screen, and no amount of scrolling gets it back */
@@ -603,8 +603,24 @@ body.waiting #hud { display: none; }
     background: linear-gradient(180deg, #553820, #33200f);
 }
 #setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden],
-#minipick[hidden], #vegan[hidden] { display: none; }
-#settings, #confirm, #minipick, #vegan { justify-content: center; }
+#minipick[hidden], #vegan[hidden], #turn[hidden] { display: none; }
+#settings, #confirm, #minipick, #vegan, #turn { justify-content: center; }
+/* A phone on its side. The shop is a window with a sausage hanging down the
+   middle of it, which is a tall thing in a tall frame: on its side there is no
+   room above the rail for the string and no room below it for the dog. It
+   stops the clock rather than letting the day run on behind it - everything in
+   here is timed off one counter, so freezing that freezes the lot. Phones
+   only: a laptop in landscape is not a phone on its side. */
+#turn { z-index: 99; background: #1d1611; color: var(--cream); gap: 4px; }
+#turn[hidden] { display: none; }
+#turn svg { width: 64px; height: 64px; color: var(--gold); fill: var(--gold);
+            opacity: .9; animation: turnit 2.4s ease-in-out infinite; }
+#turn h2 { margin: 10px 0 0; font-family: var(--font-display); font-weight: 400;
+           font-size: 30px; letter-spacing: .02em; color: var(--gold); }
+#turn .note { max-width: 300px; margin: 6px 0 0; font-size: 12px; font-weight: 700;
+              line-height: 1.6; opacity: .6; }
+@keyframes turnit { 0%, 55%, 100% { transform: rotate(0); }
+                    25%, 40% { transform: rotate(-90deg); } }
 /* Everything drains out of it. No brick, no gold, no green, no shadow worth
    the name: the one screen in here with nothing on it worth having, and one
    way out. */
@@ -1465,6 +1481,19 @@ body.waiting #hud { display: none; }
     <symbol id="i-next" viewBox="0 0 14 14">
         <path d="M 5 2.2 L 10.2 7 L 5 11.8 L 3.2 10.2 L 6.6 7 L 3.2 3.8 Z"/>
     </symbol>
+    <symbol id="i-turn" viewBox="0 0 48 48">
+        <path d="M 17 6 H 31 A 4 4 0 0 1 35 10 V 38 A 4 4 0 0 1 31 42
+                 H 17 A 4 4 0 0 1 13 38 V 10 A 4 4 0 0 1 17 6 Z"
+              fill="none" stroke="currentColor" stroke-width="3"/>
+        <rect x="20.5" y="9.5" width="7" height="2.2" rx="1.1"/>
+        <circle cx="24" cy="37" r="1.9"/>
+        <path d="M 6 20 A 18 18 0 0 1 11 11" fill="none" stroke="currentColor"
+              stroke-width="3" stroke-linecap="round"/>
+        <path d="M 4 25 L 9.5 18 L 1.5 17.4 Z"/>
+        <path d="M 42 28 A 18 18 0 0 1 37 37" fill="none" stroke="currentColor"
+              stroke-width="3" stroke-linecap="round"/>
+        <path d="M 44 23 L 38.5 30 L 46.5 30.6 Z"/>
+    </symbol>
     <symbol id="i-dice" viewBox="0 0 14 14">
         <path d="M 3 1.2 H 11 A 1.8 1.8 0 0 1 12.8 3 V 11 A 1.8 1.8 0 0 1 11 12.8
                  H 3 A 1.8 1.8 0 0 1 1.2 11 V 3 A 1.8 1.8 0 0 1 3 1.2 Z"
@@ -1573,6 +1602,13 @@ body.waiting #hud { display: none; }
         <div class="ver" id="set-ver">v1</div>
     </div>
 
+    <!-- A sausage hangs down, and so does the phone. -->
+    <div id="turn" hidden>
+        <svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-turn"/></svg>
+        <h2>Turn it back</h2>
+        <p class="note">A sausage hangs down. So does the phone.</p>
+    </div>
+
     <!-- The one answer out the back that is not a yes, and what it gets you. -->
     <div id="vegan" hidden>
         <canvas id="veg" width="240" height="132"></canvas>
@@ -1620,7 +1656,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v127';
+const APP_VERSION = 'v128';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1882,7 +1918,18 @@ function fit() {
 }
 addEventListener('resize', fit);
 
-const now = () => performance.now();
+/* Everything in the game is timed off this rather than off the wall clock,
+   which means stopping it stops the game: the day's clock, the dog, the
+   animations and the hour after closing all run on it. */
+let pausedFor = 0, pauseAt = 0;
+/* While it is stopped it reads the same number every time, so anything that
+   wakes up on a timer during the pause finds no time has passed either. */
+const now = () => (pauseAt || performance.now()) - pausedFor;
+function setPaused(on) {
+    if (on === !!pauseAt) return;
+    if (on) { pauseAt = performance.now(); cancelAnimationFrame(raf); }
+    else { pausedFor += performance.now() - pauseAt; pauseAt = 0; lastMs = 0; tick(); }
+}
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const pick = a => a[(Math.random() * a.length) | 0];
 
@@ -7489,6 +7536,7 @@ function tick() {
         knifeStep(dt);
         draw();
         const resting = Math.abs(knife.x - restPose()[0]) < 1.5 && knife.at < .02;
+        if (pauseAt) return;                 // the phone is on its side
         if (mini || live || loose.length || cutFx.length || mess.length || shouts.length
             || chewing || steak || (hit && !hit.settled) || cat || demoOn() || !resting
             || botArm || floor.some(f => !f.down)) raf = requestAnimationFrame(step);
@@ -7666,7 +7714,7 @@ function drawSignBoard() {
     }
     g.fillStyle = 'rgba(242,236,218,.66)';
     g.font = '900 10px Lato, system-ui, sans-serif';
-    g.fillText('M E A T   &   P R O V I S I O N', cx, T + 196);
+    g.fillText('E S T .   2 0 2 6', cx, T + 196);
 }
 function drawPreview(id, w, h, withMan) {
     const c = document.getElementById(id);
@@ -9157,6 +9205,17 @@ document.getElementById('shopfront').addEventListener('pointerdown', e => {
 /* Boot: whatever was saved, or a stranger who has to pick a shop first. */
 const BRICK = 'url(' + brickTile() + ')';
 setupEl.style.backgroundImage = BRICK;
+/* A phone on its side gets one screen and no game under it. The height test
+   is what keeps a laptop out of it. */
+const sideways = matchMedia('(orientation: landscape) and (max-height: 560px)');
+const turnEl = document.getElementById('turn');
+function checkTurn() {
+    const on = sideways.matches;
+    turnEl.hidden = !on;
+    setPaused(on);
+}
+sideways.addEventListener('change', checkTurn);
+checkTurn();
 for (const id of ['settings', 'confirm', 'minipick'])
     document.getElementById(id).style.backgroundImage = BRICK;
 loadSave();
