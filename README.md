@@ -639,8 +639,10 @@ over.
 
 The board on the wall has no plaque at all. The shelves are things lying on the
 kale with a ticket in front of them, and thirty-six black slabs beside that is a
-different shop again: it is a list written straight on the bed, a hairline
-between one row and the next, and dim for one you have not got.
+different shop again: it is a list written straight on the bed, nothing between
+one row and the next, and dim for one you have not got. The hairlines went the
+same way the ones on the setup screen did - fencing each line off from the next
+one turns a list into a table.
 
 The ones you have got are **boxed in gold** with a wash of it behind them. The
 name going gold is the difference when you are reading a row; a box round it is
@@ -726,6 +728,10 @@ will not be pressed.
 The button that opens the shop is a word and nothing else; a cleaver on it was
 tried and looked like a small appliance.
 
+The rail across the top of the shop screen is the same panelled oak as the
+counter front, down to the same stiles and grooves: the case is set into the
+counter, so the rail over it is made of the counter.
+
 The counter front under the window is **panelled oak**, light enough to be
 wood somebody has to keep clean: stiles, a groove between each pair and the
 panel sitting back between them, starting in the canvas and carrying on down
@@ -749,39 +755,58 @@ Two of them stacked is one too many.
 
 **The setup screen is a sign on a wall.** It is the first thing anybody sees
 and it was the tiled wall you play against, which is the inside of a shop you
-have not got yet. It is a whitewashed brick wall instead, with the game's name
-hung on it on a signwritten board. Making the whole screen the board was the
-other way round - it left the sign nothing to be a sign against, and near-black
-across a phone reads as unlit rather than as painted timber.
+have not got yet. It is a red brick wall instead, with the game's name hanging
+off a bracket on it. Making the whole screen the board was the other way round
+- it left the sign nothing to be a sign against, and near-black across a phone
+reads as unlit rather than as painted timber.
 
 The bricks are drawn once into a small tile and repeated: a proper stagger with
-a different wash on every brick, one in four older and warmer than the rest, is
-three lines of canvas and a fortnight of gradients. The wear on them is barely
-there on purpose - a tile repeats, and a mark you can pick out is a mark you
-then see in a grid all the way up the wall.
+a different wash on every brick, one in four older and burnt, is three lines of
+canvas and a fortnight of gradients. The wear on them is barely there on
+purpose - a tile repeats, and a mark you can pick out is a mark you then see in
+a grid all the way up the wall. They were whitewashed, which is a dairy or a
+fishmonger; a butcher's is on a red brick corner.
 
-The board is actually hung: two eye-bolts in the brickwork, two short chains
-and the sign swinging off them with its shadow on the wall below. A sign flat
-against a wall with a shadow under it is a poster. START YOUR SHOP is painted
-on the bricks under it rather than squeezed onto the bottom of the board, which
-is where that line goes on a real one - the board carries the name and nothing
-else.
+**The sign is cut out of iron and hung off a bracket**, which is what a shop
+that has been there a hundred years has over its door. There is a plate bolted
+to the brickwork, an arm out of it with a scroll under it carrying the weight
+and a spear on the end, two chains, and a round board swinging off them. It is
+drawn rather than built out of divs for two reasons: the lettering goes round
+the ring, and nothing in CSS sets type on a circle; and it is a **cutout** -
+the ring, the bands and the letters are the only iron there is, and the brick
+shows through everywhere else. The band top and bottom is solid with QUALITY
+MEATS and EST. 2026 knocked out of it, because letters standing free on the
+ring get swallowed by it, and a band is what holds one of these together
+anyway. A bone either side of the rule, where everyone else puts a pig.
 
 The name is in **Staatliches**, bold condensed caps, which is what is actually
 painted on a butcher's: MEATS, FINEST CUTS, BUTCHERSON, PREMIUM QUALITY. A
 Victorian spurred slab was tried first and reads as a fairground rather than a
-shop. It is the only place in the game that uses it, it is stacked over two
-lines the way a sign like that is set, and there is no rule under it: the words
-are the sign.
+shop. It is the only place in the game that uses it, and it is stacked over two
+lines the way a sign like that is set.
 
 The game's name is on the setup screen and nowhere else: once the shop is
 yours, the sign over the window is the one that matters, so the shopfront gets
 the room the title used to have and the till under it is the score.
 
 You pick the man behind the counter, the dog at the door, its name and the name
-over the window - four lines of one form under the game's own name, with a die
-to roll if you cannot think of one - and that, the till and the wardrobe are
+over the window - four lines of one form under the sign, with a die to roll if
+you cannot think of one, and **Start your shop** under them, which is what the
+button does - and that, the till and the wardrobe are
 saved. It is one object under one key.
+
+**Out the back is behind a door, not a gear.** The way into the back room is
+the bottom left corner of the shopfront, and the icon on it is a door stood
+open with an arrow going through it. A gear is what a phone app puts on a
+settings menu; this is a shop, and you go out the back through a door. It sits
+off the corner rather than jammed into it, too - it had no air round it at all
+and read as something that had slipped down there.
+
+**The two plates over the window are counter tickets.** The day on the left
+and the till on the right are the same black plaque with the white keyline
+that the day's takings come up on, which is the one piece of signwriting a
+butcher's actually has. They were green with a gold line round them, which is
+the wall they are stood against with a line drawn on it.
 
 **The four lines are one plate, not five rectangles a line.** Every question
 used to be a bordered field with a bordered brass button either side of it,

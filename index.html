@@ -73,18 +73,24 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 
 /* ============================================================
    SIGNWRITING
-   Every panel is the same thing: a dark plate, a gold hairline a little
-   way inside it, and gold letters. No wonky outlines, no drop shadow.
+   Every panel is the same thing: a dark plate, a hairline a little way
+   inside it, and letters. No wonky outlines, no drop shadow.
+
+   The two over the window are the black counter ticket the day's takings
+   come up on, which is the one piece of signwriting a butcher's actually
+   has: a black plaque, a white keyline inside the edge and white lettering.
+   They were green with gold on them, which is the wall they were stood
+   against with a gold line drawn round it.
    ============================================================ */
 .sign {
     position: relative;
-    background: linear-gradient(180deg, #1a4636, #123327);
-    border: 2px solid var(--gold-d); border-radius: 3px;
-    box-shadow: 0 2px 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.07);
+    background: linear-gradient(180deg, #1d1a16, #0f0d0b);
+    border: 0; border-radius: 5px;
+    box-shadow: 0 3px 0 rgba(0,0,0,.45), 0 5px 11px rgba(0,0,0,.32);
 }
 .sign::after {
-    content: ''; position: absolute; inset: 3px; pointer-events: none;
-    border: 1px solid rgba(220, 171, 62, .55); border-radius: 1px;
+    content: ''; position: absolute; inset: 3.5px; pointer-events: none;
+    border: 1.2px solid rgba(246,241,230,.5); border-radius: 3px;
 }
 #hud {
     position: absolute; top: 0; left: 0; right: 0; z-index: 3;
@@ -94,35 +100,35 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 .plate {
     display: flex; align-items: center; gap: 7px; padding: 6px 11px 5px;
     font-family: var(--font-display); font-size: 17px; letter-spacing: .01em;
-    color: var(--gold); text-shadow: 0 1px 0 rgba(0,0,0,.5);
+    color: #f6f1e6; text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
 /* every icon in the row is the same size, wherever it hangs - left to itself
    an inline svg with no width takes the whole plate with it */
-.sign .ico { width: 13px; height: 13px; fill: var(--gold); flex: none; opacity: .9; }
+.sign .ico { width: 13px; height: 13px; fill: #f6f1e6; flex: none; opacity: .9; }
 .plate .of, #till .of {
     display: inline-flex; align-items: center; gap: 4px;
-    margin-left: 9px; padding-left: 10px; border-left: 1px solid rgba(220,171,62,.4);
-    font-size: .82em; opacity: .78;
+    margin-left: 9px; padding-left: 10px; border-left: 1px solid rgba(246,241,230,.32);
+    font-size: .82em; opacity: .72;
 }
 #weekno { font-family: var(--font); font-weight: 900; font-size: .58em;
           letter-spacing: .08em; text-transform: uppercase; }
 #roundplate.beating { animation: beat .55s ease-in-out infinite alternate; }
 #roundplate.beating .of { display: none; }
-@keyframes beat { from { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
-                  to   { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 16px rgba(220,171,62,.6); } }
+@keyframes beat { from { box-shadow: 0 3px 0 rgba(0,0,0,.45); }
+                  to   { box-shadow: 0 3px 0 rgba(0,0,0,.45), 0 0 16px rgba(246,241,230,.55); } }
 #till {
     /* the day on the left, the till on the right: with the speaker gone the
        two of them huddled in one corner with half the window empty beside them */
     margin-left: auto;
     display: flex; align-items: center;
     gap: 0; padding: 6px 11px 5px; white-space: nowrap;
-    font-family: var(--font-display); font-size: 17px; color: var(--gold);
+    font-family: var(--font-display); font-size: 17px; color: #f6f1e6;
     text-shadow: 0 1px 0 rgba(0,0,0,.5);
 }
 
 #roundplate.hurt { animation: hurt .5s ease-out both; }
-@keyframes hurt { 0%, 100% { box-shadow: 0 2px 0 rgba(0,0,0,.35); }
-                  30% { box-shadow: 0 2px 0 rgba(0,0,0,.35), 0 0 20px rgba(216,70,47,.9); } }
+@keyframes hurt { 0%, 100% { box-shadow: 0 3px 0 rgba(0,0,0,.45); }
+                  30% { box-shadow: 0 3px 0 rgba(0,0,0,.45), 0 0 20px rgba(216,70,47,.9); } }
 /* The shop takes whatever height is going and scales to fit it, so the sign
    is at the top of the window on a tall phone and the whole thing still fits
    on a short one without a scrollbar or a squashed butcher. */
@@ -595,7 +601,7 @@ body.waiting #hud { display: none; }
    the shop is in - it is the same wall, it is just round the back and it has
    not been painted since. */
 #settings, #confirm, #minipick {
-    background-color: #6b655c;
+    background-color: #5e3a2b;
     background-position: 0 0;
     background-repeat: repeat;
 }
@@ -638,13 +644,19 @@ body.waiting #hud { display: none; }
     font-family: var(--font); font-weight: 900; font-size: 22px; color: var(--gold);
 }
 .shut:active { transform: translateY(1px); }
-/* The door to the back room. Bottom left, opposite the version label: the top
-   right is the shop sign's and a gear sitting on the fascia looks like a bolt
-   that has come loose. */
+/* The door to the back room, and it is drawn as one: the door stood open with
+   an arrow going through it. A gear is what a phone app puts on a settings
+   menu, and this is a shop - you go out the back through a door.
+
+   Bottom left, opposite the version label: the top right is the shop sign's
+   and anything sitting on the fascia looks like a bolt that has come loose.
+   Off the corner rather than jammed into it, though: it had no air round it
+   at all and read as something that had slipped down there. */
 #to-set {
-    position: absolute; bottom: 4px; left: 6px; z-index: 2;
-    width: 36px; height: 36px; padding: 7px; cursor: pointer; line-height: 0;
-    background: none; border: none; opacity: .38;
+    position: absolute; z-index: 2; left: 14px;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    width: 40px; height: 40px; padding: 8px; cursor: pointer; line-height: 0;
+    background: none; border: none; opacity: .5;
 }
 #to-set svg { width: 100%; height: 100%; fill: var(--cream); }
 #to-set:active { opacity: .7; }
@@ -664,7 +676,7 @@ body.waiting #hud { display: none; }
    a proper stagger with a different wash on every brick is three lines of
    canvas and a fortnight of gradients. */
 #setup {
-    background-color: #b9b5ad;
+    background-color: #9b5a40;
     background-position: 0 0, 0 0;
     background-repeat: repeat, repeat;
 }
@@ -674,53 +686,19 @@ body.waiting #hud { display: none; }
                 radial-gradient(130% 100% at 50% 50%, transparent 34%, rgba(38,30,24,.42) 100%);
 }
 #setup > * { position: relative; z-index: 1; }
-/* The sign itself: the dark plate with the gold rule inside it that every one
-   of these is - and actually hung, off two eye-bolts in the brickwork, with
-   its shadow on the wall below it. A sign flat against a wall with a shadow
-   under it is a poster; a sign on two short chains is a sign. */
-#setup .hung { position: relative; padding-top: 30px; margin-bottom: 4px; }
-#setup .chain {
-    position: absolute; top: 0; width: 7px; height: 36px; border-radius: 3px;
-    background: repeating-linear-gradient(180deg,
-        #8c8276 0 4px, #332e28 4px 6px, #a29889 6px 10px, #262220 10px 12px);
-    box-shadow: 1px 0 2px rgba(0,0,0,.3), inset -1.5px 0 0 rgba(0,0,0,.28);
-}
-#setup .chain.l { left: 19%; }
-#setup .chain.r { right: 19%; }
-#setup .chain::before {                                /* the bolt in the brick */
-    content: ''; position: absolute; top: -5px; left: 50%;
-    width: 14px; height: 14px; margin-left: -7px; border-radius: 50%;
-    background: radial-gradient(circle at 36% 30%, #a39a90, #4c463e 68%, #2a2621);
-    box-shadow: 0 2px 3px rgba(0,0,0,.4);
-}
-#setup .board {
-    position: relative; margin: 0; padding: 20px 26px 22px;
-    background: linear-gradient(180deg, #241a15, #140e0b);
-    border-radius: 7px; box-shadow: 0 13px 24px rgba(28,20,14,.5);
-}
-#setup .board::after {
-    content: ''; position: absolute; inset: 7px; pointer-events: none;
-    border: 2px solid rgba(220,171,62,.5); border-radius: 3px;
-}
-#setup h1 {
-    margin: 0; font-family: var(--font-title); font-weight: 400; color: var(--gold);
-    font-size: clamp(44px, 18vw, 82px); line-height: .98; letter-spacing: .02em;
-    text-transform: uppercase;
-    text-shadow: 0 5px 0 rgba(0,0,0,.5), 0 0 30px rgba(220,171,62,.2);
-}
+/* The sign itself, and it is a hanging sign: the wrought-iron bracket bolted
+   to the brickwork, the arm out from it with a scroll under it and a finial on
+   the end, two links, and the board swinging off them. A rectangle flat on the
+   wall with a shadow under it is a poster. It is drawn rather than built out of
+   divs because the lettering goes round the ring, and nothing in CSS sets type
+   on a circle. */
+#setup #signboard { width: min(84vw, 330px); height: auto; margin: 2px 0 4px; }
 #setup .rows {
     background: linear-gradient(180deg, #3a2615, #24170c);
     box-shadow: 0 9px 20px rgba(28,20,14,.5), inset 0 1px 0 rgba(255,240,214,.09);
 }
 #setup .btn { box-shadow: 0 4px 0 rgba(0,0,0,.35), 0 8px 16px rgba(28,20,14,.4); }
 #setup .row input { background: rgba(0,0,0,.34); }
-/* And the strapline is on the wall under the sign rather than squeezed onto
-   the bottom of it, so it is painted the colour anything painted on brick is. */
-#setup .sub {
-    margin: 16px 0 0; font-size: 13px; font-weight: 900; letter-spacing: .18em;
-    text-transform: uppercase; color: #4a4239; opacity: .85;
-    text-shadow: 0 1px 0 rgba(255,255,255,.45);
-}
 #preview { margin-top: 2px; }
 #preview { width: min(76vw, 300px); height: auto; }
 /* The dog is the whole point of the shop, so it does not scroll away with the
@@ -739,11 +717,21 @@ body.waiting #hud { display: none; }
     display: flex; flex-direction: column; align-items: center;
     padding: 2px 0 9px;
     /* The case is set into the counter, so the rail over the top of it is the
-       same mahogany as the front of the counter on the shopfront. It was
-       steel, which made the top of this screen a second material for no
-       reason and left the two screens looking like two shops. */
-    background: linear-gradient(180deg, #583c23, #38230f);
-    box-shadow: inset 0 2px 0 rgba(255,230,188,.16);
+       same panelled oak as the front of the counter on the shopfront - the
+       same stiles, the same grooves, the same wood. It was steel, which made
+       the top of this screen a second material for no reason and left the two
+       screens looking like two shops; then it was flat mahogany, which is the
+       right wood with none of the joinery. */
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(255,228,186,.07) 0 2px,
+            rgba(58,36,16,.42) 2px 5px,
+            rgba(26,15,6,.5) 5px 8px,
+            rgba(255,228,186,.09) 8px 11px,
+            transparent 11px 74px),
+        repeating-linear-gradient(90deg, rgba(255,232,196,.028) 0 1px, transparent 1px 9px),
+        linear-gradient(180deg, #8a6136, #6b4723);
+    box-shadow: inset 0 2px 0 rgba(255,230,188,.2);
 }
 #stock-head::after {                                  /* it casts onto the shelves */
     content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 16px;
@@ -850,7 +838,9 @@ body.waiting #hud { display: none; }
     padding: 7px 8px 7px 2px; color: #f6f1e6;
     background: none; border: none; border-radius: 0; box-shadow: none;
 }
-.pin + .pin { border-top: 1px solid rgba(246,241,230,.13); }
+/* Nothing between them, same as the questions on the setup screen: a list on
+   a bed of kale is a list, and fencing each line off from the next one makes
+   it a table. */
 .pin canvas { width: 38px; height: 46px; flex: none;
               filter: drop-shadow(0 2px 4px rgba(4,14,7,.6)); }
 .pin .n { display: block; font-family: var(--font-display); font-size: 14px;
@@ -874,7 +864,6 @@ body.waiting #hud { display: none; }
     border: 1px solid rgba(168,124,34,.5); border-radius: 2px;
 }
 .pin.up canvas { filter: drop-shadow(0 2px 3px rgba(60,45,18,.3)); }
-.pin.up + .pin { border-top-color: transparent; }
 .pin.up .n { color: #4a3514; text-shadow: none; }
 .pin.up .w { opacity: .72; color: #4a3514; text-shadow: none; }
 /* Two rooms, and the tabs are the door between them. */
@@ -1330,6 +1319,14 @@ body.waiting #hud { display: none; }
                  L 1.5 3.3 L 2.9 1.9 L 4.4 2.95 L 5.7 2.4 Z
                  M 7 4.8 A 2.6 2.6 0 1 0 7 10 A 2.6 2.6 0 1 0 7 4.8 Z"/>
     </symbol>
+    <!-- The way out the back: the door stood open and an arrow going through
+         it. A gear is a settings menu on a phone; this is a door in a shop. -->
+    <symbol id="i-door" viewBox="0 0 14 14">
+        <path d="M 7.9 1.3 L 13.6 0 V 14 L 7.9 12.7 Z"/>
+        <circle cx="9.3" cy="7" r=".72"/>
+        <path d="M 0.4 5.9 H 4.8 V 8.1 H 0.4 Z"/>
+        <path d="M 3.7 3.5 L 7 7 L 3.7 10.5 Z"/>
+    </symbol>
     <symbol id="i-bone" viewBox="0 0 14 14">
         <path d="M 4.4 5.6 H 9.6 V 8.4 H 4.4 Z"/>
         <circle cx="3.2" cy="5" r="2.1"/><circle cx="3.2" cy="9" r="2.1"/>
@@ -1390,17 +1387,13 @@ body.waiting #hud { display: none; }
                  otherwise, which is the whole of its safety. -->
             <button class="btn ghost try-mini" id="to-mini" hidden>After hours&hellip;</button>
         </div>
-        <button id="to-set" aria-label="Settings">
-            <svg viewBox="0 0 14 14"><use href="#i-gear"/></svg>
+        <button id="to-set" aria-label="Out the back">
+            <svg viewBox="0 0 14 14"><use href="#i-door"/></svg>
         </button>
     </div>
 
     <div id="setup" hidden>
-        <div class="hung">
-            <i class="chain l"></i><i class="chain r"></i>
-            <div class="board"><h1>Butcher&rsquo;s<br>Dog</h1></div>
-        </div>
-        <p class="sub">Start your shop</p>
+        <canvas id="signboard" width="340" height="300"></canvas>
         <canvas id="preview" width="330" height="196"></canvas>
         <div class="rows">
             <div class="row"><span class="lab">Butcher</span>
@@ -1418,7 +1411,7 @@ body.waiting #hud { display: none; }
                 <input id="in-shop" maxlength="26" autocomplete="off" spellcheck="false">
                 <button class="nudge" id="roll-shop" aria-label="Another name"><svg viewBox="0 0 14 14"><use href="#i-dice"/></svg></button></div>
         </div>
-        <button class="btn" id="setup-done">That&rsquo;ll do</button>
+        <button class="btn" id="setup-done">Start your shop</button>
     </div>
 
     <div id="store" hidden>
@@ -1490,7 +1483,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v114';
+const APP_VERSION = 'v115';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -6992,7 +6985,7 @@ function brickTile() {
     const c = document.createElement('canvas');
     c.width = TW; c.height = TH;
     const g = c.getContext('2d');
-    g.fillStyle = '#9d988f'; g.fillRect(0, 0, TW, TH);          // the mortar
+    g.fillStyle = '#b0a899'; g.fillRect(0, 0, TW, TH);          // the mortar
     const rnd = i => { const v = Math.sin(i * 12.9898) * 43758.5; return v - Math.floor(v); };
     let n = 0;
     for (let row = 0; row < 2; row++) {
@@ -7001,11 +6994,13 @@ function brickTile() {
         for (let i = -1; i <= 2; i++) {
             const x = off + i * (BW + M);
             const k = rnd(++n), k2 = rnd(n + 40);
-            const lift = 212 + k * 34;
-            g.fillStyle = `rgb(${lift | 0},${(lift - 4 - k2 * 8) | 0},${(lift - 10 - k2 * 14) | 0})`;
+            /* Red stock brick. It was whitewashed, which is a dairy or a
+               fishmonger; a butcher's is on a red brick corner. */
+            const lift = 150 + k * 44;
+            g.fillStyle = `rgb(${lift | 0},${(76 + k * 24 - k2 * 10) | 0},${(58 + k * 18 - k2 * 12) | 0})`;
             g.beginPath(); g.roundRect(x, y, BW, BH, 2); g.fill();
             if (k2 > .74) {                                     // one in four is older
-                g.fillStyle = `rgba(166,132,108,${.12 + k * .2})`;
+                g.fillStyle = `rgba(104,44,32,${.14 + k * .22})`;
                 g.beginPath(); g.roundRect(x, y, BW, BH, 2); g.fill();
             }
             /* Where it has worn. Barely there: a tile repeats, and a mark you
@@ -7013,18 +7008,151 @@ function brickTile() {
                the wall. */
             for (let w = 0; w < 3; w++) {
                 const kw = rnd(n * 7 + w * 13);
-                g.fillStyle = `rgba(178,166,150,${.03 + kw * .07})`;
+                g.fillStyle = `rgba(214,174,150,${.035 + kw * .08})`;
                 g.beginPath();
                 g.ellipse(x + BW * (.12 + kw * .76), y + BH * (.2 + rnd(n + w * 5) * .6),
                           BW * (.06 + kw * .2), BH * (.12 + kw * .3),
                           kw * 2, 0, Math.PI * 2);
                 g.fill();
             }
-            g.fillStyle = 'rgba(255,255,255,.3)';               // and the top arris
+            g.fillStyle = 'rgba(255,226,206,.26)';              // and the top arris
             g.fillRect(x + 1, y, BW - 2, 1.5);
         }
     }
     return c.toDataURL();
+}
+/* The game's own sign, hung off a wall bracket the way a shop that has been
+   there a hundred years hangs one. A round board rather than a rectangle: the
+   name goes in the middle of it and the trade goes round the ring, which is
+   what is on every one of these and the one thing a rectangle cannot do. */
+function drawSignBoard() {
+    const c = document.getElementById('signboard');
+    if (!c) return;
+    const g = c.getContext('2d');
+    const W = c.width, H = c.height, TAU = Math.PI * 2;
+    g.clearRect(0, 0, W, H);
+    const cx = W / 2, R = 100, cy = H - R - 14;
+    const IRON = '#231f1c', IRON_H = '#4a443d';
+    const RING = '400 15px "Staatliches", "Alfa Slab One", Georgia, serif';
+
+    /* ---- the bracket. Bolted to the wall down one side, an arm out of it
+       over the board, a scroll under the arm carrying it and a spear on the
+       end. A bar across the top with no wall to come out of is scaffolding;
+       this is the thing a hanging sign actually hangs off. ---- */
+    const ay = 24, px = 24;
+    g.lineCap = 'round'; g.lineJoin = 'round';
+    g.fillStyle = IRON;
+    g.beginPath(); g.roundRect(px - 7.5, ay - 19, 15, 46, 3); g.fill();
+    g.fillStyle = IRON_H;                               // two bolts through it
+    g.beginPath(); g.arc(px, ay - 12, 2.6, 0, TAU); g.fill();
+    g.beginPath(); g.arc(px, ay + 20, 2.6, 0, TAU); g.fill();
+    g.strokeStyle = IRON; g.lineWidth = 7;
+    g.beginPath(); g.moveTo(px, ay); g.lineTo(cx + 82, ay); g.stroke();
+    g.beginPath();                                      // the spear on the end
+    g.moveTo(cx + 80, ay - 10); g.lineTo(cx + 94, ay);
+    g.lineTo(cx + 80, ay + 10); g.lineTo(cx + 72, ay); g.closePath();
+    g.fillStyle = IRON; g.fill();
+    g.strokeStyle = IRON; g.lineWidth = 3.4;            // the brace under the arm
+    g.beginPath();
+    g.moveTo(px + 1, ay + 31);
+    g.bezierCurveTo(px + 30, ay + 29, px + 48, ay + 14, px + 56, ay + 2);
+    g.stroke();
+    g.beginPath();                                      // and a curl off it
+    g.moveTo(px + 22, ay + 28);
+    g.bezierCurveTo(px + 9, ay + 33, px + 15, ay + 48, px + 29, ay + 43);
+    g.bezierCurveTo(px + 39, ay + 39, px + 34, ay + 29, px + 27, ay + 33);
+    g.stroke();
+    g.fillStyle = 'rgba(255,255,255,.1)';               // the light along the top
+    g.fillRect(px, ay - 3.2, cx + 78 - px, 1.6);
+    for (const sx of [-1, 1]) {                         // two chains down to it
+        const lx = cx + sx * 58;
+        g.strokeStyle = IRON; g.lineWidth = 3.4;
+        for (let i = 0; i < 4; i++) {                   // down to the lug on the ring
+            g.beginPath(); g.ellipse(lx, ay + 13 + i * 21, 5, 11, 0, 0, TAU); g.stroke();
+        }
+    }
+
+    /* ---- The board, and it is cut out of a sheet rather than painted on one:
+       a ring, the name standing in it and the wall showing through everywhere
+       the iron is not. That is what these signs are, and it is the one thing
+       a drawn-on disc cannot do - you can see the brick through the letters. ---- */
+    g.save();
+    g.shadowColor = 'rgba(30,16,10,.55)'; g.shadowBlur = 9; g.shadowOffsetY = 5;
+    g.strokeStyle = IRON;
+    g.lineWidth = 10;                                   // the ring itself
+    g.beginPath(); g.arc(cx, cy, R - 5, 0, TAU); g.stroke();
+    g.lineWidth = 2.2;                                  // and the hoop inside it
+    g.beginPath(); g.arc(cx, cy, R - 19, 0, TAU); g.stroke();
+
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    /* Type set round the ring. Nothing in CSS does this, which is most of the
+       reason the sign is drawn. */
+    const arc = (text, radius, mid, top, font) => {
+        g.font = font;
+        const chars = [...text];
+        const widths = chars.map(ch => g.measureText(ch).width);
+        const total = widths.reduce((a, b) => a + b, 0);
+        let a0 = mid - (top ? 1 : -1) * (total / radius) / 2;
+        for (let i = 0; i < chars.length; i++) {
+            const step = (widths[i] / radius) * (top ? 1 : -1);
+            const a = a0 + step / 2;
+            g.save();
+            g.translate(cx + Math.cos(a) * radius, cy + Math.sin(a) * radius);
+            g.rotate(a + (top ? Math.PI / 2 : -Math.PI / 2));
+            g.fillText(chars[i], 0, 0);
+            g.restore();
+            a0 += step;
+        }
+    };
+    /* A solid band top and bottom with the words cut out of them. Letters
+       standing free on the ring itself get swallowed by it - they are the
+       same iron sat on the same line - and a band is what holds the ring
+       together on every one of these anyway. */
+    g.fillStyle = IRON;
+    for (const [a0, a1] of [[Math.PI * 1.17, Math.PI * 1.83], [Math.PI * .17, Math.PI * .83]]) {
+        g.beginPath();
+        g.arc(cx, cy, R - 6, a0, a1);
+        g.arc(cx, cy, R - 31, a1, a0, true);
+        g.closePath(); g.fill();
+    }
+    g.restore();
+
+    g.save();
+    g.globalCompositeOperation = 'destination-out';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillStyle = '#000';
+    arc('QUALITY MEATS', R - 18.5, -Math.PI / 2, true, RING);
+    arc('EST. 2026', R - 18.5, Math.PI / 2, false, RING);
+    g.restore();
+
+    /* ---- and the name standing in the middle of it ---- */
+    g.save();
+    g.shadowColor = 'rgba(30,16,10,.5)'; g.shadowBlur = 7; g.shadowOffsetY = 4;
+    g.fillStyle = IRON;
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    const paint = (text, y, size, room) => {
+        g.font = `400 ${size}px "Staatliches", "Alfa Slab One", Georgia, serif`;
+        const w = g.measureText(text).width;
+        g.save();
+        g.translate(cx, cy + y);
+        if (w > room) g.scale(room / w, 1);
+        g.fillText(text, 0, 0);
+        g.restore();
+    };
+    paint('BUTCHER\u2019S', -32, 34, (R - 17) * 2);
+    paint('DOG', 24, 40, (R - 30) * 2);
+    /* A bone either side of a rule, which is what the pigs are doing on
+       everybody else's. */
+    const bone = (bx, by, k) => {
+        g.save(); g.translate(bx, by); g.scale(k, k);
+        g.beginPath(); g.rect(-5, -1.6, 10, 3.2);
+        g.arc(-5.6, -2.6, 2.5, 0, TAU); g.arc(-5.6, 2.6, 2.5, 0, TAU);
+        g.arc(5.6, -2.6, 2.5, 0, TAU); g.arc(5.6, 2.6, 2.5, 0, TAU);
+        g.fill(); g.restore();
+    };
+    g.fillRect(cx - 19, cy - 6.6, 38, 2.2);
+    bone(cx - 34, cy - 5.5, .92); bone(cx + 34, cy - 5.5, .92);
+    g.restore();
 }
 function drawPreview(id, w, h, withMan) {
     const c = document.getElementById(id);
@@ -7151,10 +7279,14 @@ function paintSetup() {
     document.getElementById('pick-dog').textContent = breedList()[breedIndex()].name;
     drawPreview('preview', 330, 196, true);
 }
+/* The webfont decides how wide every one of those words is, so the sign is
+   painted again once it has actually arrived. */
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawSignBoard());
 function openSetup() {
     document.getElementById('in-dog').value = save.dogName;
     document.getElementById('in-shop').value = save.shop;
     paintSetup();
+    drawSignBoard();
     setupEl.hidden = false;
 }
 document.querySelectorAll('.nudge[data-pick]').forEach(btn => btn.addEventListener('click', () => {
