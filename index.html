@@ -619,6 +619,45 @@ body.waiting #hud { display: none; }
 @keyframes nope { 0%, 100% { transform: translateX(0); }
                   15% { transform: translateX(-9px); } 35% { transform: translateX(8px); }
                   55% { transform: translateX(-6px); } 78% { transform: translateX(4px); } }
+/* Shutting up shop. You wipe it, he waves, you step back out of the window
+   and the door closes over the whole thing - and then there is a wall with a
+   sign on it and no shop behind it again. Nothing is deleted until the door
+   has shut, so what you are watching is the shop you still have. */
+body.leaving { background: #0b0908; }
+/* The shop floor goes with it: stepping back out of the window and finding
+   the wall you play against behind it is stepping back into the same room. */
+body.leaving #pad { opacity: 0; transition: opacity .5s ease-out; }
+body.leaving #hud { display: none; }
+#intro.goodbye { pointer-events: none; transform-origin: 50% 36%;
+                 animation: steppingBack 2.3s cubic-bezier(.45, 0, .2, 1) both; }
+@keyframes steppingBack {
+    0%, 20%  { transform: scale(1); }
+    100%     { transform: scale(.26) translateY(-2%); }
+}
+/* The two leaves of it, and the crack of light between them going last. */
+#bye { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
+#bye[hidden] { display: none; }
+#bye i, #bye u {
+    position: absolute; top: 0; bottom: 0; display: block;
+}
+#bye i {
+    width: 50.4%;
+    background: linear-gradient(90deg, #120e0b, #2a201a 58%, #3f3027);
+    box-shadow: inset -4px 0 12px rgba(0,0,0,.5);
+}
+#bye i.l { left: 0; transform: translateX(-101%);
+           animation: shutIn .85s cubic-bezier(.45, 0, .2, 1) 1.3s both; }
+#bye i.r { right: 0; transform: translateX(101%);
+           background: linear-gradient(270deg, #120e0b, #2a201a 58%, #3f3027);
+           box-shadow: inset 4px 0 12px rgba(0,0,0,.5);
+           animation: shutIn .85s cubic-bezier(.45, 0, .2, 1) 1.3s both; }
+/* The crack of light between them, going last. */
+#bye u { left: 50%; width: 4px; margin-left: -2px;
+         background: linear-gradient(180deg, rgba(255,226,154,0), rgba(255,226,154,.8) 42%,
+                                     rgba(255,226,154,0));
+         animation: crack 1.1s ease-in 1.3s both; }
+@keyframes shutIn { to { transform: translateX(0); } }
+@keyframes crack { 0%, 62% { opacity: 0; } 80% { opacity: 1; } 100% { opacity: 0; } }
 /* A phone on its side. The shop is a window with a sausage hanging down the
    middle of it, which is a tall thing in a tall frame: on its side there is no
    room above the rail for the string and no room below it for the dog. It
@@ -1646,6 +1685,9 @@ body.waiting #hud { display: none; }
         <div class="ver" id="set-ver">v1</div>
     </div>
 
+    <!-- Shutting up shop for the last time: the door, closing over it. -->
+    <div id="bye" hidden><i class="l"></i><i class="r"></i><u></u></div>
+
     <!-- Debug is not a setting you turn on, it is a door you know the word
          for. Turning it off again needs nothing: it is getting in that is
          guarded, not getting out. -->
@@ -1710,7 +1752,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v132';
+const APP_VERSION = 'v133';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1852,11 +1894,40 @@ const chomp = () => safely(t => {
     }
     tone(t, { freq: 300, to: 110, dur: .24, type: 'sawtooth', vol: .11, at: .44 });   // the gulp
 });
-const woof = () => safely(t => {
-    tone(t, { freq: 420, to: 150, dur: .13, type: 'sawtooth', vol: .2 });
-    tone(t, { freq: 210, to: 84, dur: .18, type: 'square', vol: .14, at: .02 });
-    hiss(t, { hp: 400, lp: 3000, dur: .1, vol: .14 });
-});
+/* Barking. There is no note in a bark, which is why the old one did not
+   sound like a dog: it is a catch of breath at the front, a voiced body that
+   falls away far faster than a note ever does, the mouth closing over the end
+   of it, and the last of it going out through the teeth. The dog's own size
+   sets the pitch, so the chihuahua yaps and the newfoundland lands like a
+   door, and that comes free from the breed you picked. */
+function ruff(t, { k = 1, vol = 1, at = 0, up = 0 } = {}) {
+    const f = 300 / Math.pow(k, .75) * (1 + up * .13);
+    const d = .085 + .035 * k;                      // a big dog holds it longer
+    sweep(t, { from: 2600 * k, to: 900, q: 1.2, dur: .03, vol: .22 * vol, at });
+    tone(t, { freq: f * 1.9, to: f * .62, dur: d, type: 'sawtooth', vol: .19 * vol, at: at + .008 });
+    tone(t, { freq: f * .95, to: f * .34, dur: d * 1.25, type: 'square', vol: .13 * vol, at: at + .01 });
+    sweep(t, { from: 1500, to: 420, q: 2.4, dur: d * .9, vol: .17 * vol, at: at + .012 });
+    hiss(t, { hp: 900, lp: 5200, dur: .05, vol: .07 * vol, at: at + d * .9 });
+}
+/* `n` of them, never quite evenly spaced and never quite the same pitch: a
+   dog that barks on a metronome is a car alarm. The gap is the other half of
+   it - everything in this game can fire twice in a frame, and two barks on
+   top of each other is one loud mess, so a bark inside the gap of the last
+   one is simply not had. */
+let barkAt = -1e9;
+const bark = (n = 2, { vol = 1, gap = 700, at = 0 } = {}) => {
+    const t0 = now();
+    if (t0 - barkAt < gap) return;
+    barkAt = t0;
+    const k = cast ? cast.dog.k : 1;
+    safely(t => {
+        let a = at;
+        for (let i = 0; i < n; i++) {
+            ruff(t, { k, vol, at: a, up: i ? Math.random() * .5 : 1 });
+            a += (.17 + .07 * k) * (.85 + Math.random() * .3);
+        }
+    });
+};
 const jingleWin = () => safely(t => {
     const M = [[0, 392, .16], [.16, 523, .16], [.32, 659, .16], [.48, 784, .30],
                [.80, 880, .16], [.96, 784, .16], [1.12, 659, .16], [1.28, 698, .16],
@@ -2163,6 +2234,7 @@ function sendCat() {
     cat = { t0: now(), y: H - 44, dir: Math.random() < .5 ? 1 : -1 };
     dog.stare = STARE_S;
     miaow();
+    bark(3, { vol: .9, at: .2 });              // and the dog has something to say
 }
 function drawCat(ms) {
     if (!cat) return;
@@ -2263,6 +2335,7 @@ function throwToy() {
     dog.toy = TOY_S;
     dog.chomp = 0;
     squeak();
+    bark(2, { vol: .9, at: .14 });              // it has seen it coming
 }
 const TOY_FLY = 640, TOY_K = 1.6;
 function drawToy(ms) {
@@ -2822,7 +2895,13 @@ function dogStep(dt) {
         const was = dog.chomp;
         dog.chomp -= dt;
         // the sausage lands in its mouth on the snap, not when the bite began
-        if (was / CHOMP > .67 && dog.chomp / CHOMP <= .67) { chomp(); jolt(); }
+        if (was / CHOMP > .67 && dog.chomp / CHOMP <= .67) {
+            chomp(); jolt();
+            /* Pleased with itself, after it has got the thing down - but not
+               after every one of them, or thirty sausages is thirty barks and
+               the week sounds like a kennel. */
+            if (Math.random() < .4) bark(1, { vol: .85, at: .58, gap: 1600 });
+        }
         return;
     }
     dog.s -= dog.speed * (1 + dog.keen * .13) * dt;
@@ -3025,7 +3104,7 @@ function countdown(n) {
         say(pick(GO_WORDS), 'go-word');
         armed = true;
         dog.going = true;
-        woof();
+        bark(2);
         // the lad gets to it about halfway down the string
         if (running('apprentice')) countT.push(setTimeout(ladCut,
             string.len / dog.speed * 450));
@@ -3605,8 +3684,13 @@ const MINIS = [
     { id: 'ninja', name: 'Sausage samurai', say: 'Cut them out of the air' },
     { id: 'dream', name: 'Butcher\u2019s dream', say: 'Hold to rise. Eat what you can' },
     { id: 'cats',  name: 'After the cats', say: 'Drag the dog. Run them out' },
-    { id: 'shell', name: 'Find it', say: 'Watch his hands. One go', secs: 14 },
-    { id: 'scales', name: 'On the scales', say: 'Stop it on the mark', secs: 11 },
+    /* These two are not against the clock. One of them is a single guess and
+       the other is a queue with an end to it, and a bar running out over
+       either is a timer on a thing that is not timed. */
+    { id: 'shell', name: 'Find it', say: 'Watch his hands. One go',
+      secs: 60, untimed: true },
+    { id: 'scales', name: 'On the scales', say: 'Stop it on the mark',
+      secs: 90, untimed: true },
 ];
 let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
@@ -3633,7 +3717,7 @@ function miniSetup(id) {
 function startMini() {
     const M = pick(MINIS);
     mini = { id: M.id, name: M.name, say: M.say, secs: M.secs || MINI_S,
-             t0: now(), won: 0, done: false };
+             untimed: !!M.untimed, t0: now(), won: 0, done: false };
     miniSetup(M.id);
     jingleUp();
     tick();
@@ -3780,14 +3864,24 @@ function dogBack(g, x, y, ms, bow = 0) {
    And it is the one game in here you play from behind the counter looking out,
    which is where a butcher spends the other forty hours of the week. */
 const SCALE_PAY = 300, SCALE_RUN = 80, SCALE_CAP = 4;
+const SCALE_N = 8;                          // how many of them are in the queue
 const SCALE_HOLD = 1000;                    // how long they take over paying
 const scaleY = () => H * .74;               // the counter it is stood on
 const scaleW = () => Math.min(272, W - 64); // and how wide the dial is
 /* Who is in. Nobody is drawn twice the same: a coat, a hat and a face off the
    same three lists is thirty-odd people, which is a Saturday. */
-const COATS = ['#5a6e8a', '#7a5a4a', '#6a7a58', '#8a6a7a', '#4a5a6a', '#7d6a4a',
-               '#9a4a4a', '#3f5f55', '#8a7a45', '#5f4a7a', '#2f4a60', '#a0785a'];
-const SKINS = ['#e5ab7e', '#c98552', '#8a5a3a', '#efc19b', '#6f4428', '#e0b48d'];
+/* Everybody in the queue is built the way he is: a lit side, a shade under
+   the jaw, cheeks off the cold, a nose, brows, ears. Three flat shapes and two
+   dots was a crowd of thumbprints stood behind a counter next to a man who has
+   a moustache and a boater. */
+const COATS  = ['#5a6e8a', '#7a5a4a', '#6a7a58', '#8a6a7a', '#4a5a6a', '#7d6a4a',
+                '#9a4a4a', '#3f5f55', '#8a7a45', '#5f4a7a', '#2f4a60', '#a0785a'];
+const COATS_D = ['#42526a', '#5c4336', '#4e5c40', '#6a4f5c', '#36424e', '#5e4f36',
+                 '#763636', '#2e4740', '#685c31', '#473659', '#22374a', '#7c5a41'];
+const COATS_L = ['#6e82a0', '#8e6c5a', '#7e8e68', '#9e7c8c', '#5c6c7c', '#917c58',
+                 '#b05c5c', '#4d7166', '#9e8e55', '#725c8e', '#3c5a74', '#b48c6c'];
+const SKINS  = ['#e5ab7e', '#c98552', '#8a5a3a', '#efc19b', '#6f4428', '#e0b48d'];
+const SKINS_D = ['#c98a5e', '#a86a3c', '#6e442a', '#d09b72', '#56321c', '#c08f65'];
 const HAIRS = ['#2a2018', '#4a3428', '#7a4a2a', '#a8622a', '#d8cfc0', '#8a8a8a',
                '#1f1712', '#c9a44c'];
 const SCARVES = ['#b8434a', '#3f8f6a', '#4a79b8', '#c9a44c', '#7a5aa8', 'none', 'none'];
@@ -3799,6 +3893,7 @@ function scalesSet() {
 }
 function scalesNext() {
     const n = mini.served;
+    const ci = (Math.random() * COATS.length) | 0, si = (Math.random() * SKINS.length) | 0;
     mini.cust = {
         t0: now(),
         /* Never hard against an end, where you could hold the finger down and
@@ -3813,10 +3908,12 @@ function scalesNext() {
         /* The sweet spot: a sliver in the middle of the mark worth double.
            A band you either hit or do not is one decision; a band with a
            middle to it is a decision about how greedy you are being. */
-        coat: pick(COATS), skin: pick(SKINS), hair: pick(HAIRS),
+        ci, si, coat: COATS[ci], coatD: COATS_D[ci], coatL: COATS_L[ci],
+        skin: SKINS[si], skinD: SKINS_D[si], hair: pick(HAIRS),
         hat: pick(HAT_KINDS), hatCol: pick(HAIRS.concat(COATS)),
         scarf: pick(SCARVES), specs: Math.random() < .3,
         beard: Math.random() < .28, wide: .9 + Math.random() * .26,
+        nose: .85 + Math.random() * .4, lit: Math.random() < .5 ? -1 : 1,
         lean: Math.random() < .5 ? -1 : 1,
     };
     mini.cust.bull = mini.cust.band * .28;
@@ -3830,8 +3927,11 @@ function scalesStep(dt) {
     mini.puff = mini.puff.filter(p => now() - p.t0 < 700);
     if (!c) return;
     if (c.stopped) {
-        if (now() - c.stop0 > SCALE_HOLD && miniLeft() > .5) {
-            mini.served++; scalesNext();
+        if (now() - c.stop0 > SCALE_HOLD) {
+            mini.served++;
+            // the shop is shut when the last of them has gone
+            if (mini.served >= SCALE_N) { mini.cust = null; endMini(); return; }
+            scalesNext();
         }
         return;
     }
@@ -4244,7 +4344,7 @@ function miniStep(dt) {
        under it, looks exactly like a jar that does not work. The barbecue
        already ends when the grill is empty rather than when the clock says so;
        the jar waits for the last one the same way. */
-    if (left <= 0 && !(mini.id === 'jar' && mini.coins.length)) endMini();
+    if (!mini.untimed && left <= 0 && !(mini.id === 'jar' && mini.coins.length)) endMini();
 }
 /* How near a point passes to a line segment. The whole of this game is that
    one question asked of every sausage in the air, every time the finger moves. */
@@ -4323,7 +4423,7 @@ function miniAt(x, y) {
                that happens in this game. It gets the till, the bell and a
                fanfare at once, and everything on the counter comes up with
                it. */
-            ding(); yelp(); sold(); fanfare(4);
+            ding(); yelp(); sold(); fanfare(4); bark(3, { vol: 1, at: .3 });
             const [sx] = shellAt(best);
             for (let i = 0; i < 26; i++) {
                 const a = -Math.PI / 2 + (Math.random() - .5) * 2.1;
@@ -5222,82 +5322,142 @@ function drawMini(ms) {
                 else if (thr < .52) arm = -.75 + 2.75 * ease((thr - .34) / .18);
                 else arm = 2.0 - .85 * ease(Math.min(1, (thr - .52) / .6));
             }
+            const blob = (fill, path) => {
+                ctx.beginPath(); path(); ctx.closePath();
+                ctx.fillStyle = fill; ctx.fill();
+            };
             ctx.save();
             ctx.translate(cx, cy);
             ctx.rotate(c.lean * (thr < .34 ? -.1 * ease(thr / .34)
                                            : -.1 + .22 * ease(Math.min(1, (thr - .34) / .25))));
-            ctx.fillStyle = c.skin;                          // the arm
+
+            /* The arm, behind the coat. It was a bare forearm the colour of a
+               face: nobody queuing in a butcher's in February has his sleeves
+               rolled up. It is the same cloth as the coat now, with a cuff
+               and a hand on the end of it. */
             ctx.save();
             ctx.translate(-c.lean * 48 * c.wide, 14);
             ctx.rotate(c.lean * arm);
-            ctx.beginPath(); ctx.roundRect(-11, 0, 22, 62 + reach * 14, 11); ctx.fill();
+            const AL = 62 + reach * 14;
+            blob(c.coatD, () => ctx.roundRect(-11, 0, 22, AL - 10, 11));
+            blob(c.coatL, () => ctx.roundRect(-11.5, AL - 21, 23, 10, 4));
+            blob(c.skin,  () => ctx.ellipse(0, AL - 1, 10.5, 11.5, 0, 0, Math.PI * 2));
             ctx.restore();
+            for (const sx of [-1, 1])                        // ears, behind the head
+                blob(c.skinD, () => ctx.ellipse(sx * 29, -30, 7, 10, 0, 0, Math.PI * 2));
+            if (c.hat === 'none' || c.hat === 'cap') {       // and the hair behind it
+                blob(c.hair, () => ctx.ellipse(0, -44, 32, 28, 0, Math.PI, Math.PI * 2));
+                for (const sx of [-1, 1])
+                    blob(c.hair, () => ctx.ellipse(sx * 29, -32, 7.5, 19, sx * .2, 0, Math.PI * 2));
+            }
+
+            ctx.save();                                      // the coat
             ctx.shadowColor = 'rgba(0,0,0,.3)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 8;
-            ctx.fillStyle = c.coat;                          // the coat
+            blob(c.coat, () => ctx.roundRect(-52 * c.wide, 0, 104 * c.wide, 118, [34, 34, 8, 8]));
+            ctx.restore();
+            ctx.save();                                      // lit down one side of it
             ctx.beginPath();
-            ctx.roundRect(-52 * c.wide, 0, 104 * c.wide, 118, [34, 34, 8, 8]); ctx.fill();
-            ctx.shadowColor = 'transparent';
-            if (c.scarf !== 'none') {                        // and a scarf on it
-                ctx.fillStyle = c.scarf;
-                ctx.beginPath(); ctx.roundRect(-27, -8, 54, 20, 10); ctx.fill();
-                ctx.beginPath();
-                ctx.roundRect(c.lean * 10 - 7, 6, 14, 40, [4, 4, 7, 7]); ctx.fill();
+            ctx.roundRect(-52 * c.wide, 0, 104 * c.wide, 118, [34, 34, 8, 8]);
+            ctx.clip();
+            blob(c.coatL, () => {
+                ctx.moveTo(c.lit * 54 * c.wide, -4); ctx.lineTo(c.lit * 20 * c.wide, -4);
+                ctx.lineTo(c.lit * 30 * c.wide, 120); ctx.lineTo(c.lit * 58 * c.wide, 120);
+            });
+            blob(c.coatD, () => {                            // and the shade at the foot
+                ctx.moveTo(-60 * c.wide, 92); ctx.quadraticCurveTo(0, 84, 60 * c.wide, 92);
+                ctx.lineTo(60 * c.wide, 124); ctx.lineTo(-60 * c.wide, 124);
+            });
+            for (const sx of [-1, 1])                        // the lapels
+                blob(c.coatD, () => {
+                    ctx.moveTo(sx * 5, -2); ctx.lineTo(sx * 30, 4); ctx.lineTo(sx * 11, 42);
+                });
+            blob(c.coatD, () => ctx.ellipse(0, 54, 4.6, 4.6, 0, 0, Math.PI * 2));
+            blob(c.coatD, () => ctx.ellipse(0, 78, 4.6, 4.6, 0, 0, Math.PI * 2));
+            ctx.restore();
+
+            if (c.scarf !== 'none') {                        // a scarf, some of them
+                blob(c.scarf, () => ctx.roundRect(-28, -10, 56, 22, 11));
+                blob(c.scarf, () => ctx.roundRect(c.lean * 11 - 7, 8, 14, 42, [4, 4, 7, 7]));
             }
-            if (c.hat === 'none') {                          // hair, where there is no hat
-                ctx.fillStyle = c.hair;
-                ctx.beginPath();
-                ctx.ellipse(0, -46, 31, 26, 0, Math.PI, Math.PI * 2); ctx.fill();
+
+            blob(c.skinD, () => ctx.ellipse(0, -6, 17, 14, 0, 0, Math.PI * 2));  // the neck
+            blob(c.skin, () => ctx.ellipse(0, -32, 30, 34, 0, 0, Math.PI * 2));  // the head
+            ctx.save();
+            ctx.beginPath(); ctx.ellipse(0, -32, 30, 34, 0, 0, Math.PI * 2); ctx.clip();
+            blob(c.skinD, () => {                            // under the jaw
+                ctx.moveTo(-40, -2); ctx.quadraticCurveTo(0, -12, 40, -2);
+                ctx.lineTo(40, 20); ctx.lineTo(-40, 20);
+            });
+            blob('rgba(255,255,255,.1)', () => {             // and the light on it
+                ctx.moveTo(c.lit * 34, -72); ctx.lineTo(c.lit * 6, -72);
+                ctx.lineTo(c.lit * 16, 10); ctx.lineTo(c.lit * 36, 10);
+            });
+            ctx.restore();
+            for (const sx of [-1, 1])                        // ruddy off the cold
+                blob('rgba(211,109,78,.3)', () =>
+                    ctx.ellipse(sx * 20, -26, 9, 6.5, 0, 0, Math.PI * 2));
+            blob(c.skinD, () =>                              // a nose
+                ctx.ellipse(0, -28, 5.4 * c.nose, 4.6 * c.nose, 0, 0, Math.PI * 2));
+
+            if (c.beard) {
+                blob(c.hair, () => ctx.ellipse(0, -14, 25, 19, 0, 0, Math.PI));
+                blob(c.hair, () => ctx.ellipse(0, -22, 13, 5.5, 0, 0, Math.PI * 2));
+            }
+            for (const sx of [-1, 1]) {                      // eyes, and brows over them
+                blob('rgba(24,18,14,.82)', () =>
+                    ctx.ellipse(sx * 11, -38, 3.8, 3.8 - sq * 2.6, 0, 0, Math.PI * 2));
+                blob(c.hair, () => {
+                    const d = sq ? 3 : 0;
+                    ctx.moveTo(sx * 4, -48 + d); ctx.lineTo(sx * 19, -50 - d);
+                    ctx.lineTo(sx * 19, -46 - d); ctx.lineTo(sx * 4, -44.5 + d);
+                });
+            }
+            if (c.specs) {
+                ctx.strokeStyle = 'rgba(32,26,20,.72)'; ctx.lineWidth = 2.4;
                 for (const sx of [-1, 1]) {
-                    ctx.beginPath();
-                    ctx.ellipse(sx * 28, -34, 7, 18, sx * .2, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(sx * 11, -38, 9, 0, Math.PI * 2); ctx.stroke();
                 }
+                ctx.beginPath(); ctx.moveTo(-2, -38); ctx.lineTo(2, -38); ctx.stroke();
             }
-            ctx.fillStyle = c.skin;                          // the head
-            ctx.beginPath(); ctx.ellipse(0, -32, 30, 34, 0, 0, Math.PI * 2); ctx.fill();
-            if (c.beard) {                                   // some of them
-                ctx.fillStyle = c.hair;
-                ctx.beginPath(); ctx.ellipse(0, -14, 24, 18, 0, 0, Math.PI); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(0, -22, 13, 6, 0, 0, Math.PI * 2); ctx.fill();
-            }
-            ctx.fillStyle = 'rgba(0,0,0,.7)';                // and a face on it
-            for (const ex of [-11, 11]) {
-                ctx.beginPath();
-                ctx.ellipse(ex, -36, 3.6, 3.6 - sq * 2.4, 0, 0, Math.PI * 2); ctx.fill();
-            }
-            if (c.specs) {                                   // and glasses, some of them
-                ctx.strokeStyle = 'rgba(32,26,20,.75)'; ctx.lineWidth = 2.4;
-                for (const ex of [-11, 11]) {
-                    ctx.beginPath(); ctx.arc(ex, -36, 9, 0, Math.PI * 2); ctx.stroke();
-                }
-                ctx.beginPath(); ctx.moveTo(-2, -36); ctx.lineTo(2, -36); ctx.stroke();
-            }
-            ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+            ctx.strokeStyle = 'rgba(70,40,30,.8)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
             ctx.beginPath();
-            if (paid) ctx.arc(0, -24, 10, .2, Math.PI - .2);
-            else if (sq) { ctx.moveTo(-9, -17); ctx.quadraticCurveTo(0, -24, 9, -17); }
-            else { ctx.moveTo(-8, -20); ctx.lineTo(8, -20); }
+            if (paid) ctx.arc(0, -22, 9, .25, Math.PI - .25);
+            else if (sq) { ctx.moveTo(-8, -14); ctx.quadraticCurveTo(0, -21, 8, -14); }
+            else { ctx.moveTo(-7, -17); ctx.lineTo(7, -17); }
             ctx.stroke();
-            ctx.fillStyle = c.hatCol;                        // and whatever is on top
-            if (c.hat === 'cap') {
-                ctx.beginPath(); ctx.ellipse(0, -56, 30, 20, 0, Math.PI, Math.PI * 2); ctx.fill();
-                ctx.beginPath();
-                ctx.roundRect(c.lean > 0 ? -48 : 0, -60, 48, 9, 4); ctx.fill();
-            } else if (c.hat === 'bowler') {
-                ctx.beginPath(); ctx.ellipse(0, -62, 23, 23, 0, Math.PI, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.roundRect(-36, -64, 72, 8, 4); ctx.fill();
-            } else if (c.hat === 'beanie') {
-                ctx.beginPath(); ctx.ellipse(0, -52, 30, 32, 0, Math.PI, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.roundRect(-31, -56, 62, 11, 5); ctx.fill();
-                ctx.beginPath(); ctx.arc(0, -84, 7, 0, Math.PI * 2); ctx.fill();
-            } else if (c.hat === 'scarf') {
-                ctx.beginPath(); ctx.ellipse(0, -44, 32, 30, 0, Math.PI * 1.08, Math.PI * 1.92);
-                ctx.fill();
-                ctx.beginPath(); ctx.roundRect(-10, -30, 20, 26, 8); ctx.fill();
-            } else if (c.hat === 'bucket') {
-                ctx.beginPath(); ctx.ellipse(0, -58, 26, 22, 0, Math.PI, Math.PI * 2); ctx.fill();
-                ctx.beginPath();
-                ctx.moveTo(-40, -58); ctx.lineTo(40, -58);
-                ctx.lineTo(28, -46); ctx.lineTo(-28, -46); ctx.closePath(); ctx.fill();
+
+            if (c.hat !== 'none') {                          // and whatever is on top
+                const band = c.hat === 'bowler' || c.hat === 'bucket';
+                blob(c.hatCol, () => {
+                    if (c.hat === 'cap') {
+                        ctx.ellipse(0, -58, 31, 22, 0, Math.PI, Math.PI * 2);
+                    } else if (c.hat === 'bowler') {
+                        ctx.ellipse(0, -62, 23, 24, 0, Math.PI, Math.PI * 2);
+                    } else if (c.hat === 'beanie') {
+                        ctx.ellipse(0, -52, 30, 32, 0, Math.PI, Math.PI * 2);
+                    } else if (c.hat === 'scarf') {
+                        ctx.ellipse(0, -44, 32, 30, 0, Math.PI * 1.06, Math.PI * 1.94);
+                    } else {
+                        ctx.ellipse(0, -58, 26, 23, 0, Math.PI, Math.PI * 2);
+                    }
+                });
+                if (c.hat === 'cap')
+                    blob(c.hatCol, () => ctx.roundRect(c.lean > 0 ? -50 : 2, -62, 48, 9, 4));
+                else if (c.hat === 'bowler')
+                    blob(c.hatCol, () => ctx.roundRect(-37, -64, 74, 8, 4));
+                else if (c.hat === 'beanie') {
+                    blob(c.hatCol, () => ctx.roundRect(-31, -57, 62, 12, 5));
+                    blob(c.hatCol, () => ctx.arc(0, -84, 7, 0, Math.PI * 2));
+                } else if (c.hat === 'scarf')
+                    blob(c.hatCol, () => ctx.roundRect(-10, -30, 20, 27, 8));
+                else {
+                    blob(c.hatCol, () => {
+                        ctx.moveTo(-41, -58); ctx.lineTo(41, -58);
+                        ctx.lineTo(28, -46); ctx.lineTo(-28, -46);
+                    });
+                }
+                if (band)                                    // a band round it
+                    blob('rgba(0,0,0,.26)', () => ctx.roundRect(-24, -70, 48, 8, 3));
             }
             ctx.restore();
             /* What they threw, on its way. It is in the air before the mess
@@ -5348,6 +5508,15 @@ function drawMini(ms) {
         }
         ctx.fillStyle = 'rgba(246,241,230,.16)';              // the graduations
         for (let i = 0; i <= 10; i++) ctx.fillRect(d0 + dw * i / 10 - .6, -20, 1.2, 5);
+        /* How many are left in the queue, along the front of the scales: a
+           number of people still to serve is a clearer thing to be running
+           out of than a bar running down. */
+        for (let i = 0; i < SCALE_N; i++) {
+            ctx.fillStyle = i < mini.served ? 'rgba(246,241,230,.18)' : '#f0d484';
+            ctx.beginPath();
+            ctx.arc(-(SCALE_N - 1) * 6 + i * 12, -6, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+        }
         if (c) {                                              // and the needle
             const nx = d0 + dw * c.at;
             ctx.fillStyle = c.stopped ? (c.ok ? '#8fd6a2' : '#e8836a') : '#f0d484';
@@ -5669,10 +5838,12 @@ function drawMini(ms) {
     }
     // what this is and how long is left, in the language of the day plate
     // under the HUD rather than behind it, which is where the day plate lives
-    ctx.fillStyle = 'rgba(12,32,24,.55)';
-    ctx.fillRect(0, RAIL + 4, W, 4);
-    ctx.fillStyle = '#dcab3e';
-    ctx.fillRect(0, RAIL + 4, W * left / mini.secs, 4);
+    if (!mini.untimed) {
+        ctx.fillStyle = 'rgba(12,32,24,.55)';
+        ctx.fillRect(0, RAIL + 4, W, 4);
+        ctx.fillStyle = '#dcab3e';
+        ctx.fillRect(0, RAIL + 4, W * left / mini.secs, 4);
+    }
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.font = '400 26px "Alfa Slab One", Georgia, serif';
     ctx.fillStyle = '#f0d484';
@@ -6217,12 +6388,16 @@ const TIERS = [
       chin: 31, snout: [19, 12, 17], eyes: [12, -14, 6], brow: .22, tongue: .7,
       look: 'up' },
     { name: 'Pug', k: .8, speed: .82,
-      /* A face with no snout on it at all: the muzzle is the whole lower half
-         and it is the colour of the mask, which is what a pug is. */
-      coat: '#dcb782', lit: '#f0d4a6', shade: '#a98353', muzzle: '#2d241f',
+      /* The mask is a pad low on the face, not the whole lower half of it.
+         Made the width of the jaw and the same colour as the nose, the eyes
+         went into it and the dog had no face at all - which, at this size, is
+         a black oval with ears. So: a smaller pad, two tones in it, the eyes
+         up on the fawn above it, and the pale brow spots a pug actually has
+         to hold them apart from the mask. */
+      coat: '#dcb782', lit: '#f0d4a6', shade: '#a98353', muzzle: '#241d19',
       ear: 'fold', earCol: '#2d241f', skullW: 33, skullH: 32, jawW: 42, jawY: 15,
-      chin: 34, snout: [31, 21, 5], eyes: [17, -10, 6.2], brow: .15, tongue: 1,
-      look: 'flat', mask: '#2d241f' },
+      chin: 34, snout: [19, 13, 13], eyes: [15, -14, 6.2], brow: .15, tongue: 1,
+      look: 'flat', mask: '#453730', points: '#eed6ab' },
 ],[
     { name: 'Dalmatian', k: 1.18, speed: 1.22,
       coat: '#f4efe4', lit: '#fdfaf2', shade: '#cbc3b2', muzzle: '#fdfaf2',
@@ -7735,7 +7910,11 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     // the head
     blob(SKIN, () => ctx.ellipse(0, -106, 41, 48, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1]) blob(SKIN_D, () => ctx.ellipse(sx * 40, -104, 7, 10, 0, 0, Math.PI * 2));
-    if (B.face === 'none') for (const sx of [-1, 1])        // hair, where the hat leaves room
+    /* Hair down the side of the face, where the hat leaves room - but not on
+       the lad. He borrows a clean-shaven butcher's face and that butcher's
+       hair with it, and a dark oval over one cheek on a head you are only
+       seeing half of reads as a bruise rather than a hairstyle. */
+    if (B.face === 'none' && !young) for (const sx of [-1, 1])
         blob(B.hair, () => ctx.ellipse(sx * 36, -116, 11, 20, sx * .3, 0, Math.PI * 2));
     for (const sx of [-1, 1])                               // ruddy from the cold room
         blob('rgba(211,109,78,.42)', () => ctx.ellipse(sx * 27, -96, 13, 9, 0, 0, Math.PI * 2));
@@ -7839,20 +8018,25 @@ function botHead(g) {
        whose head this replaces is eighty-two across and ninety-six down; this
        is sixty-eight across and a hundred and twelve down, and the visor and
        the grille came in with it rather than staying the width they were. */
-    blob('#4a515a', () => { g.roundRect(-14, -84, 28, 34, 4); });
-    blob('#9aa0a8', () => { g.roundRect(-34, -174, 68, 112, 18); });    // the head
-    blob('#7b818a', () => { g.roundRect(-34, -174, 68, 13, [18, 18, 2, 2]); });
-    blob('#2e343c', () => { g.roundRect(-27, -146, 54, 34, 13); });     // the visor
+    /* The man whose head this replaces is eighty-two across and ninety-six
+       down. This is eighty across and a hundred and ten down - taller than it
+       is wide, which a head is, and not so much narrower than his that it
+       reads as a different body underneath. Sixty-eight was a letterbox stood
+       on its end. */
+    blob('#4a515a', () => { g.roundRect(-15, -84, 30, 34, 4); });
+    blob('#9aa0a8', () => { g.roundRect(-40, -172, 80, 110, 20); });    // the head
+    blob('#7b818a', () => { g.roundRect(-40, -172, 80, 14, [20, 20, 2, 2]); });
+    blob('#2e343c', () => { g.roundRect(-32, -144, 64, 35, 14); });     // the visor
     for (const sx of [-1, 1])                                          // the lamps
-        blob('#7fe0a8', () => g.ellipse(sx * 12.5, -129, 7, 8, 0, 0, Math.PI * 2));
+        blob('#7fe0a8', () => g.ellipse(sx * 14.5, -127, 7.4, 8.4, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1])
-        blob('#d8fbe8', () => g.ellipse(sx * 12.5 - 2.3, -132, 2.4, 2.8, 0, 0, Math.PI * 2));
-    blob('#6c727a', () => { g.roundRect(-19, -102, 38, 15, 5); });      // the grille
-    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 7.2 - 1.4, -102, 2.8, 15); });
-    blob('#c3c8cf', () => { g.roundRect(-2.5, -198, 5, 28, 2); });      // the aerial
-    blob('#7fe0a8', () => g.arc(0, -202, 5.5, 0, Math.PI * 2));
+        blob('#d8fbe8', () => g.ellipse(sx * 14.5 - 2.4, -130, 2.5, 2.9, 0, 0, Math.PI * 2));
+    blob('#6c727a', () => { g.roundRect(-22, -100, 44, 15, 5); });      // the grille
+    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 8.4 - 1.5, -100, 3, 15); });
+    blob('#c3c8cf', () => { g.roundRect(-2.5, -196, 5, 28, 2); });      // the aerial
+    blob('#7fe0a8', () => g.arc(0, -200, 5.5, 0, Math.PI * 2));
     for (const sx of [-1, 1])                                          // and the ears
-        blob('#6c727a', () => { g.roundRect(sx * 34 - (sx > 0 ? 0 : 6), -140, 6, 24, 3); });
+        blob('#6c727a', () => { g.roundRect(sx * 40 - (sx > 0 ? 0 : 7), -138, 7, 25, 3); });
 }
 
 /* ---- showing you how ----------------------------------------------------
@@ -8325,9 +8509,9 @@ function drawPreview(id, w, h, withMan) {
         /* Stood there with his hands at his sides. He is being introduced,
            not demonstrating anything, and a knife over the head on the one
            screen before the game has started is a man about to do something. */
-        drawButcher(g, true, { cx: w * .33, cy: h * .86, k: .62,
+        drawButcher(g, true, { cx: w * .33, cy: h * .86, k: .70,
                                holds: 'none', arms: 'down' });
-        drawDog(g, w * .78, h * .82, .66 / cast.dog.k, { open: 0 }, 0, cast.dog, cast.kit);
+        drawDog(g, w * .78, h * .82, .74 / cast.dog.k, { open: 0 }, 0, cast.dog, cast.kit);
     } else {
         drawDog(g, w / 2, h * .66, .66 / cast.dog.k, { open: 0 }, 0, cast.dog, previewKit());
         /* Stood beside the dog rather than laid across it: the blade reaches
@@ -8621,9 +8805,9 @@ function drawTile(c, item, circle = true, k0 = .46) {
         g.save();
         g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 8; g.shadowOffsetY = 4;
         g.translate(TILE_W / 2, TILE_H / 2);
-        const k = TILE_H * .92 / 152;                 // aerial to chin, and no more
+        const k = TILE_H * .92 / 150;                 // aerial to chin, and no more
         g.scale(k, k);
-        g.translate(0, 126);
+        g.translate(0, 125);
         botHead(g);
         g.restore();
         return;
@@ -9197,9 +9381,37 @@ document.getElementById('wipe-no').addEventListener('click', () => {
     confirmEl.hidden = true;
     plop(1);
 });
+let byeT0 = 0;
 document.getElementById('wipe-yes').addEventListener('click', () => {
     confirmEl.hidden = true;
-    doWipe();
+    setEl.hidden = true;
+    /* Back to the window first, so there is a shop to say goodbye to. */
+    document.getElementById('intro').hidden = false;
+    document.body.classList.remove('waiting');
+    document.body.classList.add('leaving');
+    theme('#0b0908');
+    byeT0 = now();
+    startIdle();                       // which is what keeps him waving
+    drawShopfront();
+    document.getElementById('intro').classList.add('goodbye');
+    const bye = document.getElementById('bye');
+    bye.hidden = false;
+    rattle();
+    setTimeout(() => clack(), 2050);
+    setTimeout(() => {
+        byeT0 = 0;
+        document.getElementById('intro').classList.remove('goodbye');
+        document.getElementById('intro').hidden = true;
+        doWipe();
+        bye.hidden = true;
+        document.body.classList.remove('leaving');
+    }, 2520);
+});
+/* The door landing in its frame. */
+const clack = () => safely(t => {
+    tone(t, { freq: 160, to: 54, dur: .26, type: 'square', vol: .2 });
+    hiss(t, { hp: 200, lp: 2400, dur: .18, vol: .18 });
+    tone(t, { freq: 92, to: 40, dur: .4, type: 'sine', vol: .16, at: .02 });
 });
 function doWipe() {
     try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* never mind */ }
@@ -9398,6 +9610,7 @@ document.getElementById('minilist').addEventListener('click', e => {
     startMini();
     const M = MINIS.find(m => m.id === btn.dataset.mini);
     Object.assign(mini, { id: M.id, name: M.name, say: M.say, secs: M.secs || MINI_S,
+                          untimed: !!M.untimed,
                           won: 0, t0: now(), done: false, lone: true,
                           begun: M.id === 'sauce' ? false : undefined });
     miniSetup(M.id);
@@ -9662,6 +9875,7 @@ function petDog() {
                               t0: t + i * 130, drift: (Math.random() - .5) * 34,
                               r: 7 + Math.random() * 4 });
     aww();
+    bark(2, { vol: .8, at: .12 });
     save.tally.pats++;
     if (save.tally.pats >= 50) { award('pats'); } else putSave();
     if (!petRaf) petRaf = requestAnimationFrame(petStep);
@@ -9798,6 +10012,33 @@ function drawShopfront() {
                         ro.grand ? r * 1.3 : r, ro.silk, false, ro.grand);
         });
     }
+    /* The lad, if he has been taken on. He is not stood at the counter - a
+       seventeen-year-old on his first Saturday is out the back doing what he
+       was told - but every nine seconds he leans round the left-hand side of
+       the window to see what is going on, and goes back out of it. He is
+       drawn before the two of them and before the counter, so if he leans far
+       enough to reach the apron he is behind it, which is where a lad on his
+       first Saturday belongs. */
+    if (running('apprentice') && !byeT0) {
+        const pk = (it % 9000) / 2600;             // the peek, and then the wait
+        if (pk < 1) {
+            // in over a quarter of it, held, and back out over the last quarter
+            const s = pk < .26 ? pk / .26 : pk > .74 ? (1 - pk) / .26 : 1;
+            const out = s * s * (3 - 2 * s);
+            const K = .72;                         // shorter than the man, and behind him
+            g.save();
+            /* He pivots at the waist rather than sliding in flat: the head
+               comes round the frame a good ten pixels ahead of the shoulder,
+               which is what leaning round a doorway looks like. And he only
+               ever gets half a head into the window - a lad having a look is
+               not a third man stood at the counter. */
+            g.translate(-66 + out * 66, BUT_AT[1] + 96 * .88 - 96 * K);
+            g.rotate(out * .14);
+            drawButcher(g, true, { cx: 0, cy: 0, k: K, holds: 'none', arms: 'down',
+                                   young: true });
+            g.restore();
+        }
+    }
     /* There were ninety-odd dead pixels between the awning and his hat, so
        both of them have grown into it. They stand on the same line at the
        bottom of the canvas and the gap between them is what is left. */
@@ -9808,6 +10049,9 @@ function drawShopfront() {
            A degree of lean and two pixels of bob was a man holding his breath:
            the pivot is his boots, so a couple of degrees at the ankle is half
            an inch at the hat, which is the amount you actually notice. */
+        /* On the way out he waves, and it is a wave rather than the idle
+           swing: the arm goes right over and back twice a second. */
+        const bye = byeT0 ? clamp((it - byeT0) / 1500, 0, 1) : 0;
         const br = Math.sin(it / 980);                  // the breath
         const lean = Math.sin(it / 2100);               // and the weight on it
         const beat = (it / 4600) % 1;
@@ -9823,7 +10067,8 @@ function drawShopfront() {
            still - and it goes up with the bounce. */
         drawButcher(g, true, { cx: 112 + lean * 5, cy: 312 + br * 5 - heft * 11,
                                k: .88, holds: 'knife', bot: running('robot'),
-                               wave: Math.sin(it / 1700) * .085 + heft * .13 });
+                               wave: bye ? Math.sin((it - byeT0) / 105) * .72 * (1 - bye * bye)
+                                         : Math.sin(it / 1700) * .085 + heft * .13 });
         g.restore();
     } else {
         /* It lands in a tenth of a second and comes back out over the rest,

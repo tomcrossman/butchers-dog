@@ -568,6 +568,16 @@ trying to impress. He borrows whoever is behind the counter this week and
 loses the hair on his face, because half of them have a moustache or a beard
 and a seventeen-year-old on his first Saturday has neither. He is a spare pair of hands, not a better player than you.
 
+Take him on and **he turns up in the window**. Every nine seconds he leans
+round the left-hand side of it, has a look at what is going on, and goes back
+out of it - head first and shoulder after, because that is what leaning round
+a doorway looks like, and never more than half a head into the room. He is
+shorter than the man, stood further back, and drawn behind him, so if he leans
+far enough to reach the apron he is behind it. He loses the hair down the side
+of his face that the clean-shaven butchers have: a dark oval over one cheek on
+a head you are only seeing half of reads as a bruise rather than a
+hairstyle.
+
 **The shop is a display counter**, and a display counter is a specific thing
 rather than a mood: black enamel trays packed edge to edge in a lit chiller, a
 frill of curly kale laid in under the meat, and a little black ticket propped
@@ -833,11 +843,24 @@ short, hard and shoutable across a shop floor - nothing with three syllables in
 it - and the shop's are obliged by long tradition to be a pun, the worse the
 better.
 
+The two of them stand between the sign and the form, cut off at the chest by
+it, which is a man and a dog behind a counter rather than two figures floating
+on a wall. They are drawn larger than the first pass had them: the canvas they
+are on is a fixed shape, so the only thing a bigger pair costs is the headroom
+over the hat, and there was a third of the panel going spare up there.
+
 You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the sign, with a die to roll if
 you cannot think of one, and **Start your shop** under them, which is what the
 button does - and that, the till and the wardrobe are
 saved. It is one object under one key.
+
+**Wiping the shop is a goodbye.** Say yes to it and he waves - a proper wave,
+the arm right over and back twice a second, not the idle swing - while the
+whole window pulls away from you, the door shuts across it with a crack of
+light down the middle, and that fades into the setup screen with the sign on
+the wall. Four years of a shop ending with the screen simply being a different
+screen was the one thing in here that happened for nothing.
 
 **Out the back is behind a door, not a gear.** The way into the back room is
 the bottom left corner of the shopfront, and the icon on it is a door stood
@@ -1002,7 +1025,7 @@ reason, it is saved with everything else, and while it is on the version label
 in the corner says so.
 
 With it on there is one more button under the shelves: **a mini-game**, with the
-seven of them to pick from, because the honest way to see the barbecue is to play
+eight of them to pick from, because the honest way to see the barbecue is to play
 a perfect week and the honest way to see it twice is to play two. It puts you
 back on the shopfront when it is done rather than opening a week - it is not
 Saturday night, it is a man in the back room with the lights on.
@@ -1346,7 +1369,10 @@ twenty-two pounds, about a third on top of a perfect week.
   back of a line breaks the run. Nothing is lost for missing: there is no
   scoreboard back here, only a till.
 - **Find it.** He puts a sausage under one of three covers, shuffles them, and
-  **you get one tap**. Find it and it pays fifty pounds, which is more
+  **you get one tap**. There is no clock on it, because there is nothing a
+  clock could be counting: a game that is over the moment you touch the glass
+  cannot be hurried, and a bar running down beside it was only ever there
+  because the other six have one. Find it and it pays fifty pounds, which is more
   than any other hour after closing has ever paid - and the biggest single
   thing that happens in this game, so it is paid like one: the cover is thrown
   off the top of the window end over end, the sausage comes up after it
@@ -1393,21 +1419,34 @@ twenty-two pounds, about a third on top of a perfect week.
   It is played in the shop rather than out of the window - the tiled wall, the
   rail along it with the week's stock hanging off, the board that says what
   things cost. Looking out at the street was a nicer picture and the wrong
-  room. And nobody in the queue is anybody else: a coat, a scarf, hair or one
-  of five hats, glasses on a third of them and a beard on a quarter, in whatever
-  width they come.
+  room.
+
+  **And nobody in the queue is a thumbprint.** Three flat shapes and two dots
+  was a crowd of them stood next to a man who has been given a lit side, a
+  shade under the jaw, ruddy cheeks, a nose, brows and ears. They are built the
+  way he is now: a coat with the light down one side of it, the shade of the
+  room at its foot, lapels and two buttons, ears behind the head and hair
+  behind that, a jaw shade and a highlight clipped to the face, cheeks off the
+  cold, a nose that is not the same nose twice, and a scarf, glasses or a beard
+  on some of them, under one of five hats. The arm that comes over the counter
+  is a sleeve in the coat's own cloth with a cuff and a hand on the end of it -
+  it was a bare forearm, and nobody queuing in a butcher's in February has his
+  sleeves rolled up. Twelve coats against six faces and eight heads of hair is
+  a Saturday rather than a row of the same man.
 
   The mark narrows and the needle quickens with every one you serve, but
   neither of them runs away: it was tuned against a bot that anticipates the
   needle the way a person does rather than one that reacts to it, because a
   mark the needle crosses in less than the time it takes to see it is not a
-  harder game, it is a coin. A good run comes to twelve to eighteen pounds. The mark narrows and the needle quickens
-  with every one you serve, but neither of them runs away - a mark the needle
-  crosses in less than the time it takes to see it is not a harder game, it is
-  a coin. The run is the game: the rail's own rule about holding a streak,
-  asked with a different finger. It is also the only one played from behind the
-  counter looking out, which is where a butcher spends the other forty hours of
-  the week.
+  harder game, it is a coin. A good run comes to twelve to eighteen pounds, and
+  the run is the game: the rail's own rule about holding a streak, asked with a
+  different finger.
+
+  **It is a queue, not ninety seconds.** There are eight of them in it and you
+  serve the eight: a shop closes when the last customer has been served, and a
+  buzzer going off with somebody stood at the counter holding his money is not
+  a butcher's, it is a quiz. The dots along the front of the scales are who is
+  left.
 - **After the cats.** The shop after dark, and something is in it that should
   not be. **Drag anywhere and the dog goes where your finger is** - not where it
   is, where it is heading, because he is a dog and not a cursor: he builds up
@@ -1554,6 +1593,22 @@ The dog comes in two parts: it starts growling as it lifts off the string - a
 low buzz that will not sit still, which is three detuned saws with a rasp of
 noise dragged across them - and the snap lands a moment later, followed by the
 two chews and the gulp it takes to get one down.
+
+**And it barks.** There is no note in a bark, which is why the old one did not
+sound like one: it is a catch of breath at the front, a voiced body that falls
+away far faster than a note ever does, the mouth closing over the end of it,
+and the last of it going out through the teeth. The dog's own size sets the
+pitch, so the chihuahua yaps and the newfoundland lands like a door shutting,
+and that comes free from the breed you picked. They never come evenly spaced
+or at quite the same pitch, because a dog that barks on a metronome is a car
+alarm, and a bark inside seven tenths of a second of the last one is simply
+not had - everything in here can fire twice in a frame, and two barks on top
+of each other is one loud mess.
+
+It barks when the day starts, when the cat walks through, when the bone comes
+in, when you pat it, when it finds the sausage out the back - and about two
+mouthfuls in five, after it has got one down, which is as often as it can be
+and still be a dog pleased with itself rather than a smoke alarm.
 
 **There is one bit of music.** Everything else in here is a noise something
 makes - a blade, a jaw, a till, a jaw again - but the shop window has nothing
