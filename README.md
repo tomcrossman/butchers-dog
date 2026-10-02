@@ -169,9 +169,18 @@ the shop window to meet the next lot.
 
 The name under them and the money under that are set large - they are the two
 things on that screen you actually read, and they were at thirteen and
-twenty-seven pixels against a three-hundred-pixel shopfront. The money has a
-till beside it rather than a banknote, because the money in this game goes in a
-till: a sign on top, a keypad knocked out of the body and the drawer under it.
+twenty-seven pixels against a three-hundred-pixel shopfront. The money is the
+width of the window now rather than a fixed size, so five figures on a small
+phone still fits.
+
+**The week's takings go in in front of you.** Come back to the window after a
+week and a till turns up beside the number, the drawer goes, five notes arc
+across and fade into it, and the number counts from what the till held to what
+it holds now. Then the till goes again and it is just the number, because a
+till sat there all day every day says nothing the number does not - it only has
+something to say on the one occasion money is actually going into it. It runs
+after a week and at no other time: opening the game to a till spitting money at
+you says nothing happened.
 
 They are drawn as big as the window will hold them. There were ninety-odd dead
 pixels between the awning and his hat, and the canvas stopped at its own three
