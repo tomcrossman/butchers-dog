@@ -411,9 +411,9 @@ link for every one it had off the rail, a steak for any it took out of the air,
 and in the money column what that came to - **in red, with a minus on it**, because it is
 the one number on the card that went the other way. A link is counted at what
 an ordinary cut would have fetched and a steak at a steak, which is as near as
-anybody can say what you would have got for it. The only words left on that row
-turn up when the dog had one or two: *so near the hour*, which is the only time
-it is worth saying.
+anybody can say what you would have got for it. There are no words on that row
+at all: a receipt prints what was had and what it cost, and *so near the hour*
+was the card leaning over your shoulder to say something about it.
 
 **The money is banked.** There is no best week and no high score: the week's
 takings go in the till and stay there, and what you did with the money is the
