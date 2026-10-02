@@ -927,12 +927,15 @@ Aye, If you insist, and a dozen more. It changes nothing whatsoever. It is
 saved with everything else, because a man should not have to say how much he
 means it twice.
 
-There is one answer past the end of that list that is not a yes, and it gets
-you a screen of its own: everything drains out of the game - no brick, no gold,
-no green, no shadow worth the name - and there is a **vegan sausage** on it,
-grey-green, extruded, with a face that knows. One line under it and one way
-out. The setting is not kept: you are put back on Yes the moment you look away
-from it, because it is not a setting, it is a warning.
+The last answer on that list is not a yes. You are not shown anything for
+touching it: you have to pick **No**, and then walk out of the back room with
+it picked - and there it is. Everything drains out of the game, no brick, no
+gold, no green, no shadow worth the name, and there is a **vegan sausage** on
+it, grey-green, extruded, with a face that knows. Nothing written under it -
+the picture says it, and a line explaining what the picture says is the one
+thing that screen does not need - and one way out, which is **Back to the
+meat**, and taking it puts the setting back to Yes. You can go and pick No
+again. It will still be there.
 
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
 Reset game - which takes a whole screen to say what it is about to take rather

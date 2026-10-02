@@ -613,10 +613,10 @@ body.waiting #hud { display: none; }
     color: #4e5249; animation: introIn .45s ease-out both;
 }
 #vegan canvas { width: min(74vw, 260px); height: auto; }
-#vegan h2 { margin: 4px 0 8px; font-family: var(--font-display); font-weight: 400;
+/* The picture says it. A line under it explaining what the picture says is
+   the one thing this screen does not need. */
+#vegan h2 { margin: 4px 0 26px; font-family: var(--font-display); font-weight: 400;
             font-size: 32px; letter-spacing: .02em; color: #595e53; text-shadow: none; }
-#vegan .note { max-width: 300px; margin: 0 0 22px; font-size: 12px; font-weight: 700;
-               line-height: 1.6; opacity: .7; }
 #vegan .btn { width: 100%; max-width: 280px; margin: 0;
               background: linear-gradient(180deg, #8d9186, #6e7268);
               color: #eceae4; border-color: #4a4e45; box-shadow: 0 4px 0 rgba(0,0,0,.2); }
@@ -1575,7 +1575,6 @@ body.waiting #hud { display: none; }
     <div id="vegan" hidden>
         <canvas id="veg" width="240" height="200"></canvas>
         <h2>Vegan sausage</h2>
-        <p class="note">Nobody said anything. The dog left the room.</p>
         <button class="btn" id="veg-back">Back to the meat</button>
     </div>
 
@@ -1619,7 +1618,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v125';
+const APP_VERSION = 'v126';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
