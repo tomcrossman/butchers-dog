@@ -920,6 +920,13 @@ the one room that is; then it was match-boarding, which made the back room a
 different building from the shop. It is the same wall as the setup screen, one
 tile, round the back and not painted since.
 
+And **Meat**, which has no off. Both arrows move it on because there is nowhere
+to move it back to: every answer is yes, and the only thing being chosen is how
+much you mean it - Yes, Hell yes, Of course, Damn right, Too right, Go on then,
+Aye, If you insist, and a dozen more. It changes nothing whatsoever. It is
+saved with everything else, because a man should not have to say how much he
+means it twice.
+
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
 Reset game - which takes a whole screen to say what it is about to take rather
 than a red line that asks twice - and a debug switch that hands you the whole shop for free and turns every switchable

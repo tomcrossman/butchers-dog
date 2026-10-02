@@ -1545,6 +1545,10 @@ body.waiting #hud { display: none; }
                 <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
                 <b id="set-debug">Off</b>
                 <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
+            <div class="row"><span class="lab">Meat</span>
+                <button class="nudge" data-flip="meat"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
+                <b id="set-meat">Yes</b>
+                <button class="nudge" data-flip="meat"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
         </div>
         <p class="note" id="debug-note">Debug hands you every upgrade for nothing,
             so you can switch them on and see what they do.</p>
@@ -1592,7 +1596,7 @@ body.waiting #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v122';
+const APP_VERSION = 'v123';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -8306,11 +8310,19 @@ document.getElementById('to-shop').addEventListener('click', openStore);
    Everything that is not shopping: the sound, the switch that unlocks the
    shop for testing, and the one button in the game that can undo a month. */
 const setEl = document.getElementById('settings');
+/* A setting with no off. Both arrows move it on because there is nowhere to
+   move it back to: every answer is yes, and the only thing being chosen is how
+   much you mean it. It changes nothing whatsoever, which is the point of it. */
+const AYE = ['Yes', 'Hell yes', 'Of course', 'Damn right', 'Always', 'Too right',
+              'Go on then', 'Obviously', 'Aye', 'Naturally', 'God yes', 'Every time',
+              'Oh go on', 'Rather', 'Certainly', 'You know it', 'Why not',
+              'Absolutely', 'If you insist', 'Yes please'];
 function paintSettings() {
     // the back room's own door onto the shopfront, open only while debug is
     document.getElementById('to-mini').hidden = !save.debug;
     document.getElementById('set-sound').textContent = soundOn ? 'On' : 'Off';
     document.getElementById('set-debug').textContent = save.debug ? 'On' : 'Off';
+    document.getElementById('set-meat').textContent = AYE[save.meat || 0];
     document.getElementById('set-ver').textContent =
         `Butcher's Dog ${APP_VERSION}${save.debug ? ' \u00b7 debug' : ''}`;
 }
@@ -8333,6 +8345,11 @@ document.querySelectorAll('.nudge[data-flip]').forEach(btn =>
     btn.addEventListener('click', () => flip(btn.dataset.flip)));
 function flip(what) {
     if (what === 'sound') { toggleSound(); paintSettings(); return; }
+    if (what === 'meat') {
+        save.meat = ((save.meat || 0) + 1) % AYE.length;
+        putSave(); paintSettings(); plop(2);
+        return;
+    }
     save.debug = !save.debug;
     if (save.debug) {
         // everything switchable comes on, so one tap is a week with the lot
