@@ -1846,7 +1846,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.0.6';
+const APP_VERSION = 'v1.0.7';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3838,27 +3838,27 @@ const MINI_TUNES = {
               n: [[.0, 466, .16], [.6, 587, .16], [1.2, 523, .16], [1.8, 440, .22]],
               b: [[.0, 110], [.6, 131], [1.2, 147], [1.8, 123]] },
     // A caff. Two chords, off the beat, going nowhere pleasantly.
-    sauce:  { bar: 1.9, type: 'square', vol: .8,
+    sauce:  { bar: 1.9, type: 'square', vol: 1,
               n: [[.0, 523, .12], [.24, 659, .12], [.48, 784, .14],
                   [.95, 587, .12], [1.19, 698, .12], [1.43, 880, .16]],
               b: [[.0, 131], [.95, 147]] },
     // A barbecue. A slow shuffle, with the third bent the way a blues is.
-    grill:  { bar: 2.6, type: 'triangle', vol: 1,
+    grill:  { bar: 2.6, type: 'triangle', vol: .88,
               n: [[.0, 330, .2], [.42, 392, .18], [.66, 415, .3],
                   [1.3, 330, .2], [1.72, 294, .18], [1.96, 247, .34]],
               b: [[.0, 82], [.66, 110], [1.3, 82], [1.96, 73]] },
     // Somewhere east of the counter. Five notes and nothing in between.
-    ninja:  { bar: 2.2, type: 'triangle', vol: 1,
+    ninja:  { bar: 2.2, type: 'triangle', vol: .95,
               n: [[.0, 587, .14], [.22, 659, .14], [.44, 784, .14], [.66, 880, .2],
                   [1.1, 784, .14], [1.32, 659, .14], [1.54, 587, .26]],
               b: [[.0, 73], [1.1, 98]] },
     // Asleep and flying. Nothing moves quickly up here.
-    dream:  { bar: 3.4, type: 'sine', vol: 1.3,
+    dream:  { bar: 3.4, type: 'sine', vol: .82,
               n: [[.0, 523, .6], [.42, 659, .6], [.84, 784, .6], [1.26, 988, .9],
                   [2.0, 880, .6], [2.42, 659, .9]],
               b: [[.0, 131], [1.26, 110], [2.42, 147]] },
     // Something is in the shop. Quick, low and up to no good.
-    cats:   { bar: 1.6, type: 'square', vol: .7,
+    cats:   { bar: 1.6, type: 'square', vol: 1.05,
               n: [[.0, 440, .1], [.14, 523, .1], [.28, 494, .1], [.42, 440, .1],
                   [.6, 392, .1], [.74, 440, .1], [.88, 349, .2]],
               b: [[.0, 110], [.8, 98]] },
@@ -3874,7 +3874,7 @@ const MINI_TUNES = {
                   [1.4, 523, .22], [1.75, 440, .3]],
               b: [[.0, 98], [.7, 131], [1.4, 117]] },
     // A church, from the back of it, under everything else.
-    wed:    { bar: 3.1, type: 'sine', vol: 1.2,
+    wed:    { bar: 3.1, type: 'sine', vol: .86,
               n: [[.0, 392, .5], [.55, 392, .3], [.9, 523, .6], [1.5, 494, .7],
                   [2.2, 440, .4], [2.6, 392, .5]],
               b: [[.0, 131], [.9, 175], [1.5, 165], [2.2, 147]] },
@@ -3890,11 +3890,11 @@ function tuneStart(id) {
         safely(t => {
             const v = T.vol || 1;
             for (const [at, f, d] of T.n) {
-                tone(t, { freq: f, dur: d, type: T.type, vol: .030 * v, at });
-                tone(t, { freq: f * 2, dur: d * .5, type: 'sine', vol: .009 * v, at });
+                tone(t, { freq: f, dur: d, type: T.type, vol: .075 * v, at });
+                tone(t, { freq: f * 2, dur: d * .5, type: 'sine', vol: .022 * v, at });
             }
             for (const [at, f] of T.b)
-                tone(t, { freq: f, dur: .32, type: 'sine', vol: .038 * v, at });
+                tone(t, { freq: f, dur: .36, type: 'sine', vol: .095 * v, at });
         });
         tuneT = setTimeout(bar, T.bar * 1000);
     };
@@ -3907,8 +3907,13 @@ function startMini() {
              untimed: !!M.untimed, t0: now(), won: 0, done: false };
     miniSetup(M.id);
     jingleUp();
-    // after the three notes that announce it, not over them
-    setTimeout(() => { if (mini && !mini.done && mini.id === M.id) tuneStart(M.id); }, 620);
+    /* After the three notes that announce it, not over them - and off
+       whatever game is actually up when it fires rather than off the one
+       picked here, because the debug door calls this to get a game set up
+       and then puts the one you chose over the top of it. Asking for the
+       theme of the game that was thrown away is eight times out of nine no
+       theme at all. */
+    setTimeout(() => { if (mini && !mini.done) tuneStart(mini.id); }, 620);
     tick();
 }
 function endMini() {

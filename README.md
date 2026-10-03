@@ -1736,11 +1736,20 @@ and the wedding gets a church, from the back of it.
 
 They are the same oscillators as everything else - a triangle for the
 melody, a thin sine an octave up for air and a sine underneath for the bass
-- so nine themes cost nine lines of numbers and no samples. They peak at
-about a third of what the loudest effect does, which is the whole brief: a
-theme you can hear under a buzzer is a theme that is too loud. It starts
-six tenths of a second after the three notes that announce the game, so it
-is under them rather than over them, and it stops when the game does.
+- so nine themes cost nine lines of numbers and no samples. All nine are
+levelled against each other and against the game: they peak at about two
+thirds of what the loudest effect does and twice what the knife does, which
+took two goes. The first pass was set at a third of the knife and could not
+be heard at all - a theme you can hear under a buzzer is too loud, and one
+you cannot hear over a tiled room is not a theme. It starts six tenths of a
+second after the three notes that announce the game, so it is under them
+rather than over them, and it stops when the game does.
+
+**It takes its name from whatever game is actually up** rather than from the
+one it was asked about. The debug door opens a game by letting the ordinary
+chooser pick one at random and then putting the one you chose over the top
+of it, so a theme fetched by the name the chooser landed on was eight times
+out of nine no theme at all.
 
 The theme runs on a timer rather than on the clock everything else is timed
 off, so stopping that clock does not stop it - a phone turned on its side
