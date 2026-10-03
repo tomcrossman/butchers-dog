@@ -856,13 +856,14 @@ body.leaving #hud { display: none; }
 #settings .outs { display: flex; align-items: center; justify-content: center; gap: 4px; }
 
 /* ---- three shops --------------------------------------------------------
-   One unit on the street: a brass plate with the name over the window on it
+   One shop on the street: a brass plate with the name over the window on it
    and what the shop has done underneath. An empty one is the same plate with
    nothing screwed to it yet, and the one you are stood in has its rule in
    full gold rather than half of it. */
-#slots h2 { margin-bottom: 2px; }
-#slots .note { max-width: 320px; margin: 0; font-size: 11px; font-weight: 700;
-               line-height: 1.5; opacity: .55; }
+/* No line under the heading. Three plates that say what they are is the
+   whole of the explaining this screen needs, and a sentence over the top of
+   them was telling you what you were already looking at. */
+#slots h2 { margin-bottom: 0; }
 #slots .btn { width: 100%; max-width: 280px; margin-top: 2px; }
 #slotlist { width: 100%; max-width: 330px; display: flex; flex-direction: column;
             gap: 10px; margin: 15px 0 8px; }
@@ -1902,7 +1903,6 @@ body.leaving #hud { display: none; }
          were slots is simply the first of the three. -->
     <div id="slots" hidden>
         <h2 id="slots-head">Your shops</h2>
-        <p class="note" id="slots-note">Pick the one you are in.</p>
         <div id="slotlist"></div>
         <button class="btn ghost" id="slots-no">Not now</button>
     </div>
@@ -1914,7 +1914,7 @@ body.leaving #hud { display: none; }
     </div>
 
     <div id="confirm" hidden>
-        <h2 id="confirm-head">Clear this unit?</h2>
+        <h2 id="confirm-head">Clear this shop?</h2>
         <p class="note" id="confirm-note">This clears the till, the wardrobe, the name over the
             window and every week you have played. There is no getting it back.</p>
         <button class="btn wipe-yes" id="wipe-yes">Yes, clear it</button>
@@ -1946,7 +1946,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.1.1';
+const APP_VERSION = 'v1.1.2';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -10793,11 +10793,11 @@ document.getElementById('store-done').addEventListener('click', () => {
 /* ---- three shops, and the way between them ------------------------------
    The back room has no reset on it any more. It has a new game, which is the
    same button said the right way round: you are not wiping this shop, you are
-   taking another unit, and the one you were in is still standing when you
+   taking one of the others, and the one you were in is still standing when
    come back to it. */
 const confirmEl = document.getElementById('confirm');
 const slotsEl = document.getElementById('slots');
-const SLOT_NAMES = ['Unit one', 'Unit two', 'Unit three'];
+const SLOT_NAMES = ['Shop one', 'Shop two', 'Shop three'];
 let slotMode = 'pick', overSlot = 0, newSlot = 0;
 /* How long it has been open, and how long ago it was shut. Both rounded hard:
    nobody wants a save slot read out to the second. */
@@ -10846,9 +10846,6 @@ function openSlots(mode) {
     slotMode = mode;
     document.getElementById('slots-head').textContent =
         mode === 'new' ? 'Start a new shop' : 'Your shops';
-    document.getElementById('slots-note').textContent = mode === 'new'
-        ? 'Take an empty unit, or clear out one you are finished with.'
-        : 'Three units on the same street. Pick the one you want to be in.';
     document.getElementById('slotlist').innerHTML = [1, 2, 3].map(slotCard).join('');
     slotsEl.hidden = false;
 }
@@ -10882,7 +10879,7 @@ document.getElementById('slotlist').addEventListener('click', e => {
 function askOver(i) {
     overSlot = i;
     const s = slotRead(i);
-    document.getElementById('confirm-head').textContent = 'Clear this unit?';
+    document.getElementById('confirm-head').textContent = 'Clear this shop?';
     document.getElementById('confirm-note').innerHTML =
         `<b>${esc(s.shop)}</b> comes down: the till, the wardrobe, the wall and ` +
         `every week of it. There is no getting it back.`;
@@ -10932,7 +10929,7 @@ const clack = () => safely(t => {
     hiss(t, { hp: 200, lp: 2400, dur: .18, vol: .18 });
     tone(t, { freq: 92, to: 40, dur: .4, type: 'sine', vol: .16, at: .02 });
 });
-/* A new shop in a given unit. Whatever was in that one goes; whatever shop
+/* A new shop in a given slot. Whatever was in that one goes; whatever shop
    you were standing in is written to its own key on the way out, so starting
    a new game is the one button in the game that loses nothing you did not
    point at. */

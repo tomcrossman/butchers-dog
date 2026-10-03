@@ -1117,12 +1117,12 @@ tile, round the back and not painted since.
 ## Three shops
 
 There are three of them, on the same street, and you can have a shop in each.
-They are **Unit one, Unit two and Unit three**, and the game keeps one save
+They are **Shop one, Shop two and Shop three**, and the game keeps one save
 under each. Slot one is the key the game has always written to, so a shop that
 was here before there were three is not migrated anywhere - it is simply the
 first of them, exactly as it was left.
 
-A **unit** on the street is a brass plate with the name over the window on it
+A **shop** on the street is a brass plate with the name over the window on it
 and what the shop has done underneath: who is behind the counter and what the
 dog is (*Reg and Nipper the Bulldog*), how many weeks, how long it has been
 open for in hours and minutes, how many rosettes are on the wall out of
@@ -1133,7 +1133,7 @@ boarded up, nobody has had the keys. The one you are stood in says **open** and
 has its gold rule drawn in full rather than half.
 
 **A single-shop player never learns there are three.** The street only comes up
-on boot if more than one unit has a shop in it. One shop and you go straight to
+on boot if more than one of them is taken. One shop and you go straight to
 the window, which is what has always happened and what should keep happening -
 being asked which of your three shops you want is only worth asking once there
 is more than one.
@@ -1144,7 +1144,7 @@ written to its own key on the way out, and the one you chose is loaded, dealt,
 and its wall swept the same way it is at boot - so a shop opened mid-session is
 the shop you would have booted into. **Start new game** is the old Reset game
 said the right way round. You are not wiping this shop, you are taking another
-unit, and the one you were in is still standing when you come back to it. Take
+slot, and the one you were in is still standing when you come back to it. Take
 an empty one and it goes straight to the setup screen; take one that has a shop
 in it and it asks first, by name: *The Second Shop comes down: the till, the
 wardrobe, the wall and every week of it.*
