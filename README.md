@@ -1124,7 +1124,9 @@ anywhere, it is simply the first of them, exactly as it was left.
 
 A **shop** on the street is a counter ticket - the black plastic plaque with
 the white keyline inside the edge that every price in a butcher's window is
-written on - with **the pair of them stood on the left of it**. It was a
+written on - with **the pair of them stood on the right of it**, which is
+where they stand in the window, and which puts the name of the shop at the
+top left where the eye starts rather than a third of the way across. It was a
 brown plate with a gold rule, which is the back room's own furniture, and
 three of those in a row was three more of a panel this game already has
 plenty of. No spike under it: these are hung on a wall, not stood in the
@@ -1155,7 +1157,8 @@ the same size as the ones either side of it, so the street is three
 shopfronts rather than two and a gap.
 
 **A shop with the whole wall filled gets a rosette of its own**, hung off the
-top corner of its ticket at an angle, the way the red flash hangs off the
+top left corner of its ticket at an angle - the left, because the right has
+the two of them on it - the way the red flash hangs off the
 corner of the week's: the champion's, two tiers of gold silk, the same one
 the wall gives you for holding all the others. It is the only colour on the
 street, and it is drawn by the same function that draws them on the wall, at
