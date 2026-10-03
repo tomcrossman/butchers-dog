@@ -1574,6 +1574,36 @@ twenty-two pounds, about a third on top of a perfect week.
   buzzer going off with somebody stood at the counter holding his money is not
   a butcher's, it is a quiz. The dots along the front of the scales are who is
   left.
+- **Meat tower.** The walk-in freezer, and the one thing the game has not
+  asked you for yet: put this down without knocking over the last one. A
+  piece is held up for a second so you know what is coming, then it starts
+  down, and **you drag anywhere to move it** - it goes where your finger is
+  rather than being where it is, because it is a side of meat on the end of
+  an arm and not a cursor. A dashed line runs from it to the top of the
+  pile, because dropping a steak onto a stack you cannot see the bottom of
+  is a guess rather than a judgement.
+
+  **It is the only one with a rule rather than a knack.** Everything above a
+  joint has to have its weight over the thing underneath it, and that is
+  checked at every joint from the bottom up rather than only at the one you
+  just made - a tower goes at its weakest joint, and that is rarely the one
+  you were looking at. Width stands in for weight, which for flat shapes of
+  roughly the same stuff it fairly well is. Five pixels of grace, and no
+  more.
+
+  **What drops walks up the counter**: three links, two wrapped ones, two
+  puddings, two steaks, and then wagyu for as long as you can keep going. So
+  the higher it goes the more a piece is worth, and you are balancing better
+  and better meat on worse and worse foundations. Twelve is the lot, which
+  is fifty pounds and which nobody is going to get.
+
+  The view rises once the pile is taller than two fifths of the window, so
+  what you are looking at is always the top of it, and there is a steel rule
+  up the side with the height marked on it - a tower with no ruler is a
+  tower you cannot compare to the last one. The freezer is the one room in
+  this building that is neither green nor warm: panelled steel, a strip
+  light, frost in the corners and two sides of beef hanging well out of the
+  way at the back, because a freezer with nothing in it is a fridge.
 - **Butcher's wedding.** The dog is getting married. To a sausage. The butcher
   is taking the service, because there is nobody else in this game to take it.
 

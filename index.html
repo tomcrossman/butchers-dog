@@ -1890,7 +1890,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.0.9';
+const APP_VERSION = 'v1.1.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3947,6 +3947,10 @@ const MINIS = [
        getting married and you have one tap to land the kiss. */
     { id: 'wed', name: 'Butcher\u2019s wedding', say: 'Line it up. Kiss the bride',
       secs: 60, untimed: true },
+    /* And the tenth, which is the only one with a rule rather than a knack.
+       It ends when the tower does. */
+    { id: 'tower', name: 'Meat tower', say: 'Drag to place it. Keep it up',
+      secs: 90, untimed: true },
 ];
 let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
@@ -3964,6 +3968,7 @@ function miniSetup(id) {
     else if (id === 'shell') shellSet();
     else if (id === 'scales') scalesSet();
     else if (id === 'wed') wedSet();
+    else if (id === 'tower') towerSet();
     else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
@@ -4028,6 +4033,12 @@ const MINI_TUNES = {
               n: [[.0, 392, .5], [.55, 392, .3], [.9, 523, .6], [1.5, 494, .7],
                   [2.2, 440, .4], [2.6, 392, .5]],
               b: [[.0, 131], [.9, 175], [1.5, 165], [2.2, 147]] },
+    /* A walk-in freezer, which is a cold room with a hum in it. High,
+       sparse and slow, like something ticking over in the dark. */
+    tower:  { bar: 2.8, type: 'sine', vol: 1.15,
+              n: [[.0, 1047, .3], [.35, 784, .3], [.7, 1175, .3], [1.05, 784, .3],
+                  [1.4, 988, .3], [1.75, 784, .3], [2.1, 880, .5]],
+              b: [[.0, 65], [1.4, 73]] },
     /* And the credits, which is the one tune in here that gets to be a tune:
        nothing else is happening on that screen, so it is four bars at a
        hundred and thirty-two rather than a bar of something under a game,
@@ -4772,6 +4783,125 @@ const gasp = () => safely(t => {
     tone(t, { freq: 330, to: 262, dur: .5, type: 'triangle', vol: .04, at: .06 });
     tone(t, { freq: 392, to: 311, dur: .5, type: 'triangle', vol: .03, at: .09 });
 });
+/* ---- Meat tower ---------------------------------------------------------
+   The walk-in freezer, and the one thing the game has not asked you for
+   yet: put this down without knocking over the last one.
+
+   It is the only game in here with a rule rather than a knack. Everything
+   above a joint has to have its weight over the thing underneath it, and
+   that is checked at every joint from the bottom up rather than only at the
+   one you just made - a tower goes at its weakest joint, and that is rarely
+   the one you were looking at.
+
+   What drops walks up the counter as you go: links, then the wrapped ones,
+   then puddings, then a steak, then the thousand-pound stuff. So the higher
+   it goes the more a piece is worth, and you are balancing better and
+   better meat on worse and worse foundations.
+   ------------------------------------------------------------------------ */
+const TOWER_FLOOR = () => H * .84;       // the shelf it is all stood on
+const TOWER_WAIT = 1050;                 // how long the next one is held up for
+const TOWER_FALL = 245;                  // pixels a second, before it quickens
+const TOWER_GRACE = 5;                   // and the benefit of the doubt, in pixels
+const TOWER_CAP = 12;                    // past which the freezer has no more room
+const TOWER_RUN = [
+    { kind: 'link',  w: 58, h: 25, pay: 120 },
+    { kind: 'link',  w: 58, h: 25, pay: 120 },
+    { kind: 'link',  w: 58, h: 25, pay: 120 },
+    { kind: 'blank', w: 64, h: 28, pay: 220 },
+    { kind: 'blank', w: 64, h: 28, pay: 220 },
+    { kind: 'pud',   w: 54, h: 27, pay: 350 },
+    { kind: 'pud',   w: 54, h: 27, pay: 350 },
+    { kind: 'steak', w: 80, h: 40, pay: 600 },
+    { kind: 'steak', w: 80, h: 40, pay: 600 },
+];
+// and from there on up it is wagyu, because there is nothing better to put on
+const TOWER_TOP = { kind: 'wagyu', w: 82, h: 42, pay: 800 };
+const towerPiece = i => TOWER_RUN[i] || TOWER_TOP;
+function towerSet() {
+    mini.stack = []; mini.bits = [];
+    mini.n = 0; mini.cam = 0; mini.aim = W / 2;
+    mini.shake = 0;
+    towerNext();
+}
+function towerNext() {
+    if (mini.n >= TOWER_CAP) { mini.phase = 'done'; mini.pt = 0; mini.fall = null; jingleWin(); return; }
+    mini.fall = { ...towerPiece(mini.n), x: mini.aim, y: 0, ang: 0 };
+    mini.phase = 'wait'; mini.pt = 0;
+}
+// the top of the pile, in the world the stack lives in
+const towerTopY = () => mini.stack.length
+    ? mini.stack[mini.stack.length - 1].y - mini.stack[mini.stack.length - 1].h / 2
+    : TOWER_FLOOR();
+/* The rule. Width stands in for weight, which for flat shapes of about the
+   same stuff it fairly well is. Returns the joint it goes at, or -1. */
+function towerBalance() {
+    const st = mini.stack;
+    for (let j = 0; j < st.length - 1; j++) {
+        let mass = 0, mx = 0;
+        for (let k = j + 1; k < st.length; k++) { mass += st[k].w; mx += st[k].x * st[k].w; }
+        if (Math.abs(mx / mass - st[j].x) > st[j].w * .5 + TOWER_GRACE) return j;
+    }
+    return -1;
+}
+function towerTopple(j) {
+    const st = mini.stack;
+    let mass = 0, mx = 0;
+    for (let k = j + 1; k < st.length; k++) { mass += st[k].w; mx += st[k].x * st[k].w; }
+    const dir = mx / mass > st[j].x ? 1 : -1;
+    mini.bits = st.splice(j + 1).map((b, i) => ({ ...b,
+        vx: dir * (70 + i * 60), vy: -90 - i * 45, sp: dir * (2.6 + i * .7) }));
+    mini.fall = null;
+    mini.phase = 'over'; mini.pt = 0; mini.shake = 1;
+    crash();
+}
+function towerStep(dt) {
+    const m = mini;
+    m.pt += dt;
+    m.shake = Math.max(0, m.shake - dt * 2.4);
+    if (m.phase === 'over' || m.phase === 'done') {
+        for (const b of m.bits) {
+            b.x += b.vx * dt; b.y += b.vy * dt; b.vy += 1150 * dt; b.ang += b.sp * dt;
+        }
+        if (m.pt > (m.phase === 'done' ? 2 : 2.3)) endMini();
+        return;
+    }
+    const f = m.fall;
+    // it goes where your finger is, but it is a side of meat on a hook, not a cursor
+    const want = clamp(m.aim, 26 + f.w / 2, W - 26 - f.w / 2);
+    f.x += (want - f.x) * (1 - Math.exp(-dt / .085));
+    if (m.phase === 'wait') {
+        f.y = -m.cam + 212;                         // held up, clear of the title
+        if (m.pt * 1000 > TOWER_WAIT) { m.phase = 'fall'; m.pt = 0; }
+        return;
+    }
+    f.y += (TOWER_FALL + m.n * 17) * dt;
+    const rest = towerTopY() - f.h / 2;
+    if (f.y >= rest) {
+        f.y = rest;
+        m.stack.push({ ...f });
+        m.n++; m.won += f.pay; m.shake = .45;
+        showHud();
+        thud(m.n);
+        /* The view rises once the pile is taller than two fifths of the
+           window, so what you are looking at is always the top of it. */
+        m.cam = Math.max(0, (TOWER_FLOOR() - towerTopY()) - H * .40);
+        const bad = towerBalance();
+        if (bad >= 0) { towerTopple(bad); return; }
+        towerNext();
+    }
+}
+// one going down on the pile, a tone higher every time, and the lot coming over
+const thud = n => safely(t => {
+    tone(t, { freq: 150 + n * 9, to: 70, dur: .11, type: 'sine', vol: .2 });
+    sweep(t, { from: 1100, to: 260, q: 1.4, dur: .08, vol: .16 });
+});
+const crash = () => safely(t => {
+    for (let i = 0; i < 6; i++) {
+        sweep(t, { from: 900 - i * 70, to: 160, q: 1.1, dur: .16, vol: .2 - i * .02, at: i * .075 });
+        tone(t, { freq: 130 - i * 8, to: 54, dur: .2, type: 'sine', vol: .13 - i * .015, at: i * .075 });
+    }
+    tone(t, { freq: 208, to: 92, dur: .8, type: 'sawtooth', vol: .12, at: .5 });
+});
 function miniStep(dt) {
     /* The clock stopping is not the coins stopping. When the time ran out
        mid-air the last few hung exactly where they were for the nine hundred
@@ -4915,6 +5045,8 @@ function miniStep(dt) {
         shellStep(dt);
     } else if (mini.id === 'wed') {
         wedStep(dt);
+    } else if (mini.id === 'tower') {
+        towerStep(dt);
     } else if (mini.id === 'cats') {
         const top = RAIL + 108, bot = H - 72, lf = 36, rt = W - 36;
         if (mini.held) {                       // he makes for wherever you are
@@ -5018,6 +5150,8 @@ function miniAt(x, y) {
        him up. */
     if (mini.id === 'dream') { mini.hold = true; return; }
     if (mini.id === 'wed') { wedKiss(false); return; }
+    // the whole of the tower is where your finger is across the window
+    if (mini.id === 'tower') { mini.aim = x; return; }
     if (mini.id === 'cats') { mini.tx = x; mini.ty = y; mini.held = true; return; }
     if (mini.id === 'scales') {
         const c = mini.cust;
@@ -5499,6 +5633,70 @@ function miniBack(ms) {
         g.fillStyle = '#e6e0d1'; g.fillRect(0, ty, W, 17);
         g.fillStyle = '#fbf8f0'; g.fillRect(0, ty, W, 5);
         g.fillStyle = '#b9b1a0'; g.fillRect(0, ty + 14, W, 3);
+    } else if (mini.id === 'tower') {
+        /* The walk-in freezer. Everywhere else in this game is bottle green
+           and warm; this is the one room in the building that is neither,
+           and it is the only backdrop in here lit from behind rather than
+           from above - a strip light in a steel box, with the cold coming
+           off the walls. */
+        const fy = TOWER_FLOOR();
+        const wall = g.createLinearGradient(0, 0, 0, fy);
+        wall.addColorStop(0, '#53707c'); wall.addColorStop(.46, '#6b8a95');
+        wall.addColorStop(1, '#3f5a66');
+        g.fillStyle = wall; g.fillRect(0, 0, W, fy);
+        // the ribs of the panelling, which is what a cold room is lined with
+        g.fillStyle = 'rgba(40,66,76,.16)';
+        for (let x = (W % 46) / 2; x < W; x += 46) g.fillRect(x, 0, 3, fy);
+        g.fillStyle = 'rgba(255,255,255,.10)';
+        for (let x = (W % 46) / 2; x < W; x += 46) g.fillRect(x + 3, 0, 2, fy);
+        // the strip light over the top of it
+        const lamp = g.createLinearGradient(0, RAIL + 96, 0, fy);
+        lamp.addColorStop(0, 'rgba(226,246,255,.17)'); lamp.addColorStop(1, 'rgba(226,246,255,0)');
+        g.fillStyle = lamp; g.fillRect(0, RAIL + 96, W, fy - RAIL - 96);
+        g.fillStyle = '#3d5862'; g.fillRect(W * .22, RAIL + 96, W * .56, 9);
+        g.fillStyle = '#dff4fb'; g.fillRect(W * .23, RAIL + 98, W * .54, 4.5);
+        /* Two sides of something hanging up the back, well out of the way
+           and well out of focus: a freezer with nothing in it is a fridge. */
+        for (const [hx, hk] of [[W * .12, .72], [W * .89, .84]]) {
+            g.globalAlpha = .42;
+            g.strokeStyle = '#7e97a2'; g.lineWidth = 2;
+            g.beginPath(); g.moveTo(hx, RAIL + 112); g.lineTo(hx, RAIL + 152); g.stroke();
+            g.fillStyle = '#7a3c33';                       // the side of beef
+            g.beginPath();
+            g.ellipse(hx, RAIL + 216 * hk, 27 * hk, 62 * hk, 0, 0, Math.PI * 2);
+            g.fill();
+            g.fillStyle = '#8f4a3d';
+            g.beginPath();
+            g.ellipse(hx - 8 * hk, RAIL + 196 * hk, 9 * hk, 32 * hk, 0, 0, Math.PI * 2);
+            g.fill();
+            g.fillStyle = 'rgba(226,214,188,.7)';          // and the fat down the back of it
+            g.beginPath();
+            g.ellipse(hx + 16 * hk, RAIL + 220 * hk, 4.5 * hk, 36 * hk, .1, 0, Math.PI * 2);
+            g.fill();
+            g.globalAlpha = 1;
+        }
+        // frost in the corners, which is the one thing that says cold
+        for (const sx of [0, 1]) {
+            const fr = g.createRadialGradient(sx * W, fy, 10, sx * W, fy, W * .7);
+            fr.addColorStop(0, 'rgba(238,252,255,.3)'); fr.addColorStop(1, 'rgba(238,252,255,0)');
+            g.fillStyle = fr; g.fillRect(0, 0, W, fy);
+        }
+        g.fillStyle = 'rgba(14,34,42,.26)';                  // and the corners going off
+        g.fillRect(0, 0, 22, fy); g.fillRect(W - 22, 0, 22, fy);
+        // the steel shelf the whole thing stands on
+        g.fillStyle = 'rgba(14,34,42,.4)'; g.fillRect(0, fy - 7, W, 7);
+        const sl = g.createLinearGradient(0, fy, 0, H);
+        sl.addColorStop(0, '#c6d6db'); sl.addColorStop(.18, '#90a8b0'); sl.addColorStop(1, '#5c757f');
+        g.fillStyle = sl; g.fillRect(0, fy, W, H - fy);
+        g.fillStyle = '#e6f2f6'; g.fillRect(0, fy, W, 4);
+        // the same darkening under the name of the game the other nine get
+        const sc3 = g.createLinearGradient(0, 0, 0, RAIL + 88);
+        sc3.addColorStop(0, 'rgba(10,26,32,.66)');
+        sc3.addColorStop(.62, 'rgba(10,26,32,.44)');
+        sc3.addColorStop(1, 'rgba(10,26,32,0)');
+        g.fillStyle = sc3; g.fillRect(0, 0, W, RAIL + 88);
+        g.restore();
+        return;
     } else if (mini.id === 'wed') {
         /* Nothing but a floor colour. The whole of this one is drawn inside
            a camera that pushes in, backdrop and all - a wall that stays put
@@ -5968,6 +6166,114 @@ function drawMini(ms) {
                 { open: .3, tilt: clamp(mini.vx * mini.face / 2600, -.26, .26) },
                 ms, cast.dog, cast.kit);
         ctx.restore();
+    } else if (mini.id === 'tower') {
+        const m = mini, g = ctx, fy = TOWER_FLOOR();
+        /* One piece, drawn with the game's own meat rather than a box with
+           a label on it: a link, a wrapped one, a pudding, a steak, and the
+           wagyu. They are scaled to the brick they have to be, which for
+           the two steaks means squashed - a steak lying flat and seen from
+           the front is a wide flat thing anyway. */
+        const slab = (p, a) => {
+            g.save();
+            g.translate(p.x, p.y + m.cam);
+            if (a) g.rotate(a);
+            if (p.kind === 'steak' || p.kind === 'wagyu') {
+                g.scale(p.w / 104, p.h / 80);
+                steakShape(g, 0, p.kind === 'wagyu');
+            } else {
+                const k = p.w / 68;
+                drawBlanket(g, 0, 0, k, 0, p.kind !== 'blank',
+                            p.kind === 'pud' ? PUD : MEAT);
+            }
+            g.restore();
+        };
+        g.save();
+        // the whole freezer flinches when something lands on the pile
+        if (m.shake > 0) g.translate(0, Math.sin(m.shake * 42) * m.shake * 5);
+
+        /* The ruler up the side, which is the only way to know whether this
+           one is taller than the last one. It rides with the view, so the
+           numbers go past rather than the tower going past them. */
+        const high = TOWER_FLOOR() - towerTopY();
+        const rl = g.createLinearGradient(10, 0, 26, 0);
+        rl.addColorStop(0, 'rgba(206,224,232,.42)'); rl.addColorStop(.42, 'rgba(238,250,255,.6)');
+        rl.addColorStop(1, 'rgba(150,176,188,.5)');
+        g.fillStyle = rl; g.fillRect(10, 0, 16, H);
+        g.fillStyle = 'rgba(32,56,66,.26)'; g.fillRect(25, 0, 1.4, H);
+        g.textBaseline = 'middle'; g.textAlign = 'left';
+        for (let i = 0; i <= 30; i++) {
+            const y = fy - i * 30 + m.cam;
+            if (y < -20 || y > H + 20) continue;
+            const big = i % 5 === 0;
+            g.fillStyle = 'rgba(32,56,66,' + (big ? .82 : .45) + ')';
+            g.fillRect(big ? 10 : 18, y - 1, big ? 16 : 8, big ? 2 : 1.4);
+            if (big && i) {
+                g.font = '900 8px Lato, sans-serif';
+                g.fillText(String(i), 11, y - 8);
+            }
+        }
+        // and where the top of it has got to
+        if (m.stack.length) {
+            const ty = towerTopY() + m.cam;
+            g.fillStyle = '#d8462f';
+            g.beginPath();
+            g.moveTo(36, ty); g.lineTo(46, ty - 6); g.lineTo(46, ty + 6);
+            g.closePath(); g.fill();
+            g.textAlign = 'left';
+            g.font = '400 15px "Alfa Slab One", Georgia, serif';
+            g.fillStyle = '#f3e9d6';
+            g.fillText(Math.round(high / 30) + '', 50, ty);
+        }
+
+        for (const p of m.stack) slab(p, 0);
+        for (const b of m.bits) slab(b, b.ang);
+        if (m.fall) {
+            /* A line down to where it is going. Dropping a steak onto a pile
+               you cannot see the bottom of is not a judgement, it is a
+               guess. */
+            if (m.phase === 'fall') {
+                g.strokeStyle = 'rgba(243,233,214,.3)';
+                g.lineWidth = 1.5; g.setLineDash([5, 7]);
+                g.beginPath();
+                g.moveTo(m.fall.x, m.fall.y + m.fall.h / 2 + m.cam);
+                g.lineTo(m.fall.x, towerTopY() + m.cam);
+                g.stroke();
+                g.setLineDash([]);
+            }
+            slab(m.fall, 0);
+            if (m.phase === 'wait') {                 // held up, with its name on
+                const e = Math.min(1, m.pt * 1000 / TOWER_WAIT);
+                g.textAlign = 'center'; g.textBaseline = 'middle';
+                g.font = '900 10px Lato, sans-serif';
+                g.fillStyle = 'rgba(243,233,214,.6)';
+                g.fillText('NEXT', m.fall.x, m.fall.y + m.cam - m.fall.h / 2 - 16);
+                // and a bar running out under it, so the drop is not a surprise
+                g.fillStyle = 'rgba(243,233,214,.22)';
+                g.fillRect(m.fall.x - 24, m.fall.y + m.cam + m.fall.h / 2 + 11, 48, 3);
+                g.fillStyle = '#f0d484';
+                g.fillRect(m.fall.x - 24, m.fall.y + m.cam + m.fall.h / 2 + 11, 48 * (1 - e), 3);
+            }
+        }
+        g.restore();
+        if (m.phase === 'over' || m.phase === 'done') {
+            const win = m.phase === 'done';
+            g.save();
+            g.textAlign = 'center'; g.textBaseline = 'middle';
+            g.translate(W / 2, H * .3);
+            g.fillStyle = 'rgba(10,28,34,.76)';
+            g.fillRect(-W, -34, W * 2, 74);
+            g.font = '400 34px "Alfa Slab One", Georgia, serif';
+            const big = win ? 'THE FREEZER IS FULL' : 'OVER IT GOES';
+            const fit = Math.min(1, (W - 30) / g.measureText(big).width);
+            g.save(); g.scale(fit, fit);
+            g.fillStyle = win ? '#8fd6a2' : '#d8462f';
+            g.fillText(big, 0, -11 / fit);
+            g.restore();
+            g.font = '900 12px Lato, sans-serif';
+            g.fillStyle = 'rgba(253,247,232,.72)';
+            g.fillText(m.n + (m.n === 1 ? ' PIECE' : ' PIECES') + ' UP', 0, 20);
+            g.restore();
+        }
     } else if (mini.id === 'wed') {
         const m = mini, P = wedAt(), g = ctx, ay = P.ay;
         const out = m.out, ot = m.ot;
@@ -7707,7 +8013,7 @@ const ROSETTES = [
     { id: 'clean',   silk: 'green',  name: 'Not One Lost',   why: 'A whole week the dog got nothing.' },
     { id: 'clean5',  silk: 'green',  name: 'Ten Clean Weeks', why: 'And nine more like it.' },
     { id: 'after',   silk: 'green',  name: 'After Hours',    why: 'Ten hours after closing, which is ten clean weeks’ worth.' },
-    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all nine of the after-hours games.' },
+    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all ten of the after-hours games.' },
     { id: 'noburn',  silk: 'red',    name: 'Nothing Burnt',  why: 'Five off the barbecue and not one black.' },
 
     { id: 'hundred', silk: 'brass',  name: 'A Hundred Pounds', why: 'A hundred in the till.' },
@@ -7861,7 +8167,7 @@ function sweep(quiet) {
     if (save.tally.loyal >= 10) give('loyal');
     if (save.tally.breeds.length >= 10) give('allsorts');
     if (save.tally.hours >= 10) give('after');
-    if (save.tally.minis.length >= 9) give('three3');
+    if (save.tally.minis.length >= 10) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');
     // the shelves, counted off what is actually on them rather than a number
     const bought = STOCK.filter(i => i.price > 0);
