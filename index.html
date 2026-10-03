@@ -189,6 +189,14 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger .cnt.meat  { color: #a8402a; } #ledger .cnt.meat svg  { fill: #c4472e; }
 #ledger .cnt.pud   { color: #4a3330; } #ledger .cnt.pud svg   { fill: #3d2724; }
 #ledger .cnt.steak { color: #8a3f52; } #ledger .cnt.steak svg { fill: #b2566c; }
+/* The week's wagyu is not one of the steaks, it is the steak: its own count,
+   in the gold it came down in. */
+#ledger .cnt.wag { color: #8a6514; } #ledger .cnt.wag svg { fill: #cc9b1f; }
+/* And a day where every cut was dead centre and the dog had none of it. It
+   sits against the day rather than in with the goods, because it is not a
+   thing that was sold - it is a remark about the day. */
+#ledger td.d .st { width: 11px; height: 11px; margin-left: 5px; fill: #c08f16;
+                   vertical-align: -1px; }
 #ledger tr.extra td.w .cnt { opacity: .9; }
 #ledger td.m { text-align: right; font-family: var(--mono); font-size: 13px;
                font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -1794,6 +1802,13 @@ body.leaving #hud { display: none; }
         <circle cx="7" cy="7" r="1.15"/>
         <circle cx="4.6" cy="9.4" r="1.15"/><circle cx="9.4" cy="9.4" r="1.15"/>
     </symbol>
+    <!-- A five-pointed star, for a day where every cut was dead centre and
+         the dog got none of it. Drawn rather than typed: the character would
+         be whatever the phone happens to have, which on this receipt is a
+         different star every make of handset. -->
+    <symbol id="i-star" viewBox="0 0 16 16">
+        <path d="M8 .9 10.1 5.6 15.2 6.2 11.4 9.7 12.4 14.8 8 12.2 3.6 14.8 4.6 9.7 .8 6.2 5.9 5.6Z"/>
+    </symbol>
     <symbol id="i-cup" viewBox="0 0 14 14">
         <path d="M 4 1.4 H 10 V 5.2 C 10 7.3, 8.7 8.6, 7 8.6 C 5.3 8.6, 4 7.3, 4 5.2 Z"/>
         <path d="M 6 8.4 H 8 V 10.4 H 6 Z"/><path d="M 3.4 10.4 H 10.6 V 12.6 H 3.4 Z"/>
@@ -1979,7 +1994,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.2.0';
+const APP_VERSION = 'v1.2.1';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2377,6 +2392,7 @@ function makeString(day) {
         for (const i of idx.slice(0, want)) string.pud[i] = true;
     }
     loose = []; saved = 0; lost = 0; ate = 0; stole = 0; puds = 0; perfectToday = 0;
+    cutsToday = 0; wagToday = false;
     return n;
 }
 // the arc range a run of sausages covers, twists and all
@@ -2629,7 +2645,17 @@ function ladCut() {
     if (!live || !armed) return;
     for (let k = string.n - 2; k >= 0; k--) {
         const p = pieceAt(string.twists[k]);
-        if (p && p.from <= k && p.to > k) { splitAt(p, k, LAD_Q); return; }
+        if (p && p.from <= k && p.to > k) {
+            splitAt(p, k, LAD_Q);
+            /* A cut through the last twist frees both halves, so the lad can
+               be the one who empties the string - and nothing was watching
+               for it. The day ran on with nothing on the rail until the dog
+               reached the top of it, which is ten seconds of slicing air.
+               The machine has checked this since the day it was written; the
+               lad never did. */
+            if (!pieces.length) finishDay();
+            return;
+        }
     }
 }
 /* The machine takes the bottom link off the string, over and over, until there
@@ -2864,6 +2890,7 @@ function hitSteak(sw) {
 function sliceSteak() {
     const worth = steak.wagyu ? WAGYU_PAY : STEAK_PAY;
     money += worth; roundMoney += worth; steaks++;
+    if (steak.wagyu) wagToday = true;
     save.tally.steaks++;
     if (save.tally.steaks >= 50) award('steaks');
     showHud();
@@ -3093,6 +3120,7 @@ function splitAt(p, k, q) {
     pieces.splice(i, 1, left, right);
     for (const bit of [left, right]) if (bit.from === bit.to) free(bit, q);
     cutFx.push({ k, t0: now(), q });
+    cutsToday++;
     snick(q);
     // a better knife brings the bar down rather than doing the cut for you
     if (q >= PERFECT - (cast.knife.edge || 0)) {
@@ -3177,6 +3205,12 @@ let fedCost = 0;
    `spoiled` of its own for the one stroke, and two counters a scroll apart
    with the same name is a bug waiting to be written. */
 let botched = 0, perfectToday = 0, stoleWeek = 0;
+/* Every cut made today and whether the week's wagyu came down on it - both
+   for the receipt, which is the only place a day is looked back at. A cut by
+   the lad or by the machine counts: they are cuts made in this shop today,
+   and neither of them is ever dead centre, so a day they had a hand in is
+   not a day that was all perfect cuts. */
+let cutsToday = 0, wagToday = false;
 /* Getting one is the only thing the dog ever does, so it is worth the frames.
    It gapes on the way up, snaps at a third of the way through - which is when
    the sausage actually arrives in its mouth and the screen jolts - and then
@@ -3378,7 +3412,7 @@ function startRound(n) {
         seenBreed();                                   // whoever is at the door
         fed = 0; fedCost = 0;                          // a week starts owing nothing
         botched = 0; stoleWeek = 0;                    // and having spoiled nothing
-        miniTook = null;                               // last week's is spent
+        miniTook = null; sunTook = 0;                  // last week's is spent
     }
     roundT0 = now();
     armed = false;
@@ -3489,7 +3523,13 @@ function endRound() {
     // every link off a Saturday string, which is eleven of them against a dog
     // at nearly twice Monday's speed. Monday's four is not the same feat.
     if (saved === string.n && round === DAYS.length) award('saturday');
-    ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, ate, steaks, puds });
+    /* A star on the receipt wants to mean one thing, so it means the whole
+       of it: every cut made today was dead centre, and every sausage on the
+       rail came off it. Two perfect cuts on a day the dog had the other nine
+       is not a perfect day by any reading anybody would recognise. */
+    const star = cutsToday > 0 && perfectToday === cutsToday && saved === string.n;
+    ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, ate,
+                  steaks, puds, star, wag: wagToday });
     /* For the credits, and nothing else - and written down there and then.
        Nothing else in a week calls putSave, so a count kept only in memory
        is a count that is nought every time you come back. */
@@ -3539,6 +3579,28 @@ const tally6 = (cls, icon, n) =>
    here is the one number that would have changed that. The dog getting a single
    sausage on Tuesday is the difference, and a week is long enough that by
    Saturday you have forgotten Tuesday happened. */
+/* Sunday. The shop is shut, you are not in it, and a machine does not need a
+   day off - so the one upgrade that takes the week off you works the day you
+   cannot. Nobody is served: it runs the rail overnight for the trade, at the
+   quality a machine cuts at and with the same third of the run coming wrapped
+   as any other day, and the money is on the card on Monday.
+
+   It is what makes the thing worth two and a half thousand pounds. It gives
+   up every perfect cut in the week and every steak on the slab, which comes
+   to the best part of the week's takings on a shop with the slab and the
+   wagyu stocked; a seventh day of trading is the only thing big enough to
+   put against that. */
+const SUN_LINKS = 25, SUN_SPREAD = 7;
+let sunTook = 0;
+const sundayRun = () =>
+    Math.round((SUN_LINKS + ((Math.random() * SUN_SPREAD) | 0)) *
+               priceOf(BOT_Q) * (1 + BLANKET_SHARE) / 5) * 5;
+function sundayLine() {
+    if (!sunTook) return '';
+    return `<tr class="extra won"><td class="d">Sunday</td>` +
+           `<td class="w">The machine, on its own</td>` +
+           `<td class="m">+ ${money2(sunTook)}</td></tr>`;
+}
 function lastLine() {
     if (miniTook)
         return `<tr class="extra won"><td class="d">After hours</td>` +
@@ -3593,6 +3655,11 @@ function endWeek() {
     /* The week's takings go in the till and stay there. There is no best week
        any more - what you did with the money is the score, and that is kept in
        the shop rather than on a card. */
+    /* The machine's Sunday, added before the week is banked so the six days,
+       the hour after closing and Sunday all add up to the figure underneath
+       them. */
+    sunTook = running('robot') ? sundayRun() : 0;
+    money += sunTook;
     tillFrom = save.bank;             // what the till had before this week went in
     save.bank += money; save.weeks++;
     save.tally.loyal++;
@@ -3623,13 +3690,16 @@ function endWeek() {
     document.getElementById('tillno').textContent = tillNo(stamp);
     document.getElementById('ledger').innerHTML = ledger.map(r =>
         `<tr class="${r.took === top && top > 0 ? 'best' : ''}">` +
-        `<td class="d">${r.day.short}</td>` +
+        `<td class="d">${r.day.short}` +
+        (r.star ? `<svg class="st"><use href="#i-star"/></svg>` : '') + `</td>` +
         `<td class="w">` +
         tally6('meat', 'link', r.sold - (r.puds || 0)) +
         tally6('pud', 'pud', r.puds || 0) +
-        tally6('steak', 'steak', r.steaks) +
+        tally6('steak', 'steak', r.steaks - (r.wag ? 1 : 0)) +
+        // the hundred-pound one is not one of the steaks, it is the steak
+        (r.wag ? `<span class="cnt wag"><svg><use href="#i-steak"/></svg>1</span>` : '') +
         `</td>` +
-        `<td class="m">${money2(r.took)}</td></tr>`).join('') + lastLine();
+        `<td class="m">${money2(r.took)}</td></tr>`).join('') + sundayLine() + lastLine();
     /* One number, and a word under it. The till's running total is on the
        shopfront you are about to be put back on, counting itself up out of a
        till drawer, which is a better place for it than squeezed into a caption
@@ -7975,7 +8045,7 @@ const KIT = [
        joke and it is also the balance: it buys you the afternoon off, not a
        better week. */
     { id: 'robot',     kind: 'help',  name: 'AI butcher',       price: 250000,
-      why: 'It does the cutting. No perfects, no steaks. You watch.' },
+      why: 'It cuts, and it works Sundays. No perfects, no steaks.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -10681,7 +10751,16 @@ document.getElementById('tryon').addEventListener('click', e => {
     else save.worn[item.kind] = item.id;
     tryOn = null;
     justBought = item.id;
-    till(); putSave(); sold(); paintStore();
+    till(); putSave();
+    /* And the wall is looked at. The shopping rosettes are all worked out by
+       sweep(), and sweep() was run on load, at the end of a week, at the end
+       of an hour after closing, and when you tapped something you already
+       owned - everywhere except the one moment any of them can actually come
+       true, which is when you hand the money over. So buying the last thing
+       in the shop did nothing, and A Cut Above turned up later, the next time
+       a finger happened to land on a tile. */
+    sweep();
+    sold(); paintStore();
     spent(item.price);
 });
 document.getElementById('to-shop').addEventListener('click', openStore);
@@ -12019,11 +12098,15 @@ function creditStats() {
     const ms = save.played || 0;
     const hrs = Math.floor(ms / 3600000), mins = Math.round(ms / 60000) % 60;
     const t = ms < 60000 ? 'Under a minute' : hrs ? `${hrs}h ${mins}m` : `${mins}m`;
+    /* Grouped the way the till is. A shop that has been open a year has put
+       four figures over the counter, and 1613 is a number you have to count
+       the digits of. */
+    const num = v => commas(String(v | 0));
     return [['Time in the shop', t],
-            ['Weeks traded', String(save.weeks || 0)],
-            ['Sausages over the counter', String(save.tally.sold || 0)],
-            ['Hours after closing', String(save.tally.hours || 0)],
-            ['Dogs buried', String(save.tally.graves || 0)],
+            ['Weeks traded', num(save.weeks)],
+            ['Sausages over the counter', num(save.tally.sold)],
+            ['Hours after closing', num(save.tally.hours)],
+            ['Dogs buried', num(save.tally.graves)],
             ['Rosettes on the wall', `${save.got.length} of ${ROSETTES.length}`],
             ['In the till', money2(save.bank)]];
 }

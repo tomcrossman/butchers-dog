@@ -444,7 +444,20 @@ are about to be put back on anyway, counting itself up out of a till drawer.
 **The ledger counts in pictures.** "7 sold &middot; 1 steak &middot; dog got 1"
 on every row is a sentence to read six times over; a link, a pudding and a
 steak with a number against each is a thing you take in at a glance, and it is
-what was actually on the rail that day. They differ **as shapes**, not only in
+what was actually on the rail that day.
+
+**The wagyu is not one of the steaks, it is the steak**, so it gets its own
+count in the gold it came down in rather than being added to the pink ones.
+And a day where every cut made in the shop was dead centre and every sausage
+on the rail came off it gets **a star** against the day - drawn rather than
+typed, because the character would be whatever star that phone happens to
+have, which on this receipt is a different star every make of handset. It
+wants to mean one thing, so it means the whole of it: two perfect cuts on a
+day the dog had the other nine is not a perfect day by any reading anybody
+would recognise, and a cut by the lad or by the machine is a cut made in this
+shop today and never dead centre.
+
+They differ **as shapes**, not only in
 colour: three colours of lozenge is three lozenges at this size. A link is a
 slim bent banger; a pudding is the same bend with four white flecks knocked out
 of it, which is how it is drawn on the rail as well; a steak is a wide chop
@@ -545,8 +558,22 @@ bit of the week off you.
 only one that takes the game away from you. It cuts the whole string on its own,
 steadily, at the quality of a machine - which is to say never perfectly and
 never two at once, so a butcher who can still be bothered earns more by hand.
-That is the joke and it is also the balance: it buys you the afternoon off, not
-a better week. An arm comes off a mount at the right-hand jamb for the third of
+
+**And it works Sundays**, which is the only reason anybody would buy it. The
+shop is shut, you are not in it, and a machine does not need a day off - so
+the one upgrade that takes the week off you works the day you cannot. Nobody
+is served: it runs the rail overnight for the trade, twenty-five to thirty-one
+links at the quality a machine cuts at with the same third of the run coming
+wrapped as any other day, and the money is on Monday's card as its own line.
+Fifty pounds or so, give or take five.
+
+It needs to be that big. What it gives up is every perfect cut in the week -
+thirty-odd shillings on a good one - every steak off the slab, and the wagyu,
+which on a shop with both stocked is the best part of a hundred and fifty
+pounds a week. A seventh day of trading is the only thing large enough to put
+against that, and even with it the thing takes the better part of a year to
+pay for itself. That is the balance now: it buys you the week off at roughly
+what the week was worth, rather than costing you a fortune for the privilege. An arm comes off a mount at the right-hand jamb for the third of
 a second each cut takes, two segments with the elbow worked out from the two
 ends so it bends like an arm rather than stretching like a rubber band, and a
 servo - the only sound in this game that is not made of meat. It is built the
