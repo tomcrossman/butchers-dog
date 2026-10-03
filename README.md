@@ -1588,7 +1588,11 @@ twenty-two pounds, about a third on top of a perfect week.
   so that is exactly what happens: a chomp, a veil coming down on its own, and
   a scattering of what is left of her. Short of her, or out of line with her,
   and he kisses the air in front of a church full of people and goes over
-  with it. Three times round without going for it at all and that is its own
+  with it - **and she cries**, because she has not been eaten, she has been
+  left at the altar: brows up in the middle, the mouth turned down and four
+  tears on the go at once, each falling off her and starting again, which is
+  crying rather than two drops of water. She does the same if he never goes
+  for her at all. Three times round without going for it at all and that is its own
   answer. None of the three pays anything.
 - **After the cats.** The shop after dark, and something is in it that should
   not be. **Drag anywhere and the dog goes where your finger is** - not where it
@@ -1680,6 +1684,64 @@ to arrive, and clearing the game away first put the shop floor - an empty rail
 and a dog stood at the bottom of it - on the screen for that half second,
 between the barbecue and the total. It stays up until the card is over it,
 which is a thing the card does anyway.
+
+## The credits
+
+**It rolls when the gold rosette goes up**, which is the last thing there is
+to win, and it is out the back any time after that - under the three switches
+and outside the plate, because it does nothing to the shop, it only tells you
+what the shop came to. A credits roll you can only ever see once is a credits
+roll nobody sees.
+
+The plaque off the setup screen, the three names, three pictures and the
+numbers. The pictures are the game's own drawings at the game's own scale
+rather than illustrations of it - the pair behind the counter, the string on
+the rail with the knife at it, and whatever is actually on your wall - so
+they cannot drift from the game, and the wall of rosettes is your wall, not a
+picture of somebody else's.
+
+**It scrolls itself.** The column is measured once it is built and then moved
+at a fixed sixty-two pixels a second, so a longer roll takes longer rather
+than going faster, and it stops with **Thanks for playing!** in the middle of
+the window rather than running it off the top. He whistles under it every
+eleven seconds, which is the shopfront's own tune and the only music in the
+game.
+
+**The numbers are whatever is true now**, triggered or not: time in the shop,
+weeks traded, sausages over the counter, hours after closing, dogs buried,
+rosettes, and what is in the till. Three of those were already counted for
+other reasons; the sausages, the graves and the time had to be added.
+
+Time in the shop is counted in short pieces rather than from one mark to the
+next, because a tab left open overnight is not a long session, it is a long
+night: a piece longer than the twenty seconds that keeps it short is one
+nobody was here for, and it is thrown away rather than counted.
+
+## The music
+
+**Every after-hours game has a theme under it**, looped: one bar, quiet
+enough to be the room rather than a tune, and short enough that the loop is
+a groove rather than a song going round. A shop after dark gets a walking
+bass; the caff gets two chords off the beat going nowhere pleasantly; the
+barbecue gets a slow shuffle with the third bent the way a blues is; the
+samurai gets five notes and nothing in between; the dream gets an arpeggio
+where nothing moves quickly; the cats get something quick and low and up to
+no good; the three basins get an oom-pah, which is the noise of somebody
+having you over; the scales get three to the bar and a clock behind them;
+and the wedding gets a church, from the back of it.
+
+They are the same oscillators as everything else - a triangle for the
+melody, a thin sine an octave up for air and a sine underneath for the bass
+- so nine themes cost nine lines of numbers and no samples. They peak at
+about a third of what the loudest effect does, which is the whole brief: a
+theme you can hear under a buzzer is a theme that is too loud. It starts
+six tenths of a second after the three notes that announce the game, so it
+is under them rather than over them, and it stops when the game does.
+
+The theme runs on a timer rather than on the clock everything else is timed
+off, so stopping that clock does not stop it - a phone turned on its side
+would go quiet except for the music. It is stopped and started with the
+pause.
 
 ## His drawings
 
