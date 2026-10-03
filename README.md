@@ -663,10 +663,16 @@ expression it has for an empty room.
 
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
-cut at the quality of somebody who has done it a hundred times and is not
-trying to impress. He borrows whoever is behind the counter this week and
-loses the hair on his face, because half of them have a moustache or a beard
-and a seventeen-year-old on his first Saturday has neither. He is a spare pair of hands, not a better player than you.
+and **it is dead centre, every time**. He borrows whoever is behind the
+counter this week and loses the hair on his face, because half of them have a
+moustache or a beard and a seventeen-year-old on his first Saturday has
+neither.
+
+He was on seventy-four - good, not good enough - which made him a pair of
+hands that cost you a shilling every time he used them, and from the week the
+star went on the receipt he was the reason a perfect day was not one. He is an
+apprentice who makes one cut a day and has all day to line it up; being better
+at that one cut than the man paying him is the whole joke of having him.
 
 Take him on and **he turns up in the window**. Every nine seconds he leans
 round the left-hand side of it, has a look at what is going on, and goes back
@@ -1520,6 +1526,41 @@ way through the door, quietly: ten cards one after another is a parade nobody
 asked for, and they are simply up when you look. The counts imply the rosettes
 underneath them, too - a shop with eighty perfect cuts in it plainly had a
 first one.
+
+## Butcher time
+
+Six days where every cut made in the shop was dead centre and every sausage
+came off the rail. Nobody arrives at that by accident, and a rosette on a
+wall is a thin thing to hand somebody for it - so the week stops, everything
+in the shop goes up in the air at once, and the clock goes with it.
+
+It is the samurai's physics at **under half the rate**, which is slow motion
+and not a different game: the same gravity, the same arcs, the sausages
+hanging where you can get at them. Nine seconds of real time, so the slower
+it moves the more of it there is, and about twice as many in the air - it
+opens on a full screen rather than filling up to one, because the week that
+bought this does not then get asked to wait for the first sausage.
+
+It pays twice what the samurai pays and the run on a stroke more than twice,
+because the whole week that bought it was about one stroke doing more than
+one thing. **Two hundred and fifty pounds is the lid.** It is a bonus, not a
+living, and only a machine gets near the top of it.
+
+The big **PERFECT WEEK** banner does not land on it. That one belongs to the
+hour after closing, which turns up a few seconds later on the hour this week
+also earned, and the same words twice running means neither of them - butcher
+time says what it is on the two lines above the window.
+
+It is not an hour after closing: it does not count towards the hours, it is
+not one of the ten, and the hour still happens after it - a week that earns
+this has a clean sheet by definition, so it had one coming anyway. It gets
+its own line on the receipt above Sunday and the hour, because it is the
+week's own doing.
+
+**Dead Centre is that week.** It used to be twenty-five perfect cuts, which
+is a fortnight of ordinary play and lands on a Tuesday without being aimed
+at. It is read straight off the receipt - six days, six stars - so the thing
+that pays it is the thing that is printed.
 
 ## After hours
 

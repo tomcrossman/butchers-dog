@@ -1994,7 +1994,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.2.2';
+const APP_VERSION = 'v1.2.3';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2462,7 +2462,13 @@ const GO_WORDS = ['CUT!', 'SLICE!', 'BUTCHER!', 'CHOP!', 'CARVE!', 'TRIM!',
    five-second day was one thing too many to be holding. The dog does not stop
    dead - it turns round and goes after the bone, which is a few seconds of it
    walking away from the string and giving back everything it had climbed. */
-const TOY_S = 3.2, LAD_Q = 74;
+/* The lad cuts dead centre, every time. He was on seventy-four - good, not
+   good enough - which made him a pair of hands that cost you a shilling
+   every time he used them, and from the week the star went on the receipt he
+   was the reason a perfect day was not one. He is a butcher's apprentice who
+   does one cut a day and has all day to line it up; being better at that one
+   cut than the man paying him is the whole joke of having him. */
+const TOY_S = 3.2, LAD_Q = 100;
 /* What a machine cuts like: good, even, and never better than that. No
    perfect, no doubles, no bonus seconds off the dog. */
 const BOT_Q = 70;
@@ -3136,7 +3142,6 @@ function splitAt(p, k, q) {
         shouts.push({ text: 'PERFECT', x: px, y: py - 30, t0: now(), gold: true });
         save.tally.perfect++; perfectToday++;
         if (perfectToday >= 6) award('six');
-        if (save.tally.perfect >= 25) award('dead');
         if (save.tally.perfect >= 100) award('fifty');
         if (save.tally.perfect >= 500) award('fivehun');
         ping();
@@ -3412,7 +3417,7 @@ function startRound(n) {
         seenBreed();                                   // whoever is at the door
         fed = 0; fedCost = 0;                          // a week starts owing nothing
         botched = 0; stoleWeek = 0;                    // and having spoiled nothing
-        miniTook = null; sunTook = 0;                  // last week's is spent
+        miniTook = null; sunTook = 0; bonusTook = 0;   // last week's is spent
     }
     roundT0 = now();
     armed = false;
@@ -3595,6 +3600,14 @@ let sunTook = 0;
 const sundayRun = () =>
     Math.round((SUN_LINKS + ((Math.random() * SUN_SPREAD) | 0)) *
                priceOf(BOT_Q) * (1 + BLANKET_SHARE) / 5) * 5;
+/* And what the week that could not have gone better was worth on top of
+   itself. Above Sunday and the hour, because it is the week's own doing. */
+function bonusLine() {
+    if (!bonusTook) return '';
+    return `<tr class="extra won"><td class="d">Butcher time</td>` +
+           `<td class="w">Every cut dead centre</td>` +
+           `<td class="m">+ ${money2(bonusTook)}</td></tr>`;
+}
 function sundayLine() {
     if (!sunTook) return '';
     return `<tr class="extra won"><td class="d">Sunday</td>` +
@@ -3699,7 +3712,7 @@ function endWeek() {
         // the hundred-pound one is not one of the steaks, it is the steak
         (r.wag ? `<span class="cnt wag"><svg><use href="#i-steak"/></svg>1</span>` : '') +
         `</td>` +
-        `<td class="m">${money2(r.took)}</td></tr>`).join('') + sundayLine() + lastLine();
+        `<td class="m">${money2(r.took)}</td></tr>`).join('') + bonusLine() + sundayLine() + lastLine();
     /* One number, and a word under it. The till's running total is on the
        shopfront you are about to be put back on, counting itself up out of a
        till drawer, which is a better place for it than squeezed into a caption
@@ -4062,7 +4075,16 @@ function nextRound() {
        hour is for is the dog going hungry, and the count of what the dog has
        had off you is `fed`, which is the number the whole week is already
        judged on. */
-    if (round >= DAYS.length && fed === 0) { startMini(); return; }
+    if (round >= DAYS.length) {
+        if (perfectWeek()) {
+            save.tally.perfweek = (save.tally.perfweek || 0) + 1;
+            award('dead');
+            putSave();
+            startBonus();
+            return;
+        }
+        if (fed === 0) { startMini(); return; }
+    }
     afterMini();
 }
 function afterMini() {
@@ -4285,6 +4307,17 @@ function endMini() {
        line is half a line: it gets counted for what is on there. */
     if (mini.id === 'sauce' && mini.bun && mini.bun.paint.length) sauceScore();
     mini.done = true;
+    /* Butcher time is not an hour after closing: it does not count towards
+       the hours, it is not one of the ten, and the hour after closing still
+       happens after it - a week that earns this has a clean sheet by
+       definition, so it had one coming anyway. */
+    if (mini.bonus) {
+        tuneStop();
+        money += mini.won; showHud();
+        bonusTook = mini.won;
+        setTimeout(() => { mini = null; startMini(); }, 340);
+        return;
+    }
     save.tally.hours++;
     if (!save.tally.minis.includes(mini.id)) save.tally.minis.push(mini.id);
     if (mini.id === 'grill' && mini.bangers.every(b => !b.gone)) award('noburn');
@@ -4321,6 +4354,46 @@ const COIN = 140, BANGER = 440, SAUCE_MAX = 340;
    adds on top. Two in a swipe is the same thing the whole game is about, so it
    pays the way the rail pays it. */
 const KATANA = 150, KATANA_RUN = 110;
+/* ---- butcher time ------------------------------------------------------
+   Six days where every cut made in the shop was dead centre and every
+   sausage came off the rail. Nobody arrives at that by accident, and a
+   rosette on a wall is a thin thing to hand somebody for it - so the week
+   stops, everything in the shop goes up in the air at once, and the clock
+   goes with it. Nine seconds at under half speed, which is the same nine
+   seconds the hour after closing gets and about twice the sausages.
+
+   It pays twice what the samurai pays and the run on a stroke is more than
+   twice, because the whole week that bought it was about one stroke doing
+   more than one thing. Two hundred and fifty pounds is the lid - it is a
+   bonus, not a living. */
+const BT_SECS = 9, BT_SLOW = .45, BT_CAP = 25000;
+const BT_PAY = 320, BT_RUN = 240;
+let bonusTook = 0;
+/* Every day of the week starred: every cut dead centre and the whole rail
+   sold, six times over. It is read off the receipt rather than counted
+   separately, so the thing that pays it is the thing that is printed. */
+const perfectWeek = () =>
+    ledger.length >= DAYS.length && ledger.every(r => r.star);
+function startBonus() {
+    mini = { id: 'ninja', name: 'Butcher time', say: 'Every cut dead centre',
+             secs: BT_SECS, untimed: false, t0: now(), won: 0, done: false,
+             bonus: true, slow: BT_SLOW };
+    miniSetup('ninja');
+    /* It opens on a full screen rather than filling up to one: the week that
+       bought this does not then get asked to wait for the first sausage. */
+    for (let i = 0; i < 13; i++) {
+        const x = W * (.12 + Math.random() * .76);
+        mini.fly.push({ x, y: H * (.2 + Math.random() * 1.1),
+                        vx: (W / 2 - x) * (.3 + Math.random() * .5),
+                        vy: -(700 + Math.random() * 900),
+                        ang: Math.random() * 6, spin: (Math.random() - .5) * 7,
+                        pud: Math.random() < .18 });
+    }
+    mini.next = .18;
+    jingleUp();
+    setTimeout(() => { if (mini && !mini.done) tuneStart('ninja'); }, 620);
+    tick();
+}
 /* What one mouthful in the dream is worth, and what each one in an unbroken
    run adds on top - the rail's own rule again, because a line of them taken
    without dropping off the back of it is the only thing in there that asks
@@ -5128,11 +5201,22 @@ function miniStep(dt) {
         /* Thrown up from under the counter, two or three at a time, aimed so
            they come into the window rather than up its edges. Gravity is the
            same number the halved ones on the shop floor fall at, so the two
-           screens agree about how heavy a sausage is. */
-        mini.next -= dt;
+           screens agree about how heavy a sausage is.
+
+           Butcher time runs the same physics at under half the rate, which
+           is slow motion and not a different game: the sausages hang, the
+           arcs are the same arcs, and there is time to take four in one
+           stroke rather than one in four. The clock on it is real seconds,
+           so the slower it moves the more of it there is. */
+        const dt0 = dt;
+        dt = mini.slow ? dt * mini.slow : dt;
+        mini.next -= dt0;
         if (mini.next <= 0 && left > 1.4) {
-            mini.next = .5 + Math.random() * .45;
-            const n = 1 + (Math.random() < .45 ? 1 : 0) + (Math.random() < .15 ? 1 : 0);
+            mini.next = mini.bonus ? .20 + Math.random() * .18
+                                   : .5 + Math.random() * .45;
+            const n = mini.bonus
+                ? 2 + (Math.random() < .7 ? 1 : 0) + (Math.random() < .35 ? 1 : 0)
+                : 1 + (Math.random() < .45 ? 1 : 0) + (Math.random() < .15 ? 1 : 0);
             for (let i = 0; i < n; i++) {
                 const x = W * (.16 + Math.random() * .68);
                 /* High enough to clear most of the window: at this gravity a
@@ -5158,6 +5242,7 @@ function miniStep(dt) {
         }
         // the stroke only counts for as long as it is a stroke
         if (mini.swipe.length && now() - mini.swipeT > 110) { mini.swipe = []; mini.hit = 0; }
+        dt = dt0;
     } else if (mini.id === 'sauce') {
         // one coming along the counter, and the one you have just done leaving
         if (mini.bun.in > 0) mini.bun.in = Math.max(0, mini.bun.in - dt);
@@ -5435,8 +5520,9 @@ function miniAt(x, y) {
                 vx: f.vx * .4 + Math.cos(a) * sx * 150,
                 vy: f.vy * .4 + Math.sin(a) * sx * 150 - 60,
                 ang: f.ang, spin: f.spin + sx * 6 });
-            const pay = KATANA + (mini.hit - 1) * KATANA_RUN;
-            mini.won += pay;
+            const pay = mini.bonus ? BT_PAY + (mini.hit - 1) * BT_RUN
+                                   : KATANA + (mini.hit - 1) * KATANA_RUN;
+            mini.won = mini.bonus ? Math.min(BT_CAP, mini.won + pay) : mini.won + pay;
             mini.hit > 1 ? chink() : snick(70);
             showHud();
         }
@@ -7293,7 +7379,11 @@ function drawMini(ms) {
        across the middle first and gets out of the way: a whole week without
        the dog taking one is what bought the hour, and you want to be told that
        in the same breath as being shown the reward for it. */
-    const fl = (now() - mini.t0) / 1500;
+    /* Not over butcher time. That one says what it is on the two lines
+       above, and the big banner is the hour after closing's own - it turns
+       up once more a few seconds later, on the hour this week also earned,
+       and the same words twice running means neither of them. */
+    const fl = mini.bonus ? 9 : (now() - mini.t0) / 1500;
     if (fl < 1) {
         ctx.globalAlpha = Math.min(1, (1 - fl) * 4, fl * 6);
         ctx.translate(W / 2, H * .36);
@@ -8027,7 +8117,7 @@ const KIT = [
     { id: 'toy',       kind: 'help',  name: 'Squeaky bone',     price: 24000,
       why: 'One day a week the dog goes after the bone instead.' },
     { id: 'apprentice', kind: 'help',  name: 'An apprentice',    price: 32000,
-      why: 'Cuts one link a day, about halfway through.' },
+      why: 'Cuts one link a day, about halfway through. Dead centre, every time.' },
     /* The most expensive thing in the shop, and the only one that is not
        about money at all. It does not make the dog harder to hit - it makes
        hitting it something you survive. The day still stops there. */
@@ -8106,7 +8196,7 @@ const FRESH = () => ({
        running counts that no other part of the game had a reason to keep. */
     got: [],
     tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0, trebles: 0, doubles: 0,
-             hours: 0, steaks: 0, breeds: [], sold: 0, graves: 0 },
+             hours: 0, steaks: 0, breeds: [], sold: 0, graves: 0, perfweek: 0 },
     /* How long the shop has been open, in milliseconds of it actually being
        in front of you. It is the one number on the credits that cannot be
        worked out from anything else. */
@@ -8211,7 +8301,12 @@ const ROSETTES = [
     { id: 'week',    silk: 'brass',  name: 'Five Weeks In',  why: 'Five weeks in the same shop.' },
     { id: 'buy',     silk: 'brass',  name: 'Stocked Up',     why: 'Ten things bought and paid for.' },
 
-    { id: 'dead',    silk: 'gold',   name: 'Dead Centre',    why: 'Twenty-five perfect cuts.' },
+    /* It was twenty-five perfect cuts, which is a fortnight of ordinary
+       play and lands on a Tuesday without being aimed at. This one has to be
+       gone after: six days, every cut made in the shop dead centre, and
+       every sausage off the rail. */
+    { id: 'dead',    silk: 'gold',   name: 'Dead Centre',
+      why: 'A whole week where every single cut was perfect.' },
     { id: 'fifty',   silk: 'gold',   name: 'A Hundred of Them', why: 'A hundred perfect cuts, all told.' },
     { id: 'fivehun', silk: 'gold',   name: 'Five Hundred',   why: 'Five hundred perfect cuts. Keep going.' },
     /* Two in a swipe is a thing you will do by accident on a wavy Friday, so
@@ -8366,7 +8461,7 @@ function sweep(quiet) {
        the rosettes underneath them, so a wall swept in from an old save does
        not have holes in it that cannot be gone back and filled. */
     if (save.weeks >= 5) give('week');
-    if (save.tally.perfect >= 25) give('dead');
+    if (save.tally.perfweek) give('dead');
     if (save.tally.perfect >= 500) give('fivehun');
     // trebles is what the old count was kept under; ten of those is plainly
     // ten doubles as well, so a wall swept in from before does not lose it
