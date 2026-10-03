@@ -1126,7 +1126,11 @@ A **shop** on the street is a brass plate with three lines on it: the name
 over the window, who is behind the counter and what the dog is (*Reg and
 Nipper the Bulldog*), and when it was last saved - *yesterday*, *two days
 ago*, *3 weeks ago*, and a date once it is further back than that. How far
-through it is sits in the corner as a percentage, and that is the lot. The
+through it is sits in the corner as a percentage, big enough to read at arm's
+length, and that is the lot. The name keeps clear of that corner on every
+line rather than only the ones that happen to wrap short of it, and a
+twenty-six character name with no spaces in it - which somebody will type -
+breaks rather than running off the side of the plate. The
 week count, the hours played, the rosette tally and a numbered heading over
 each plate were all on it at one point, which is the wall and the credits
 said again on a plate that is neither of them.
@@ -1165,6 +1169,12 @@ small caps next to the credits, which is the weight a footnote gets, and
 three shops are not a footnote. It is made of the back room rather than the
 shop floor - brown, like the way out of that room is - and the credits is
 still the footnote, down at the foot of the wall above the version.
+
+**Delete on the left, the way in on the right**, which is both halves of the
+same argument: the right of a pair is where the thing you came to do goes -
+the shelf has said No thanks, Buy it that way round since there was a shelf -
+and the right of a phone is where the thumb lands, which is the last place to
+put the one button on this screen that cannot be undone.
 
 **Load** picks a shop up where you left it: the door comes down over the one
 you are in, that shop is written to its own key on the way out, and the one
@@ -1660,8 +1670,10 @@ twenty-two pounds, about a third on top of a perfect week.
   left.
 - **Meat tower.** The walk-in freezer, and the one thing the game has not
   asked you for yet: put this down without knocking over the last one. A
-  piece is held up for a second so you know what is coming, then it starts
-  down, and **you drag anywhere to move it** - it goes where your finger is
+  piece is held up for a second so you know what is coming, then it comes
+  down fast - four hundred and thirty pixels a second and quicker with every
+  piece, which is a drop rather than a descent; the second you are given is
+  the hold, not the fall - and **you drag anywhere to move it** - it goes where your finger is
   rather than being where it is, because it is a side of meat on the end of
   an arm and not a cursor.
 

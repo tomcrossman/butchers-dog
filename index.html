@@ -901,12 +901,19 @@ body.leaving #hud { display: none; }
              margin-top: -32px; pointer-events: none; }
 /* How far through it is, in the corner. A shop with the whole wall filled
    has the rosette there instead, which says the same thing better. */
-.slot .pc { position: absolute; top: 12px; right: 16px; font-style: normal;
-            font-size: 9.5px; font-weight: 900; letter-spacing: .14em;
-            color: var(--gold); opacity: .62; }
+/* The name keeps off the corner on every line, not only the ones that
+   happened to wrap short of it: a long enough name with nowhere to break
+   would otherwise run straight under the number. */
+.slot:not(.full) b { padding-right: 36px; }
+.slot .pc { position: absolute; top: 13px; right: 16px; font-style: normal;
+            font-size: 14px; font-weight: 900; letter-spacing: .04em;
+            color: var(--gold); opacity: .8; }
 .slot b { display: block; margin: 0 0 2px; font-family: var(--font-display);
           font-weight: 400; font-size: 23px; line-height: 1.12; color: var(--cream);
-          letter-spacing: .02em; }
+          letter-spacing: .02em;
+          /* twenty-six characters and no spaces among them is a name
+             somebody will type, and it ran off the side of the plate */
+          overflow-wrap: anywhere; }
 .slot .who, .slot .when {
     display: block; font-size: 11px; font-weight: 700; line-height: 1.5;
     color: var(--cream); opacity: .62;
@@ -1962,7 +1969,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.1.5';
+const APP_VERSION = 'v1.1.6';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -4872,7 +4879,7 @@ const gasp = () => safely(t => {
    ------------------------------------------------------------------------ */
 const TOWER_FLOOR = () => H * .84;       // the shelf it is all stood on
 const TOWER_WAIT = 1050;                 // how long the next one is held up for
-const TOWER_FALL = 245;                  // pixels a second, before it quickens
+const TOWER_FALL = 430;                  // pixels a second, before it quickens
 const TOWER_GRACE = 5;                   // and the benefit of the doubt, in pixels
 const TOWER_CAP = 12;                    // past which the freezer has no more room
 const TOWER_RUN = [
@@ -4969,7 +4976,7 @@ function towerStep(dt) {
         if (m.pt * 1000 > TOWER_WAIT) { m.phase = 'fall'; m.pt = 0; }
         return;
     }
-    f.y += (TOWER_FALL + m.n * 17) * dt;
+    f.y += (TOWER_FALL + m.n * 28) * dt;
     const rest = towerTopY() - f.h / 2;
     if (f.y >= rest) {
         f.y = rest;
@@ -10894,9 +10901,16 @@ function slotActs() {
     const i = slotPick, s = i ? slotRead(i) : null;
     if (!i) return '';
     if (!s) return `<button class="btn" data-act="new">New shop</button>`;
-    return `<div class="pair"><button class="btn" data-act="load">` +
-           `${i === slot && started ? 'Continue' : 'Load'}</button>` +
-           `<button class="btn wipe-yes" data-act="del">Delete</button></div>`;
+    /* Delete on the left and the way in on the right, which is both halves
+       of the same argument: the right of a pair is where the thing you came
+       to do goes - the shelf has said No thanks, Buy it that way round since
+       there was a shelf - and the right of a phone is where the thumb lands,
+       which is the last place to put the one button here that cannot be
+       undone. */
+    return `<div class="pair">` +
+           `<button class="btn wipe-yes" data-act="del">Delete</button>` +
+           `<button class="btn" data-act="load">` +
+           `${i === slot && started ? 'Continue' : 'Load'}</button></div>`;
 }
 function paintSlots() {
     document.getElementById('slotlist').innerHTML = [1, 2, 3].map(slotCard).join('');
