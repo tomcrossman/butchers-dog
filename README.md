@@ -721,6 +721,12 @@ screen, which is what you are actually doing on a board of thirty-six.
 The apprentice on his shelf has both arms down. A lad on his first Saturday is
 stood waiting to be told what to do, not holding a knife up over his head.
 
+**Each section gets air over its name.** A heading six pixels under the last
+row's price ticket reads as a caption on that row rather than as the name of
+the next lot, and on a board of eight shelves that is eight places where you
+cannot tell where one section stops. The gap goes between shelves rather than
+over every heading, so the first one still sits where it did under the till.
+
 A shop upgrade is not a wardrobe. You do not pick one of them, you switch the
 ones you own on and off, any number at a time, and the tile says On or Off
 rather than Worn or Wear. A line under each says what it does, on the shelf and

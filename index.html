@@ -975,8 +975,13 @@ body.leaving #hud { display: none; }
                     60%  { transform: rotate(560deg) scale(1.22); }
                     to   { transform: rotate(720deg) scale(1); } }
 #stock { width: 100%; max-width: 330px; margin: 8px 0 4px; }
+/* Air over each heading. A section title six pixels under the last row's
+   price ticket reads as a caption on that row rather than a heading for the
+   next, and the shelves ran into each other the whole way down a board of
+   eight of them. The gap goes between shelves rather than over every
+   heading, so the first one still sits where it did. */
 .shelf { margin-bottom: 10px; }
-.shelf { margin-bottom: 10px; }
+.shelf + .shelf { margin-top: 24px; }
 .shelf h3 {
     margin: 0 0 6px; display: flex; justify-content: space-between; align-items: baseline;
     gap: 10px; font-size: 10px; font-weight: 900; letter-spacing: .16em;
@@ -1759,7 +1764,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.0.1';
+const APP_VERSION = 'v1.0.2';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
