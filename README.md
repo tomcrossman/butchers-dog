@@ -1106,13 +1106,53 @@ cannot type in.
 **Out the back is a back room.** The same brickwork the front of the building
 is made of, one bulb over the door and nothing on the walls, with the version
 screwed to the bottom of it rather than floating under whatever the last thing
-on the screen happens to be, and Reset game above it with some room between
+on the screen happens to be, and Start new game above it with some room between
 them - which is where a button that can undo a month goes, and not so close to
 the version label that the two read as one thing. It was the same tiled green as the shop floor,
 which made the one room in this building that is not for customers look like
 the one room that is; then it was match-boarding, which made the back room a
 different building from the shop. It is the same wall as the setup screen, one
 tile, round the back and not painted since.
+
+## Three shops
+
+There are three of them, on the same street, and you can have a shop in each.
+They are **Unit one, Unit two and Unit three**, and the game keeps one save
+under each. Slot one is the key the game has always written to, so a shop that
+was here before there were three is not migrated anywhere - it is simply the
+first of them, exactly as it was left.
+
+A **unit** on the street is a brass plate with the name over the window on it
+and what the shop has done underneath: who is behind the counter and what the
+dog is (*Reg and Nipper the Bulldog*), how many weeks, how long it has been
+open for in hours and minutes, how many rosettes are on the wall out of
+thirty-six, the percentage of them in the corner, and when it was last saved -
+*yesterday*, *two days ago*, *3 weeks ago*, and a date once it is further back
+than that. An empty one is the same plate with nothing screwed to it: **Empty**,
+boarded up, nobody has had the keys. The one you are stood in says **open** and
+has its gold rule drawn in full rather than half.
+
+**A single-shop player never learns there are three.** The street only comes up
+on boot if more than one unit has a shop in it. One shop and you go straight to
+the window, which is what has always happened and what should keep happening -
+being asked which of your three shops you want is only worth asking once there
+is more than one.
+
+Out the back there are two ways onto the street. **Your shops** picks one up
+where you left it: the door comes down over the shop you are in, that shop is
+written to its own key on the way out, and the one you chose is loaded, dealt,
+and its wall swept the same way it is at boot - so a shop opened mid-session is
+the shop you would have booted into. **Start new game** is the old Reset game
+said the right way round. You are not wiping this shop, you are taking another
+unit, and the one you were in is still standing when you come back to it. Take
+an empty one and it goes straight to the setup screen; take one that has a shop
+in it and it asks first, by name: *The Second Shop comes down: the till, the
+wardrobe, the wall and every week of it.*
+
+**The door is the same forty frames either way.** A shop being cleared out and
+a shop being left for the evening look the same from the street, so they are
+the same animation: the shutter comes down over the window with him waving
+behind it, and whatever happens next happens behind it.
 
 And **Meat**, which has no off: every answer is yes, and the only thing being
 chosen is how much you mean it - Yes, Hell yes, Of course, Damn right, Too
@@ -1144,15 +1184,15 @@ SNOSAGE. Getting out again needs nothing at all: it is getting in that is
 guarded, and a password between a man and his own shop is not a safety feature.
 
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
-Reset game - which takes a whole screen to say what it is about to take rather
-than a red line that asks twice - and a debug switch that hands you the whole shop for free and turns every switchable
+Start new game - which takes a whole screen to say what it is about to take
+rather than a red line that asks twice - and a debug switch that hands you the whole shop for free and turns every switchable
 thing on, so an upgrade can be tested in a real week rather than argued about.
 It is a switch in the back room rather than a build flag for exactly that
 reason, it is saved with everything else, and while it is on the version label
 in the corner says so.
 
 With it on there is one more button under the shelves: **a mini-game**, with the
-nine of them to pick from, because the honest way to see the barbecue is to play
+ten of them to pick from, because the honest way to see the barbecue is to play
 a perfect week and the honest way to see it twice is to play two. It puts you
 back on the shopfront when it is done rather than opening a week - it is not
 Saturday night, it is a man in the back room with the lights on.
