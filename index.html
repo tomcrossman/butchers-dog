@@ -1979,7 +1979,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.1.9';
+const APP_VERSION = 'v1.2.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2868,8 +2868,9 @@ function sliceSteak() {
     if (save.tally.steaks >= 50) award('steaks');
     showHud();
     // and the same rule as PERFECT: what you did, not what it paid
-    shouts.push({ text: steak.wagyu ? 'WAGYU!' : 'PRIME CUT',
-                  x: steak.x, y: steak.y - 26, t0: now() });
+    shouts.push(steak.wagyu
+        ? { text: 'WAGYU!', x: steak.x, y: steak.y - 26, t0: now(), wagyu: true, life: 1750 }
+        : { text: 'PRIME CUT', x: steak.x, y: steak.y - 26, t0: now() });
     steak.bits = [-1, 1].map(sx => ({ x: steak.x, y: steak.y, vx: sx * 150, vy: -120,
                                       ang: steak.ang, spin: sx * 5, sx }));
     steak.t0 = now();
@@ -9652,8 +9653,9 @@ function draw() {
 
     // what that swipe was worth, said out loud
     for (let i = shouts.length - 1; i >= 0; i--) {
-        const sh = shouts[i], e = (now() - sh.t0) / 980;
+        const sh = shouts[i], e = (now() - sh.t0) / (sh.life || 980);
         if (e >= 1) { shouts.splice(i, 1); continue; }
+        if (sh.wagyu) { wagyuShout(sh, e); continue; }
         const rise = 1 - Math.pow(1 - Math.min(1, e * 2.2), 3);
         const pop = e < .16 ? .6 + .4 * (e / .16) * (2 - e / .16) : 1;
         ctx.save();
@@ -11563,6 +11565,89 @@ function drawRosette(g, x, y, r, silk, dull, grand) {
     g.fillStyle = dull ? '#4e6f5f' : '#f6e6bd'; g.fill();
     g.restore();
 }
+/* The hundred-pound one does not get the same gold word the rest of the
+   shop gets. It arrives: two rings of rays going off behind it in opposite
+   directions, a dozen sparks thrown out of the middle, the letters punched
+   up half again their own size and settling back, poured in gold rather
+   than filled with it, and a shine running across them on the way out. It
+   happens once a week and it is the best thing in the till, so it is
+   allowed a second and three quarters of showing off. */
+function wagyuShout(sh, e) {
+    const TAU2 = Math.PI * 2, sm = t => t * t * (3 - 2 * t);
+    const fade = e > .78 ? 1 - (e - .78) / .22 : 1;
+    const pop = e < .16 ? .3 + 1.3 * sm(e / .16)
+              : e < .34 ? 1.6 - .3 * sm((e - .16) / .18) : 1.3;
+    ctx.save();
+    ctx.globalAlpha = fade;
+    ctx.translate(clamp(sh.x, 96, W - 96), sh.y - 54 * sm(Math.min(1, e * 1.6)));
+    /* Two wheels turning opposite ways, which is the difference between a
+       burst and a catherine wheel. Flattened, because everything in this
+       window is lit from above and nothing in it is a circle. */
+    for (const [n, dir, lw, col, sp] of [[12, 1, 5, '#fff6dd', 2.4],
+                                         [9, -1, 3, '#f0d484', -3.1]]) {
+        ctx.save();
+        ctx.globalAlpha = fade * Math.max(0, 1 - e * 2.3);
+        ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.lineCap = 'round';
+        for (let r = 0; r < n; r++) {
+            const a = r / n * TAU2 + e * sp * dir;
+            const i0 = 24 + e * 76, i1 = 44 + e * 164;
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(a) * i0, Math.sin(a) * i0 * .64);
+            ctx.lineTo(Math.cos(a) * i1, Math.sin(a) * i1 * .64);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+    // and the sparks, thrown out and twinkling on the way
+    for (let q = 0; q < 11; q++) {
+        const a = q * 2.3999 + .6, t = Math.min(1, e / .72);
+        const d = 26 + sm(t) * (74 + (q % 4) * 28);
+        const tw = Math.abs(Math.sin(e * 11 + q * 1.7));
+        ctx.save();
+        ctx.globalAlpha = fade * (1 - t) * (.4 + .6 * tw);
+        ctx.translate(Math.cos(a) * d, Math.sin(a) * d * .68 - t * 18);
+        ctx.rotate(a + e * 2.6);
+        ctx.fillStyle = q % 3 ? '#ffe9a8' : '#fff8e2';
+        const r = 2.6 + (q % 3) * 1.5;
+        ctx.beginPath();                           // a four-pointed star
+        for (let k = 0; k < 4; k++) {
+            const aa = k * Math.PI / 2;
+            ctx.lineTo(Math.cos(aa) * r * 3, Math.sin(aa) * r * 3);
+            ctx.lineTo(Math.cos(aa + Math.PI / 4) * r * .78,
+                       Math.sin(aa + Math.PI / 4) * r * .78);
+        }
+        ctx.closePath(); ctx.fill();
+        ctx.restore();
+    }
+    ctx.scale(pop, pop);
+    ctx.font = '700 30px "Alfa Slab One", Georgia, serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round';
+    // the dark it is cut out of, then the brass edge inside that
+    ctx.strokeStyle = 'rgba(12,32,24,.95)'; ctx.lineWidth = 9.5;
+    ctx.strokeText(sh.text, 0, 0);
+    ctx.strokeStyle = '#8a5f14'; ctx.lineWidth = 3.4;
+    ctx.strokeText(sh.text, 0, 0);
+    const pour = ctx.createLinearGradient(0, -19, 0, 19);
+    pour.addColorStop(0, '#fff6d8'); pour.addColorStop(.42, '#ffd873');
+    pour.addColorStop(.56, '#eeab25'); pour.addColorStop(1, '#ffe9a8');
+    ctx.fillStyle = pour;
+    ctx.fillText(sh.text, 0, 0);
+    // a shine running across the letters, once, on the way out
+    const tw = ctx.measureText(sh.text).width;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(-tw / 2 - 8, -22, tw + 16, 44); ctx.clip();
+    const at = -tw / 2 - 44 + Math.min(1, e * 1.45) * (tw + 88);
+    const shine = ctx.createLinearGradient(at - 30, 0, at + 30, 0);
+    shine.addColorStop(0, 'rgba(255,255,255,0)');
+    shine.addColorStop(.5, 'rgba(255,255,255,.9)');
+    shine.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = shine;
+    ctx.fillText(sh.text, 0, 0);
+    ctx.restore();
+    ctx.restore();
+}
+
 /* ---- petting the dog ---------------------------------------------------
    There is a dog stood in the window doing nothing between weeks, and the
    first thing anybody does to a dog stood doing nothing is put a hand on its

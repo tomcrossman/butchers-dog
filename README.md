@@ -593,6 +593,16 @@ that would say this is not a piece of wagyu. And it falls in its own light,
 because a hundred pounds coming down has to look like a hundred pounds coming
 down before it is close enough to read.
 
+**And taking it says so.** PRIME CUT gets the same gold word every other
+shout in this game gets; **WAGYU!** gets its own: two wheels of rays turning
+opposite ways behind it, eleven sparks thrown out of the middle and
+twinkling on the way, the letters punched up half again their own size and
+settling back, poured in gold rather than filled with it - a vertical
+gradient with the brass edge inside the dark one - and a shine running
+across them once, on the way out. A second and three quarters rather than
+the usual one. It happens once a week and it is the best thing in the till,
+so it is allowed to show off.
+
 **Dog insurance** is the second most expensive thing in the shop and the only
 other one that is not about money. Twelve hundred pounds, and cutting the dog stops being the end
 of it: it is hurt, the day ends there, and it lives. No vet, no bill, no stone,
