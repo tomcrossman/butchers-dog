@@ -1994,7 +1994,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.2.1';
+const APP_VERSION = 'v1.2.2';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -8225,7 +8225,7 @@ const ROSETTES = [
        the board says so, because a rosette nobody can work out how to get is
        not hard, it is broken. */
     { id: 'four',    silk: 'red',    name: 'A Proper Butcher',
-      why: 'Four or more in one swipe. You will want a Saturday.' },
+      why: 'Four or more in one swipe.' },
 
     { id: 'clean',   silk: 'green',  name: 'Not One Lost',   why: 'A whole week the dog got nothing.' },
     { id: 'clean5',  silk: 'green',  name: 'Ten Clean Weeks', why: 'And nine more like it.' },
@@ -12115,11 +12115,22 @@ function creditStats() {
    what the whole thing has been about. There were three - a string on the
    rail with nothing happening to it, and a row of rosettes - and a credits
    roll is not a gallery. */
-function creditPic() {
-    const c = document.createElement('canvas');
-    const w = 330, h = 210;
-    c.width = w; c.height = h;
+/* The one picture on the roll, and it moves. The two of them behind the
+   counter saying goodbye to you, which is the only thing either of them
+   could be doing at the end of a credits roll - he was stood there holding a
+   knife up, which at the end of a game is a man who has not finished.
+
+   The dog has no body in this game: it is a head over a counter everywhere
+   it appears. So it waves with the one thing a dog can get over a counter,
+   which is a paw, and the head leans into it the way a dog leaning on
+   something does. */
+const CPIC_W = 330, CPIC_H = 210;
+function creditPic(c, ms) {
+    c = c || document.createElement('canvas');
+    const w = CPIC_W, h = CPIC_H;
+    if (c.width !== w) { c.width = w; c.height = h; }
     const g = c.getContext('2d');
+    g.clearRect(0, 0, w, h);
     g.lineJoin = 'round'; g.lineCap = 'round';
     const B = cast ? cast.dog : TIERS[0][0];
     const lg = g.createLinearGradient(0, 0, 0, h);
@@ -12128,13 +12139,54 @@ function creditPic() {
     g.fillStyle = '#174636';
     for (let y = 0; y < h; y += 42) g.fillRect(0, y, w, 2.2);
     for (let x = 0; x < w; x += 52) g.fillRect(x, 0, 2.2, h);
-    drawButcher(g, true, { cx: w * .31, cy: h + 4, k: .78, holds: 'knife',
-                           bot: running('robot') });
-    drawDog(g, w * .74, h - 72, .82 / B.k, { open: 0 }, 0, B, cast ? cast.kit : BARE);
+    /* Two different rates, because two people waving in step is one person
+       waving twice. His is the slower of them; a dog's paw goes quicker than
+       a man's hand and always has. */
+    const t = (ms || 0) / 1000;
+    const hand = Math.sin(t * 4.4) * .34;
+    const paw = Math.sin(t * 6.1 + .8) * .46;
+    const lean = Math.sin(t * 6.1 + .8) * .05;
+    drawButcher(g, true, { cx: w * .31, cy: h + 4, k: .78, holds: 'none',
+                           bot: running('robot'), wave: hand });
+    const dx = w * .74, dy = h - 72, dk = .82 / B.k;
+    g.save();
+    g.translate(dx, dy); g.rotate(lean); g.translate(-dx, -dy);
+    drawDog(g, dx, dy, dk, { open: 0 }, 0, B, cast ? cast.kit : BARE);
+    g.restore();
+    /* The paw goes up on the far side of the head and over the top of it,
+       out where it can be seen: behind the head it is a sliver of leg
+       nobody reads as a dog waving. It swings on the shoulder, which is at
+       the counter - rotate it about the paw and the leg swings instead,
+       which is a dog signalling a left turn. */
+    g.save();
+    g.translate(dx + 56 * dk, h - 14);
+    g.rotate(paw);
+    g.scale(dk, dk);
+    g.fillStyle = B.shade;                       // the foreleg, out of the dark
+    g.beginPath(); g.roundRect(-10, -62, 20, 68, 10); g.fill();
+    g.fillStyle = B.coat;                        // and the paw on the end of it
+    g.beginPath(); g.ellipse(0, -66, 15.5, 14.5, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = B.lit;
+    g.beginPath(); g.ellipse(-4, -71, 8, 7, -.3, 0, Math.PI * 2); g.fill();
+    g.fillStyle = B.shade;                       // three toes and the pad
+    for (let i = -1; i <= 1; i++) {
+        g.beginPath(); g.ellipse(i * 7.4, -74.5, 3.1, 3.6, i * .3, 0, Math.PI * 2); g.fill();
+    }
+    g.beginPath(); g.ellipse(0, -64, 6.4, 5.2, 0, 0, Math.PI * 2); g.fill();
+    g.restore();
     g.fillStyle = 'rgba(0,0,0,.3)'; g.fillRect(0, h - 19, w, 5);
     g.fillStyle = '#e6e0d1'; g.fillRect(0, h - 15, w, 15);
     g.fillStyle = '#fbf8f0'; g.fillRect(0, h - 15, w, 4);
     return c;
+}
+/* It only runs while the roll is up. A canvas three hundred and thirty
+   across is nothing to redraw, and there is no game going on behind it. */
+let picRaf = 0, picEls = [];
+function picFrame() {
+    if (!picEls.length) { picRaf = 0; return; }
+    const ms = performance.now();
+    for (const c of picEls) creditPic(c, ms);
+    picRaf = requestAnimationFrame(picFrame);
 }
 /* The numbers, printed off the same roll as a week's takings. A week gets a
    receipt; a whole shop should get one too, and it is the one layout in
@@ -12170,11 +12222,9 @@ function rollCredits() {
         '<div class="fin"><div class="end">Thanks for playing!</div>' + creditTill() + '</div>';
     el.hidden = false;
     drawSignBoard('roll-sign');
-    for (const c of roll.querySelectorAll('canvas[data-pic]')) {
-        const src = creditPic();
-        c.width = src.width; c.height = src.height;
-        c.getContext('2d').drawImage(src, 0, 0);
-    }
+    picEls = [...roll.querySelectorAll('canvas[data-pic]')];
+    for (const c of picEls) { c.width = CPIC_W; c.height = CPIC_H; }
+    if (!picRaf) picRaf = requestAnimationFrame(picFrame);
     /* Measured after it is in the page, because none of it has a height
        until it is: it starts just under the bottom edge and stops with the
        last line in the middle of the window. */
@@ -12199,6 +12249,7 @@ function shutCredits() {
     const el = document.getElementById('credits');
     el.hidden = true;
     document.getElementById('roll').className = 'roll';
+    picEls = []; cancelAnimationFrame(picRaf); picRaf = 0;
     tuneStop();
     plop(1);
 }

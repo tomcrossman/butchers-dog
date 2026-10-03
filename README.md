@@ -1932,6 +1932,19 @@ whole thing has been about - so it cannot drift from the game. There were
 three: a string on the rail with nothing happening to it, and a row of
 rosettes, and a credits roll is not a gallery.
 
+**And the two of them wave.** He was stood there holding a knife up, which
+at the end of a game is a man who has not finished; the knife has gone and
+the hand is going instead. The dog has no body in this game - it is a head
+over a counter everywhere it appears - so it waves with the one thing a dog
+can get over a counter, a paw up on the far side of its head where it can
+be seen, with the head leaning into it. Behind the head it was a sliver of
+foreleg nobody would read as a dog waving, and the paw swings on the
+shoulder at the counter rather than on itself, which would be a dog
+signalling a left turn. Two different rates, his the slower, because two
+people waving in step is one person waving twice. The picture is the one
+thing on the roll that moves, so it gets a frame loop of its own while the
+credits are up and nothing at all when they are not.
+
 **The numbers come off the same roll as a week's takings.** A week of
 trading gets a receipt, so a whole shop gets one too, and it is the one
 layout in this game that already knows how to put a word on the left and a
