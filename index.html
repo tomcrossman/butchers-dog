@@ -2011,7 +2011,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.3.1';
+const APP_VERSION = 'v1.3.2';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2698,8 +2698,37 @@ const botRun = () => Math.max(3, Math.round(string.n * BOT_SHARE));
    boredom; on a day he does it once and for a reason, with the knife still
    up. One link a day is the whole of his contribution and it used to happen
    off-screen - a sausage you did not cut simply fell off the string. */
-const LAD_PEEK = 1250;
+/* They are on the floor the whole time rather than leaning in and out of
+   the frame. Sliding half a body past the jamb for a second and a quarter
+   was a thing that happened at you, and getting that to read as a head
+   rather than a body sawn off at the chest took a clip that showed as a
+   straight line across the apron.
+
+   They stand at the edges instead, where nothing happens. The string hangs
+   down the middle and swings a quarter of the window either side of it, so
+   the outer eighty pixels of each side are dead for the whole day, and the
+   dog comes up the middle. At this size neither of them is ever near a
+   sausage.
+
+   What they do when they do something is bob: a lift and a squash over
+   four tenths of a second, so you can see which of them it was without
+   either of them arriving. */
+const LAD_PEEK = 420, SIDE_K = .44;
 let ladPeek = 0;
+function drawStaff(ms) {
+    const one = (x, at, opts) => {
+        const br = Math.sin((ms + x * 7) / 940) * .022;
+        const hop = at ? Math.max(0, 1 - (ms - at) / LAD_PEEK) : 0;
+        ctx.save();
+        ctx.translate(x, H - 66 - Math.sin(hop * Math.PI) * 9);
+        ctx.scale(1 - br * .5, 1 + br + hop * .06);
+        drawButcher(ctx, true, { cx: 0, cy: 0, k: SIDE_K, holds: 'none',
+                                 arms: 'down', ...opts });
+        ctx.restore();
+    };
+    if (running('apprentice')) one(32, ladPeek, { young: true });
+    if (running('robot')) one(W - 32, botPeek, { bot: true });
+}
 /* And the machine, on the other side of the window. It used to be a head on
    the man - he had a visor and two green lamps and stood there in his apron
    holding his knife, which was one picture and a good one, but it said the
@@ -9816,48 +9845,8 @@ function draw() {
     if (head) drawHook(at(0)[0] - 7, at(0)[1]);
 
     drawFloor();
-    /* The lad, leaning into the window at the moment he makes his cut -
-       head first and shoulder after, which is what leaning round a doorway
-       looks like, and never more than half of him into the room. In front
-       of the floor and behind the rail: he is stood at the jamb, and the
-       string hangs in the room between him and you. */
-    /* Just his head, up where the string is. The whole of him down by the
-       floor was a second man in the window and a long way from the cut he
-       had come to look at: he is clipped off at the collar, which is the
-       line a head round a door frame is seen to. */
-    if (ladPeek) {
-        const pk = (ms - ladPeek) / LAD_PEEK;
-        if (pk >= 1) ladPeek = 0;
-        else {
-            const e = pk < .18 ? pk / .18 : pk > .68 ? (1 - pk) / .32 : 1;
-            const out = e * e * (3 - 2 * e);
-            const base = H * .40;
-            ctx.save();
-            ctx.beginPath(); ctx.rect(0, 0, W, base + 16); ctx.clip();
-            ctx.translate(-66 + out * 66, base);
-            ctx.rotate(out * .16);
-            drawButcher(ctx, true, { cx: 0, cy: 0, k: .58, holds: 'none',
-                                     arms: 'down', young: true });
-            ctx.restore();
-        }
-    }
-    // and the machine at the other jamb, each time it sends one through
-    if (botPeek) {
-        const pk = (ms - botPeek) / LAD_PEEK;
-        if (pk >= 1) botPeek = 0;
-        else {
-            const e = pk < .18 ? pk / .18 : pk > .68 ? (1 - pk) / .32 : 1;
-            const out = e * e * (3 - 2 * e);
-            const base = H * .40;
-            ctx.save();
-            ctx.beginPath(); ctx.rect(0, 0, W, base + 16); ctx.clip();
-            ctx.translate(W + 66 - out * 66, base);
-            ctx.rotate(-out * .16);
-            drawButcher(ctx, true, { cx: 0, cy: 0, k: .58, holds: 'none',
-                                     arms: 'down', bot: true });
-            ctx.restore();
-        }
-    }
+    /* The two of them, stood at the edges of the window. */
+    drawStaff(ms);
     /* The ones on the hooks go up before the ones still on the string, so the
        string hangs in front of them. It is the thing you are working on; the
        sold ones are stock on a wall behind it. */
@@ -12395,9 +12384,20 @@ function creditPic(c, ms) {
     const hand = Math.sin(t * 4.4) * .34;
     const paw = Math.sin(t * 6.1 + .8) * .46;
     const lean = Math.sin(t * 6.1 + .8) * .05;
-    drawButcher(g, true, { cx: w * .31, cy: h + 4, k: .78, holds: 'none',
+    /* Whoever is on the payroll is in the picture, and all of them are
+       waving. Four different rates, because four people waving in step is
+       one person waving four times - and the two of them who are staff
+       stand further back and half out of the frame at the edges, which is
+       where they stand in the window. */
+    if (running('apprentice'))
+        drawButcher(g, true, { cx: w * .03, cy: h - 2, k: .56, holds: 'none',
+                               young: true, wave: Math.sin(t * 5.3 + 1.9) * .4 });
+    if (running('robot'))
+        drawButcher(g, true, { cx: w * .975, cy: h - 2, k: .58, holds: 'none',
+                               bot: true, wave: Math.sin(t * 3.6 + .4) * .3 });
+    drawButcher(g, true, { cx: w * .30, cy: h + 4, k: .78, holds: 'none',
                            wave: hand });
-    const dx = w * .74, dy = h - 72, dk = .82 / B.k;
+    const dx = w * .64, dy = h - 72, dk = .82 / B.k;
     g.save();
     g.translate(dx, dy); g.rotate(lean); g.translate(-dx, -dy);
     drawDog(g, dx, dy, dk, { open: 0 }, 0, B, cast ? cast.kit : BARE);
@@ -12408,7 +12408,7 @@ function creditPic(c, ms) {
        the counter - rotate it about the paw and the leg swings instead,
        which is a dog signalling a left turn. */
     g.save();
-    g.translate(dx + 56 * dk, h - 14);
+    g.translate(dx + 58 * dk, h - 14);
     g.rotate(paw);
     g.scale(dk, dk);
     g.fillStyle = B.shade;                       // the foreleg, out of the dark

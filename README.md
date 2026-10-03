@@ -596,9 +596,9 @@ two green lamps, an aerial and a grille, stood there in his apron holding his
 knife - which was one picture and a good one, but it said the machine had
 replaced him. It has not. It works out the back and he is still the butcher,
 so the head came off him and the machine got a body of its own: it leans
-round the right-hand jamb of the window on its own eleven-second clock the
-way the lad leans round the left, and it leans into the day every time it
-sends one through. It wears the shop's apron like everybody else and not the
+round the right-hand jamb of the shopfront on its own eleven-second clock
+the way the lad leans round the left, and on the shop floor it stands at the
+right-hand edge all day and bobs every time it sends one through. It wears the shop's apron like everybody else and not the
 shop's colour - the stripe is the same grey the head is pressed out of,
 because a steel head over Reg's blue is Reg in a mask. He is Reg on the
 receipt again, too.
@@ -687,9 +687,22 @@ moment he makes it, and the cut says **APPRENTICE** under the PERFECT it has
 just earned - one link a day out of eleven, and without a word on it you are
 left wondering which of them you did not do.
 
-It is his head and no more of him, clipped off at the collar, up where the
-string is. The whole of him down by the floor was a second man in the window
-and a long way from the cut he had come to look at. He has always done that on the shopfront between
+**And he is on the floor the whole time.** Both of them are. Leaning half a
+body past the jamb for a second and a quarter was a thing that happened at
+you, and getting that to read as a head rather than a body sawn off at the
+chest took a clip that showed as a straight line across the apron.
+
+They stand at the edges of the window instead, where nothing happens: the
+string hangs down the middle and swings a quarter of the window either side
+of it, so the outer eighty pixels of each side are dead for the whole day,
+and the dog comes up the middle. The lad on the left, the machine on the
+right, both of them cut off at the shin by the bottom of the window, which
+is a man stood behind a counter. At that size neither is ever near a
+sausage.
+
+What they do when they do something is **bob**: a lift and a squash over
+four tenths of a second, so you can see which of them it was without either
+of them arriving. He has always done that on the shopfront between
 weeks, every nine seconds, out of boredom; on a day he does it once and for
 a reason. One link a day is his whole contribution and it used to happen
 off-screen, so a sausage you had not cut simply fell off the string.
@@ -2009,7 +2022,7 @@ whole thing has been about - so it cannot drift from the game. There were
 three: a string on the rail with nothing happening to it, and a row of
 rosettes, and a credits roll is not a gallery.
 
-**And the two of them wave.** He was stood there holding a knife up, which
+**And everybody waves.** He was stood there holding a knife up, which
 at the end of a game is a man who has not finished; the knife has gone and
 the hand is going instead. The dog has no body in this game - it is a head
 over a counter everywhere it appears - so it waves with the one thing a dog
@@ -2017,8 +2030,11 @@ can get over a counter, a paw up on the far side of its head where it can
 be seen, with the head leaning into it. Behind the head it was a sliver of
 foreleg nobody would read as a dog waving, and the paw swings on the
 shoulder at the counter rather than on itself, which would be a dog
-signalling a left turn. Two different rates, his the slower, because two
-people waving in step is one person waving twice. The picture is the one
+signalling a left turn. Whoever is on the payroll is in the picture too, and
+waving as well: the lad at the left edge and the machine at the right, both
+further back and half out of the frame, which is where they stand in the
+window. Four different rates, because four people waving in step is one
+person waving four times. The picture is the one
 thing on the roll that moves, so it gets a frame loop of its own while the
 credits are up and nothing at all when they are not.
 
