@@ -134,6 +134,8 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     margin-left: 9px; padding-left: 10px; border-left: 1px solid rgba(246,241,230,.32);
     font-size: .82em; opacity: .72;
 }
+#weekno.gold { color: #f0d484; opacity: 1;
+               text-shadow: 0 0 10px rgba(240,212,132,.85); }
 #weekno { font-family: var(--font); font-weight: 900; font-size: .58em;
           letter-spacing: .08em; text-transform: uppercase; }
 #roundplate.beating { animation: beat .55s ease-in-out infinite alternate; }
@@ -327,6 +329,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
         0 5px 0 rgba(0,0,0,.45);
 }
 #banner .r.go-word { font-size: clamp(38px, 13vw, 62px); color: #8fd6a2; }
+#banner .r.gold-word { font-size: clamp(30px, 10vw, 50px); color: #ffe08a; }
 #banner.go { animation: bannerGo .62s ease-out both; }
 @keyframes bannerGo {
     0%   { transform: translateY(-50%) scale(1.4); opacity: 0; }
@@ -2011,7 +2014,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.3.4';
+const APP_VERSION = 'v1.4.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2512,14 +2515,30 @@ function sendCat() {
     miaow();
     bark(3, { vol: .9, at: .2 });              // and the dog has something to say
 }
+/* How far up the window it gets by the far side, and the hop through the
+   middle of the run. */
+const CAT_RISE = 148, CAT_LIFT = 46;
 function drawCat(ms) {
     if (!cat) return;
     const e = (ms - cat.t0) / (CAT_S * 1000);
     if (e >= 1) { cat = null; return; }
     const x = cat.dir > 0 ? -60 + e * (W + 120) : W + 60 - e * (W + 120);
     const step = Math.sin(e * 46);
+    /* Across the window on a diagonal rather than along the bottom of it.
+       It used to run the floor at a flat height, which is where the lad and
+       the machine come up and where the knife rests - one cat and two
+       heads in a strip of window a sausage deep. It comes in low at one
+       jamb and goes out high at the other, with a lift through the middle
+       of it, so it is only ever down in the corner for the first stride and
+       the last. A cat that crosses a room crosses it where it likes. */
+    const rise = CAT_RISE * e, lift = Math.sin(e * Math.PI) * CAT_LIFT;
+    const y = cat.y - rise - lift;
+    // and it tips the way it is going, which is what running uphill is
+    const tilt = Math.atan2(-(CAT_RISE + Math.cos(e * Math.PI) * Math.PI * CAT_LIFT),
+                            W + 120) * cat.dir;
     ctx.save();
-    ctx.translate(x, cat.y + Math.abs(step) * 2);
+    ctx.translate(x, y + Math.abs(step) * 2);
+    ctx.rotate(tilt);
     ctx.scale(cat.dir * 1.35, 1.35);          // big enough to be worth stopping for
     /* Ginger rather than black. A black cat on a bottle-green wall is a
        cat-shaped piece of wall, and the whole of this upgrade is that the dog
@@ -2766,7 +2785,7 @@ const BOT_MS = 300;
 function botSend() {
     if (!live || !armed) return;
     const posh = running('blankets') && Math.random() < BLANKET_SHARE;
-    const p = priceOf(BOT_Q) * (posh ? BLANKET_PAY : 1);
+    const p = gold(priceOf(BOT_Q) * (posh ? BLANKET_PAY : 1));
     money += p; roundMoney += p;
     botSold++;
     showHud();
@@ -3005,7 +3024,7 @@ function hitSteak(sw) {
     return false;
 }
 function sliceSteak() {
-    const worth = steak.wagyu ? WAGYU_PAY : STEAK_PAY;
+    const worth = gold(steak.wagyu ? WAGYU_PAY : STEAK_PAY);
     money += worth; roundMoney += worth; steaks++;
     if (steak.wagyu) wagToday = true;
     save.tally.steaks++;
@@ -3123,7 +3142,9 @@ function drawSteak(ctx) {
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(ang);
-        ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
+        if (goldWeek) { ctx.shadowColor = 'rgba(250,212,98,.95)'; ctx.shadowBlur = 18;
+                        ctx.shadowOffsetY = 0; }
+        else { ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5; }
         if (half) ctx.scale(half > 0 ? 1 : -1, 1);
         steakShape(ctx, half, steak.wagyu);
         ctx.restore();
@@ -3241,7 +3262,8 @@ function splitAt(p, k, q) {
     snick(q);
     // a better knife brings the bar down rather than doing the cut for you
     if (q >= PERFECT - (cast.knife.edge || 0)) {
-        money += PERFECT_PAY; roundMoney += PERFECT_PAY;
+        const bonus = gold(PERFECT_PAY);
+        money += bonus; roundMoney += bonus;
         showHud();
         const [px, py] = at(string.twists[k]);
         /* No figure on it. The word is the thing you did - the one thing in
@@ -3270,7 +3292,7 @@ function free(bit, q) {
     const [x, y] = at((a + b) / 2);
     saved++;
     if (pudLink(bit.from)) puds++;        // for the ledger, which counts in pictures
-    const p = priceOf(q) * (poshLink(bit.from) ? BLANKET_PAY : 1);
+    const p = gold(priceOf(q) * (poshLink(bit.from) ? BLANKET_PAY : 1));
     money += p; roundMoney += p;
     showHud();
     /* What every single cut was worth used to go up over the cut. Eleven of
@@ -3417,7 +3439,9 @@ function dogStep(dt) {
             if (spat) { yuck(); award('pudding'); } else plop(saved);
         } else {
             lost++; fed++; ate++;
-            fedCost += priceOf(72) * (poshLink(k) ? BLANKET_PAY : 1);
+            // and what the dog takes off you costs double as well, or a
+            // golden week would be the one week its share did not matter
+            fedCost += gold(priceOf(72) * (poshLink(k) ? BLANKET_PAY : 1));
             const rp = document.getElementById('roundplate');
             rp.classList.remove('hurt'); void rp.offsetWidth; rp.classList.add('hurt');
         }
@@ -3495,6 +3519,7 @@ function showHud() {
     document.getElementById('round-val').textContent = DAYS[Math.min(5, round - 1)].name;
     // weeks completed plus the one you are standing in
     document.getElementById('weekno').textContent = `Week ${save.weeks + 1}`;
+    document.getElementById('weekno').classList.toggle('gold', goldWeek);
     /* One number: what is in the till right now, this week's takings included
        as they come in. Kill the dog and the week's money never reaches the
        bank, so the number simply falls back to what it was. */
@@ -3527,6 +3552,7 @@ function startRound(n) {
         wagyuDay = running('wagyu') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
         seenBreed();                                   // whoever is at the door
         fed = 0; fedCost = 0;                          // a week starts owing nothing
+        goldWeek = Math.random() < GOLD_ODDS;          // one in a hundred
         botched = 0; stoleWeek = 0;                    // and having spoiled nothing
         miniTook = null; sunTook = 0; bonusTook = 0;   // last week's is spent
     }
@@ -3567,10 +3593,20 @@ function countdown(n) {
         void bannerEl.offsetWidth;
         bannerEl.classList.add('go');
     };
+    /* Said once, on the Monday, before the three. The rail coming up gold
+       says it louder than any word does, but a thing that doubles the week
+       should be named out loud the once. */
+    if (goldWeek && n === 1) {
+        say('A GOLDEN WEEK', 'gold-word');
+        countT.push(setTimeout(() => { if (round === n && live) { say('3'); beep(0); } }, 1100));
+        countT.push(setTimeout(() => { if (round === n && live) { say('2'); beep(1); } }, 1720));
+        countT.push(setTimeout(() => { if (round === n && live) { say('1'); beep(2); } }, 2340));
+    } else {
     say('3');
     beep(0);
     countT.push(setTimeout(() => { if (round === n && live) { say('2'); beep(1); } }, 620));
     countT.push(setTimeout(() => { if (round === n && live) { say('1'); beep(2); } }, 1240));
+    }
     countT.push(setTimeout(() => {
         if (round !== n || !live) return;
         say(pick(GO_WORDS), 'go-word');
@@ -3718,6 +3754,15 @@ const tally6 = (cls, icon, n) =>
    to the best part of the week's takings on a shop with the slab and the
    wagyu stocked; a seventh day of trading is the only thing big enough to
    put against that. */
+/* One week in a hundred the whole rail comes up gold and everything in the
+   shop is worth twice what it is worth. Nothing about it is skill and there
+   is nothing to do differently: it is the morning you open up and the light
+   is on the meat, and a game about the same six days over and over wants
+   one of those in it. Rolled on Monday, because a week that turned golden
+   on Thursday is a week with two halves. */
+const GOLD_ODDS = .01, GOLD_MULT = 2;
+let goldWeek = false;
+const gold = p => goldWeek ? p * GOLD_MULT : p;
 const SUN_LINKS = 25, SUN_SPREAD = 7;
 let sunTook = 0;
 const sundayRun = () =>
@@ -3734,7 +3779,7 @@ function bonusLine() {
 function sundayLine() {
     if (!sunTook) return '';
     return `<tr class="extra won"><td class="d" colspan="2">Sunday` +
-           `<i>The machine</i></td>` +
+           `<i>AI butcher</i></td>` +
            `<td class="m">+ ${money2(sunTook)}</td></tr>`;
 }
 function lastLine() {
@@ -3794,7 +3839,7 @@ function endWeek() {
     /* The machine's Sunday, added before the week is banked so the six days,
        the hour after closing and Sunday all add up to the figure underneath
        them. */
-    sunTook = running('robot') ? sundayRun() : 0;
+    sunTook = running('robot') ? gold(sundayRun()) : 0;
     money += sunTook;
     tillFrom = save.bank;             // what the till had before this week went in
     save.bank += money; save.weeks++;
@@ -3812,7 +3857,7 @@ function endWeek() {
     const good = fed <= Math.floor(WEEK_TOTAL / 4);
     const top = Math.max(...ledger.map(r => r.took));
 
-    document.getElementById('ribbon').textContent = 'WEEK’S TAKINGS';
+    document.getElementById('ribbon').textContent = goldWeek ? 'A GOLDEN WEEK' : 'WEEK’S TAKINGS';
     /* What comes off the top of a till roll: whose shop it is, what it says
        under the name on the fascia, and the two things a receipt always
        carries - when it was and who served you. */
@@ -7763,6 +7808,20 @@ function fillPoly(ctx, p) {
 function drawPiece(piece, alpha = 1) {
     const [a, b] = spanOf(piece);
     ctx.globalAlpha = alpha;
+    /* Gold off the meat rather than gold meat. Painting a sausage yellow is
+       a yellow sausage; three fills of the same shape with a gold shadow
+       and no offset under it is a sausage with the light coming off it,
+       which is the thing a golden week is actually about. */
+    if (goldWeek) {
+        ctx.save();
+        ctx.shadowColor = 'rgba(250,212,98,.95)';
+        ctx.shadowBlur = 15 + Math.sin(now() / 240) * 5;
+        ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+        fillPoly(ctx, ribbon(piece));
+        ctx.fillStyle = '#e8be55';
+        ctx.fill(); ctx.fill(); ctx.fill();
+        ctx.restore();
+    }
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 11;
     ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 6;
@@ -9346,7 +9405,9 @@ function drawLoose(ms) {
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate((1 - ease) * 2.2 + Math.sin((ms - l.t0) / 260) * .05 * ease);
-        ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
+        if (goldWeek) { ctx.shadowColor = 'rgba(250,212,98,.95)'; ctx.shadowBlur = 16;
+                        ctx.shadowOffsetY = 0; }
+        else { ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4; }
         ctx.beginPath();
         ctx.ellipse(0, 0, 15.5, 29, 0, 0, Math.PI * 2);
         ctx.fillStyle = P.body; ctx.fill();
@@ -9554,7 +9615,8 @@ const paler = (hex, k = .4) => {
 };
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null,
                                    winded = false, bot = false, young = false,
-                                   back = false, wave = 0, arms = null } = {}) {
+                                   back = false, buzz = false,
+                                   wave = 0, arms = null } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
     /* The apprentice is the lad. Whoever is behind the counter this week has a
        moustache or a beard half the time, and a seventeen-year-old on his
@@ -9653,7 +9715,7 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     /* With the machine switched on it is the machine standing there, in his
        apron, holding his knife. That is the joke of the upgrade said in one
        picture and it costs nothing to say. */
-    if (bot) { botHead(ctx, back); ctx.restore(); return; }
+    if (bot) { botHead(ctx, back, buzz); ctx.restore(); return; }
     // the head
     blob(SKIN, () => ctx.ellipse(0, -106, 41, 48, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1]) blob(SKIN_D, () => ctx.ellipse(sx * 40, -104, 7, 10, 0, 0, Math.PI * 2));
@@ -9766,7 +9828,7 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
    across where the eyes go, two green lamps behind it, an aerial, and the
    grille where a mouth would be. Everything on it is a rounded rectangle,
    because that is what this sort of thing is actually made of. */
-function botHead(g, back) {
+function botHead(g, back, buzz) {
     const blob = (fill, path) => { g.beginPath(); path(); g.closePath(); g.fillStyle = fill; g.fill(); };
     // wide enough to cover the one he had, which is drawn before this and in skin
     /* Taller than it is wide, the way a head is. It was eighty-four across
@@ -9800,8 +9862,29 @@ function botHead(g, back) {
         blob('#6c727a', () => { g.roundRect(-25, -100, 50, 15, 5); });  // the grille
         blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 9.6 - 1.6, -100, 3.2, 15); });
     }
+    /* The aerial, and on the credits roll it is working: the mast whips
+       about a bit and three rings go off the top of it, which is what an
+       aerial doing anything has looked like since somebody first drew one.
+       It is off everywhere else - a machine signalling all day on the shop
+       floor is a machine with something to say, and it has not. */
+    const bz = buzz ? now() / 1000 : 0;
+    g.save();
+    if (buzz) { g.translate(0, -166); g.rotate(Math.sin(bz * 19) * .07); g.translate(0, 166); }
     blob('#c3c8cf', () => { g.roundRect(-2.5, -194, 5, 28, 2); });      // the aerial
-    blob('#7fe0a8', () => g.arc(0, -198, 5.5, 0, Math.PI * 2));
+    blob('#7fe0a8', () => g.arc(0, -198, 5.5 + (buzz ? Math.sin(bz * 9) * .9 : 0),
+                                0, Math.PI * 2));
+    if (buzz) {
+        g.strokeStyle = '#7fe0a8'; g.lineWidth = 2.4; g.lineCap = 'round';
+        for (let i = 0; i < 3; i++) {
+            const ph = ((bz * 1.5 + i / 3) % 1);
+            g.globalAlpha = Math.min(1, (1 - ph) * 1.6) * .85;
+            g.beginPath();
+            g.arc(0, -198, 9 + ph * 24, -Math.PI * .86, -Math.PI * .14);
+            g.stroke();
+        }
+        g.globalAlpha = 1;
+    }
+    g.restore();
     for (const sx of [-1, 1])                                          // and the ears
         blob('#6c727a', () => { g.roundRect(sx * 45 - (sx > 0 ? 0 : 7), -137, 7, 25, 3); });
 }
@@ -12441,7 +12524,8 @@ function creditPic(c, ms) {
                                young: true, wave: Math.sin(t * 5.3 + 1.9) * .4 });
     if (running('robot'))
         drawButcher(g, true, { cx: w * .975, cy: h - 2, k: .58, holds: 'none',
-                               bot: true, wave: Math.sin(t * 3.6 + .4) * .3 });
+                               bot: true, buzz: true,
+                               wave: Math.sin(t * 3.6 + .4) * .3 });
     drawButcher(g, true, { cx: w * .30, cy: h + 4, k: .78, holds: 'none',
                            wave: hand });
     const dx = w * .64, dy = h - 72, dk = .82 / B.k;

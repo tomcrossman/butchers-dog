@@ -656,8 +656,13 @@ no new dog on Monday - the week carries on with everything taken so far. It
 does not make the dog harder to hit; it makes hitting it something you survive.
 
 **A cat**, four hundred and eighty, is the small favour to the bone's big one:
-one walks along the floor every day at a moment nobody picked, and the dog
-stops dead to watch it go. It is ginger. It was black, and a black cat on a
+one goes across the window every day at a moment nobody picked, and the dog
+stops dead to watch it go. **It crosses on a diagonal**, in low at one jamb
+and out high at the other with a hop through the middle and a tilt on it the
+way a thing running uphill tilts. It used to run the floor at a flat height,
+which is where the lad and the machine come up and where the knife rests -
+one cat and two heads in a strip of window a sausage deep. A cat that
+crosses a room crosses it where it likes. It is ginger. It was black, and a black cat on a
 bottle-green wall is a cat-shaped piece of the wall - which is no good at all
 when the whole of the upgrade is that you watch the dog watch it.
 
@@ -1622,6 +1627,32 @@ week's own doing.
 is a fortnight of ordinary play and lands on a Tuesday without being aimed
 at. It is read straight off the receipt - six days, six stars - so the thing
 that pays it is the thing that is printed.
+
+## A golden week
+
+One week in a hundred the whole rail comes up gold and everything in the
+shop is worth **twice** what it is worth. Nothing about it is skill and
+there is nothing to do differently: it is the morning you open up and the
+light is on the meat, and a game about the same six days over and over
+wants one of those in it.
+
+It is rolled on the Monday, because a week that turned golden on Thursday
+is a week with two halves. Everything the meat is worth doubles with it -
+every link, the perfect on top of a cut, every steak, the wagyu, what the
+machine sends through and its Sunday - and so does **what the dog takes off
+you**, or a golden week would be the one week its share did not matter.
+What the hour after closing pays is left alone: that is not meat.
+
+**Gold off the meat rather than gold meat.** Painting a sausage yellow is a
+yellow sausage. It is three fills of the same shape with a gold shadow and
+no offset under it, breathing on a four-second clock, so what you get is a
+sausage with the light coming off it. The same on the ones on the hooks and
+on the steaks.
+
+It is named out loud once, across the window before the count on Monday,
+the week on the day plate goes gold for the six days, and the ribbon on the
+card at the end says **A GOLDEN WEEK** instead of the week's takings. After
+that the rail says it better than any word does.
 
 ## After hours
 
