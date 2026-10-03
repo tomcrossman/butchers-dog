@@ -904,7 +904,7 @@ body.leaving #hud { display: none; }
 /* The name keeps off the corner on every line, not only the ones that
    happened to wrap short of it: a long enough name with nowhere to break
    would otherwise run straight under the number. */
-.slot:not(.full) b { padding-right: 36px; }
+.slot:not(.full):not(.empty) b { padding-right: 36px; }
 .slot .pc { position: absolute; top: 13px; right: 16px; font-style: normal;
             font-size: 14px; font-weight: 900; letter-spacing: .04em;
             color: var(--gold); opacity: .8; }
@@ -1969,7 +1969,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.1.6';
+const APP_VERSION = 'v1.1.7';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -4878,8 +4878,8 @@ const gasp = () => safely(t => {
    better meat on worse and worse foundations.
    ------------------------------------------------------------------------ */
 const TOWER_FLOOR = () => H * .84;       // the shelf it is all stood on
-const TOWER_WAIT = 1050;                 // how long the next one is held up for
-const TOWER_FALL = 430;                  // pixels a second, before it quickens
+const TOWER_WAIT = 700;                  // how long the next one is held up for
+const TOWER_FALL = 620;                  // pixels a second, before it quickens
 const TOWER_GRACE = 5;                   // and the benefit of the doubt, in pixels
 const TOWER_CAP = 12;                    // past which the freezer has no more room
 const TOWER_RUN = [
@@ -4976,7 +4976,7 @@ function towerStep(dt) {
         if (m.pt * 1000 > TOWER_WAIT) { m.phase = 'fall'; m.pt = 0; }
         return;
     }
-    f.y += (TOWER_FALL + m.n * 28) * dt;
+    f.y += (TOWER_FALL + m.n * 38) * dt;
     const rest = towerTopY() - f.h / 2;
     if (f.y >= rest) {
         f.y = rest;

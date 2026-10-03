@@ -1670,10 +1670,11 @@ twenty-two pounds, about a third on top of a perfect week.
   left.
 - **Meat tower.** The walk-in freezer, and the one thing the game has not
   asked you for yet: put this down without knocking over the last one. A
-  piece is held up for a second so you know what is coming, then it comes
-  down fast - four hundred and thirty pixels a second and quicker with every
-  piece, which is a drop rather than a descent; the second you are given is
-  the hold, not the fall - and **you drag anywhere to move it** - it goes where your finger is
+  piece is held up for seven tenths of a second so you know what is coming,
+  then it comes down fast - six hundred and twenty pixels a second and
+  quicker with every piece, better than a thousand by the top, which is a
+  drop rather than a descent; the time you are given is the hold, not the
+  fall - and **you drag anywhere to move it** - it goes where your finger is
   rather than being where it is, because it is a side of meat on the end of
   an arm and not a cursor.
 
