@@ -2011,7 +2011,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.3.3';
+const APP_VERSION = 'v1.3.4';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2740,10 +2740,14 @@ function drawStaff(ms) {
         ctx.restore();
     };
     if (running('apprentice') && ladPeek) {
-        if (ms - ladPeek >= LAD_PEEK) ladPeek = 0; else one(34, ladPeek, { young: true });
+        /* With his knife up. He has just made the one cut he makes all day
+           and he is pleased with it, and from behind an arm in the air is
+           the only thing that says so. */
+        if (ms - ladPeek >= LAD_PEEK) ladPeek = 0;
+        else one(56, ladPeek, { young: true, holds: 'knife', arms: null });
     }
     if (running('robot') && botPeek) {
-        if (ms - botPeek >= LAD_PEEK) botPeek = 0; else one(W - 34, botPeek, { bot: true });
+        if (ms - botPeek >= LAD_PEEK) botPeek = 0; else one(W - 48, botPeek, { bot: true });
     }
 }
 /* And the machine, on the other side of the window. It used to be a head on
@@ -9885,7 +9889,6 @@ function draw() {
 
     drawFloor();
     /* The two of them, stood at the edges of the window. */
-    drawStaff(ms);
     /* The ones on the hooks go up before the ones still on the string, so the
        string hangs in front of them. It is the thing you are working on; the
        sold ones are stock on a wall behind it. */
@@ -10068,6 +10071,11 @@ function draw() {
         drawDog(ctx, x, y, 1.02, pose, ms, breedFor());
     }
     drawToy(ms);                      // over the dog, because it is in its mouth
+    /* Last of the lot. They are at the near edge of the counter and the dog
+       is behind it, so the lad's knife went up behind the dog's ear when he
+       was drawn with the floor - and an arm in the air is the only thing
+       that says anything about him from behind. */
+    drawStaff(ms);
 
     }
 

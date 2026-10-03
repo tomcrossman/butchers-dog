@@ -704,6 +704,12 @@ in the middle of it, the cat walks along it and the knife rests in the
 corner of it. The knife's rest moved fifty pixels in off that corner to make
 room.
 
+**The lad comes up with his knife in the air.** He has just made the one
+cut he makes all day and he is pleased with it, and from behind an arm up
+is the only thing that says so. They are drawn last of everything on the
+floor, too: at the near edge of the counter with the dog behind it, which
+is where that knife has to be or it goes up behind the dog's ear.
+
 **And you see the backs of their heads.** They are in the shop looking at
 the rack, not out of the window at you - so it is the skull, the ears, the
 hair across it and whatever is on top, and for the machine a blank grey box
