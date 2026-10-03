@@ -198,8 +198,16 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger td.d .st { width: 11px; height: 11px; margin-left: 5px; fill: #c08f16;
                    vertical-align: -1px; }
 #ledger tr.extra td.w .cnt { opacity: .9; }
+/* The money never breaks and never shrinks. The middle column is nowrap so
+   a day's pictures stay on one line, which on the lines that carry words
+   rather than pictures - Sunday, the hour, butcher time - meant a long
+   caption held the whole column open and squeezed the figures off the end
+   of the paper. The figure is the one thing on a receipt that cannot be
+   got wrong, so it takes what it needs and the words wrap. */
 #ledger td.m { text-align: right; font-family: var(--mono); font-size: 13px;
-               font-weight: 700; font-variant-numeric: tabular-nums; }
+               font-weight: 700; font-variant-numeric: tabular-nums;
+               white-space: nowrap; }
+#ledger tr.extra td.w { white-space: normal; }
 #ledger tr.shut td { opacity: .35; }
 #ledger tr.best td.m { color: #1f7a3f; }
 /* The hour after closing is not one of the six days, so it does not get a day
@@ -1994,7 +2002,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.2.3';
+const APP_VERSION = 'v1.2.4';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3605,13 +3613,13 @@ const sundayRun = () =>
 function bonusLine() {
     if (!bonusTook) return '';
     return `<tr class="extra won"><td class="d">Butcher time</td>` +
-           `<td class="w">Every cut dead centre</td>` +
+           `<td class="w">All six perfect</td>` +
            `<td class="m">+ ${money2(bonusTook)}</td></tr>`;
 }
 function sundayLine() {
     if (!sunTook) return '';
     return `<tr class="extra won"><td class="d">Sunday</td>` +
-           `<td class="w">The machine, on its own</td>` +
+           `<td class="w">On its own</td>` +
            `<td class="m">+ ${money2(sunTook)}</td></tr>`;
 }
 function lastLine() {
