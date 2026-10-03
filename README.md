@@ -4,7 +4,17 @@ A string of sausages hangs down the page. Cut them off it, one swipe at a
 time, before the dog gets up the string and eats what is left.
 
 A single self-contained `index.html`, a service worker and four icons. No
-build step, no dependencies, served from GitHub Pages. Sister to Perfect
+build step, no dependencies, served from GitHub Pages.
+
+**The icons are the game's own drawing code**, cut by a script rather than
+drawn a second time in something else - so the dog on the home screen is the
+dog in the window, down to the tufts on its crown, and it cannot drift from
+it. It is the setup screen's picture: the signwritten plaque on the red brick
+wall with the dog on the plate, one drawing scaled four ways, and the maskable
+one has the plate pulled in to three quarters so Android's circle cannot crop
+the frame off it. The one before it was a bulldog on the tiled wall with a
+sausage floating under its chin, cut at v2 and left there while the dog grew
+ears, fur and twenty-three brothers. Sister to Perfect
 Circle and Run Boys, Run, and it borrows every hard lesson they paid for -
 but not their look.
 
@@ -257,6 +267,15 @@ of gold behind the number; the number itself swelling and going white-hot while
 it counts; a run of chinks and the drawer twice; and **the figure that was
 added** riding up over the top of it in green, because a number that climbs
 from one total to another never says how far it climbed.
+
+**The two of them stand in the middle of the window.** They were placed by
+their own origins - a hundred and twelve and two hundred and sixty-eight on a
+canvas three hundred and forty wide - which centres two coordinates and not
+two people: his apron is wider on his left than the raised knife is on his
+right, so the ink of the pair ran from 53 to 331, which is nine pixels of air
+down one side and fifty-three down the other. Both of them moved twenty-two
+to the left and it is thirty-one each side now. The hit boxes went with them,
+because a man you can wind is a man you can wind where he is standing.
 
 **And it goes to the sides of a phone.** The window is capped so that it
 cannot take the whole of a short screen - a shopfront that fills a laptop in

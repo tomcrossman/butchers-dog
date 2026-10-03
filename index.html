@@ -1759,7 +1759,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.0.0';
+const APP_VERSION = 'v1.0.1';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -9910,13 +9910,20 @@ function drawRosette(g, x, y, r, silk, dull, grand) {
 /* Where it stands, where the hand lands and where the hearts come off it. The
    ink of the dog on this canvas runs 213-314 across and 296-391 down, which is
    what the circle is cut to - the butcher is at 120 and must stay out of it. */
-const DOG_AT = [268, 320], PET_AT = [268, 336], PET_R = 74, PET_MS = 1250;
+const DOG_AT = [246, 320], PET_AT = [246, 336], PET_R = 74, PET_MS = 1250;
 // where he stands, and the box you have to hit to catch him with one
-const BUT_AT = [112, 312], OOF_BOX = [54, 152, 174, 400];
+/* Both of them twenty-two pixels to the left of where they were. They were
+   placed by their own origins, and the ink of the pair ran from 53 to 331 on
+   a canvas three hundred and forty wide - nine pixels of air on the right and
+   fifty-three on the left, which is a shop window with the staff stood over
+   to one side of it. Measured and squared up: thirty-one either side. The
+   hit boxes went with them, because a man you can wind is a man you can wind
+   where he is standing. */
+const BUT_AT = [90, 312], OOF_BOX = [32, 152, 152, 400];
 /* And a smaller one inside it, down where the apron does the most work. He is
    drawn from his own middle at nine tenths scale, and the bit in question runs
    from about forty to ninety below that. */
-const GROIN_BOX = [90, 346, 134, 396];
+const GROIN_BOX = [68, 346, 112, 396];
 let petting = null, petRaf = 0;
 function petDog() {
     const t = now();
@@ -10118,7 +10125,7 @@ function drawShopfront() {
         /* The arm has a longer, lazier swing than the rest of him, because a
            man holding a knife over his head for an hour does not hold it
            still - and it goes up with the bounce. */
-        drawButcher(g, true, { cx: 112 + lean * 5, cy: 312 + br * 5 - heft * 11,
+        drawButcher(g, true, { cx: BUT_AT[0] + lean * 5, cy: BUT_AT[1] + br * 5 - heft * 11,
                                k: .88, holds: 'knife', bot: running('robot'),
                                wave: bye ? Math.sin((it - byeT0) / 105) * .72 * (1 - bye * bye)
                                          : Math.sin(it / 1700) * .085 + heft * .13 });
