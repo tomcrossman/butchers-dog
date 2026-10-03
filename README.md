@@ -687,22 +687,28 @@ moment he makes it, and the cut says **APPRENTICE** under the PERFECT it has
 just earned - one link a day out of eleven, and without a word on it you are
 left wondering which of them you did not do.
 
-**And he is on the floor the whole time.** Both of them are. Leaning half a
-body past the jamb for a second and a quarter was a thing that happened at
-you, and getting that to read as a head rather than a body sawn off at the
-chest took a clip that showed as a straight line across the apron.
+**And you see him do it.** Both of them. Leaning half a body in past the
+jamb was a thing that happened at you, and getting it to read as a head
+rather than a body sawn off at the chest took a clip that showed as a
+straight line across the apron. Standing there all day instead put a whole
+small person on the tiles with nothing under them, which is a sticker on a
+wall.
 
-They stand at the edges of the window instead, where nothing happens: the
-string hangs down the middle and swings a quarter of the window either side
-of it, so the outer eighty pixels of each side are dead for the whole day,
-and the dog comes up the middle. The lad on the left, the machine on the
-right, both of them cut off at the shin by the bottom of the window, which
-is a man stood behind a counter. At that size neither is ever near a
-sausage.
+What makes the shopfront work is that the two of them are cut off by the
+counter. The shop floor has no counter but it has the bottom of the window,
+which is the same line - so they **come up from behind it** and go back
+down, head and shoulders over the edge, and nothing is ever sawn through.
+Up for a second and a bit at the moment they do something and gone the rest
+of the time, because the bottom of this window is a busy place: the dog sits
+in the middle of it, the cat walks along it and the knife rests in the
+corner of it. The knife's rest moved fifty pixels in off that corner to make
+room.
 
-What they do when they do something is **bob**: a lift and a squash over
-four tenths of a second, so you can see which of them it was without either
-of them arriving. He has always done that on the shopfront between
+**And you see the backs of their heads.** They are in the shop looking at
+the rack, not out of the window at you - so it is the skull, the ears, the
+hair across it and whatever is on top, and for the machine a blank grey box
+with the aerial on it. No eyes, no moustache, no visor: nothing that only
+works from the front. He has always done that on the shopfront between
 weeks, every nine seconds, out of boredom; on a day he does it once and for
 a reason. One link a day is his whole contribution and it used to happen
 off-screen, so a sausage you had not cut simply fell off the string.

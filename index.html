@@ -2011,7 +2011,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.3.2';
+const APP_VERSION = 'v1.3.3';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2713,21 +2713,38 @@ const botRun = () => Math.max(3, Math.round(string.n * BOT_SHARE));
    What they do when they do something is bob: a lift and a squash over
    four tenths of a second, so you can see which of them it was without
    either of them arriving. */
-const LAD_PEEK = 420, SIDE_K = .44;
+/* The shopfront works because the two of them are cut off by the counter.
+   The shop floor has no counter, but it has the bottom of the window, which
+   is the same line - so they come up from behind it and go back down, head
+   and shoulders over the edge, and nothing is ever sawn through.
+
+   Up for a second and a bit at the moment they do something and gone the
+   rest of the time, because the bottom of this window is a busy place: the
+   dog sits in the middle of it, the cat walks along it and the knife rests
+   in the corner of it. Standing there all day was three of them and a cat
+   in a strip of window a sausage deep. */
+const LAD_PEEK = 1150, SIDE_K = .72;
 let ladPeek = 0;
 function drawStaff(ms) {
     const one = (x, at, opts) => {
-        const br = Math.sin((ms + x * 7) / 940) * .022;
-        const hop = at ? Math.max(0, 1 - (ms - at) / LAD_PEEK) : 0;
+        if (!at) return;
+        const pk = (ms - at) / LAD_PEEK;
+        if (pk >= 1) return 0;
+        const e = pk < .2 ? pk / .2 : pk > .68 ? (1 - pk) / .32 : 1;
+        const up = e * e * (3 - 2 * e);
         ctx.save();
-        ctx.translate(x, H - 66 - Math.sin(hop * Math.PI) * 9);
-        ctx.scale(1 - br * .5, 1 + br + hop * .06);
+        ctx.translate(x, H + 150 - up * 88);
+        ctx.scale(1, 1 + (1 - up) * .04);
         drawButcher(ctx, true, { cx: 0, cy: 0, k: SIDE_K, holds: 'none',
-                                 arms: 'down', ...opts });
+                                 arms: 'down', back: true, ...opts });
         ctx.restore();
     };
-    if (running('apprentice')) one(32, ladPeek, { young: true });
-    if (running('robot')) one(W - 32, botPeek, { bot: true });
+    if (running('apprentice') && ladPeek) {
+        if (ms - ladPeek >= LAD_PEEK) ladPeek = 0; else one(34, ladPeek, { young: true });
+    }
+    if (running('robot') && botPeek) {
+        if (ms - botPeek >= LAD_PEEK) botPeek = 0; else one(W - 34, botPeek, { bot: true });
+    }
 }
 /* And the machine, on the other side of the window. It used to be a head on
    the man - he had a visor and two green lamps and stood there in his apron
@@ -9365,7 +9382,11 @@ function drawLoose(ms) {
    than where it has been. Between swipes it eases back to the corner, which
    is also how you know the game is waiting for you rather than stuck. */
 const knife = { x: 0, y: 0, ang: 0, at: 0 };
-const restPose = () => [W - 46, H - 58, -2.2];
+/* It used to lie in the bottom right-hand corner of the window, which is
+   where the machine now stands. Fifty pixels in from there is still the
+   corner of the counter and nothing else is in it: the string stops a good
+   way above, and the cat walks along the bottom in front of everything. */
+const restPose = () => [W - 100, H - 52, -2.2];
 function knifeStep(dt) {
     let [tx, ty, ta] = restPose();
     let held = 0;
@@ -9529,7 +9550,7 @@ const paler = (hex, k = .4) => {
 };
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null,
                                    winded = false, bot = false, young = false,
-                                   wave = 0, arms = null } = {}) {
+                                   back = false, wave = 0, arms = null } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
     /* The apprentice is the lad. Whoever is behind the counter this week has a
        moustache or a beard half the time, and a seventeen-year-old on his
@@ -9628,7 +9649,7 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
     /* With the machine switched on it is the machine standing there, in his
        apron, holding his knife. That is the joke of the upgrade said in one
        picture and it costs nothing to say. */
-    if (bot) { botHead(ctx); ctx.restore(); return; }
+    if (bot) { botHead(ctx, back); ctx.restore(); return; }
     // the head
     blob(SKIN, () => ctx.ellipse(0, -106, 41, 48, 0, 0, Math.PI * 2));
     for (const sx of [-1, 1]) blob(SKIN_D, () => ctx.ellipse(sx * 40, -104, 7, 10, 0, 0, Math.PI * 2));
@@ -9638,58 +9659,69 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
        seeing half of reads as a bruise rather than a hairstyle. */
     if (B.face === 'none' && !young) for (const sx of [-1, 1])
         blob(B.hair, () => ctx.ellipse(sx * 36, -116, 11, 20, sx * .3, 0, Math.PI * 2));
-    for (const sx of [-1, 1])                               // ruddy from the cold room
-        blob('rgba(211,109,78,.42)', () => ctx.ellipse(sx * 27, -96, 13, 9, 0, 0, Math.PI * 2));
-    for (const sx of [-1, 1]) {
-        /* Screwed shut rather than crossed out: crosses are for the dog, and
-           the dog's crosses mean something a great deal worse than this. */
-        if (winded) blob('#2a201a', () => {
-            ctx.moveTo(sx * 8, -119); ctx.lineTo(sx * 22, -114); ctx.lineTo(sx * 8, -109);
-            ctx.lineTo(sx * 13, -114);
-        });
-        else blob('#2a201a', () => ctx.ellipse(sx * 15, -114, 4.4, happy ? 3.4 : 4.8, 0, 0, Math.PI * 2));
-        blob(B.hair, () => {
-            /* Wide apart either way. Brows that nearly meet read as one V
-               across the middle of the face, which is a scowl whichever way
-               up the two halves of it are. */
-            if (happy) {
-                ctx.moveTo(sx * 12, -129); ctx.quadraticCurveTo(sx * 22, -137, sx * 32, -131);
-                ctx.quadraticCurveTo(sx * 22, -132, sx * 12, -125);
-            } else {
-                ctx.moveTo(sx * 12, -133); ctx.quadraticCurveTo(sx * 22, -126, sx * 32, -118);
-                ctx.quadraticCurveTo(sx * 22, -122, sx * 12, -128);
-            }
-        });
-    }
-    blob(SKIN_D, () => ctx.ellipse(0, -100, 8, 7, 0, 0, Math.PI * 2));
-    // the mouth first, because whatever is on the lip sits over the top of it
-    if (winded) {                                    // the noise a man makes: oof
-        blob('#7a3628', () => ctx.ellipse(0, -72, 11, 13, 0, 0, Math.PI * 2));
-    } else if (happy) {
-        blob('#7a3628', () => ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2));
-        ctx.save();
-        ctx.beginPath(); ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2); ctx.clip();
-        blob('#fdf7e8', () => { ctx.rect(-18, -88, 36, 12); });
-        blob('#d4667c', () => ctx.ellipse(0, -66, 10, 7, 0, 0, Math.PI * 2));
-        ctx.restore();
+    /* Turned round. They are in the shop looking at the rack, not out of
+       the window at you - so what you get is the back of a head: the skull,
+       the ears, the hair across it and whatever is on top. No eyes, no
+       moustache, nothing that only works from the front. */
+    if (back) {
+        blob(B.hair, () => ctx.ellipse(0, -112, 38, 41, 0, 0, Math.PI * 2));
+        blob(B.hair, () => ctx.ellipse(0, -72, 28, 13, 0, 0, Math.PI * 2));
+        for (const sx of [-1, 1])                 // the ears, from behind
+            blob(SKIN_D, () => ctx.ellipse(sx * 39, -104, 8, 11, 0, 0, Math.PI * 2));
     } else {
-        blob('#8a4436', () => {
-            ctx.moveTo(-15, -68); ctx.quadraticCurveTo(0, -80, 15, -68);
-            ctx.quadraticCurveTo(0, -74, -15, -68);
+        for (const sx of [-1, 1])                               // ruddy from the cold room
+            blob('rgba(211,109,78,.42)', () => ctx.ellipse(sx * 27, -96, 13, 9, 0, 0, Math.PI * 2));
+        for (const sx of [-1, 1]) {
+            /* Screwed shut rather than crossed out: crosses are for the dog, and
+               the dog's crosses mean something a great deal worse than this. */
+            if (winded) blob('#2a201a', () => {
+                ctx.moveTo(sx * 8, -119); ctx.lineTo(sx * 22, -114); ctx.lineTo(sx * 8, -109);
+                ctx.lineTo(sx * 13, -114);
+            });
+            else blob('#2a201a', () => ctx.ellipse(sx * 15, -114, 4.4, happy ? 3.4 : 4.8, 0, 0, Math.PI * 2));
+            blob(B.hair, () => {
+                /* Wide apart either way. Brows that nearly meet read as one V
+                   across the middle of the face, which is a scowl whichever way
+                   up the two halves of it are. */
+                if (happy) {
+                    ctx.moveTo(sx * 12, -129); ctx.quadraticCurveTo(sx * 22, -137, sx * 32, -131);
+                    ctx.quadraticCurveTo(sx * 22, -132, sx * 12, -125);
+                } else {
+                    ctx.moveTo(sx * 12, -133); ctx.quadraticCurveTo(sx * 22, -126, sx * 32, -118);
+                    ctx.quadraticCurveTo(sx * 22, -122, sx * 12, -128);
+                }
+            });
+        }
+        blob(SKIN_D, () => ctx.ellipse(0, -100, 8, 7, 0, 0, Math.PI * 2));
+        // the mouth first, because whatever is on the lip sits over the top of it
+        if (winded) {                                    // the noise a man makes: oof
+            blob('#7a3628', () => ctx.ellipse(0, -72, 11, 13, 0, 0, Math.PI * 2));
+        } else if (happy) {
+            blob('#7a3628', () => ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2));
+            ctx.save();
+            ctx.beginPath(); ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2); ctx.clip();
+            blob('#fdf7e8', () => { ctx.rect(-18, -88, 36, 12); });
+            blob('#d4667c', () => ctx.ellipse(0, -66, 10, 7, 0, 0, Math.PI * 2));
+            ctx.restore();
+        } else {
+            blob('#8a4436', () => {
+                ctx.moveTo(-15, -68); ctx.quadraticCurveTo(0, -80, 15, -68);
+                ctx.quadraticCurveTo(0, -74, -15, -68);
+            });
+        }
+        if (B.face === 'beard') blob(B.hair, () => {
+            ctx.moveTo(-24, -86); ctx.quadraticCurveTo(-20, -52, 0, -50);
+            ctx.quadraticCurveTo(20, -52, 24, -86);
+            ctx.quadraticCurveTo(0, -74, -24, -86);
+        });
+        if (B.face !== 'none') blob(B.hair, () => {
+            ctx.moveTo(0, -94);
+            ctx.quadraticCurveTo(-17, -100, -32, -88 + droop * 7);
+            ctx.quadraticCurveTo(-21, -78 + droop * 8, 0, -84);
+            ctx.quadraticCurveTo(21, -78 + droop * 8, 32, -88 + droop * 7);
+            ctx.quadraticCurveTo(17, -100, 0, -94);
         });
     }
-    if (B.face === 'beard') blob(B.hair, () => {
-        ctx.moveTo(-24, -86); ctx.quadraticCurveTo(-20, -52, 0, -50);
-        ctx.quadraticCurveTo(20, -52, 24, -86);
-        ctx.quadraticCurveTo(0, -74, -24, -86);
-    });
-    if (B.face !== 'none') blob(B.hair, () => {
-        ctx.moveTo(0, -94);
-        ctx.quadraticCurveTo(-17, -100, -32, -88 + droop * 7);
-        ctx.quadraticCurveTo(-21, -78 + droop * 8, 0, -84);
-        ctx.quadraticCurveTo(21, -78 + droop * 8, 32, -88 + droop * 7);
-        ctx.quadraticCurveTo(17, -100, 0, -94);
-    });
     // and a hat, which is most of who he is
     if (B.hat === 'boater') {
         blob('#e0c47f', () => { ctx.ellipse(0, -146, 62, 12, 0, 0, Math.PI * 2); });
@@ -9730,7 +9762,7 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
    across where the eyes go, two green lamps behind it, an aerial, and the
    grille where a mouth would be. Everything on it is a rounded rectangle,
    because that is what this sort of thing is actually made of. */
-function botHead(g) {
+function botHead(g, back) {
     const blob = (fill, path) => { g.beginPath(); path(); g.closePath(); g.fillStyle = fill; g.fill(); };
     // wide enough to cover the one he had, which is drawn before this and in skin
     /* Taller than it is wide, the way a head is. It was eighty-four across
@@ -9750,13 +9782,20 @@ function botHead(g) {
     blob('#4a515a', () => { g.roundRect(-16, -84, 32, 34, 4); });
     blob('#9aa0a8', () => { g.roundRect(-45, -170, 90, 108, 22); });    // the head
     blob('#7b818a', () => { g.roundRect(-45, -170, 90, 14, [22, 22, 2, 2]); });
-    blob('#2e343c', () => { g.roundRect(-36, -143, 72, 35, 15); });     // the visor
-    for (const sx of [-1, 1])                                          // the lamps
-        blob('#7fe0a8', () => g.ellipse(sx * 16.5, -126, 7.8, 8.6, 0, 0, Math.PI * 2));
-    for (const sx of [-1, 1])
-        blob('#d8fbe8', () => g.ellipse(sx * 16.5 - 2.6, -129, 2.6, 3, 0, 0, Math.PI * 2));
-    blob('#6c727a', () => { g.roundRect(-25, -100, 50, 15, 5); });      // the grille
-    blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 9.6 - 1.6, -100, 3.2, 15); });
+    if (back) {                                 // turned to the rack: a blank box
+        blob('#878d95', () => { g.roundRect(-34, -146, 68, 70, 12); });
+        for (const sx of [-1, 1])
+            blob('#6e747c', () => { g.roundRect(sx * 24 - 4, -140, 8, 56, 4); });
+    }
+    if (!back) {
+        blob('#2e343c', () => { g.roundRect(-36, -143, 72, 35, 15); }); // the visor
+        for (const sx of [-1, 1])                                      // the lamps
+            blob('#7fe0a8', () => g.ellipse(sx * 16.5, -126, 7.8, 8.6, 0, 0, Math.PI * 2));
+        for (const sx of [-1, 1])
+            blob('#d8fbe8', () => g.ellipse(sx * 16.5 - 2.6, -129, 2.6, 3, 0, 0, Math.PI * 2));
+        blob('#6c727a', () => { g.roundRect(-25, -100, 50, 15, 5); });  // the grille
+        blob('#9aa0a8', () => { for (let i = -2; i <= 2; i++) g.rect(i * 9.6 - 1.6, -100, 3.2, 15); });
+    }
     blob('#c3c8cf', () => { g.roundRect(-2.5, -194, 5, 28, 2); });      // the aerial
     blob('#7fe0a8', () => g.arc(0, -198, 5.5, 0, Math.PI * 2));
     for (const sx of [-1, 1])                                          // and the ears
