@@ -2011,7 +2011,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.2.5';
+const APP_VERSION = 'v1.3.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2409,7 +2409,7 @@ function makeString(day) {
         for (const i of idx.slice(0, want)) string.pud[i] = true;
     }
     loose = []; saved = 0; lost = 0; ate = 0; stole = 0; puds = 0; perfectToday = 0;
-    cutsToday = 0; wagToday = false;
+    cutsToday = 0; wagToday = false; botSold = 0;
     return n;
 }
 // the arc range a run of sausages covers, twists and all
@@ -2670,6 +2670,7 @@ function ladCut() {
         const p = pieceAt(string.twists[k]);
         if (p && p.from <= k && p.to > k) {
             splitAt(p, k, LAD_Q);
+            ladPeek = now();            // and he leans in to see what he did
             /* A cut through the last twist frees both halves, so the lad can
                be the one who empties the string - and nothing was watching
                for it. The day ran on with nothing on the rail until the dog
@@ -2681,11 +2682,40 @@ function ladCut() {
         }
     }
 }
-/* The machine takes the bottom link off the string, over and over, until there
-   is nothing left on it. The same cut the lad makes, made as often as it takes.
-   It stops the moment the day does. */
-let botArm = null;
+/* What the machine gets through in a day of its own: a bit over half what
+   is on your rail, and never fewer than three - so Monday is three and
+   Saturday is seven, and the shop having one is felt on a quiet day as well
+   as a busy one. */
+const BOT_SHARE = .6;
+const botRun = () => Math.max(3, Math.round(string.n * BOT_SHARE));
+/* The lad leaning into the window at the moment he makes his cut. He has
+   always done it on the shopfront between weeks, every nine seconds, out of
+   boredom; on a day he does it once and for a reason, with the knife still
+   up. One link a day is the whole of his contribution and it used to happen
+   off-screen - a sausage you did not cut simply fell off the string. */
+const LAD_PEEK = 1250;
+let ladPeek = 0;
+let botArm = null, botSold = 0;
 const BOT_MS = 300;
+/* One off the machine's own rail, already cut. It is not on your string and
+   never was, so the dog cannot have it, it cannot be halved, and it is not
+   one of the ones a perfect day is counted against. */
+function botSend() {
+    if (!live || !armed) return;
+    const posh = running('blankets') && Math.random() < BLANKET_SHARE;
+    const p = priceOf(BOT_Q) * (posh ? BLANKET_PAY : 1);
+    money += p; roundMoney += p;
+    botSold++;
+    showHud();
+    botArm = { t0: now(), x: W - 30, y: RAIL + 62 };
+    servo();
+    const slot = saved + botSold - 1;
+    // the ones on the floor are drawn plain whatever they were, so this is
+    // the same pot every time; the rasher is only ever on the rail
+    loose.push({ x: W + 34, y: RAIL + 62, pot: MEAT, t0: now(),
+                 tx: 48 + (slot % 7) * ((W - 96) / 6), ty: RAIL + 48 });
+    plop(slot + 1);
+}
 function botCut() {
     if (!live || !armed) return;
     const reach = k => { const [x, y] = at(string.twists[Math.min(k, string.n - 2)]);
@@ -3486,13 +3516,25 @@ function countdown(n) {
         // the lad gets to it about halfway down the string
         if (running('apprentice')) countT.push(setTimeout(ladCut,
             string.len / dog.speed * 450));
-        /* And the machine, if the shop has one, just gets on with it: the
-           whole string at an even pace, finishing a comfortable margin before
-           the dog would have reached the top of it. */
+        /* And the machine works out the back. It used to take your string
+           off you - the whole thing at an even pace, finishing a comfortable
+           margin before the dog could have reached the top of it - which
+           meant the one upgrade that cost two and a half thousand pounds
+           was the one that stopped you playing. Every perfect cut in the
+           week went with it, and every steak, and the thing a player does
+           with an upgrade like that is switch it off.
+
+           It never touches the rail you are working now. It runs its own
+           out the back and sends them through already cut: they come in at
+           the right-hand jamb and go straight on a hook in the tray while
+           you carry on. Your string is exactly the string you would have
+           had without it, every perfect on it is still yours, and the
+           machine is money on top rather than money instead. */
         if (running('robot')) {
-            const every = string.len / dog.speed * 1000 * .72 / (string.n + 1);
-            for (let c = 1; c <= string.n; c++)
-                countT.push(setTimeout(botCut, 260 + every * c));
+            const n = botRun();
+            const every = string.len / dog.speed * 1000 * .82 / (n + 1);
+            for (let c = 1; c <= n; c++)
+                countT.push(setTimeout(botSend, 420 + every * c));
         }
         // and on one day of the week the bone comes in, somewhere in the middle
         if (n === toyDay) countT.push(setTimeout(throwToy,
@@ -3551,11 +3593,11 @@ function endRound() {
        is not a perfect day by any reading anybody would recognise. */
     const star = cutsToday > 0 && perfectToday === cutsToday && saved === string.n;
     ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, ate,
-                  steaks, puds, star, wag: wagToday });
+                  steaks, puds, star, wag: wagToday, bot: botSold });
     /* For the credits, and nothing else - and written down there and then.
        Nothing else in a week calls putSave, so a count kept only in memory
        is a count that is nought every time you come back. */
-    save.tally.sold = (save.tally.sold || 0) + saved;
+    save.tally.sold = (save.tally.sold || 0) + saved + botSold;
     putSave();
     tallying = true;
     /* Which of the three lines it gets is the dog's doing, not yours: THE DOG
@@ -3570,7 +3612,7 @@ function endRound() {
                                      : stole ? STOLEN : CLEAN)}</span>` +
         `<span class="n"><svg class="cut" viewBox="0 0 34 26"><use href="#i-pig"/></svg>` +
         `<span>${ticketed(roundMoney)}</span></span>` +
-        `<span class="b">${saved} sold` +
+        `<span class="b">${saved + botSold} sold` +
         `${ate ? ` &middot; dog got ${ate}` : ''}` +
         `${stole ? ' &middot; steak gone' : ''}</span>` +
         (saved === string.n && saved > 1 ? '<span class="flash">The lot</span>' : '');
@@ -3723,7 +3765,7 @@ function endWeek() {
         `<td class="d">${r.day.short}` +
         (r.star ? `<svg class="st"><use href="#i-star"/></svg>` : '') + `</td>` +
         `<td class="w">` +
-        tally6('meat', 'link', r.sold - (r.puds || 0)) +
+        tally6('meat', 'link', r.sold - (r.puds || 0) + (r.bot || 0)) +
         tally6('pud', 'pud', r.puds || 0) +
         tally6('steak', 'steak', r.steaks - (r.wag ? 1 : 0)) +
         // the hundred-pound one is not one of the steaks, it is the steak
@@ -4332,7 +4374,12 @@ function endMini() {
         tuneStop();
         money += mini.won; showHud();
         bonusTook = mini.won;
-        setTimeout(() => { mini = null; startMini(); }, 340);
+        /* And no hour after closing on top of it. The week would have earned
+           one - it has a clean sheet by definition - but two of these back to
+           back is twenty seconds of mini-game between Saturday and the
+           takings, and the second one is the small change. This is the
+           reward for the week; the hour is the reward for not losing one. */
+        setTimeout(() => { mini = null; afterMini(); }, 340);
         return;
     }
     save.tally.hours++;
@@ -4383,7 +4430,7 @@ const KATANA = 150, KATANA_RUN = 110;
    twice, because the whole week that bought it was about one stroke doing
    more than one thing. Two hundred and fifty pounds is the lid - it is a
    bonus, not a living. */
-const BT_SECS = 9, BT_SLOW = .45, BT_CAP = 25000;
+const BT_SECS = 9, BT_SLOW = .26, BT_CAP = 25000;
 const BT_PAY = 320, BT_RUN = 240;
 let bonusTook = 0;
 /* Every day of the week starred: every cut dead centre and the whole rail
@@ -6310,13 +6357,21 @@ function drawMini(ms) {
             ctx.restore();
             const n = mini.swipe.length;
             const [px, py] = mini.swipe[n - 1], [qx, qy] = mini.swipe[Math.max(0, n - 4)];
-            drawKatana(px, py, Math.atan2(py - qy, px - qx));
+            /* Butcher time is not the samurai: it is the week you have just
+               had, so it is the knife off your own block and whichever one
+               you have bought. The sword belongs to the game that is called
+               after it. */
+            if (mini.bonus) drawKnife(ctx, px, py, Math.atan2(py - qy, px - qx),
+                                      .86, cast ? cast.knife : KNIVES[0]);
+            else drawKatana(px, py, Math.atan2(py - qy, px - qx));
         } else {
             /* Parked in the corner between strokes, the way the butcher's own
                knife is on the shop floor. A game about a sword where the sword
                is only on screen while you are already swinging it is a game
                that never told you it had one. */
-            drawKatana(W - 150, H - 210, -2.35);
+            if (mini.bonus) drawKnife(ctx, W - 118, H - 190, -2.35, .86,
+                                      cast ? cast.knife : KNIVES[0]);
+            else drawKatana(W - 150, H - 210, -2.35);
         }
     } else if (mini.id === 'jar') {
         for (const c of mini.coins) {                 // the coins
@@ -8152,7 +8207,7 @@ const KIT = [
        joke and it is also the balance: it buys you the afternoon off, not a
        better week. */
     { id: 'robot',     kind: 'help',  name: 'AI butcher',       price: 250000,
-      why: 'It cuts, and it works Sundays. No perfects, no steaks.' },
+      why: 'Works out the back. More sausages all week, and Sundays.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -9217,7 +9272,9 @@ function drawFloor() {
 }
 function drawLoose(ms) {
     for (const l of loose) {
-        const P = potFor(l.from);
+        // the machine's own come with their pot on them: they were never on
+        // your string, so there is no index to look one up by
+        const P = l.pot || potFor(l.from);
         const e = Math.min(1, (ms - l.t0) / 560);
         const ease = 1 - Math.pow(1 - e, 3);
         const x = l.x + (l.tx - l.x) * ease;
@@ -9742,6 +9799,25 @@ function draw() {
     if (head) drawHook(at(0)[0] - 7, at(0)[1]);
 
     drawFloor();
+    /* The lad, leaning into the window at the moment he makes his cut -
+       head first and shoulder after, which is what leaning round a doorway
+       looks like, and never more than half of him into the room. In front
+       of the floor and behind the rail: he is stood at the jamb, and the
+       string hangs in the room between him and you. */
+    if (ladPeek) {
+        const pk = (ms - ladPeek) / LAD_PEEK;
+        if (pk >= 1) ladPeek = 0;
+        else {
+            const e = pk < .18 ? pk / .18 : pk > .68 ? (1 - pk) / .32 : 1;
+            const out = e * e * (3 - 2 * e);
+            ctx.save();
+            ctx.translate(-74 + out * 74, H * .74);
+            ctx.rotate(out * .15);
+            drawButcher(ctx, true, { cx: 0, cy: 0, k: .6, holds: 'knife',
+                                     young: true });
+            ctx.restore();
+        }
+    }
     /* The ones on the hooks go up before the ones still on the string, so the
        string hangs in front of them. It is the thing you are working on; the
        sold ones are stock on a wall behind it. */

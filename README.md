@@ -555,9 +555,21 @@ things that are all the same thing anyway: somebody or something else taking a
 bit of the week off you.
 
 **AI butcher**, two and a half thousand, is the last thing in the shop and the
-only one that takes the game away from you. It cuts the whole string on its own,
-steadily, at the quality of a machine - which is to say never perfectly and
-never two at once, so a butcher who can still be bothered earns more by hand.
+only one that does not touch the rail you are working. **It works out the
+back.** It used to take your string off you - the whole thing at an even
+pace, finishing a comfortable margin before the dog could have reached the
+top of it - which meant the one upgrade costing two and a half thousand
+pounds was the one that stopped you playing. Every perfect cut in the week
+went with it, and every steak, and what a player does with an upgrade like
+that is switch it off.
+
+It runs its own rail out the back now and sends them through already cut:
+they come in at the right-hand jamb while you work and go straight on a hook
+in the tray, a bit over half what is on your string and never fewer than
+three, so Monday is three and Saturday is seven and having one is felt on a
+quiet day as well as a busy one. Your string is exactly the string you would
+have had without it. Every perfect on it is still yours, the steaks are still
+yours, and the machine is money on top rather than money instead.
 
 **And it works Sundays**, which is the only reason anybody would buy it. The
 shop is shut, you are not in it, and a machine does not need a day off - so
@@ -576,7 +588,9 @@ pay for itself. That is the balance now: it buys you the week off at roughly
 what the week was worth, rather than costing you a fortune for the privilege. An arm comes off a mount at the right-hand jamb for the third of
 a second each cut takes, two segments with the elbow worked out from the two
 ends so it bends like an arm rather than stretching like a rubber band, and a
-servo - the only sound in this game that is not made of meat. It is built the
+servo - the only sound in this game that is not made of meat. The arm
+reaches for each one it sends through rather than for a twist on your
+string. It is built the
 way the small blue ones on a bench are: a bare steel tube for the bone of each
 segment with a moulded shell over the end of it, black hubs at the joints and a
 two-finger gripper on the wrist. And with it switched on, the man on the
@@ -663,7 +677,15 @@ expression it has for an empty room.
 
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
-and **it is dead centre, every time**. He borrows whoever is behind the
+and **it is dead centre, every time**. He leans into the window at the
+moment he makes it - head first and shoulder after, which is what leaning
+round a doorway looks like, and never more than half of him into the room,
+with the knife still up. He has always done that on the shopfront between
+weeks, every nine seconds, out of boredom; on a day he does it once and for
+a reason. One link a day is his whole contribution and it used to happen
+off-screen, so a sausage you had not cut simply fell off the string.
+
+He borrows whoever is behind the
 counter this week and loses the hair on his face, because half of them have a
 moustache or a beard and a seventeen-year-old on his first Saturday has
 neither.
@@ -1534,9 +1556,11 @@ came off the rail. Nobody arrives at that by accident, and a rosette on a
 wall is a thin thing to hand somebody for it - so the week stops, everything
 in the shop goes up in the air at once, and the clock goes with it.
 
-It is the samurai's physics at **under half the rate**, which is slow motion
+It is the samurai's physics at **a quarter of the rate**, which is slow motion
 and not a different game: the same gravity, the same arcs, the sausages
-hanging where you can get at them. Nine seconds of real time, so the slower
+hanging where you can get at them. And it is your own knife on the end of
+the stroke, off your own block, whichever one you have bought - the sword
+belongs to the game that is named after it. Nine seconds of real time, so the slower
 it moves the more of it there is, and about twice as many in the air - it
 opens on a full screen rather than filling up to one, because the week that
 bought this does not then get asked to wait for the first sausage.
@@ -1551,9 +1575,12 @@ hour after closing, which turns up a few seconds later on the hour this week
 also earned, and the same words twice running means neither of them - butcher
 time says what it is on the two lines above the window.
 
-It is not an hour after closing: it does not count towards the hours, it is
-not one of the ten, and the hour still happens after it - a week that earns
-this has a clean sheet by definition, so it had one coming anyway. It gets
+It is not an hour after closing: it does not count towards the hours and it
+is not one of the ten. **And it takes the hour's place** - the week would
+have earned one, having a clean sheet by definition, but two of these back
+to back is twenty seconds of mini-game between Saturday and the takings and
+the second is the small change. This is the reward for the week; the hour is
+the reward for not losing one. It gets
 its own line on the receipt above Sunday and the hour, because it is the
 week's own doing.
 
