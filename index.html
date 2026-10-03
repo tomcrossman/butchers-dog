@@ -207,7 +207,16 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
 #ledger td.m { text-align: right; font-family: var(--mono); font-size: 13px;
                font-weight: 700; font-variant-numeric: tabular-nums;
                white-space: nowrap; }
-#ledger tr.extra td.w { white-space: normal; }
+/* The lines that carry words rather than pictures take the day column and
+   the goods column as one. Three cells, each refusing to wrap, came to more
+   than the paper is wide - and a table at a hundred per cent whose contents
+   will not fit simply runs over the edge of it, which put the figures past
+   the right-hand margin that everything else on the receipt lines up to.
+   What they have to say fits on one line beside the label anyway. */
+#ledger tr.extra td.d { white-space: normal; }
+#ledger tr.extra td.d i { font-style: normal; font-weight: 700; font-size: 10px;
+                          letter-spacing: 0; text-transform: none;
+                          opacity: .6; margin-left: 7px; }
 #ledger tr.shut td { opacity: .35; }
 #ledger tr.best td.m { color: #1f7a3f; }
 /* The hour after closing is not one of the six days, so it does not get a day
@@ -2002,7 +2011,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.2.4';
+const APP_VERSION = 'v1.2.5';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3612,20 +3621,20 @@ const sundayRun = () =>
    itself. Above Sunday and the hour, because it is the week's own doing. */
 function bonusLine() {
     if (!bonusTook) return '';
-    return `<tr class="extra won"><td class="d">Butcher time</td>` +
-           `<td class="w">All six perfect</td>` +
+    return `<tr class="extra won"><td class="d" colspan="2">Butcher time` +
+           `<i>Every one</i></td>` +
            `<td class="m">+ ${money2(bonusTook)}</td></tr>`;
 }
 function sundayLine() {
     if (!sunTook) return '';
-    return `<tr class="extra won"><td class="d">Sunday</td>` +
-           `<td class="w">On its own</td>` +
+    return `<tr class="extra won"><td class="d" colspan="2">Sunday` +
+           `<i>The machine</i></td>` +
            `<td class="m">+ ${money2(sunTook)}</td></tr>`;
 }
 function lastLine() {
     if (miniTook)
-        return `<tr class="extra won"><td class="d">After hours</td>` +
-               `<td class="w">${miniTook.name}</td>` +
+        return `<tr class="extra won"><td class="d" colspan="2">After hours` +
+               `<i>${miniTook.name}</i></td>` +
                `<td class="m">+ ${money2(miniTook.won)}</td></tr>`;
     const off = fed;                     // off the rail, not the ones you spoiled
     if (!off) return '';                 // a clean week with no hour is not a thing
