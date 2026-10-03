@@ -569,6 +569,30 @@ were, or widening it only widens the bezel. The shelf tile is that same head
 shrunk, not a second drawing of it, so it has never been wrong in one place and
 right in the other.
 
+**Wagyu on the slab** is a thousand pounds, which is a shade over the cleaver
+and a shade under the insurance, and it is the only thing in the shop that
+pays in one lump: one piece a week, on a day the week picks for itself, worth
+**a hundred pounds** if you catch it. It is the thing you buy when you have
+decided to stop pottering, and it still has to be caught - the dog will have
+it off you for the same hundred if you are looking at the string when it comes
+down, which is the only thing keeping it honest. It earns itself back in ten
+weeks.
+
+It comes down first on its day and the ordinary steaks stand back for it. It
+used to wait for them to come and go, which on a day that lasts five seconds
+meant it was still queued when the day ended: a hundred pounds a week that
+never once came down. A day will not end while a steak is in the air, so the
+front of the day is the only place it is safe.
+
+It is a paler, pinker thing than a sirloin, with cream fat instead of yellow
+and the fat all the way through it rather than round the outside - thirty-five
+short flecks on a jittered grid, because scattered at random they clump in the
+middle and leave the edges bare, which is a steak somebody has drawn on. No
+gristle: a three-pronged lump of it across a piece of wagyu is the one thing
+that would say this is not a piece of wagyu. And it falls in its own light,
+because a hundred pounds coming down has to look like a hundred pounds coming
+down before it is close enough to read.
+
 **Dog insurance** is the second most expensive thing in the shop and the only
 other one that is not about money. Twelve hundred pounds, and cutting the dog stops being the end
 of it: it is hurt, the day ends there, and it lives. No vet, no bill, no stone,
@@ -995,6 +1019,11 @@ sign. So the line a butcher's keeps for FAMILY BUTCHER says BUTCHER OF THE
 YEAR instead, in brighter gold, with a star either end of it where the diamond
 was. The week's receipt carries the same line under the same name, so it says
 it too.
+
+**And so does the way in.** The chain curtain hangs in the doorway, and the
+doorway is the window the game is played in: the canvas is drawn at the play
+area's size, so stretched across a desktop it was a curtain forty strands
+wide with every strand three times the width of the brass it hangs off.
 
 **And so does the game.** The string hangs down the middle of a tall window,
 which is a phone; given a desktop browser it took the whole of one, and a
@@ -1626,6 +1655,17 @@ twenty-two pounds, about a third on top of a perfect week.
   window does, so it is a shorter window rather than a hidden one. A burnt one is scraped off after a second, and when the
   grill is empty the game is over whatever the clock says - there is nothing to
   watch on an empty barbecue.
+
+**The cats and the dream pay more than they did.** They are the hardest two
+of the nine to play well - one is a two-dimensional drag and the other is a
+sustained hold - and a bot that never misses was taking twenty pounds out of
+them while somebody actually playing took three. What went up is what one cat
+or one mouthful is worth on its own, not the bonus for stringing them
+together: raising the run bonus pays the bot, raising the base pays the
+player. A cat is two pounds twenty rather than one seventy and a mouthful is
+a pound twenty-five rather than ninety pence, which puts both of them on the
+same money as the rest of the nine for a good run and roughly doubles what a
+bad one is worth.
 
 **None of them happens in the shop, bar one.** The bottle-green tiles are the
 wall you work against and they are behind every single thing in this game; six

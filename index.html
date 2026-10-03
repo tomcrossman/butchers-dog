@@ -1537,7 +1537,13 @@ body.leaving #hud { display: none; }
    over the door in summer, and walking through one is the single most
    butcher's-shop thing there is. It is drawn rather than faded, so the shop is
    already behind it when the strands part. */
-#door { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 11;
+/* It hangs in the doorway, and the doorway is the window the game is played
+   in - the canvas is drawn at the play area's size, so stretched across a
+   desktop it was a chain curtain forty strands wide with each strand three
+   times the width of the brass it hangs off. */
+#door { position: fixed; top: 0; bottom: 0; right: auto; left: 50%;
+        margin-left: calc(var(--play) / -2);
+        width: var(--play); height: 100%; z-index: 11;
         pointer-events: none; }
 #door[hidden] { display: none; }
 #app.shake { animation: shake .42s cubic-bezier(.36,.07,.19,.97) both; }
@@ -1884,7 +1890,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.0.8';
+const APP_VERSION = 'v1.0.9';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2675,16 +2681,33 @@ function hitDog(sw) {
    work for it. It is the only thing in the game that asks you to look away
    from the string, which is the whole reason it is there. */
 const STEAK_PAY = 330;
+/* And the one that is not an ordinary steak. A whole week's good work in one
+   catch, once a week, on a day the week picks for itself - and the dog will
+   have it off you for the same hundred pounds if you are looking at the
+   string when it comes down, which is the only thing keeping it honest. */
+const WAGYU_PAY = 10000;
 const STEAK_FROM = 4;           // Thursday, until the slab is stocked
-let steak = null, steakT = 0;
+let steak = null, steakT = 0, wagyuDay = 0;
 const incoming = () => safely(t => {
     tone(t, { freq: 1500, to: 620, dur: .45, type: 'triangle', vol: .09 });
     tone(t, { freq: 2250, to: 930, dur: .45, type: 'sine', vol: .04, at: .02 });
 });
-function dropSteak() {
+/* The good one announces itself differently, because it has to: the whole
+   point of a hundred pounds falling past you is that you knew it was that
+   one before you looked. Three notes going up rather than one coming down,
+   and a shine over the top of them. */
+const goldIn = () => safely(t => {
+    [784, 1175, 1568].forEach((f, i) =>
+        tone(t, { freq: f, dur: .3, type: 'triangle', vol: .11, at: i * .09 }));
+    [1568, 2093, 2637].forEach((f, i) =>
+        tone(t, { freq: f, dur: .5, type: 'sine', vol: .045, at: .1 + i * .09 }));
+    hiss(t, { hp: 7000, dur: .4, vol: .05, at: .16 });
+});
+function dropSteak(wagyu) {
     steak = { x: 56 + Math.random() * Math.max(40, W - 112), y: -54, vy: 24,
-              ang: Math.random() * 6.28, spin: (Math.random() - .5) * 1.6, bits: null, t0: now() };
-    incoming();                    // so you know to look up
+              ang: Math.random() * 6.28, spin: (Math.random() - .5) * 1.6, bits: null,
+              t0: now(), wagyu: !!wagyu };
+    if (wagyu) goldIn(); else incoming();          // so you know to look up
 }
 function steakStep(dt) {
     if (!steak) return;
@@ -2725,8 +2748,9 @@ function steakStep(dt) {
                longer do anything about. The snarl and the steak vanishing are
                the event; the day's tally says `steak gone` twenty seconds
                later, when there is nothing else on the screen to read. */
+            const worth = steak.wagyu ? WAGYU_PAY : STEAK_PAY;
             steak = null;
-            stole++; stoleWeek++; fedCost += STEAK_PAY;
+            stole++; stoleWeek++; fedCost += worth;
             dog.keen++; dog.chomp = CHOMP;
             snarl(); jolt(); settleUp();
             return;
@@ -2749,16 +2773,19 @@ function hitSteak(sw) {
     return false;
 }
 function sliceSteak() {
-    money += STEAK_PAY; roundMoney += STEAK_PAY; steaks++;
+    const worth = steak.wagyu ? WAGYU_PAY : STEAK_PAY;
+    money += worth; roundMoney += worth; steaks++;
     save.tally.steaks++;
     if (save.tally.steaks >= 50) award('steaks');
     showHud();
     // and the same rule as PERFECT: what you did, not what it paid
-    shouts.push({ text: 'PRIME CUT', x: steak.x, y: steak.y - 26, t0: now() });
+    shouts.push({ text: steak.wagyu ? 'WAGYU' : 'PRIME CUT',
+                  x: steak.x, y: steak.y - 26, t0: now() });
     steak.bits = [-1, 1].map(sx => ({ x: steak.x, y: steak.y, vx: sx * 150, vy: -120,
                                       ang: steak.ang, spin: sx * 5, sx }));
     steak.t0 = now();
     steakCut();
+    if (steak.wagyu) { ding(); fanfare(3); }
 }
 const steakCut = () => safely(t => {
     sweep(t, { from: 6800, to: 900, q: 2.4, dur: .1, vol: .3 });
@@ -2778,7 +2805,20 @@ const splat = () => safely(t => {
    a three-pronged bit of gristle through the middle of it. Four flat shapes,
    same as everything else in here, and the whole thing is one outline scaled
    down three times so the rim is even all the way round including the lobe. */
-function steakShape(ctx, half) {
+/* The marbling on the good one. Thirty-five short flecks on a jittered grid
+   rather than a scatter: scattered at random they clump in the middle and
+   leave the edges bare, which is a steak somebody has drawn on, and what
+   makes wagyu wagyu is that the fat is evenly all the way through it.
+   Deterministic, because a steak whose fat crawls about while it falls is
+   not a steak, it is static. */
+const MARBLE = [];
+for (let gy = -2; gy <= 2; gy++) for (let gx = -3; gx <= 3; gx++) {
+    const i = (gy + 2) * 7 + gx + 3;
+    const v = n => { const x = Math.sin(i * 12.9898 + n * 78.233) * 43758.5; return x - Math.floor(x); };
+    MARBLE.push([(gx + (v(1) - .5) * .9) / 3.4, (gy + (v(2) - .5) * .9) / 2.5,
+                 .09 + v(3) * .15, (v(4) - .5) * 3.1, .9 + v(5) * 1.4]);
+}
+function steakShape(ctx, half, wagyu) {
     const RX = 52, RY = 40;
     const lay = k => {
         const X = RX * k, Y = RY * k;
@@ -2797,22 +2837,50 @@ function steakShape(ctx, half) {
        stops at the knife and the cut face is meat - which is what a cut steak
        looks like and what building a separate half-shape could never give. */
     if (half) { ctx.beginPath(); ctx.rect(0, -RY * 1.4, RX * 1.5, RY * 2.8); ctx.clip(); }
-    lay(1); ctx.fillStyle = '#d9933f'; ctx.fill();          // the fat round the rim
+    /* Wagyu is a paler, pinker thing with cream fat rather than yellow, and
+       what makes it wagyu is that the fat is all the way through it instead
+       of round the outside. */
+    lay(1); ctx.fillStyle = wagyu ? '#efe0c2' : '#d9933f'; ctx.fill();   // the fat round the rim
     ctx.shadowColor = 'transparent';
-    lay(.9); ctx.fillStyle = '#f2ece0'; ctx.fill();         // the line inside it
-    lay(.84); ctx.fillStyle = '#a8392a'; ctx.fill();        // and the meat
+    lay(.9); ctx.fillStyle = wagyu ? '#fbf6ea' : '#f2ece0'; ctx.fill();  // the line inside it
+    lay(.84); ctx.fillStyle = wagyu ? '#c0594a' : '#a8392a'; ctx.fill(); // and the meat
     ctx.save(); lay(.84); ctx.clip();
     ctx.beginPath();
     ctx.ellipse(-RX * .18, -RY * .26, RX * .5, RY * .42, -.3, 0, Math.PI * 2);
-    ctx.fillStyle = '#bd4a34'; ctx.fill();                  // lit on the top left
+    ctx.fillStyle = wagyu ? '#d2705f' : '#bd4a34'; ctx.fill();           // lit on the top left
+    if (wagyu) {                                            // and the marbling through it
+        ctx.lineCap = 'round';
+        for (const [mx, my, len, ang, wd] of MARBLE) {
+            const x = mx * RX * .78, y = my * RY * .76;
+            const dx = Math.cos(ang) * len * RX, dy = Math.sin(ang) * len * RY;
+            ctx.strokeStyle = 'rgba(250,243,228,.8)';
+            ctx.lineWidth = wd;
+            ctx.beginPath();
+            ctx.moveTo(x - dx, y - dy);
+            ctx.quadraticCurveTo(x + dy * .35, y - dx * .35, x + dx, y + dy);
+            ctx.stroke();
+            // and a finer one off the end of it, which is what a web is
+            ctx.strokeStyle = 'rgba(250,243,228,.42)';
+            ctx.lineWidth = wd * .55;
+            ctx.beginPath();
+            ctx.moveTo(x + dx, y + dy);
+            ctx.lineTo(x + dx - dy * .8, y + dy + dx * .8);
+            ctx.stroke();
+        }
+    }
     ctx.restore();
-    ctx.lineJoin = 'round'; ctx.lineCap = 'round';          // the gristle through it
-    ctx.beginPath();
-    ctx.moveTo(-26, 9); ctx.lineTo(-1, 0); ctx.lineTo(27, -20);
-    ctx.lineTo(13, 2); ctx.lineTo(21, 24); ctx.lineTo(3, 6);
-    ctx.closePath();
-    ctx.fillStyle = '#f0e2c6'; ctx.fill();
-    ctx.strokeStyle = '#f0e2c6'; ctx.lineWidth = 3.2; ctx.stroke();
+    /* The gristle through the middle, which the good one does not get: a
+       three-pronged lump of it across a piece of wagyu is the one thing that
+       would say this is not a piece of wagyu. */
+    if (!wagyu) {
+        ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-26, 9); ctx.lineTo(-1, 0); ctx.lineTo(27, -20);
+        ctx.lineTo(13, 2); ctx.lineTo(21, 24); ctx.lineTo(3, 6);
+        ctx.closePath();
+        ctx.fillStyle = '#f0e2c6'; ctx.fill();
+        ctx.strokeStyle = '#f0e2c6'; ctx.lineWidth = 3.2; ctx.stroke();
+    }
     ctx.restore();
 }
 function drawSteak(ctx) {
@@ -2823,9 +2891,30 @@ function drawSteak(ctx) {
         ctx.rotate(ang);
         ctx.shadowColor = 'rgba(0,0,0,.42)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
         if (half) ctx.scale(half > 0 ? 1 : -1, 1);
-        steakShape(ctx, half);
+        steakShape(ctx, half, steak.wagyu);
         ctx.restore();
     };
+    /* A hundred pounds coming down has to look like a hundred pounds coming
+       down before it is close enough to read, so it falls in its own light. */
+    if (steak.wagyu && !steak.bits) {
+        const ms = now(), pulse = .22 + .1 * Math.sin(ms / 170);
+        const gl = ctx.createRadialGradient(steak.x, steak.y, 6, steak.x, steak.y, 96);
+        gl.addColorStop(0, 'rgba(255,226,154,' + pulse + ')');
+        gl.addColorStop(1, 'rgba(255,226,154,0)');
+        ctx.fillStyle = gl;
+        ctx.beginPath(); ctx.arc(steak.x, steak.y, 96, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#ffe29a';
+        for (let i = 0; i < 5; i++) {                       // and a few bits of it
+            const e = ((ms / 900 + i * .2) % 1), a = i * 2.4 + ms / 700;
+            ctx.globalAlpha = Math.sin(e * Math.PI) * .9;
+            const r = 2 + (1 - e) * 2.4;
+            ctx.beginPath();
+            ctx.arc(steak.x + Math.cos(a) * (34 + e * 26),
+                    steak.y + Math.sin(a) * (26 + e * 20) - e * 18, r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+    }
     if (steak.bits) {
         const e = Math.min(1, (now() - steak.t0) / 900);
         ctx.save();
@@ -3195,6 +3284,7 @@ function startRound(n) {
     // a week picks its own day for it, and Monday is as likely as Saturday
     if (n === 1) {
         toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
+        wagyuDay = running('wagyu') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
         seenBreed();                                   // whoever is at the door
         fed = 0; fedCost = 0;                          // a week starts owing nothing
         botched = 0; stoleWeek = 0;                    // and having spoiled nothing
@@ -3272,10 +3362,20 @@ function countdown(n) {
            starts paying for itself. They are spaced far enough apart that the
            second is never asking for the first one's airspace. */
         const more = running('moresteak');
+        const wag = n === wagyuDay;
+        /* The week's one piece of wagyu goes first on its day, and the
+           ordinary ones stand back for it. It used to wait for them to come
+           and go, which on a day that lasts five seconds meant it was still
+           queued when the day ended - a hundred pounds a week that never
+           once came down. A day will not end while a steak is in the air,
+           so putting it at the front is the only place it is safe. */
+        if (wag) countT.push(setTimeout(() => {
+            if (round === n && live && !steak) dropSteak(true);
+        }, 600 + Math.random() * 600));
         if (n >= (more ? 1 : STEAK_FROM)) for (let d = 0; d < (more ? 2 : 1); d++)
             countT.push(setTimeout(() => {
                 if (round === n && live && !steak) dropSteak();
-            }, 700 + Math.random() * 1400 + d * 2800));
+            }, (wag ? 3400 : 700) + Math.random() * 1400 + d * 2800));
     }, 1860));
 }
 const beep = i => safely(t => {
@@ -4055,13 +4155,19 @@ const KATANA = 150, KATANA_RUN = 110;
    without dropping off the back of it is the only thing in there that asks
    anything of you. The run bonus stops climbing at five so a single very good
    wave cannot be the whole game. */
-const DREAM = 90, DREAM_RUN = 28, DREAM_CAP = 5;
+/* The base went up and the run bonus did not. These two are the hardest of
+   the nine to play well - one is a two-dimensional drag and the other is a
+   sustained hold - so a bot that never misses was already taking twenty
+   pounds out of them while somebody actually playing took three. Raising
+   the run bonus pays the bot; raising what one of them is worth on its own
+   pays the player. */
+const DREAM = 125, DREAM_RUN = 28, DREAM_CAP = 5;
 const DREAM_UP = 1550, DREAM_DOWN = 1150, DREAM_VMAX = 540;
 /* What one of them is worth on its way out of the door, and what each one in
    an unbroken run adds - the rail's rule again. A cat that gets past him and
    out of the window breaks it, but only one that saw him coming: the ones that
    wander in and out again without ever noticing him were never a chase. */
-const CAT_PAY = 170, CAT_PAY_RUN = 32, CAT_PAY_CAP = 4;
+const CAT_PAY = 220, CAT_PAY_RUN = 32, CAT_PAY_CAP = 4;
 const DOG_ACC = 2700, DOG_MAX = 580, CAT_WALK = 210, CAT_BOLT = 340, CAT_SEES = 155;
 /* He is a dog, not a cursor: he goes where your finger is rather than being
    where it is, which is the whole of the game. Letting go lets him coast. */
@@ -7422,6 +7528,13 @@ const KIT = [
        hanging on it is a day the dog can go wrong on three times. */
     { id: 'pudding',   kind: 'line',  name: 'Black pudding',     price: 38000,
       why: 'A few a day. The dog spits them out. You sell them.' },
+    /* The dearest thing on the rail and the only one that pays in one lump.
+       A thousand pounds, which is a shade over the cleaver and a shade under
+       the insurance, and it earns itself back in ten weeks - so it is the
+       thing you buy when you have decided to stop pottering, and it still
+       has to be caught. */
+    { id: 'wagyu',     kind: 'line',  name: 'Wagyu on the slab', price: 100000,
+      why: 'One a week, and it is worth a hundred pounds.' },
     { id: 'toy',       kind: 'help',  name: 'Squeaky bone',     price: 24000,
       why: 'One day a week the dog goes after the bone instead.' },
     { id: 'apprentice', kind: 'help',  name: 'An apprentice',    price: 32000,
@@ -9649,12 +9762,12 @@ function drawTile(c, item, circle = true, k0 = .46) {
     const g = sharp(c, TILE_W, TILE_H);
     g.clearRect(0, 0, TILE_W, TILE_H);
     if (item.kind === 'line') {
-        if (item.id === 'moresteak') {
+        if (item.id === 'moresteak' || item.id === 'wagyu') {
             g.save();
             g.translate(TILE_W / 2, TILE_H / 2);
             g.rotate(-.22); g.scale(.62, .62);
             g.shadowColor = 'rgba(0,0,0,.42)'; g.shadowBlur = 10; g.shadowOffsetY = 6;
-            steakShape(g, 0);
+            steakShape(g, 0, item.id === 'wagyu');
             g.restore();
         } else if (item.id === 'sawdust') {
             // a sausage on the boards, and the sawdust that makes it sellable
@@ -10346,7 +10459,7 @@ function showShop() {
     money = 0; ledger = []; fed = 0;
     round = 0; live = false; armed = false; tallying = false; teaching = false;
     dog.going = false; dog.chomp = 0; dog.toy = 0; dog.stare = 0;
-    toyFly = null; toyDay = 0; cat = null; hit = null;
+    toyFly = null; toyDay = 0; wagyuDay = 0; cat = null; hit = null;
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT); clearTimeout(teachT);
     countT.forEach(clearTimeout); countT = [];
     tallyEl.classList.remove('on');
