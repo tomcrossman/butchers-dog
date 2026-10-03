@@ -704,6 +704,8 @@ body.leaving #hud { display: none; }
 #roll .who { font-family: var(--font-display); font-weight: 400; font-size: 29px;
              letter-spacing: .02em; color: var(--gold); margin: 5px 0 0;
              text-shadow: 0 3px 0 rgba(0,0,0,.45); }
+/* Two under one heading sit together, or they read as two departments. */
+#roll .who + .who { margin-top: 1px; }
 #roll canvas { display: block; width: min(88%, 330px); height: auto; margin: 54px 0 0; }
 #roll #roll-sign { margin: 0; }
 /* The shop as it stands, in two columns: what it is on the left and the
@@ -717,9 +719,13 @@ body.leaving #hud { display: none; }
                     height: .55em; }
 #roll .stats .r b { flex: none; font-family: var(--font-display); font-weight: 400;
                     font-size: 19px; letter-spacing: .02em; color: var(--gold); }
+#roll .fin { width: 100%; margin: 190px 0 0;
+             display: flex; flex-direction: column; align-items: center; }
 #roll .end { font-family: var(--font-display); font-weight: 400;
              font-size: clamp(30px, 10vw, 40px); letter-spacing: .02em;
-             color: var(--cream); margin: 92px 0 0; line-height: 1.2; }
+             color: var(--cream); margin: 0; line-height: 1.2; }
+#roll .fin .lab { margin-top: 28px; }
+#roll .fin .stats { margin-top: 16px; }
 #roll.going { animation: rollUp var(--t) linear both; }
 @keyframes rollUp { from { transform: translateY(var(--a)); }
                     to   { transform: translateY(var(--b)); } }
@@ -1840,7 +1846,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.0.5';
+const APP_VERSION = 'v1.0.6';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -11009,9 +11015,13 @@ document.getElementById('shopfront').addEventListener('pointerdown', e => {
    going faster, and it stops with THANKS FOR PLAYING in the middle of the
    window rather than running it off the top.
    ============================================================ */
+/* A line can have two names under it, which is what the second one being a
+   list means: they sit together under the one heading rather than getting a
+   heading each and reading as two departments. */
 const CREW = [['A game by', 'Tom Crossman'],
               ['Design lead', 'George Crossman'],
-              ['Technical lead', 'The AI Butcher']];
+              ['Technical lead', 'The AI Butcher'],
+              ['QA', ['Henry Crossman', 'Arthur Crossman']]];
 const ROLL_SPEED = 62;                 // pixels a second, whatever is on it
 let rollTune = 0;
 /* What the shop came to. The five the credits were asked for, and the two
@@ -11029,12 +11039,15 @@ function creditStats() {
             ['Rosettes on the wall', `${save.got.length} of ${ROSETTES.length}`],
             ['In the till', money2(save.bank)]];
 }
-/* The three pictures. They are the game's own drawings at the game's own
-   scale, not illustrations of it: the pair behind the counter, the string
-   on the rail with the knife at it, and the wall of rosettes. */
+/* The two pictures. They are the game's own drawings at the game's own
+   scale rather than illustrations of it: the pair behind the counter, and
+   the wall of rosettes - which is your wall, not a picture of somebody
+   else's. There was a third, the string on the rail with the knife at it,
+   and a string of links with nothing happening to them is a string of
+   links. */
 function creditPic(which) {
     const c = document.createElement('canvas');
-    const w = 330, h = which === 'wall' ? 150 : 210;
+    const w = 330, h = which === 'wall' ? 150 : 210;   // the wall is a shallower thing
     c.width = w; c.height = h;                       // sharp() wants it in the page
     const g = c.getContext('2d');
     g.lineJoin = 'round'; g.lineCap = 'round';
@@ -11055,21 +11068,6 @@ function creditPic(which) {
         g.fillStyle = 'rgba(0,0,0,.3)'; g.fillRect(0, h - 19, w, 5);
         g.fillStyle = '#e6e0d1'; g.fillRect(0, h - 15, w, 15);
         g.fillStyle = '#fbf8f0'; g.fillRect(0, h - 15, w, 4);
-    } else if (which === 'rail') {
-        tile();
-        g.fillStyle = 'rgba(0,0,0,.22)'; g.fillRect(0, 31, w, 6);
-        g.fillStyle = '#c59430'; g.fillRect(0, 22, w, 10);
-        g.fillStyle = '#f0d484'; g.fillRect(0, 22, w, 3);
-        for (let i = 0; i < 7; i++) {               // the links down the string
-            const a = Math.sin(i * .9) * .22;
-            drawBlanket(g, w * .34 + Math.sin(i * .62) * 22 + i * 3,
-                        44 + i * 23, .72, Math.PI / 2 + a, true,
-                        i === 4 ? PUD : MEAT);
-        }
-        g.save();
-        g.translate(w - 44, h - 30); g.rotate(-1.05);
-        drawKnife(g, 0, 0, 0, .92, cast ? cast.knife : KNIVES[0]);
-        g.restore();
     } else {
         tile();
         const up = (save.got.length ? save.got : ROSETTES.map(r => r.id)).slice(0, 12);
@@ -11089,14 +11087,17 @@ function rollCredits() {
     roll.className = 'roll';
     roll.style.transform = '';
     roll.innerHTML = '<canvas id="roll-sign" width="340" height="268"></canvas>' +
-        CREW.map(([l, n]) => `<div class="lab">${l}</div><div class="who">${n}</div>`).join('') +
+        CREW.map(([l, n]) => `<div class="lab">${l}</div>` +
+            [].concat(n).map(w => `<div class="who">${w}</div>`).join('')).join('') +
         '<canvas data-pic="shop"></canvas>' +
-        '<canvas data-pic="rail"></canvas>' +
-        '<div class="lab">The shop, as it stands</div>' +
-        `<div class="stats">${creditStats().map(([k, v]) =>
-            `<div class="r"><span>${k}</span><i></i><b>${v}</b></div>`).join('')}</div>` +
         '<canvas data-pic="wall"></canvas>' +
-        '<div class="end">Thanks for playing!</div>';
+        /* The last thing on the roll is the whole of the last thing on the
+           roll: the words at the top of the window and the shop's numbers
+           under them, held there together rather than the one scrolling
+           past the other. */
+        '<div class="fin"><div class="end">Thanks for playing!</div>' +
+        `<div class="stats">${creditStats().map(([k, v]) =>
+            `<div class="r"><span>${k}</span><i></i><b>${v}</b></div>`).join('')}</div></div>`;
     el.hidden = false;
     drawSignBoard('roll-sign');
     for (const c of roll.querySelectorAll('canvas[data-pic]')) {
@@ -11110,7 +11111,13 @@ function rollCredits() {
     requestAnimationFrame(() => {
         const vh = el.clientHeight;
         const last = roll.lastElementChild;
-        const stop = last.offsetTop + last.offsetHeight / 2 - vh / 2;
+        /* It stops with the last block's top a little way down the window
+           and the whole of it under that, rather than with its middle in the
+           middle: what is at the bottom of it is the numbers, and numbers
+           you cannot read are not numbers. On a window too short to hold the
+           lot, the top wins. */
+        const head = Math.max(16, Math.min(vh * .11, vh - 26 - last.offsetHeight));
+        const stop = last.offsetTop - head;
         roll.style.setProperty('--a', vh + 'px');
         roll.style.setProperty('--b', -Math.max(0, stop) + 'px');
         roll.style.setProperty('--t', (vh + Math.max(0, stop)) / ROLL_SPEED + 's');

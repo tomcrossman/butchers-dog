@@ -1693,17 +1693,21 @@ and outside the plate, because it does nothing to the shop, it only tells you
 what the shop came to. A credits roll you can only ever see once is a credits
 roll nobody sees.
 
-The plaque off the setup screen, the three names, three pictures and the
-numbers. The pictures are the game's own drawings at the game's own scale
-rather than illustrations of it - the pair behind the counter, the string on
-the rail with the knife at it, and whatever is actually on your wall - so
-they cannot drift from the game, and the wall of rosettes is your wall, not a
-picture of somebody else's.
+The plaque off the setup screen, the names, two pictures and the numbers. The pictures are the game's own drawings at the game's own scale
+rather than illustrations of it - the pair behind the counter, and whatever
+is actually on your wall - so they cannot drift from the game, and the wall
+of rosettes is your wall rather than a picture of somebody else's. There was
+a third, the string on the rail with the knife at it, and a string of links
+with nothing happening to them is a string of links.
 
 **It scrolls itself.** The column is measured once it is built and then moved
 at a fixed sixty-two pixels a second, so a longer roll takes longer rather
-than going faster, and it stops with **Thanks for playing!** in the middle of
-the window rather than running it off the top. He whistles under it every
+than going faster, and it stops on the last block rather than running it off
+the top: **Thanks for playing!** a little way down the window with the shop's
+numbers held under it, the two of them on the screen together. It stops on
+the block's top rather than on its middle because what is at the bottom of it
+is the numbers, and numbers you cannot read are not numbers; on a window too
+short to hold the lot, the top wins. He whistles under it every
 eleven seconds, which is the shopfront's own tune and the only music in the
 game.
 
