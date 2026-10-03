@@ -823,13 +823,14 @@ body.leaving #hud { display: none; }
     background: linear-gradient(180deg, #3e2c1c, #241910);
 }
 /* And the version is screwed to the bottom of the wall rather than floating
-   under whatever the last thing on the screen happens to be - with the one
-   button that can undo a month directly above it, which is where a thing you
-   are not meant to press by accident goes. */
+   under whatever the last thing on the screen happens to be - with the
+   credits directly above it, which is where a credits link belongs: it is
+   the one thing out the back that does nothing to the shop, and the version
+   is the other. The two of them are the footer of the room. */
 #settings .ver { position: absolute; z-index: 1; left: 0; right: 0;
                  bottom: calc(14px + env(safe-area-inset-bottom)); margin: 0; }
-#settings .wipe { position: absolute; z-index: 1; left: 0; right: 0;
-                  bottom: calc(52px + env(safe-area-inset-bottom)); margin: 0;
+#settings .foot { position: absolute; z-index: 1; left: 0; right: 0;
+                  bottom: calc(50px + env(safe-area-inset-bottom)); margin: 0;
                   padding: 8px 0; }
 /* The one screen in the game that can undo a month, so it gets a whole screen
    and says what it will take rather than a red line that asks twice. */
@@ -842,18 +843,15 @@ body.leaving #hud { display: none; }
 #settings .ver { margin-top: 22px; font-size: 10px; font-weight: 700;
                  letter-spacing: .16em; text-transform: uppercase;
                  color: var(--cream); opacity: .3; }
-/* Under the three switches and outside the plate, because it is not one of
-   them: it does nothing to the shop, it only tells you what the shop came
-   to. */
+/* Under the three switches and outside the plate, because none of them is
+   one of the switches: two of them change which shop you are stood in and
+   the third does nothing to any of them. */
 #settings .creds {
     margin: 16px 0 0; padding: 8px 14px; background: none; border: 0; cursor: pointer;
     font-family: var(--font); font-size: 10.5px; font-weight: 900; letter-spacing: .18em;
     text-transform: uppercase; color: var(--gold); opacity: .7;
 }
 #settings .creds:active { opacity: 1; }
-/* Two of them, so they go next to each other rather than stacking a second
-   gold line under the first. */
-#settings .outs { display: flex; align-items: center; justify-content: center; gap: 4px; }
 
 /* ---- three shops --------------------------------------------------------
    One shop on the street: a brass plate with the name over the window on it
@@ -864,9 +862,14 @@ body.leaving #hud { display: none; }
    whole of the explaining this screen needs, and a sentence over the top of
    them was telling you what you were already looking at. */
 #slots h2 { margin-bottom: 0; }
-#slots .btn { width: 100%; max-width: 280px; margin-top: 2px; }
 #slotlist { width: 100%; max-width: 330px; display: flex; flex-direction: column;
-            gap: 10px; margin: 15px 0 8px; }
+            gap: 10px; margin: 15px 0 4px; }
+/* Pick a shop and then say what to do with it. Two taps either way, and this
+   way round the dangerous one is never the one your thumb is already over. */
+#slotacts { width: 100%; max-width: 280px; display: flex; flex-direction: column; }
+#slotacts .btn { width: 100%; margin-top: 9px; }
+#slotacts .pair { display: flex; gap: 8px; }
+#slotacts .pair .btn { flex: 1; }
 .slot {
     position: relative; display: block; width: 100%; cursor: pointer;
     padding: 12px 16px 13px; text-align: left;
@@ -880,20 +883,34 @@ body.leaving #hud { display: none; }
 }
 .slot:active { transform: translateY(1px); }
 .slot.here::after { border-color: rgba(220,171,62,.85); }
-.slot .no { display: block; font-size: 9.5px; font-weight: 900; letter-spacing: .18em;
-            text-transform: uppercase; color: var(--gold); opacity: .72; }
-.slot .no i { float: right; font-style: normal; letter-spacing: .1em; opacity: .85; }
-.slot b { display: block; margin: 4px 0 2px; font-family: var(--font-display);
+/* The one you have your finger on: the rule goes to full gold and thickens,
+   and the plate lifts off the wall. */
+.slot.on::after { inset: 4px; border-width: 2px; border-color: var(--gold); }
+.slot.on { box-shadow: 0 9px 22px rgba(0,0,0,.46), 0 0 0 1px rgba(220,171,62,.3),
+                       inset 0 1px 0 rgba(255,240,214,.14); }
+/* And a rosette pinned to the plate of a shop with the whole wall filled. */
+.slot.full { padding-right: 60px; }
+.slot .ros { position: absolute; right: 11px; top: 50%; width: 44px; height: 60px;
+             margin-top: -32px; pointer-events: none; }
+/* How far through it is, in the corner. A shop with the whole wall filled
+   has the rosette there instead, which says the same thing better. */
+.slot .pc { position: absolute; top: 12px; right: 16px; font-style: normal;
+            font-size: 9.5px; font-weight: 900; letter-spacing: .14em;
+            color: var(--gold); opacity: .62; }
+.slot b { display: block; margin: 0 0 2px; font-family: var(--font-display);
           font-weight: 400; font-size: 23px; line-height: 1.12; color: var(--cream);
           letter-spacing: .02em; }
-.slot .who, .slot .bits, .slot .when {
+.slot .who, .slot .when {
     display: block; font-size: 11px; font-weight: 700; line-height: 1.5;
     color: var(--cream); opacity: .62;
 }
-.slot .bits { opacity: .46; }
 .slot .when { margin-top: 4px; font-size: 9px; font-weight: 900; letter-spacing: .14em;
               text-transform: uppercase; opacity: .32; }
-.slot.empty b { opacity: .38; }
+/* One line, and it is the only thing an empty plate has to say - stood in
+   the middle of a plate the size of the ones either side of it, so the
+   street is three shopfronts and not two and a gap. */
+.slot.empty { display: grid; place-items: center; min-height: 87px; }
+.slot.empty b { margin: 0; opacity: .42; }
 #settings .note { max-width: 320px; margin: 10px 0 0; font-size: 11px; font-weight: 700;
                   line-height: 1.5; opacity: .55; }
 /* One way out of a screen that fills the window, in the corner every phone
@@ -1387,12 +1404,6 @@ body.leaving #hud { display: none; }
 #tryon .yes { flex: 1.35; }
 #tryon .yes.poor { background: linear-gradient(180deg, #4a4438, #3a3529); color: #b9b2a2;
                    border-color: #2a2118; }
-.wipe {
-    margin-top: 16px; background: none; border: none; cursor: pointer;
-    font-family: var(--font); font-size: 10px; font-weight: 900; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--danger); opacity: .65;
-}
-
 /* ============================================================
    THE TICKET
    ============================================================ */
@@ -1853,11 +1864,8 @@ body.leaving #hud { display: none; }
                 <b id="set-debug">Off</b>
                 <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
         </div>
-        <div class="outs">
-            <button class="creds" id="to-slots">Your shops</button>
-            <button class="creds" id="to-credits">Credits</button>
-        </div>
-        <button class="wipe" id="wipe">Start new game</button>
+        <button class="creds" id="to-slots">Your shops</button>
+        <button class="creds foot" id="to-credits">Credits</button>
         <div class="ver" id="set-ver">v1</div>
     </div>
 
@@ -1902,9 +1910,9 @@ body.leaving #hud { display: none; }
          Slot one is the key it always was, so whatever was here before there
          were slots is simply the first of the three. -->
     <div id="slots" hidden>
-        <h2 id="slots-head">Your shops</h2>
+        <h2>Your shops</h2>
         <div id="slotlist"></div>
-        <button class="btn ghost" id="slots-no">Not now</button>
+        <div id="slotacts"></div>
     </div>
 
     <div id="minipick" hidden>
@@ -1914,10 +1922,10 @@ body.leaving #hud { display: none; }
     </div>
 
     <div id="confirm" hidden>
-        <h2 id="confirm-head">Clear this shop?</h2>
+        <h2 id="confirm-head">Delete this shop?</h2>
         <p class="note" id="confirm-note">This clears the till, the wardrobe, the name over the
             window and every week you have played. There is no getting it back.</p>
-        <button class="btn wipe-yes" id="wipe-yes">Yes, clear it</button>
+        <button class="btn wipe-yes" id="wipe-yes">Yes, delete it</button>
         <button class="btn ghost" id="wipe-no">Leave it be</button>
     </div>
 
@@ -1946,7 +1954,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.1.2';
+const APP_VERSION = 'v1.1.3';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2835,7 +2843,7 @@ function sliceSteak() {
     if (save.tally.steaks >= 50) award('steaks');
     showHud();
     // and the same rule as PERFECT: what you did, not what it paid
-    shouts.push({ text: steak.wagyu ? 'WAGYU' : 'PRIME CUT',
+    shouts.push({ text: steak.wagyu ? 'WAGYU!' : 'PRIME CUT',
                   x: steak.x, y: steak.y - 26, t0: now() });
     steak.bits = [-1, 1].map(sx => ({ x: steak.x, y: steak.y, vx: sx * 150, vy: -120,
                                       ang: steak.ang, spin: sx * 5, sx }));
@@ -4876,12 +4884,35 @@ const towerPiece = i => TOWER_RUN[i] || TOWER_TOP;
 function towerSet() {
     mini.stack = []; mini.bits = [];
     mini.n = 0; mini.cam = 0; mini.aim = W / 2;
-    mini.shake = 0;
+    mini.side = 0; mini.shake = 0;
     towerNext();
+}
+/* Where the next one swings in. Never over the top of the pile: it used to
+   arrive exactly where your finger last was, so a player who put the phone
+   down built a perfect tower and a player who did not was being asked to
+   hold still. It comes in off to one side instead, further out the higher
+   the pile gets, and the game is carrying each piece across.
+
+   It alternates sides, so it is not the same drag twice running, and it
+   takes the other side when the one it wanted has no room. The offset is a
+   fraction of the room there is rather than a number of pixels, because the
+   freezer is as wide as the phone is. */
+function towerEntry(P) {
+    const lo = 26 + P.w / 2, hi = W - 26 - P.w / 2;
+    const over = mini.stack.length ? mini.stack[mini.stack.length - 1].x : W / 2;
+    const room = (hi - lo) / 2;
+    const d = room * (.42 + Math.min(.46, mini.n * .05) + Math.random() * .14);
+    mini.side = mini.side ? -mini.side : (Math.random() < .5 ? -1 : 1);
+    if (over + mini.side * d < lo || over + mini.side * d > hi) mini.side = -mini.side;
+    return clamp(over + mini.side * d, lo, hi);
 }
 function towerNext() {
     if (mini.n >= TOWER_CAP) { mini.phase = 'done'; mini.pt = 0; mini.fall = null; jingleWin(); return; }
-    mini.fall = { ...towerPiece(mini.n), x: mini.aim, y: 0, ang: 0 };
+    const P = towerPiece(mini.n);
+    mini.fall = { ...P, x: towerEntry(P), y: 0, ang: 0 };
+    /* And the hook is where it came in, or the first frame drags it straight
+       back to wherever the last piece was let go of. */
+    mini.aim = mini.fall.x;
     mini.phase = 'wait'; mini.pt = 0;
 }
 // the top of the pile, in the world the stack lives in
@@ -10797,14 +10828,9 @@ document.getElementById('store-done').addEventListener('click', () => {
    come back to it. */
 const confirmEl = document.getElementById('confirm');
 const slotsEl = document.getElementById('slots');
-const SLOT_NAMES = ['Shop one', 'Shop two', 'Shop three'];
-let slotMode = 'pick', overSlot = 0, newSlot = 0;
-/* How long it has been open, and how long ago it was shut. Both rounded hard:
-   nobody wants a save slot read out to the second. */
-const spell = ms => {
-    const m = Math.round(ms / 60000), h = Math.floor(m / 60);
-    return m < 60 ? `${m} min` : m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
-};
+let slotPick = 0, overSlot = 0, newSlot = 0;
+/* How long ago it was shut, rounded hard: nobody wants a save slot read out
+   to the second. */
 function ago(t) {
     const d = Date.now() - (t || 0);
     if (!t || d < 0) return 'a while back';
@@ -10829,57 +10855,92 @@ function slotWho(s) {
 }
 function slotCard(i) {
     const s = slotRead(i), here = i === slot && started;
-    if (!s) return `<button class="slot empty" data-slot="${i}">` +
-        `<span class="no">${SLOT_NAMES[i - 1]}</span><b>Empty</b>` +
-        `<span class="who">Boarded up. Nobody has had the keys yet.</span></button>`;
-    const got = Array.isArray(s.got) ? s.got.length : 0, wk = s.weeks | 0;
-    return `<button class="slot${here ? ' here' : ''}" data-slot="${i}">` +
-        `<span class="no">${SLOT_NAMES[i - 1]}${here ? ' &middot; open' : ''}` +
-        `<i>${Math.round(got / ROSETTES.length * 100)}%</i></span>` +
+    const on = i === slotPick ? ' on' : '';
+    /* An empty plate says the one thing it is for and nothing else. It was
+       Shop two, Empty, and a line about nobody having had the keys, which is
+       three lines to say a thing that is blank. */
+    if (!s) return `<button class="slot empty${on}" data-slot="${i}">` +
+        `<b>New shop</b></button>`;
+    const got = Array.isArray(s.got) ? s.got.length : 0;
+    /* Every rosette on the wall and the shop gets one of its own, pinned to
+       the plate: the champion's, two tiers of gold silk, which is the one
+       the wall gives you for holding all the others. */
+    const full = got >= ROSETTES.length;
+    /* Four lines, and the week count and the hours played are not among
+       them. A save slot is for telling three shops apart, and the name over
+       the window, who is behind the counter, how far through it is and when
+       you last shut it does that - a row of counts underneath was the wall
+       and the credits said again on a plate that is not either. */
+    return `<button class="slot${here ? ' here' : ''}${full ? ' full' : ''}${on}" data-slot="${i}">` +
+        (full ? '' : `<i class="pc">${Math.round(got / ROSETTES.length * 100)}%</i>`) +
         `<b>${esc(s.shop)}</b>` +
         `<span class="who">${esc(slotWho(s))}</span>` +
-        `<span class="bits">${wk} week${wk === 1 ? '' : 's'} &middot; ${spell(s.played || 0)}` +
-        ` &middot; ${got} of ${ROSETTES.length} rosettes</span>` +
-        `<span class="when">Saved ${ago(s.saved)}</span></button>`;
+        `<span class="when">Saved ${ago(s.saved)}</span>` +
+        (full ? `<canvas class="ros" width="88" height="120"></canvas>` : '') +
+        `</button>`;
 }
-function openSlots(mode) {
-    slotMode = mode;
-    document.getElementById('slots-head').textContent =
-        mode === 'new' ? 'Start a new shop' : 'Your shops';
+/* What you can do with the one you have picked. Nothing picked and there is
+   one way off the screen; an empty plate offers the keys to it; a shop
+   offers itself, and the way to be rid of it. */
+function slotActs() {
+    const i = slotPick, s = i ? slotRead(i) : null;
+    const no = `<button class="btn ghost" data-act="no">Not now</button>`;
+    if (!i) return no;
+    if (!s) return `<button class="btn" data-act="new">New shop</button>` + no;
+    return `<div class="pair"><button class="btn" data-act="load">` +
+           `${i === slot && started ? 'Carry on' : 'Load'}</button>` +
+           `<button class="btn wipe-yes" data-act="del">Delete</button></div>` + no;
+}
+function paintSlots() {
     document.getElementById('slotlist').innerHTML = [1, 2, 3].map(slotCard).join('');
+    document.querySelectorAll('#slotlist .ros').forEach(c => {
+        const g = c.getContext('2d');          // twice over, for a retina pin
+        g.setTransform(2, 0, 0, 2, 0, 0);
+        drawRosette(g, 22, 20, 14, 'gold', false, true);
+    });
+    document.getElementById('slotacts').innerHTML = slotActs();
+}
+function openSlots() {
+    /* Whichever one you are stood in, already picked - so the street on boot
+       is one tap back to where you were. */
+    slotPick = started ? slot : 0;
+    paintSlots();
     slotsEl.hidden = false;
 }
-document.getElementById('to-slots').addEventListener('click', () => { openSlots('pick'); plop(2); });
-document.getElementById('wipe').addEventListener('click', () => { openSlots('new'); plop(2); });
-document.getElementById('slots-no').addEventListener('click', () => {
+document.getElementById('to-slots').addEventListener('click', () => { openSlots(); plop(2); });
+function shutSlots() {
     slotsEl.hidden = true;
-    plop(1);
     /* Nothing behind it: the street was the boot screen, so the way out of it
        is the only shop there is going to be. */
-    /* One shop and you are stood in it: nothing to choose, and the street never
-   comes up - a single-shop player never learns there are three. More than one
-   and it does, because being asked which is the whole point of three. */
-if (slotsUsed() > (started ? 1 : 0)) openSlots('pick');
-else if (!started) openSetup();
-});
+    if (!started) openSetup();
+}
 document.getElementById('slotlist').addEventListener('click', e => {
     const btn = e.target.closest('[data-slot]');
     if (!btn) return;
     startSession(); audioNow();
-    const i = +btn.dataset.slot, taken = !!slotRead(i);
-    if (taken && slotMode === 'new') { askOver(i); return; }   // it asks first
+    slotPick = +btn.dataset.slot;
+    paintSlots();
+    plop(2);
+});
+document.getElementById('slotacts').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    startSession(); audioNow();
+    const act = btn.dataset.act, i = slotPick;
+    if (act === 'no') { plop(1); shutSlots(); return; }
+    if (act === 'del') { askOver(i); return; }               // it asks first
+    if (act === 'new') { slotsEl.hidden = true; startIn(i); return; }
     slotsEl.hidden = true;
-    if (!taken) { startIn(i); return; }
-    if (i === slot && started) { plop(1); return; }            // you are in it
+    if (i === slot && started) { plop(1); return; }          // you are in it
     carryOn(i);
 });
-/* The one screen in the game that can undo a month, and it now names the shop
-   it is about to take down - with three of them on the street the question is
+/* The one screen in the game that can undo a month, and it names the shop it
+   is about to take down - with three of them on the street the question is
    not whether you meant it, it is which one you meant. */
 function askOver(i) {
     overSlot = i;
     const s = slotRead(i);
-    document.getElementById('confirm-head').textContent = 'Clear this shop?';
+    document.getElementById('confirm-head').textContent = 'Delete this shop?';
     document.getElementById('confirm-note').innerHTML =
         `<b>${esc(s.shop)}</b> comes down: the till, the wardrobe, the wall and ` +
         `every week of it. There is no getting it back.`;
@@ -10891,9 +10952,31 @@ document.getElementById('wipe-no').addEventListener('click', () => {
 });
 document.getElementById('wipe-yes').addEventListener('click', () => {
     confirmEl.hidden = true;
-    slotsEl.hidden = true;
-    startIn(overSlot);
+    dropSlot(overSlot);
 });
+/* Deleting one you are not stood in is a key going in the bin and the street
+   redrawing behind it. Deleting the one you are stood in is the old reset:
+   the door comes down over it first, and then you are out on a street with
+   one shop less on it - or at the setup screen, if that was the last one. */
+function dropSlot(i) {
+    const mine = i === slot && started;
+    if (!mine) {
+        try { localStorage.removeItem(slotKey(i)); } catch (e) { /* never mind */ }
+        slotPick = 0;
+        paintSlots();
+        plop(1);
+        return;
+    }
+    slotsEl.hidden = true;
+    shutUpShop(() => {
+        try { localStorage.removeItem(slotKey(i)); } catch (e) { /* never mind */ }
+        save = FRESH(); started = false;
+        slotPick = 0;
+        paintSettings();
+        setEl.hidden = true;
+        if (slotsUsed()) openSlots(); else openSetup();
+    });
+}
 /* Shutting up shop. It is the same forty frames whether the shop is being
    cleared out or only left for the evening, because from the street those are
    the same thing: the door comes down over the window, and then whatever
@@ -11911,7 +11994,7 @@ marquee();
 /* One shop and you are stood in it: nothing to choose, and the street never
    comes up - a single-shop player never learns there are three. More than one
    and it does, because being asked which is the whole point of three. */
-if (slotsUsed() > (started ? 1 : 0)) openSlots('pick');
+if (slotsUsed() > (started ? 1 : 0)) openSlots();
 else if (!started) openSetup();
 </script>
 </body>

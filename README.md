@@ -1106,9 +1106,10 @@ cannot type in.
 **Out the back is a back room.** The same brickwork the front of the building
 is made of, one bulb over the door and nothing on the walls, with the version
 screwed to the bottom of it rather than floating under whatever the last thing
-on the screen happens to be, and Start new game above it with some room between
-them - which is where a button that can undo a month goes, and not so close to
-the version label that the two read as one thing. It was the same tiled green as the shop floor,
+on the screen happens to be, and the credits above it with some room between
+them - which is where a credits link belongs: the two things out the back
+that do nothing to the shop are the footer of the room, and neither is so
+close to the other that they read as one thing. It was the same tiled green as the shop floor,
 which made the one room in this building that is not for customers look like
 the one room that is; then it was match-boarding, which made the back room a
 different building from the shop. It is the same wall as the setup screen, one
@@ -1117,20 +1118,29 @@ tile, round the back and not painted since.
 ## Three shops
 
 There are three of them, on the same street, and you can have a shop in each.
-They are **Shop one, Shop two and Shop three**, and the game keeps one save
-under each. Slot one is the key the game has always written to, so a shop that
-was here before there were three is not migrated anywhere - it is simply the
-first of them, exactly as it was left.
+The game keeps one save under each, and the first is the key it has always
+written to - so a shop that was here before there were three is not migrated
+anywhere, it is simply the first of them, exactly as it was left.
 
-A **shop** on the street is a brass plate with the name over the window on it
-and what the shop has done underneath: who is behind the counter and what the
-dog is (*Reg and Nipper the Bulldog*), how many weeks, how long it has been
-open for in hours and minutes, how many rosettes are on the wall out of
-thirty-six, the percentage of them in the corner, and when it was last saved -
-*yesterday*, *two days ago*, *3 weeks ago*, and a date once it is further back
-than that. An empty one is the same plate with nothing screwed to it: **Empty**,
-boarded up, nobody has had the keys. The one you are stood in says **open** and
-has its gold rule drawn in full rather than half.
+A **shop** on the street is a brass plate with three lines on it: the name
+over the window, who is behind the counter and what the dog is (*Reg and
+Nipper the Bulldog*), and when it was last saved - *yesterday*, *two days
+ago*, *3 weeks ago*, and a date once it is further back than that. How far
+through it is sits in the corner as a percentage, and that is the lot. The
+week count, the hours played, the rosette tally and a numbered heading over
+each plate were all on it at one point, which is the wall and the credits
+said again on a plate that is neither of them.
+
+An empty one says **New shop** and nothing else, in the middle of a plate the
+same size as the ones either side of it, so the street is three shopfronts
+rather than two and a gap.
+
+**A shop with the whole wall filled gets a rosette of its own**, pinned to the
+right of its plate in place of the percentage: the champion's, two tiers of
+gold silk, the same one the wall gives you for holding all the others. It is
+drawn by the same function that draws them on the wall, at a fourteen-pixel
+radius, which is a thing that works because it was drawn rather than
+photographed.
 
 **A single-shop player never learns there are three.** The street only comes up
 on boot if more than one of them is taken. One shop and you go straight to
@@ -1138,16 +1148,30 @@ the window, which is what has always happened and what should keep happening -
 being asked which of your three shops you want is only worth asking once there
 is more than one.
 
-Out the back there are two ways onto the street. **Your shops** picks one up
-where you left it: the door comes down over the shop you are in, that shop is
-written to its own key on the way out, and the one you chose is loaded, dealt,
-and its wall swept the same way it is at boot - so a shop opened mid-session is
-the shop you would have booted into. **Start new game** is the old Reset game
-said the right way round. You are not wiping this shop, you are taking another
-slot, and the one you were in is still standing when you come back to it. Take
-an empty one and it goes straight to the setup screen; take one that has a shop
-in it and it asks first, by name: *The Second Shop comes down: the till, the
-wardrobe, the wall and every week of it.*
+One way onto the street - **Your shops**, out the back, where Reset game used
+to be - and then you pick a plate and say what to do with it. That is two taps
+either way round, and this way round the dangerous one is never the one your
+thumb is already over. Tapping a plate picks it: the rule goes to full gold,
+the plate lifts off the wall, and the row underneath changes to what can be
+done with that one.
+
+**Load** picks a shop up where you left it: the door comes down over the one
+you are in, that shop is written to its own key on the way out, and the one
+you chose is loaded, dealt, and its wall swept the same way it is at boot - so
+a shop opened mid-session is the shop you would have booted into. On the shop
+you are already stood in it says **Carry on** and only closes the screen. An
+empty plate offers **New shop** instead, which goes straight to the setup
+screen.
+
+**Delete** is the old Reset game, and it asks first, by name: *The Second Shop
+comes down: the till, the wardrobe, the wall and every week of it.* Deleting a
+shop you are not stood in is a key going in the bin and the street redrawing
+behind it. Deleting the one you are stood in brings the door down over it
+first, and then you are out on a street with one shop less on it - or at the
+setup screen, if that was the last one.
+
+The street opens with whichever shop you are in already picked, so coming to
+it on boot is one tap back to where you were.
 
 **The door is the same forty frames either way.** A shop being cleared out and
 a shop being left for the evening look the same from the street, so they are
@@ -1184,8 +1208,9 @@ SNOSAGE. Getting out again needs nothing at all: it is getting in that is
 guarded, and a password between a man and his own shop is not a safety feature.
 
 **Out the back** is the gear in the bottom corner of the shopfront: the sound,
-Start new game - which takes a whole screen to say what it is about to take
-rather than a red line that asks twice - and a debug switch that hands you the whole shop for free and turns every switchable
+Your shops - whose delete takes a whole screen to say what it is about to take
+rather than a red line that asks twice - and a debug
+switch that hands you the whole shop for free and turns every switchable
 thing on, so an upgrade can be tested in a real week rather than argued about.
 It is a switch in the back room rather than a build flag for exactly that
 reason, it is saved with everything else, and while it is on the version label
@@ -1619,7 +1644,16 @@ twenty-two pounds, about a third on top of a perfect week.
   piece is held up for a second so you know what is coming, then it starts
   down, and **you drag anywhere to move it** - it goes where your finger is
   rather than being where it is, because it is a side of meat on the end of
-  an arm and not a cursor. A dashed line runs from it to the top of the
+  an arm and not a cursor.
+
+  **Nothing comes in over the top of the pile.** It used to arrive exactly
+  where your finger last was, which meant a player who put the phone down
+  built a perfect tower and a player who did not was being asked to hold
+  still. It swings in off to one side instead - alternating sides, and
+  further out the higher the pile gets, from about two fifths of the room
+  there is to very nearly all of it - so the game is carrying each piece
+  across rather than watching it land. Hands off now goes over at the second
+  piece; it used to reach the top. A dashed line runs from it to the top of the
   pile, because dropping a steak onto a stack you cannot see the bottom of
   is a guess rather than a judgement.
 
