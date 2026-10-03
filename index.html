@@ -1782,7 +1782,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.0.3';
+const APP_VERSION = 'v1.0.4';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -4163,8 +4163,14 @@ const miniLeft = () => mini.begun === false ? mini.secs
    kiss. Miss it and the obvious thing happens, because he is a dog and she
    is a sausage.
    ------------------------------------------------------------------------ */
+/* You are married or you are not. There was a second, lesser answer - a peck
+   on the cheek, with its own words and its own price - and a wedding does
+   not have one of those: either he kissed the bride or something went
+   wrong in front of everybody. So there is one way it works, it always ends
+   with the same four words, and how close you were is in the money and in
+   how much the room does about it. */
 const WED_PAY = 4000;              // dead on, which is the whole hour in one tap
-const WED_PECK = 1200;             // and the one that only just lands
+const WED_LOW = 1000;              // and the one that only just counts as one
 const WED_VOWS = 2300;             // the ceremony, before the push in
 const WED_ZOOM = 950;              // and how long the push in takes
 const WED_SWING = 1.52;            // a second and a half to lean in and back
@@ -4183,7 +4189,7 @@ function wedSet() {
     mini.phase = 'vows';
     mini.pt = 0;
     mini.lean = 0; mini.bob = 0; mini.goes = 0;
-    mini.out = null; mini.ot = 0;
+    mini.out = null; mini.ot = 0; mini.near = 0;
     mini.hearts = []; mini.bits = [];
     mini.cam = 0;                                  // 0 the whole altar, 1 the pair
     organ();
@@ -4213,7 +4219,7 @@ function wedAt() {
    because her lips are the thing the game is about. */
 function wedBride(g, x, y, k, ms, out) {
     const cy = y + 20 * k;                       // her middle, under the lips
-    const blush = out === 'perfect' || out === 'peck';
+    const blush = out === 'kiss';
     g.save();
     g.fillStyle = 'rgba(250,247,240,.76)';       // the veil, behind her
     g.beginPath();
@@ -4294,29 +4300,44 @@ function wedKiss(ranOut) {
     const p = wedAt();
     const gap = p.bx - WED_CHEEK - p.dx, off = p.by - p.dy;
     m.phase = 'out'; m.ot = 0;
-    if (ranOut)                           m.out = 'shy';
-    else if (gap >= -3 && gap <= 7 && Math.abs(off) <= 9)   m.out = 'perfect';
-    else if (gap >= -9 && gap <= 19 && Math.abs(off) <= 22) m.out = 'peck';
+    /* How good it was, as one number from nought to one. Dead on is his
+       nose a couple of pixels off her cheek and the two of them level, with
+       a few pixels of slack round both before it starts costing: the lean
+       moves about three pixels a frame through there, so a band narrower
+       than a frame is not a skill, it is a sampling rate. The gap counts
+       asymmetrically because there is more room on the short side of her
+       than on the side that ends with her being eaten. */
+    const GIDEAL = 2, GTOL = 4, OTOL = 5;
+    const gErr = Math.max(0, gap > GIDEAL ? (gap - GIDEAL - GTOL) / (19 - GIDEAL - GTOL)
+                                          : (GIDEAL - gap - GTOL) / (9 + GIDEAL - GTOL));
+    const near = Math.max(gErr, Math.max(0, (Math.abs(off) - OTOL) / (22 - OTOL)));
+    if (ranOut)                                             m.out = 'shy';
+    else if (gap >= -9 && gap <= 19 && Math.abs(off) <= 22) m.out = 'kiss';
     else if (gap < -9 && Math.abs(off) < 30)                m.out = 'ate';
     else                                                     m.out = 'air';
-    if (m.out === 'perfect') {
-        m.won = WED_PAY;
-        ding(); sold(); fanfare(4); smooch(1); bark(2, { vol: .9, at: .5 });
-        for (let i = 0; i < 18; i++)
+    if (m.out === 'kiss') {
+        m.near = near;
+        const good = Math.pow(1 - Math.min(1, near), 1.6);
+        // to the nearest fifty pence, because nothing in this game is priced
+        // to the penny and a wedding present least of all
+        m.won = Math.round((WED_LOW + (WED_PAY - WED_LOW) * good) / 50) * 50;
+        /* The room does as much about it as it was worth. It is always a
+           wedding, so there is always a fanfare; what scales is how much
+           goes up in the air with it. */
+        ding(); sold(); fanfare(4); smooch(.55 + good * .45);
+        if (good > .45) bark(2, { vol: .9, at: .5 });
+        const hn = 4 + Math.round(good * 16), cn = 5 + Math.round(good * 23);
+        for (let i = 0; i < hn; i++)
             m.hearts.push({ x: p.bx - 24, y: p.by, t0: now() + i * 46,
-                            drift: (Math.random() - .5) * 150, r: 7 + Math.random() * 9 });
-        for (let i = 0; i < 26; i++) {           // and the confetti over the pair
-            const a = -Math.PI / 2 + (Math.random() - .5) * 2.2, v = 260 + Math.random() * 430;
+                            drift: (Math.random() - .5) * (60 + good * 110),
+                            r: 5 + Math.random() * (4 + good * 6) });
+        for (let i = 0; i < cn; i++) {           // and the confetti over the pair
+            const a = -Math.PI / 2 + (Math.random() - .5) * 2.2;
+            const v = (180 + good * 110) + Math.random() * (260 + good * 190);
             m.bits.push({ x: p.bx - 24, y: p.by - 10, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
                           a: Math.random() * TAU, sp: (Math.random() - .5) * 16,
                           r: 4 + Math.random() * 4, col: pick(CONFETTI) });
         }
-    } else if (m.out === 'peck') {
-        m.won = WED_PECK;
-        till(); smooch(.5);
-        for (let i = 0; i < 4; i++)
-            m.hearts.push({ x: p.bx - 18, y: p.by, t0: now() + i * 110,
-                            drift: (Math.random() - .5) * 60, r: 5 + Math.random() * 4 });
     } else if (m.out === 'ate') {
         chomp(); gasp();
         for (let i = 0; i < 14; i++) {          // and what is left of her
@@ -5561,6 +5582,7 @@ function drawMini(ms) {
         const rnd = (i, k) => { const v = Math.sin(i * 12.9898 + k * 78.233) * 43758.5;
                                 return v - Math.floor(v); };
         const bust = out === 'ate' || out === 'air';
+        const married = out === 'kiss';
         /* The camera, and all of it inside the camera: at nought you are at
            the back of the chapel, at one you are a foot from the pair of
            them. A wall that stays put while they get bigger is not a camera,
@@ -5658,7 +5680,7 @@ function drawMini(ms) {
         /* Him, taking the service, up on the step behind them. Both arms
            down and a book in them: a man reading the words does not hold a
            knife over his head, whatever else he does all week. */
-        drawButcher(g, out === 'perfect', { cx: W / 2, cy: ay - 108, k: .54,
+        drawButcher(g, married, { cx: W / 2, cy: ay - 108, k: .54,
                                             holds: 'none', arms: 'down',
                                             bot: running('robot'),
                                             winded: bust && ot > .3 });
@@ -5739,7 +5761,7 @@ function drawMini(ms) {
            another, which is the whole of the game: the moment the two line
            up comes round on the beat between them. */
         const tipped = out === 'air' ? Math.min(1, ot / .5) : 0;
-        const kissing = out === 'perfect' || out === 'peck';
+        const kissing = married;
         const sq = kissing ? Math.sin(Math.min(1, ot / .34) * Math.PI) * .22 : 0;
         g.save();
         g.translate(P.dx - WED_SNOUT, P.dy - 6 + tipped * 56);
@@ -5820,13 +5842,19 @@ function drawMini(ms) {
                 ? `${WED_GOES - m.goes} GOES LEFT` : 'LAST GO');
             g.restore();
         } else if (m.phase === 'out' && ot > .22) {
-            const WORDS = {
-                perfect: ['I NOW PRONOUNCE YOU', 'DEAD ON. THE ROOM IS IN BITS', '#8fd6a2'],
-                peck:    ['A PECK, THEN', 'SHE WILL TAKE IT', '#f0d484'],
-                ate:     ['HE ATE THE BRIDE', 'HE IS A DOG. SHE WAS A SAUSAGE', '#d8462f'],
-                air:     ['HE KISSED THE AIR', 'AND WENT OVER WITH IT', '#d8462f'],
-                shy:     ['HE COULD NOT DO IT', 'THREE TIMES ROUND AND NOTHING', '#d8462f'],
-            }[out];
+            /* It always ends with the same four words when it works, because
+               a wedding has one outcome and it is not graded out loud. How
+               close you were is underneath it, and in the money. */
+            const WORDS = out === 'kiss'
+                ? ['I NOW PRONOUNCE YOU',
+                   m.near < .25 ? 'DEAD ON. THE ROOM IS IN BITS'
+                   : m.near < .62 ? 'A GOOD CLEAN KISS'
+                   : 'HE GOT THERE. JUST', '#8fd6a2']
+                : {
+                    ate: ['HE ATE THE BRIDE', 'HE IS A DOG. SHE WAS A SAUSAGE', '#d8462f'],
+                    air: ['HE KISSED THE AIR', 'AND WENT OVER WITH IT', '#d8462f'],
+                    shy: ['HE COULD NOT DO IT', 'THREE TIMES ROUND AND NOTHING', '#d8462f'],
+                  }[out];
             say(WORDS[0], WORDS[1], WORDS[2]);
         }
     } else if (mini.id === 'scales') {

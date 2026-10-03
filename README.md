@@ -1557,11 +1557,25 @@ twenty-two pounds, about a third on top of a perfect week.
 
   His head swings in and out on one clock and she bobs on another, so the
   moment the two line up comes round on the beat between them rather than on
-  a count you could learn. The horizontal is forgiving - he dwells near her at
-  the top of his swing - and the vertical is the game: she crosses the mouth
-  line in under a tenth of a second and that is the whole of what you are
-  waiting for. Land it and it is forty pounds, the biggest skill shot in here.
-  Get it only roughly and it is a peck and twelve.
+  a count you could learn. She crosses the mouth line in under a tenth of a
+  second, and that is the whole of what you are waiting for.
+
+  **You are married or you are not.** There was a second, lesser answer for a
+  while - a peck on the cheek, with its own words and its own price - and a
+  wedding does not have one of those: either he kissed the bride or something
+  went wrong in front of everybody. So it always ends with the same four
+  words. What changes is the money, which runs from ten pounds for one that
+  only just counts to **forty for one dead on**, to the nearest fifty pence,
+  and how much the room does about it: the fanfare is always the fanfare, and
+  what scales is how much goes up in the air with it. A line under the words
+  says which of the two it was, and nothing else grades it out loud.
+
+  Dead on is his nose a couple of pixels off her cheek with the two of them
+  level, and there is a few pixels of slack round both before it starts
+  costing - the lean moves about three pixels a frame through there, and a
+  band narrower than a frame is not a skill, it is a sampling rate. The gap
+  is scored asymmetrically, because there is more room on the short side of
+  her than on the side that ends with her being eaten.
 
   **And the kiss is two edges, not two middles.** Lined up on their centres,
   the perfect kiss is one head standing exactly where the other one is: it is
@@ -1572,9 +1586,10 @@ twenty-two pounds, about a third on top of a perfect week.
   eighths of the lean, so holding out for the slowest, easiest-looking moment
   is the one thing that gets her eaten - and she is a sausage and he is a dog,
   so that is exactly what happens: a chomp, a veil coming down on its own, and
-  a scattering of what is left of her. Short of her and he kisses the air in
-  front of a church full of people and goes over with it. Three times round
-  without going for it at all and that is its own answer.
+  a scattering of what is left of her. Short of her, or out of line with her,
+  and he kisses the air in front of a church full of people and goes over
+  with it. Three times round without going for it at all and that is its own
+  answer. None of the three pays anything.
 - **After the cats.** The shop after dark, and something is in it that should
   not be. **Drag anywhere and the dog goes where your finger is** - not where it
   is, where it is heading, because he is a dog and not a cursor: he builds up
