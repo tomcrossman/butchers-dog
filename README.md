@@ -1156,6 +1156,10 @@ the plate lifts off the wall, and the row underneath changes to what can be
 done with that one. The row is the width of the plates over it, because a
 button that answers a thing should line up with the thing it answers.
 
+The heading over it is the shop's own gold in the signwriter's face, the
+same as Out the back and the setup screen: it is a room in this building and
+it is titled like one.
+
 **The way onto the street is a button, not a link.** It was a gold line of
 small caps next to the credits, which is the weight a footnote gets, and
 three shops are not a footnote. It is made of the back room rather than the

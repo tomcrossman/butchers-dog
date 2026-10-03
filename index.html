@@ -869,7 +869,6 @@ body.leaving #hud { display: none; }
 /* No line under the heading. Three plates that say what they are is the
    whole of the explaining this screen needs, and a sentence over the top of
    them was telling you what you were already looking at. */
-#slots h2 { margin-bottom: 0; }
 #slotlist { width: 100%; max-width: 330px; display: flex; flex-direction: column;
             gap: 10px; margin: 15px 0 4px; }
 /* Pick a shop and then say what to do with it. Two taps either way, and this
@@ -950,7 +949,7 @@ body.leaving #hud { display: none; }
 }
 #to-set svg { width: 100%; height: 100%; fill: var(--cream); }
 #to-set:active { opacity: .7; }
-#setup h2, #settings h2, #confirm h2, #minipick h2, #code h2 {
+#setup h2, #settings h2, #confirm h2, #minipick h2, #slots h2, #code h2 {
     margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
     font-size: 35px; letter-spacing: .02em;
     color: var(--gold); text-shadow: 0 3px 0 rgba(0,0,0,.4);
@@ -1963,7 +1962,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.1.4';
+const APP_VERSION = 'v1.1.5';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
