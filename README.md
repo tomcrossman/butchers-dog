@@ -1122,29 +1122,45 @@ The game keeps one save under each, and the first is the key it has always
 written to - so a shop that was here before there were three is not migrated
 anywhere, it is simply the first of them, exactly as it was left.
 
-A **shop** on the street is a brass plate with three lines on it: the name
-over the window, who is behind the counter and what the dog is (*Reg and
-Nipper the Bulldog*), and when it was last saved - *yesterday*, *two days
-ago*, *3 weeks ago*, and a date once it is further back than that. How far
-through it is sits in the corner as a percentage, big enough to read at arm's
-length, and that is the lot. The name keeps clear of that corner on every
-line rather than only the ones that happen to wrap short of it, and a
-twenty-six character name with no spaces in it - which somebody will type -
-breaks rather than running off the side of the plate. The
-week count, the hours played, the rosette tally and a numbered heading over
-each plate were all on it at one point, which is the wall and the credits
-said again on a plate that is neither of them.
+A **shop** on the street is a counter ticket - the black plastic plaque with
+the white keyline inside the edge that every price in a butcher's window is
+written on - with **the pair of them stood on the left of it**. It was a
+brown plate with a gold rule, which is the back room's own furniture, and
+three of those in a row was three more of a panel this game already has
+plenty of. No spike under it: these are hung on a wall, not stood in the
+meat.
 
-An empty one says **New shop** and nothing else, in the middle of a plate the
-same size as the ones either side of it, so the street is three shopfronts
-rather than two and a gap.
+On the ticket: the name over the window, who is behind the counter and what
+the dog is (*Reg and Nipper the Bulldog*), and along the foot, under a rule,
+when it was last saved - *yesterday*, *two days ago*, *3 weeks ago*, and a
+date once it is further back than that - with how far through it is on the
+right as a percentage. That is the lot. The week count, the hours played,
+the rosette tally and a numbered heading over each one were all on it at a
+point, which is the wall and the credits said again on a ticket that is
+neither of them. A twenty-six character name with no spaces in it - which
+somebody will type - breaks rather than running off the side.
 
-**A shop with the whole wall filled gets a rosette of its own**, pinned to the
-right of its plate in place of the percentage: the champion's, two tiers of
-gold silk, the same one the wall gives you for holding all the others. It is
-drawn by the same function that draws them on the wall, at a fourteen-pixel
-radius, which is a thing that works because it was drawn rather than
-photographed.
+**The pair are measured onto it rather than placed.** A mastiff and a
+dachshund are not the same size, a top hat is taller than a flat cap, and
+ninety-six pixels is not enough room to guess in: the ink is drawn on a
+scratch, found, scaled to the ticket and drawn again at the size that fits -
+twice over, because a drop shadow is not scaled by the transform. It is the
+same two passes the collars on the shelf get, for the same reason. They come
+from a cast built off that slot's save rather than off the live game, so a
+ticket shows the butcher, the breed and the whole wardrobe of a shop you are
+not standing in.
+
+An empty one says **New shop** and nothing else, in the middle of a ticket
+the same size as the ones either side of it, so the street is three
+shopfronts rather than two and a gap.
+
+**A shop with the whole wall filled gets a rosette of its own**, hung off the
+top corner of its ticket at an angle, the way the red flash hangs off the
+corner of the week's: the champion's, two tiers of gold silk, the same one
+the wall gives you for holding all the others. It is the only colour on the
+street, and it is drawn by the same function that draws them on the wall, at
+a fourteen-pixel radius - a thing that works because it was drawn rather
+than photographed.
 
 **A single-shop player never learns there are three.** The street only comes up
 on boot if more than one of them is taken. One shop and you go straight to
