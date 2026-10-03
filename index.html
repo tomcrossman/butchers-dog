@@ -616,7 +616,7 @@ body.waiting #hud { display: none; }
             11px 2px/19px 17px,
         #17391e;
 }
-#store .shut, #settings .shut, #confirm .shut, #minipick .shut {
+#store .shut, #settings .shut, #confirm .shut, #minipick .shut, #slots .shut {
     background: linear-gradient(180deg, #553820, #33200f);
 }
 #setup[hidden], #store[hidden], #settings[hidden], #confirm[hidden],
@@ -818,7 +818,7 @@ body.leaving #hud { display: none; }
         linear-gradient(180deg, rgba(74,50,30,.4), rgba(28,19,11,.5));
 }
 #settings > *:not(.shut), #confirm > *:not(.shut),
-#minipick > *:not(.shut), #slots > * { position: relative; z-index: 1; }
+#minipick > *:not(.shut), #slots > *:not(.shut) { position: relative; z-index: 1; }
 #settings .rows, #confirm .rows {
     background: linear-gradient(180deg, #3e2c1c, #241910);
 }
@@ -843,9 +843,17 @@ body.leaving #hud { display: none; }
 #settings .ver { margin-top: 22px; font-size: 10px; font-weight: 700;
                  letter-spacing: .16em; text-transform: uppercase;
                  color: var(--cream); opacity: .3; }
-/* Under the three switches and outside the plate, because none of them is
-   one of the switches: two of them change which shop you are stood in and
-   the third does nothing to any of them. */
+/* The way onto the street is a door, so it is a button. It was a gold line
+   of small caps next to the credits, which is the weight a footnote gets,
+   and the three shops are not a footnote. Made of the back room the way the
+   way out of it is: brown, not the shop floor's green. */
+#settings .btn.ghost {
+    width: 100%; max-width: 280px; margin-top: 18px; padding: 12px;
+    font-size: 17px;
+    background: linear-gradient(180deg, #553820, #33200f);
+}
+/* Under the switches and outside the plate, because it is not one of them:
+   it does nothing to the shop, it only says who made it. */
 #settings .creds {
     margin: 16px 0 0; padding: 8px 14px; background: none; border: 0; cursor: pointer;
     font-family: var(--font); font-size: 10.5px; font-weight: 900; letter-spacing: .18em;
@@ -866,7 +874,7 @@ body.leaving #hud { display: none; }
             gap: 10px; margin: 15px 0 4px; }
 /* Pick a shop and then say what to do with it. Two taps either way, and this
    way round the dangerous one is never the one your thumb is already over. */
-#slotacts { width: 100%; max-width: 280px; display: flex; flex-direction: column; }
+#slotacts { width: 100%; max-width: 330px; display: flex; flex-direction: column; }
 #slotacts .btn { width: 100%; margin-top: 9px; }
 #slotacts .pair { display: flex; gap: 8px; }
 #slotacts .pair .btn { flex: 1; }
@@ -1864,7 +1872,7 @@ body.leaving #hud { display: none; }
                 <b id="set-debug">Off</b>
                 <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
         </div>
-        <button class="creds" id="to-slots">Your shops</button>
+        <button class="btn ghost" id="to-slots">Your shops</button>
         <button class="creds foot" id="to-credits">Credits</button>
         <div class="ver" id="set-ver">v1</div>
     </div>
@@ -1910,6 +1918,7 @@ body.leaving #hud { display: none; }
          Slot one is the key it always was, so whatever was here before there
          were slots is simply the first of the three. -->
     <div id="slots" hidden>
+        <button class="shut" id="slots-x" aria-label="Close">&times;</button>
         <h2>Your shops</h2>
         <div id="slotlist"></div>
         <div id="slotacts"></div>
@@ -1954,7 +1963,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.1.3';
+const APP_VERSION = 'v1.1.4';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -10884,12 +10893,11 @@ function slotCard(i) {
    offers itself, and the way to be rid of it. */
 function slotActs() {
     const i = slotPick, s = i ? slotRead(i) : null;
-    const no = `<button class="btn ghost" data-act="no">Not now</button>`;
-    if (!i) return no;
-    if (!s) return `<button class="btn" data-act="new">New shop</button>` + no;
+    if (!i) return '';
+    if (!s) return `<button class="btn" data-act="new">New shop</button>`;
     return `<div class="pair"><button class="btn" data-act="load">` +
-           `${i === slot && started ? 'Carry on' : 'Load'}</button>` +
-           `<button class="btn wipe-yes" data-act="del">Delete</button></div>` + no;
+           `${i === slot && started ? 'Continue' : 'Load'}</button>` +
+           `<button class="btn wipe-yes" data-act="del">Delete</button></div>`;
 }
 function paintSlots() {
     document.getElementById('slotlist').innerHTML = [1, 2, 3].map(slotCard).join('');
@@ -10904,14 +10912,17 @@ function openSlots() {
     /* Whichever one you are stood in, already picked - so the street on boot
        is one tap back to where you were. */
     slotPick = started ? slot : 0;
+    /* And the corner only closes on something. With no shop open there is
+       nothing behind this screen to go back to, so there is no way off it
+       but to pick one, which is the honest state of affairs. */
+    document.getElementById('slots-x').hidden = !started;
     paintSlots();
     slotsEl.hidden = false;
 }
 document.getElementById('to-slots').addEventListener('click', () => { openSlots(); plop(2); });
+document.getElementById('slots-x').addEventListener('click', () => { plop(1); shutSlots(); });
 function shutSlots() {
     slotsEl.hidden = true;
-    /* Nothing behind it: the street was the boot screen, so the way out of it
-       is the only shop there is going to be. */
     if (!started) openSetup();
 }
 document.getElementById('slotlist').addEventListener('click', e => {
@@ -10927,7 +10938,6 @@ document.getElementById('slotacts').addEventListener('click', e => {
     if (!btn) return;
     startSession(); audioNow();
     const act = btn.dataset.act, i = slotPick;
-    if (act === 'no') { plop(1); shutSlots(); return; }
     if (act === 'del') { askOver(i); return; }               // it asks first
     if (act === 'new') { slotsEl.hidden = true; startIn(i); return; }
     slotsEl.hidden = true;

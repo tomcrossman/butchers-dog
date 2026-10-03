@@ -1153,13 +1153,20 @@ to be - and then you pick a plate and say what to do with it. That is two taps
 either way round, and this way round the dangerous one is never the one your
 thumb is already over. Tapping a plate picks it: the rule goes to full gold,
 the plate lifts off the wall, and the row underneath changes to what can be
-done with that one.
+done with that one. The row is the width of the plates over it, because a
+button that answers a thing should line up with the thing it answers.
+
+**The way onto the street is a button, not a link.** It was a gold line of
+small caps next to the credits, which is the weight a footnote gets, and
+three shops are not a footnote. It is made of the back room rather than the
+shop floor - brown, like the way out of that room is - and the credits is
+still the footnote, down at the foot of the wall above the version.
 
 **Load** picks a shop up where you left it: the door comes down over the one
 you are in, that shop is written to its own key on the way out, and the one
 you chose is loaded, dealt, and its wall swept the same way it is at boot - so
 a shop opened mid-session is the shop you would have booted into. On the shop
-you are already stood in it says **Carry on** and only closes the screen. An
+you are already stood in it says **Continue** and only closes the screen. An
 empty plate offers **New shop** instead, which goes straight to the setup
 screen.
 
@@ -1171,7 +1178,15 @@ first, and then you are out on a street with one shop less on it - or at the
 setup screen, if that was the last one.
 
 The street opens with whichever shop you are in already picked, so coming to
-it on boot is one tap back to where you were.
+it on boot is one tap back to where you were - and that tap, **Continue**, is
+the way off the screen as much as the cross in the corner is. There is no
+Not now underneath: the one thing you would use it for is already the first
+button on the row.
+
+**And the cross is only there when there is something behind it.** With no
+shop open - a first run, or the moment after deleting the last one - the
+street is the only screen there is, so there is no way off it but to pick
+one. Which is the honest state of affairs rather than a dead end.
 
 **The door is the same forty frames either way.** A shop being cleared out and
 a shop being left for the evening look the same from the street, so they are
