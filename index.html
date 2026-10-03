@@ -693,6 +693,11 @@ body.leaving #hud { display: none; }
     animation: introIn .6s ease-out both;
 }
 #credits[hidden] { display: none; }
+/* The way out of every other screen is the shop's own green with a gold
+   edge, because every other screen is a room in the shop. This one is not
+   a room, so the button is the black it is sitting on. */
+#credits .shut { background: linear-gradient(180deg, #2a241f, #17130f);
+                 border-color: rgba(220,171,62,.55); }
 #roll {
     position: absolute; left: 0; right: 0; top: 0;
     display: flex; flex-direction: column; align-items: center;
@@ -719,8 +724,41 @@ body.leaving #hud { display: none; }
                     height: .55em; }
 #roll .stats .r b { flex: none; font-family: var(--font-display); font-weight: 400;
                     font-size: 19px; letter-spacing: .02em; color: var(--gold); }
-#roll .fin { width: 100%; margin: 190px 0 0;
+#roll .fin { width: 100%; margin: 300px 0 0;
              display: flex; flex-direction: column; align-items: center; }
+/* What the shop came to, printed off the same roll as a week's takings:
+   the torn paper, the shop's name, the dashed rules and a barcode nobody
+   can scan. A week of it gets a receipt; a whole shop gets one too. */
+#roll .inner { width: min(100%, 300px); max-width: 300px; margin: 34px 0 0;
+               animation: none; }
+#roll .th { margin: 6px 0 8px; }
+#roll .th .sh { display: block; font-family: var(--font-display); font-size: 20px;
+                line-height: 1.15; letter-spacing: .01em; }
+#roll .th .fb { display: block; font-size: 8.5px; font-weight: 700; letter-spacing: .3em;
+                text-transform: uppercase; opacity: .6; margin-top: 3px; }
+#roll .th .wk { display: flex; justify-content: space-between; margin-top: 9px;
+                padding-top: 7px; border-top: 1.5px dashed rgba(38,33,28,.4);
+                font-size: 9.5px; letter-spacing: .04em; text-transform: uppercase;
+                opacity: .66; }
+#roll .rl { width: 100%; border-collapse: collapse;
+            font-family: var(--mono); font-size: 12.5px; }
+#roll .rl td { padding: 3px 0; }
+#roll .rl td.d { text-align: left; font-size: 10px; letter-spacing: .05em;
+                 text-transform: uppercase; opacity: .78; padding-right: 10px; }
+#roll .rl td.m { text-align: right; font-weight: 700; white-space: nowrap;
+                 font-variant-numeric: tabular-nums; }
+#roll .tot { display: flex; justify-content: space-between; align-items: baseline;
+             margin-top: 9px; padding-top: 8px;
+             border-top: 1.5px dashed rgba(38,33,28,.45);
+             font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+             text-transform: uppercase; opacity: .78; }
+#roll .tot b { font-family: var(--font-display); font-weight: 400; font-size: 23px;
+               letter-spacing: .02em; opacity: 1; }
+#roll .bc { margin: 12px 0 0; height: 26px; line-height: 0; white-space: nowrap;
+            overflow: hidden; }
+#roll .bc i { display: inline-block; height: 100%; background: #26211c; }
+#roll .no { display: block; font-family: var(--mono); font-size: 9px;
+            letter-spacing: .28em; opacity: .55; margin-top: 4px; }
 #roll .end { font-family: var(--font-display); font-weight: 400;
              font-size: clamp(30px, 10vw, 40px); letter-spacing: .02em;
              color: var(--cream); margin: 0; line-height: 1.2; }
@@ -1350,7 +1388,7 @@ body.leaving #hud { display: none; }
    white, narrow, monospaced, torn off at both ends, with the shop's name at
    the top, the six days printed down it, a total under a dashed rule and a
    barcode at the bottom. */
-#card .inner {
+#card .inner, #roll .inner {
     position: relative; flex: none; pointer-events: auto;
     animation: sheetIn .34s cubic-bezier(.2, 1.3, .4, 1) .12s both;
     width: 100%; max-width: 292px; padding: 21px 20px 19px;
@@ -1846,7 +1884,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.0.7';
+const APP_VERSION = 'v1.0.8';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -1873,7 +1911,11 @@ function audioNow() {
     if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
     return audioCtx.currentTime;
 }
-function tone(t0, { freq, to, dur = .18, type = 'triangle', vol = .2, at = 0 }) {
+/* `out` is for anything that needs to be stoppable after it has been
+   scheduled: everything in here is handed to the audio clock ahead of time
+   and cannot be taken back, so a thing that has to stop on a cue goes
+   through a gain of its own and that gets turned down instead. */
+function tone(t0, { freq, to, dur = .18, type = 'triangle', vol = .2, at = 0, out = null }) {
     const o = audioCtx.createOscillator(), g = audioCtx.createGain(), s = t0 + at;
     o.type = type;
     o.frequency.setValueAtTime(freq, s);
@@ -1881,7 +1923,7 @@ function tone(t0, { freq, to, dur = .18, type = 'triangle', vol = .2, at = 0 }) 
     g.gain.setValueAtTime(.0001, s);
     g.gain.exponentialRampToValueAtTime(vol, s + .012);
     g.gain.exponentialRampToValueAtTime(.0001, s + dur);
-    o.connect(g); g.connect(master);
+    o.connect(g); g.connect(out || master);
     o.start(s); o.stop(s + dur + .02);
 }
 const LEAD = .025;
@@ -3258,7 +3300,11 @@ function endRound() {
     // at nearly twice Monday's speed. Monday's four is not the same feat.
     if (saved === string.n && round === DAYS.length) award('saturday');
     ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, ate, steaks, puds });
-    save.tally.sold = (save.tally.sold || 0) + saved;      // for the credits, and nothing else
+    /* For the credits, and nothing else - and written down there and then.
+       Nothing else in a week calls putSave, so a count kept only in memory
+       is a count that is nought every time you come back. */
+    save.tally.sold = (save.tally.sold || 0) + saved;
+    putSave();
     tallying = true;
     /* Which of the three lines it gets is the dog's doing, not yours: THE DOG
        GOT NOTHING over a day where it got one, because you had also halved one
@@ -3329,6 +3375,10 @@ function lastLine() {
 }
 /* The bars along the bottom of a receipt, grown from the week's own numbers
    so no two weeks print the same strip. Every other bar is the gap. */
+/* The shop's name is whatever the player typed, and it goes onto two
+   receipts through innerHTML. */
+const esc = t => String(t).replace(/[&<>"]/g,
+    c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 function barcode(seed) {
     let v = (seed | 0) + 7919, out = '';
     for (let i = 0; i < 84; i++) {
@@ -3374,7 +3424,7 @@ function endWeek() {
        under the name on the fascia, and the two things a receipt always
        carries - when it was and who served you. */
     document.getElementById('till-head').innerHTML =
-        `<span class="sh">${save.shop}</span>` +
+        `<span class="sh">${esc(save.shop)}</span>` +
         `<span class="fb">${won('best') ? 'Butcher of the Year' : 'Family Butcher'}</span>` +
         `<span class="wk"><span>Week ${save.weeks}</span>` +
         `<span>Served by ${running('robot') ? 'AI ' : ''}${cast.butcher.name}</span></span>`;
@@ -3878,8 +3928,36 @@ const MINI_TUNES = {
               n: [[.0, 392, .5], [.55, 392, .3], [.9, 523, .6], [1.5, 494, .7],
                   [2.2, 440, .4], [2.6, 392, .5]],
               b: [[.0, 131], [.9, 175], [1.5, 165], [2.2, 147]] },
+    /* And the credits, which is the one tune in here that gets to be a tune:
+       nothing else is happening on that screen, so it is four bars at a
+       hundred and thirty-two rather than a bar of something under a game,
+       and it is three times the level the themes are. Up all the way, out
+       of C, and it comes home on the one. */
+    credits: { bar: 7.273, type: 'triangle', vol: 2.3,
+              n: [[.000, 392, .20], [.227, 523, .20], [.455, 659, .20], [.682, 784, .40],
+                  [1.136, 659, .20], [1.364, 523, .20], [1.591, 587, .40],
+                  [2.045, 587, .20], [2.273, 698, .20], [2.500, 880, .20], [2.727, 784, .45],
+                  [3.182, 659, .20], [3.409, 523, .20], [3.636, 659, .45],
+                  [4.091, 698, .20], [4.318, 659, .20], [4.545, 587, .20], [4.773, 523, .20],
+                  [5.000, 494, .20], [5.227, 587, .20], [5.455, 784, .45],
+                  [5.909, 784, .20], [6.136, 988, .20], [6.364, 880, .20], [6.591, 1047, .66]],
+              b: [[.000, 131], [.909, 131], [1.818, 98], [2.727, 98],
+                  [3.636, 110], [4.545, 87], [5.455, 98], [6.364, 131]] },
 };
-let tuneT = 0, tuneOn = null;
+/* The whole bed goes through one gain, which is the only way to stop it.
+   A bar is handed to the audio clock in one go and up to seven seconds
+   ahead of itself, so clearing the timer stops the next bar and does
+   nothing whatever about this one - which is a theme still playing over the
+   jingle that takes you back to the shopfront. */
+let tuneT = 0, tuneOn = null, tuneBus = null;
+function tuneOut() {
+    if (!tuneBus || tuneBus.context !== audioCtx) {
+        tuneBus = audioCtx.createGain();
+        tuneBus.gain.value = 1;
+        tuneBus.connect(master);
+    }
+    return tuneBus;
+}
 function tuneStart(id) {
     tuneStop();
     const T = MINI_TUNES[id];
@@ -3888,19 +3966,32 @@ function tuneStart(id) {
     const bar = () => {
         if (tuneOn !== id) return;
         safely(t => {
-            const v = T.vol || 1;
+            const v = T.vol || 1, out = tuneOut();
             for (const [at, f, d] of T.n) {
-                tone(t, { freq: f, dur: d, type: T.type, vol: .075 * v, at });
-                tone(t, { freq: f * 2, dur: d * .5, type: 'sine', vol: .022 * v, at });
+                tone(t, { freq: f, dur: d, type: T.type, vol: .075 * v, at, out });
+                tone(t, { freq: f * 2, dur: d * .5, type: 'sine', vol: .022 * v, at, out });
             }
             for (const [at, f] of T.b)
-                tone(t, { freq: f, dur: .36, type: 'sine', vol: .095 * v, at });
+                tone(t, { freq: f, dur: .36, type: 'sine', vol: .095 * v, at, out });
         });
         tuneT = setTimeout(bar, T.bar * 1000);
     };
     bar();
 }
-function tuneStop() { tuneOn = null; clearTimeout(tuneT); tuneT = 0; }
+function tuneStop() {
+    tuneOn = null; clearTimeout(tuneT); tuneT = 0;
+    if (!tuneBus) return;
+    // down over a fifth of a second, so it stops rather than being cut off
+    const dead = tuneBus;
+    tuneBus = null;                                  // the next one gets a fresh one
+    try {
+        const t = audioCtx.currentTime;
+        dead.gain.cancelScheduledValues(t);
+        dead.gain.setValueAtTime(dead.gain.value, t);
+        dead.gain.linearRampToValueAtTime(0, t + .2);
+    } catch (e) { /* no audio here, never mind */ }
+    setTimeout(() => { try { dead.disconnect(); } catch (e) { /* gone already */ } }, 600);
+}
 function startMini() {
     const M = pick(MINIS);
     mini = { id: M.id, name: M.name, say: M.say, secs: M.secs || MINI_S,
@@ -11028,7 +11119,6 @@ const CREW = [['A game by', 'Tom Crossman'],
               ['Technical lead', 'The AI Butcher'],
               ['QA', ['Henry Crossman', 'Arthur Crossman']]];
 const ROLL_SPEED = 62;                 // pixels a second, whatever is on it
-let rollTune = 0;
 /* What the shop came to. The five the credits were asked for, and the two
    it would be odd to leave out when they are already counted. */
 function creditStats() {
@@ -11044,47 +11134,49 @@ function creditStats() {
             ['Rosettes on the wall', `${save.got.length} of ${ROSETTES.length}`],
             ['In the till', money2(save.bank)]];
 }
-/* The two pictures. They are the game's own drawings at the game's own
-   scale rather than illustrations of it: the pair behind the counter, and
-   the wall of rosettes - which is your wall, not a picture of somebody
-   else's. There was a third, the string on the rail with the knife at it,
-   and a string of links with nothing happening to them is a string of
-   links. */
-function creditPic(which) {
+/* The picture. It is the game's own drawing at the game's own scale rather
+   than an illustration of it: the two of them behind the counter, which is
+   what the whole thing has been about. There were three - a string on the
+   rail with nothing happening to it, and a row of rosettes - and a credits
+   roll is not a gallery. */
+function creditPic() {
     const c = document.createElement('canvas');
-    const w = 330, h = which === 'wall' ? 150 : 210;   // the wall is a shallower thing
-    c.width = w; c.height = h;                       // sharp() wants it in the page
+    const w = 330, h = 210;
+    c.width = w; c.height = h;
     const g = c.getContext('2d');
     g.lineJoin = 'round'; g.lineCap = 'round';
     const B = cast ? cast.dog : TIERS[0][0];
-    const tile = () => {
-        const lg = g.createLinearGradient(0, 0, 0, h);
-        lg.addColorStop(0, '#2b7156'); lg.addColorStop(1, '#1c4e3c');
-        g.fillStyle = lg; g.fillRect(0, 0, w, h);
-        g.fillStyle = '#174636';
-        for (let y = 0; y < h; y += 42) g.fillRect(0, y, w, 2.2);
-        for (let x = 0; x < w; x += 52) g.fillRect(x, 0, 2.2, h);
-    };
-    if (which === 'shop') {
-        tile();
-        drawButcher(g, true, { cx: w * .31, cy: h + 4, k: .78, holds: 'knife',
-                               bot: running('robot') });
-        drawDog(g, w * .74, h - 72, .82 / B.k, { open: 0 }, 0, B, cast ? cast.kit : BARE);
-        g.fillStyle = 'rgba(0,0,0,.3)'; g.fillRect(0, h - 19, w, 5);
-        g.fillStyle = '#e6e0d1'; g.fillRect(0, h - 15, w, 15);
-        g.fillStyle = '#fbf8f0'; g.fillRect(0, h - 15, w, 4);
-    } else {
-        tile();
-        const up = (save.got.length ? save.got : ROSETTES.map(r => r.id)).slice(0, 12);
-        const per = Math.min(up.length, 6), gap = Math.min(52, (w - 44) / per);
-        up.forEach((id, i) => {
-            const ro = rosetteById(id);
-            if (!ro) return;
-            drawRosette(g, w / 2 - (per - 1) / 2 * gap + (i % per) * gap,
-                        44 + ((i / per) | 0) * 62, ro.grand ? 24 : 19, ro.silk, false, ro.grand);
-        });
-    }
+    const lg = g.createLinearGradient(0, 0, 0, h);
+    lg.addColorStop(0, '#2b7156'); lg.addColorStop(1, '#1c4e3c');
+    g.fillStyle = lg; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#174636';
+    for (let y = 0; y < h; y += 42) g.fillRect(0, y, w, 2.2);
+    for (let x = 0; x < w; x += 52) g.fillRect(x, 0, 2.2, h);
+    drawButcher(g, true, { cx: w * .31, cy: h + 4, k: .78, holds: 'knife',
+                           bot: running('robot') });
+    drawDog(g, w * .74, h - 72, .82 / B.k, { open: 0 }, 0, B, cast ? cast.kit : BARE);
+    g.fillStyle = 'rgba(0,0,0,.3)'; g.fillRect(0, h - 19, w, 5);
+    g.fillStyle = '#e6e0d1'; g.fillRect(0, h - 15, w, 15);
+    g.fillStyle = '#fbf8f0'; g.fillRect(0, h - 15, w, 4);
     return c;
+}
+/* The numbers, printed off the same roll as a week's takings. A week gets a
+   receipt; a whole shop should get one too, and it is the one layout in
+   this game that already knows how to put a word on the left and a figure
+   on the right without either of them wandering. */
+function creditTill() {
+    const rows = creditStats(), till = rows.pop();         // the money goes at the foot
+    const seed = (save.bank | 0) + (save.weeks | 0) * 977 + (save.tally.sold | 0);
+    return '<div class="inner">' +
+        `<div class="th"><span class="sh">${esc(save.shop || 'Butcher\u2019s Dog')}</span>` +
+        `<span class="fb">${won('best') ? 'Butcher of the Year' : 'Family Butcher'}</span>` +
+        `<span class="wk"><span>The shop, as it stands</span>` +
+        `<span>${save.weeks || 0} wk</span></span></div>` +
+        `<table class="rl">${rows.map(([k, v]) =>
+            `<tr><td class="d">${k}</td><td class="m">${v}</td></tr>`).join('')}</table>` +
+        `<div class="tot"><span>${till[0]}</span><b>${till[1]}</b></div>` +
+        `<div class="bc">${barcode(seed)}</div>` +
+        `<span class="no">${tillNo(seed)}</span></div>`;
 }
 function rollCredits() {
     const el = document.getElementById('credits'), roll = document.getElementById('roll');
@@ -11095,18 +11187,15 @@ function rollCredits() {
         CREW.map(([l, n]) => `<div class="lab">${l}</div>` +
             [].concat(n).map(w => `<div class="who">${w}</div>`).join('')).join('') +
         '<canvas data-pic="shop"></canvas>' +
-        '<canvas data-pic="wall"></canvas>' +
         /* The last thing on the roll is the whole of the last thing on the
            roll: the words at the top of the window and the shop's numbers
            under them, held there together rather than the one scrolling
            past the other. */
-        '<div class="fin"><div class="end">Thanks for playing!</div>' +
-        `<div class="stats">${creditStats().map(([k, v]) =>
-            `<div class="r"><span>${k}</span><i></i><b>${v}</b></div>`).join('')}</div></div>`;
+        '<div class="fin"><div class="end">Thanks for playing!</div>' + creditTill() + '</div>';
     el.hidden = false;
     drawSignBoard('roll-sign');
     for (const c of roll.querySelectorAll('canvas[data-pic]')) {
-        const src = creditPic(c.dataset.pic);
+        const src = creditPic();
         c.width = src.width; c.height = src.height;
         c.getContext('2d').drawImage(src, 0, 0);
     }
@@ -11121,23 +11210,20 @@ function rollCredits() {
            middle: what is at the bottom of it is the numbers, and numbers
            you cannot read are not numbers. On a window too short to hold the
            lot, the top wins. */
-        const head = Math.max(16, Math.min(vh * .11, vh - 26 - last.offsetHeight));
+        const head = Math.max(16, Math.min((vh - last.offsetHeight) / 2, vh * .22));
         const stop = last.offsetTop - head;
         roll.style.setProperty('--a', vh + 'px');
         roll.style.setProperty('--b', -Math.max(0, stop) + 'px');
         roll.style.setProperty('--t', (vh + Math.max(0, stop)) / ROLL_SPEED + 's');
         roll.classList.add('going');
     });
-    // him whistling while he tidies up, every so often rather than on a loop
-    shopTune();
-    clearInterval(rollTune);
-    rollTune = setInterval(() => { if (!el.hidden) shopTune(); else clearInterval(rollTune); }, 11000);
+    tuneStart('credits');
 }
 function shutCredits() {
     const el = document.getElementById('credits');
     el.hidden = true;
     document.getElementById('roll').className = 'roll';
-    clearInterval(rollTune); rollTune = 0;
+    tuneStop();
     plop(1);
 }
 document.getElementById('credits-no').addEventListener('click', shutCredits);

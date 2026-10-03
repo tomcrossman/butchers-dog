@@ -1693,12 +1693,20 @@ and outside the plate, because it does nothing to the shop, it only tells you
 what the shop came to. A credits roll you can only ever see once is a credits
 roll nobody sees.
 
-The plaque off the setup screen, the names, two pictures and the numbers. The pictures are the game's own drawings at the game's own scale
-rather than illustrations of it - the pair behind the counter, and whatever
-is actually on your wall - so they cannot drift from the game, and the wall
-of rosettes is your wall rather than a picture of somebody else's. There was
-a third, the string on the rail with the knife at it, and a string of links
-with nothing happening to them is a string of links.
+The plaque off the setup screen, the names, one picture and the numbers. The
+picture is the game's own drawing at the game's own scale rather than an
+illustration of it - the two of them behind the counter, which is what the
+whole thing has been about - so it cannot drift from the game. There were
+three: a string on the rail with nothing happening to it, and a row of
+rosettes, and a credits roll is not a gallery.
+
+**The numbers come off the same roll as a week's takings.** A week of
+trading gets a receipt, so a whole shop gets one too, and it is the one
+layout in this game that already knows how to put a word on the left and a
+figure on the right without either of them wandering: the torn paper, the
+shop's name, the dashed rules, the money at the foot in the display face,
+and a barcode nobody can scan - seeded off the till, the weeks and the
+sausages, so no two shops print the same one.
 
 **It scrolls itself.** The column is measured once it is built and then moved
 at a fixed sixty-two pixels a second, so a longer roll takes longer rather
@@ -1714,7 +1722,10 @@ game.
 **The numbers are whatever is true now**, triggered or not: time in the shop,
 weeks traded, sausages over the counter, hours after closing, dogs buried,
 rosettes, and what is in the till. Three of those were already counted for
-other reasons; the sausages, the graves and the time had to be added.
+other reasons; the sausages, the graves and the time had to be added - and
+the sausages are written down the moment the day ends, because nothing else
+in a week calls for a save and a count kept only in memory is a count that
+reads nought every time you come back to it.
 
 Time in the shop is counted in short pieces rather than from one mark to the
 next, because a tab left open overnight is not a long session, it is a long
@@ -1744,6 +1755,23 @@ be heard at all - a theme you can hear under a buzzer is too loud, and one
 you cannot hear over a tiled room is not a theme. It starts six tenths of a
 second after the three notes that announce the game, so it is under them
 rather than over them, and it stops when the game does.
+
+**And the credits get a tune of their own.** It is the one piece of music in
+here that gets to be a tune rather than a bed: nothing else is happening on
+that screen, so it is four bars at a hundred and thirty-two rather than a
+bar of something under a game, and it runs at about one and a half times
+the loudest effect instead of two thirds of it. Up all the way, out of C,
+and it comes home on the one.
+
+**A theme stops when it is told to.** Everything in this game is handed to
+the audio clock ahead of time and cannot be taken back, and a bar goes over
+in one piece up to seven seconds before you hear the end of it - so
+clearing the timer stopped the next bar and did nothing whatever about the
+one already in flight, which is a mini-game theme still playing over the
+jingle that takes you back to the shopfront. The whole bed goes through one
+gain of its own now, and stopping it turns that down over a fifth of a
+second: it stops rather than being cut off, and the next game gets a fresh
+one.
 
 **It takes its name from whatever game is actually up** rather than from the
 one it was asked about. The debug door opens a game by letting the ordinary
