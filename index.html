@@ -75,7 +75,25 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
         repeating-linear-gradient(90deg, var(--grout) 0 2.5px, transparent 2.5px 60px),
         linear-gradient(180deg, #2b7156 0%, var(--tile) 42%, #1c4e3c 100%);
 }
-#pad { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* The game is a phone game: a string hanging down the middle of a tall
+   window. Given a desktop browser it took the whole of it, which is a
+   six-foot sausage and a dog the size of a door - and the rail, which is a
+   fitting on a wall, ran the width of a laptop. So the play area is capped
+   at exactly the width the shopfront is capped at, centred, with the tiled
+   wall carrying on either side of it: the same thing the shopfront already
+   does with the counter panelling behind it. On a phone the cap never
+   bites and nothing moves. */
+#app { --play: min(100%, 51vh); }
+#pad { position: absolute; inset: 0; right: auto; display: block;
+       left: 50%; margin-left: calc(var(--play) / -2);
+       width: var(--play); height: 100%;
+       box-shadow: 0 0 0 2px rgba(6,16,12,.55), 0 0 90px 14px rgba(6,16,12,.62); }
+/* And everything that is painted over the window goes with it, or the day
+   plate and the count land in the middle of the desk instead of in the
+   middle of the shop. Written against #app because both of them set their
+   own left and right further down the sheet, and the last one wins. */
+#app #hud, #app #banner { left: 50%; right: auto; width: var(--play);
+                          margin-left: calc(var(--play) / -2); }
 
 /* ============================================================
    SIGNWRITING
@@ -305,7 +323,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     position: absolute; left: 50%; top: 32%; z-index: 9;
     transform: translate(-50%, -50%) rotate(-2.5deg);
     text-align: center; pointer-events: none; display: none;
-    width: max-content; max-width: min(80vw, 290px); padding: 11px 20px 10px;
+    width: max-content; max-width: min(290px, calc(var(--play) * .82)); padding: 11px 20px 10px;
     background: linear-gradient(180deg, #1d1a16, #0f0d0b);
     border-radius: 7px;
     box-shadow: 0 7px 0 rgba(0,0,0,.45), 0 10px 22px rgba(0,0,0,.45);
@@ -1764,7 +1782,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.0.2';
+const APP_VERSION = 'v1.0.3';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3703,6 +3721,10 @@ const MINIS = [
       secs: 60, untimed: true },
     { id: 'scales', name: 'On the scales', say: 'Stop it on the mark',
       secs: 90, untimed: true },
+    /* And the ninth, which is a scene before it is a game: the dog is
+       getting married and you have one tap to land the kiss. */
+    { id: 'wed', name: 'Butcher\u2019s wedding', say: 'Line it up. Kiss the bride',
+      secs: 60, untimed: true },
 ];
 let mini = null;
 // what the hour after closing came to, kept until the week's card has shown it
@@ -3719,6 +3741,7 @@ function miniSetup(id) {
     else if (id === 'cats') catsSet();
     else if (id === 'shell') shellSet();
     else if (id === 'scales') scalesSet();
+    else if (id === 'wed') wedSet();
     else {
         mini.bangers = [];
         for (let i = 0; i < 5; i++)
@@ -4128,6 +4151,214 @@ const chink = () => safely(t => {
 });
 const miniLeft = () => mini.begun === false ? mini.secs
                      : Math.max(0, mini.secs - (now() - mini.t0) / 1000);
+/* ---- Butcher's wedding --------------------------------------------------
+   The dog is getting married. To a sausage. The butcher is taking the
+   service, because there is nobody else in this game to take it.
+
+   It is the only one of the nine that is a scene before it is a game: a wide
+   shot of the altar while he reads the words, a push in on the pair of them,
+   and then one tap. His head swings in and out on one clock and she bobs on
+   another, so the moment the two line up comes round on the beat between
+   them rather than on a count you could learn. Land it and they get the
+   kiss. Miss it and the obvious thing happens, because he is a dog and she
+   is a sausage.
+   ------------------------------------------------------------------------ */
+const WED_PAY = 4000;              // dead on, which is the whole hour in one tap
+const WED_PECK = 1200;             // and the one that only just lands
+const WED_VOWS = 2300;             // the ceremony, before the push in
+const WED_ZOOM = 950;              // and how long the push in takes
+const WED_SWING = 1.52;            // a second and a half to lean in and back
+const WED_BOB = 1.07;              // she is on her own clock, which is the game
+const WED_GOES = 3;                // three passes and he has lost his nerve
+const WED_OUT = 2700;              // how long you watch whatever you did
+const TAU = Math.PI * 2;
+const wedAltar = () => H * .70;
+const wedDogX = () => W / 2 - Math.min(98, W * .27);
+const wedBrideX = () => W / 2 + Math.min(54, W * .15);
+/* The top of the swing puts him past her rather than on her, so holding out
+   for the easiest-looking moment is the one thing that gets her eaten: the
+   kiss lands at seven eighths of the lean, not at the end of it. */
+const WED_ON = .875;
+function wedSet() {
+    mini.phase = 'vows';
+    mini.pt = 0;
+    mini.lean = 0; mini.bob = 0; mini.goes = 0;
+    mini.out = null; mini.ot = 0;
+    mini.hearts = []; mini.bits = [];
+    mini.cam = 0;                                  // 0 the whole altar, 1 the pair
+    organ();
+}
+/* Where everything is this frame. The dog's nose and the bride's lips are
+   the two points the game is about, so they are what this returns - what is
+   drawn round them hangs off them rather than the other way about. */
+/* The two points the game is about are the end of his nose and the side of
+   her face, not the middles of the two of them - a kiss that lines up two
+   centres is one head standing exactly where the other one is. His nose is
+   the right-hand edge of his head and her cheek is the left-hand edge of
+   hers, and everything is drawn back from those. */
+const WED_SNOUT = 44, WED_CHEEK = 20;
+function wedAt() {
+    const m = mini, ay = wedAltar();
+    const dx0 = wedDogX() + WED_SNOUT, bx = wedBrideX();
+    const reach = (bx - WED_CHEEK - dx0) / WED_ON;
+    return { ay, reach, bx,
+             dx: dx0 + m.lean * reach,
+             dy: ay - 72 + Math.sin(m.pt / .83 * TAU) * 4,   // he is nervous too
+             by: ay - 72 + m.bob * 27 };
+}
+/* The bride. She is a sausage in a veil, which is the whole joke, so she is
+   drawn as a sausage and not as a person: the link from the rail, stood on
+   her end, with a veil off the back of her, a sprig at her waist and the
+   only face in this game that is made of three dots. (x, y) is her lips,
+   because her lips are the thing the game is about. */
+function wedBride(g, x, y, k, ms, out) {
+    const cy = y + 20 * k;                       // her middle, under the lips
+    const blush = out === 'perfect' || out === 'peck';
+    g.save();
+    g.fillStyle = 'rgba(250,247,240,.76)';       // the veil, behind her
+    g.beginPath();
+    g.moveTo(x - 13 * k, y - 10 * k);
+    g.quadraticCurveTo(x - 46 * k, y + 30 * k, x - 34 * k, y + 92 * k);
+    g.quadraticCurveTo(x, y + 74 * k, x + 34 * k, y + 92 * k);
+    g.quadraticCurveTo(x + 46 * k, y + 30 * k, x + 13 * k, y - 10 * k);
+    g.closePath(); g.fill();
+    drawBlanket(g, x, cy, k, -Math.PI / 2, true);
+    // a band of little flowers round the top of her, holding the veil on
+    for (let i = -2; i <= 2; i++) {
+        g.fillStyle = i % 2 ? '#f3e9d6' : '#e8bfcb';
+        g.beginPath();
+        g.ellipse(x + i * 5.2 * k, y - 12 * k - Math.abs(i) * .6 * k, 3 * k, 2.6 * k, 0, 0, TAU);
+        g.fill();
+    }
+    if (blush) for (const sx of [-1, 1]) {
+        g.fillStyle = 'rgba(211,109,78,.42)';
+        g.beginPath(); g.ellipse(x + sx * 8.6 * k, y - 1 * k, 3.4 * k, 2.4 * k, 0, 0, TAU); g.fill();
+    }
+    g.fillStyle = '#2a201a';                     // two for the eyes
+    for (const sx of [-1, 1]) {
+        g.beginPath();
+        g.ellipse(x + sx * 4.6 * k, y - 5 * k, 1.9 * k, blush ? 1 * k : 2.3 * k, 0, 0, TAU);
+        g.fill();
+    }
+    g.fillStyle = '#d4667c';                     // and one for the lips
+    g.beginPath();
+    g.ellipse(x, y + 2 * k, blush ? 4.4 * k : 3.4 * k, blush ? 3.6 * k : 2.6 * k, 0, 0, TAU);
+    g.fill();
+    // the bouquet, held at what there is of a waist
+    g.strokeStyle = '#4e7a3e'; g.lineWidth = 1.8 * k; g.lineCap = 'round';
+    for (const a of [-.5, -.1, .3]) {
+        g.beginPath();
+        g.moveTo(x - 12 * k, y + 44 * k);
+        g.lineTo(x - 12 * k + Math.sin(a) * 15 * k, y + 44 * k - Math.cos(a) * 15 * k);
+        g.stroke();
+    }
+    for (const [dx, dy, c] of [[-20, 30, '#e8bfcb'], [-13, 27, '#f3e9d6'], [-7, 31, '#e8bfcb'],
+                               [-16, 34, '#f0d484']]) {
+        g.fillStyle = c;
+        g.beginPath(); g.ellipse(x + dx * k, y + dy * k, 3.6 * k, 3.2 * k, 0, 0, TAU); g.fill();
+    }
+    g.restore();
+}
+function wedStep(dt) {
+    const m = mini;
+    m.pt += dt;
+    if (m.phase === 'vows') {
+        if (m.pt * 1000 > WED_VOWS) { m.phase = 'zoom'; m.pt = 0; }
+        return;
+    }
+    if (m.phase === 'zoom') {
+        const e = Math.min(1, m.pt * 1000 / WED_ZOOM);
+        m.cam = e * e * (3 - 2 * e);
+        if (e >= 1) { m.phase = 'kiss'; m.pt = 0; }
+        return;
+    }
+    if (m.phase === 'kiss') {
+        m.lean = (1 - Math.cos(m.pt / WED_SWING * TAU)) / 2;
+        m.bob = Math.sin(m.pt / WED_BOB * TAU);
+        m.goes = Math.floor(m.pt / WED_SWING);
+        // three times round and he has not gone for it, which is its own answer
+        if (m.goes >= WED_GOES) wedKiss(true);
+        return;
+    }
+    // whatever happened, happening
+    m.ot += dt;
+    for (const b of m.bits) { b.x += b.vx * dt; b.y += b.vy * dt; b.vy += 900 * dt; b.a += b.sp * dt; }
+    if (m.ot * 1000 > WED_OUT) endMini();
+}
+/* One tap, scored on two numbers: how far short of her he is, and how far
+   out of line the two of them are. Short and he kisses the air in front of a
+   church full of people. Through her and there is no bride. */
+function wedKiss(ranOut) {
+    const m = mini;
+    if (m.phase !== 'kiss') return;
+    const p = wedAt();
+    const gap = p.bx - WED_CHEEK - p.dx, off = p.by - p.dy;
+    m.phase = 'out'; m.ot = 0;
+    if (ranOut)                           m.out = 'shy';
+    else if (gap >= -3 && gap <= 7 && Math.abs(off) <= 9)   m.out = 'perfect';
+    else if (gap >= -9 && gap <= 19 && Math.abs(off) <= 22) m.out = 'peck';
+    else if (gap < -9 && Math.abs(off) < 30)                m.out = 'ate';
+    else                                                     m.out = 'air';
+    if (m.out === 'perfect') {
+        m.won = WED_PAY;
+        ding(); sold(); fanfare(4); smooch(1); bark(2, { vol: .9, at: .5 });
+        for (let i = 0; i < 18; i++)
+            m.hearts.push({ x: p.bx - 24, y: p.by, t0: now() + i * 46,
+                            drift: (Math.random() - .5) * 150, r: 7 + Math.random() * 9 });
+        for (let i = 0; i < 26; i++) {           // and the confetti over the pair
+            const a = -Math.PI / 2 + (Math.random() - .5) * 2.2, v = 260 + Math.random() * 430;
+            m.bits.push({ x: p.bx - 24, y: p.by - 10, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+                          a: Math.random() * TAU, sp: (Math.random() - .5) * 16,
+                          r: 4 + Math.random() * 4, col: pick(CONFETTI) });
+        }
+    } else if (m.out === 'peck') {
+        m.won = WED_PECK;
+        till(); smooch(.5);
+        for (let i = 0; i < 4; i++)
+            m.hearts.push({ x: p.bx - 18, y: p.by, t0: now() + i * 110,
+                            drift: (Math.random() - .5) * 60, r: 5 + Math.random() * 4 });
+    } else if (m.out === 'ate') {
+        chomp(); gasp();
+        for (let i = 0; i < 14; i++) {          // and what is left of her
+            const a = -Math.PI / 2 + (Math.random() - .5) * 2.6, v = 120 + Math.random() * 260;
+            m.bits.push({ x: p.bx, y: p.by + 20, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+                          a: Math.random() * TAU, sp: (Math.random() - .5) * 14,
+                          r: 2.5 + Math.random() * 3,
+                          col: Math.random() < .5 ? MEAT.body : '#f3e9d6' });
+        }
+    } else {
+        buzz(); gasp();
+    }
+    showHud();
+}
+const CONFETTI = ['#f0d484', '#e25c6e', '#8fd6a2', '#7fb0e0', '#f3e9d6', '#d4a0e0'];
+/* A wedding organ, which is four chords and a lot of reverb nobody is going
+   to get out of an oscillator - so it is four chords played slowly and left
+   to ring, which is what you actually hear from the back of a church. */
+const organ = () => safely(t => {
+    const C = [[0, [262, 330, 392]], [.62, [294, 349, 440]],
+               [1.24, [247, 330, 392]], [1.86, [262, 330, 523]]];
+    C.forEach(([at, ch]) => ch.forEach((f, i) => {
+        tone(t, { freq: f, dur: .74, type: 'triangle', vol: .055 - i * .008, at });
+        tone(t, { freq: f * 2, dur: .62, type: 'sine', vol: .022, at: at + .02 });
+    }));
+    C.forEach(([at, ch]) => tone(t, { freq: ch[0] / 2, dur: .78, type: 'sine', vol: .06, at }));
+});
+// the kiss itself: a wet little pop and the smack off the end of it
+const smooch = k => safely(t => {
+    sweep(t, { from: 340, to: 1700, q: 5, dur: .09, vol: .20 * k });
+    tone(t, { freq: 180, to: 620, dur: .07, type: 'sine', vol: .14 * k, at: .01 });
+    sweep(t, { from: 2600, to: 900, q: 3, dur: .05, vol: .16 * k, at: .09 });
+    if (k > .7) for (let i = 0; i < 3; i++)      // and the room, for a good one
+        hiss(t, { hp: 1800, lp: 9000, dur: .3, vol: .05, at: .2 + i * .14 });
+});
+// and the noise a church full of people makes when it goes wrong
+const gasp = () => safely(t => {
+    for (let i = 0; i < 5; i++)
+        hiss(t, { hp: 400 + i * 160, lp: 2600, dur: .42, vol: .055, at: i * .035 });
+    tone(t, { freq: 330, to: 262, dur: .5, type: 'triangle', vol: .04, at: .06 });
+    tone(t, { freq: 392, to: 311, dur: .5, type: 'triangle', vol: .03, at: .09 });
+});
 function miniStep(dt) {
     /* The clock stopping is not the coins stopping. When the time ran out
        mid-air the last few hung exactly where they were for the nine hundred
@@ -4269,6 +4500,8 @@ function miniStep(dt) {
         scalesStep(dt);
     } else if (mini.id === 'shell') {
         shellStep(dt);
+    } else if (mini.id === 'wed') {
+        wedStep(dt);
     } else if (mini.id === 'cats') {
         const top = RAIL + 108, bot = H - 72, lf = 36, rt = W - 36;
         if (mini.held) {                       // he makes for wherever you are
@@ -4371,6 +4604,7 @@ function miniAt(x, y) {
        where, which is the point: you are not steering him, you are holding
        him up. */
     if (mini.id === 'dream') { mini.hold = true; return; }
+    if (mini.id === 'wed') { wedKiss(false); return; }
     if (mini.id === 'cats') { mini.tx = x; mini.ty = y; mini.held = true; return; }
     if (mini.id === 'scales') {
         const c = mini.cust;
@@ -4852,6 +5086,14 @@ function miniBack(ms) {
         g.fillStyle = '#e6e0d1'; g.fillRect(0, ty, W, 17);
         g.fillStyle = '#fbf8f0'; g.fillRect(0, ty, W, 5);
         g.fillStyle = '#b9b1a0'; g.fillRect(0, ty + 14, W, 3);
+    } else if (mini.id === 'wed') {
+        /* Nothing but a floor colour. The whole of this one is drawn inside
+           a camera that pushes in, backdrop and all - a wall that stays put
+           while the pair of them get bigger is not a camera, it is two
+           pictures. */
+        g.fillStyle = '#17362a'; g.fillRect(0, 0, W, H);
+        g.restore();
+        return;
     } else if (mini.id === 'shell') {
         /* The shop, from the wrong side of the counter. Everything else in
            here is played from where the butcher stands; this one is played
@@ -5313,6 +5555,280 @@ function drawMini(ms) {
                 { open: .3, tilt: clamp(mini.vx * mini.face / 2600, -.26, .26) },
                 ms, cast.dog, cast.kit);
         ctx.restore();
+    } else if (mini.id === 'wed') {
+        const m = mini, P = wedAt(), g = ctx, ay = P.ay;
+        const out = m.out, ot = m.ot;
+        const rnd = (i, k) => { const v = Math.sin(i * 12.9898 + k * 78.233) * 43758.5;
+                                return v - Math.floor(v); };
+        const bust = out === 'ate' || out === 'air';
+        /* The camera, and all of it inside the camera: at nought you are at
+           the back of the chapel, at one you are a foot from the pair of
+           them. A wall that stays put while they get bigger is not a camera,
+           it is two pictures. */
+        /* It pulls back a little for the vows and pushes past where it
+           started for the kiss, which makes a modest move feel like a move:
+           a camera that only ever goes one way from where it already was is
+           a zoom, and a camera that backs off first is a cut to the couple.
+           The close framing is measured off his swing rather than off where
+           he starts, so the far end of the lean is still in the window. */
+        const tx = (wedDogX() + wedBrideX()) / 2, tgy = ay - 72;
+        const zk = .90 + m.cam * .60;
+        g.save();
+        g.translate(W / 2, H / 2);
+        g.scale(zk, zk);
+        g.translate(-(W / 2 + (tx - W / 2) * m.cam), -(H / 2 + (tgy - H / 2) * m.cam));
+
+        // ---- the chapel, which is a butcher's shop with the lights down
+        const wall = g.createLinearGradient(0, -H, 0, ay);
+        wall.addColorStop(0, '#1d4c3a'); wall.addColorStop(.72, '#2a6a51');
+        wall.addColorStop(1, '#194736');
+        g.fillStyle = wall; g.fillRect(-W, -H, W * 3, H + ay);
+        g.fillStyle = 'rgba(8,30,20,.26)';
+        for (let x = -W + (W % 54) / 2; x < W * 2; x += 54) g.fillRect(x, -H, 2.5, H + ay);
+        for (let y = ay - 48; y > -H; y -= 44) g.fillRect(-W, y, W * 3, 2.5);
+        /* The one window in the place, up behind him, which is where the
+           light in this picture comes from and what fills the wall over
+           their heads. Arched, leaded, and the panes are the colours the
+           rest of the game is made of. */
+        const wx = W / 2, wt = ay - 436, wb = ay - 212, ww = Math.min(74, W * .20);
+        const arch = (o) => {
+            g.beginPath();
+            g.moveTo(wx - ww + o, wb - o);
+            g.lineTo(wx - ww + o, wt + ww);
+            g.arc(wx, wt + ww, ww - o, Math.PI, 0);
+            g.lineTo(wx + ww - o, wb - o);
+            g.closePath();
+        };
+        g.fillStyle = '#19402f'; arch(-9); g.fill();            // the stone round it
+        g.fillStyle = '#f0e0b4'; arch(0); g.fill();
+        g.save(); arch(0); g.clip();
+        const PANES = ['#e8c98a', '#c9a44c', '#e8bfcb', '#a8d8bc', '#e8c98a', '#d8a06a'];
+        for (let r = 0; r < 6; r++) for (let cc = 0; cc < 3; cc++) {
+            g.fillStyle = PANES[(r * 3 + cc) % PANES.length];
+            g.globalAlpha = .55 + .3 * rnd(r * 3 + cc, 2);
+            g.fillRect(wx - ww + cc * (ww * 2 / 3) + 2, wt + r * 40 + 2, ww * 2 / 3 - 4, 36);
+        }
+        g.globalAlpha = 1;
+        g.strokeStyle = 'rgba(40,32,22,.5)'; g.lineWidth = 3;
+        for (let cc = 1; cc < 3; cc++) {
+            g.beginPath(); g.moveTo(wx - ww + cc * (ww * 2 / 3), wt); g.lineTo(wx - ww + cc * (ww * 2 / 3), wb); g.stroke();
+        }
+        for (let r = 1; r < 6; r++) {
+            g.beginPath(); g.moveTo(wx - ww, wt + r * 40); g.lineTo(wx + ww, wt + r * 40); g.stroke();
+        }
+        g.restore();
+        // and what it throws down the aisle
+        const beam = g.createRadialGradient(wx, wt + 90, 20, wx, ay - 120, W * .95);
+        beam.addColorStop(0, 'rgba(255,238,186,.34)'); beam.addColorStop(1, 'rgba(255,238,186,0)');
+        g.fillStyle = beam; g.fillRect(-W, -H, W * 3, H * 2);
+
+        /* Two swags of links over the altar, because this is a butcher's
+           wedding and what a butcher strings up is sausages. */
+        for (const [sy, amp, kk] of [[ay - 302, 44, .9], [ay - 262, 52, .76]]) {
+            for (let i = 0; i <= 14; i++) {
+                const u = i / 14, lx = -20 + u * (W + 40);
+                const ly = sy + Math.sin(u * Math.PI) * amp;
+                g.save();
+                g.translate(lx, ly);
+                g.rotate(Math.cos(u * Math.PI) * -.5 + Math.PI / 2);
+                g.fillStyle = i % 4 === 3 ? PUD.body : MEAT.body;
+                g.beginPath(); g.roundRect(-7 * kk, -11 * kk, 14 * kk, 22 * kk, 7 * kk); g.fill();
+                g.restore();
+            }
+        }
+        // a candle each side of him, lit
+        for (const sx of [-1, 1]) {
+            const cx2 = W / 2 + sx * Math.min(118, W * .33), cb = ay - 118;
+            g.fillStyle = '#3c3026';
+            g.beginPath(); g.moveTo(cx2 - 13, cb); g.lineTo(cx2 + 13, cb);
+            g.lineTo(cx2 + 5, cb - 8); g.lineTo(cx2 - 5, cb - 8); g.fill();
+            g.fillStyle = '#f0e8d4'; g.fillRect(cx2 - 5, cb - 78, 10, 70);
+            g.fillStyle = '#d8cfb8'; g.fillRect(cx2 + 2, cb - 78, 3, 70);
+            const fl = Math.sin(ms / 110 + sx) * .4 + 1;
+            const gl = g.createRadialGradient(cx2, cb - 88, 1, cx2, cb - 88, 46);
+            gl.addColorStop(0, 'rgba(255,226,154,.34)'); gl.addColorStop(1, 'rgba(255,226,154,0)');
+            g.fillStyle = gl;
+            g.beginPath(); g.arc(cx2, cb - 88, 46, 0, TAU); g.fill();
+            g.fillStyle = '#ffe29a';
+            g.beginPath(); g.ellipse(cx2, cb - 88, 4.2 * fl, 10 * fl, 0, 0, TAU); g.fill();
+            g.fillStyle = '#fff6d8';
+            g.beginPath(); g.ellipse(cx2, cb - 86, 2 * fl, 5 * fl, 0, 0, TAU); g.fill();
+        }
+
+        /* Him, taking the service, up on the step behind them. Both arms
+           down and a book in them: a man reading the words does not hold a
+           knife over his head, whatever else he does all week. */
+        drawButcher(g, out === 'perfect', { cx: W / 2, cy: ay - 108, k: .54,
+                                            holds: 'none', arms: 'down',
+                                            bot: running('robot'),
+                                            winded: bust && ot > .3 });
+        /* The lectern, with the words on it. A book held in mid-air by a
+           man whose arms are at his sides is a book floating in front of
+           him; a stand under it is the thing a man reads from. */
+        const lx = W / 2, lty = ay - 118;
+        g.fillStyle = 'rgba(0,0,0,.3)';
+        g.beginPath(); g.ellipse(lx, ay - 52, 30, 7, 0, 0, TAU); g.fill();
+        g.fillStyle = '#4e3522';
+        g.fillRect(lx - 5, lty, 10, 70);
+        g.beginPath(); g.moveTo(lx - 26, ay - 50); g.lineTo(lx + 26, ay - 50);
+        g.lineTo(lx + 18, ay - 60); g.lineTo(lx - 18, ay - 60); g.fill();
+        g.save();
+        g.translate(lx, lty); g.rotate(-.22);
+        g.fillStyle = '#3a2a1c';
+        g.beginPath(); g.roundRect(-30, -11, 60, 22, 3); g.fill();
+        if (!(bust && ot > .3)) {                       // he drops them, at that
+            g.fillStyle = '#f3e9d6';
+            g.beginPath(); g.roundRect(-27, -8, 25, 16, 2); g.fill();
+            g.beginPath(); g.roundRect(2, -8, 25, 16, 2); g.fill();
+            g.fillStyle = 'rgba(42,32,26,.5)';
+            for (let i = 0; i < 3; i++) {
+                g.fillRect(-23, -4 + i * 5, 17, 1.6);
+                g.fillRect(6, -4 + i * 5, 17, 1.6);
+            }
+        }
+        g.restore();
+        /* The floor, and the aisle running away up it. A rectangle of red
+           between the wall and the camera is a red wall; it has to narrow
+           as it goes, or there is no floor in the picture at all. */
+        const hz = ay - 48;                          // where the wall meets the boards
+        const floor = g.createLinearGradient(0, hz, 0, H + 120);
+        floor.addColorStop(0, '#2b2219'); floor.addColorStop(1, '#17120d');
+        g.fillStyle = floor; g.fillRect(-W, hz, W * 3, H * 2);
+        g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(-W, hz - 5, W * 3, 6);
+        g.fillStyle = '#8e2a1b';
+        g.beginPath();
+        g.moveTo(W / 2 - 54, hz); g.lineTo(W / 2 + 54, hz);
+        g.lineTo(W / 2 + 190, H + 140); g.lineTo(W / 2 - 190, H + 140);
+        g.closePath(); g.fill();
+        g.fillStyle = '#a8352a';
+        g.beginPath();
+        g.moveTo(W / 2 - 47, hz); g.lineTo(W / 2 + 47, hz);
+        g.lineTo(W / 2 + 176, H + 140); g.lineTo(W / 2 - 176, H + 140);
+        g.closePath(); g.fill();
+        // petals down it, because somebody has been along in front of them
+        for (let i = 0; i < 16; i++) {
+            const u = rnd(i, 3), v = rnd(i, 7);
+            const yy = hz + 14 + v * (H - hz + 40), t = (yy - hz) / (H - hz + 40);
+            g.fillStyle = i % 3 ? 'rgba(243,233,214,.5)' : 'rgba(232,191,203,.6)';
+            g.save(); g.translate(W / 2 + (u - .5) * (110 + t * 280), yy);
+            g.rotate(u * 6);
+            g.beginPath(); g.ellipse(0, 0, 5 + t * 5, 3 + t * 3, 0, 0, TAU); g.fill();
+            g.restore();
+        }
+
+        // ---- the bride, and the dog that is marrying her
+        const gone = out === 'ate' && ot > .14;
+        const shock = out === 'air' ? Math.min(1, ot / .26) : 0;
+        const bx = P.bx + shock * 26, by = P.by - shock * 10;
+        if (!gone) wedBride(g, bx, by, 1.55, ms, out);
+        else {                                           // the veil, coming down
+            const f = Math.min(1, (ot - .14) / .9);
+            g.save();
+            g.translate(bx + Math.sin(f * 7) * 16, by + 14 + f * (ay + 30 - by));
+            g.rotate(Math.sin(f * 5) * .5);
+            g.globalAlpha = 1 - f * .25;
+            g.fillStyle = 'rgba(250,247,240,.80)';
+            g.beginPath();
+            g.moveTo(-20, -16); g.quadraticCurveTo(-62, 36, -46, 112);
+            g.quadraticCurveTo(0, 92, 46, 112);
+            g.quadraticCurveTo(62, 36, 20, -16);
+            g.fill();
+            g.restore();
+        }
+        /* And the groom. He swings in on one clock while she bobs on
+           another, which is the whole of the game: the moment the two line
+           up comes round on the beat between them. */
+        const tipped = out === 'air' ? Math.min(1, ot / .5) : 0;
+        const kissing = out === 'perfect' || out === 'peck';
+        const sq = kissing ? Math.sin(Math.min(1, ot / .34) * Math.PI) * .22 : 0;
+        g.save();
+        g.translate(P.dx - WED_SNOUT, P.dy - 6 + tipped * 56);
+        g.rotate((out === 'air' ? tipped * .75 : 0) + m.lean * .13);
+        /* He is in a suit, which is the only time in this game the dog is
+           anything but a head: a head on its own at a wedding is a head on
+           a plate, and the one thing this scene cannot afford is that. */
+        g.fillStyle = '#f3e9d6';
+        g.beginPath(); g.roundRect(-15, 18, 30, 118, [10, 10, 0, 0]); g.fill();
+        g.fillStyle = '#2b2333';
+        for (const sx of [-1, 1]) {
+            g.beginPath();
+            g.moveTo(sx * 20, 22); g.quadraticCurveTo(sx * 46, 38, sx * 50, 136);
+            g.lineTo(sx * 13, 136); g.quadraticCurveTo(sx * 15, 62, sx * 8, 32);
+            g.closePath(); g.fill();
+        }
+        g.fillStyle = '#39314a';                     // a lapel each side of the shirt
+        for (const sx of [-1, 1]) {
+            g.beginPath();
+            g.moveTo(sx * 9, 22); g.lineTo(sx * 27, 28); g.lineTo(sx * 14, 68);
+            g.closePath(); g.fill();
+        }
+        drawDog(g, 0, 0, .78 / cast.dog.k,
+                { open: out === 'ate' ? Math.abs(Math.sin(ot * 9)) * .7 : 0,
+                  squash: sq, shut: kissing ? 1 : 0, tilt: .07 },
+                ms, cast.dog, { hat: 'topper', face: 'plain', collar: 'bow' });
+        g.restore();
+        // crumbs, confetti, whatever is in the air
+        for (const b of m.bits) {
+            g.save(); g.translate(b.x, b.y); g.rotate(b.a);
+            g.fillStyle = b.col;
+            g.beginPath(); g.roundRect(-b.r, -b.r * .42, b.r * 2, b.r * .84, 1); g.fill();
+            g.restore();
+        }
+        for (const h of m.hearts) {
+            const e = (now() - h.t0) / 1250;
+            if (e < 0 || e > 1) continue;
+            const rise = e * e * .35 + e * .65;
+            heart(g, h.x + h.drift * rise + Math.sin(e * 7) * 4, h.y - 130 * rise,
+                  h.r * (e < .16 ? e / .16 : 1), Math.min(1, (1 - e) * 2.6));
+        }
+        g.restore();                                     // and out of the camera
+        /* The darkening under the name of the game. Every other one gets it
+           from the backdrop; this one paints its own backdrop inside the
+           camera, so it has to put it back on afterwards or the title is
+           gold lettering on a lit window. */
+        const sc2 = g.createLinearGradient(0, 0, 0, RAIL + 88);
+        sc2.addColorStop(0, 'rgba(8,18,14,.66)');
+        sc2.addColorStop(.62, 'rgba(8,18,14,.46)');
+        sc2.addColorStop(1, 'rgba(8,18,14,0)');
+        g.fillStyle = sc2; g.fillRect(0, 0, W, RAIL + 88);
+
+        // ---- what the room is being told, across the bottom of it
+        const say = (big, small, col) => {
+            g.save();
+            g.textAlign = 'center'; g.textBaseline = 'middle';
+            g.translate(W / 2, H * .845);
+            g.fillStyle = 'rgba(10,28,21,.76)';
+            g.fillRect(-W, -34, W * 2, small ? 74 : 54);
+            g.font = '400 34px "Alfa Slab One", Georgia, serif';
+            const fit = Math.min(1, (W - 30) / g.measureText(big).width);
+            g.save(); g.scale(fit, fit);
+            g.fillStyle = col || '#f0d484';
+            g.fillText(big, 0, (small ? -11 : -4) / fit);
+            g.restore();
+            if (small) {
+                g.font = '900 12px Lato, sans-serif';
+                g.fillStyle = 'rgba(253,247,232,.72)';
+                g.fillText(small, 0, 20);
+            }
+            g.restore();
+        };
+        if (m.phase === 'kiss') {
+            const pulse = .82 + .18 * Math.sin(ms / 180);
+            g.save();
+            g.globalAlpha = pulse;
+            say('KISS THE BRIDE', WED_GOES - m.goes > 1
+                ? `${WED_GOES - m.goes} GOES LEFT` : 'LAST GO');
+            g.restore();
+        } else if (m.phase === 'out' && ot > .22) {
+            const WORDS = {
+                perfect: ['I NOW PRONOUNCE YOU', 'DEAD ON. THE ROOM IS IN BITS', '#8fd6a2'],
+                peck:    ['A PECK, THEN', 'SHE WILL TAKE IT', '#f0d484'],
+                ate:     ['HE ATE THE BRIDE', 'HE IS A DOG. SHE WAS A SAUSAGE', '#d8462f'],
+                air:     ['HE KISSED THE AIR', 'AND WENT OVER WITH IT', '#d8462f'],
+                shy:     ['HE COULD NOT DO IT', 'THREE TIMES ROUND AND NOTHING', '#d8462f'],
+            }[out];
+            say(WORDS[0], WORDS[1], WORDS[2]);
+        }
     } else if (mini.id === 'scales') {
         const ty = scaleY(), c = mini.cust, DW = scaleW();
         /* Whoever is next. A coat, a hat and a face, leaning on the counter,
@@ -6747,7 +7263,7 @@ const ROSETTES = [
     { id: 'clean',   silk: 'green',  name: 'Not One Lost',   why: 'A whole week the dog got nothing.' },
     { id: 'clean5',  silk: 'green',  name: 'Ten Clean Weeks', why: 'And nine more like it.' },
     { id: 'after',   silk: 'green',  name: 'After Hours',    why: 'Ten hours after closing, which is ten clean weeks’ worth.' },
-    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all eight of the after-hours games.' },
+    { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all nine of the after-hours games.' },
     { id: 'noburn',  silk: 'red',    name: 'Nothing Burnt',  why: 'Five off the barbecue and not one black.' },
 
     { id: 'hundred', silk: 'brass',  name: 'A Hundred Pounds', why: 'A hundred in the till.' },
@@ -6898,7 +7414,7 @@ function sweep(quiet) {
     if (save.tally.loyal >= 10) give('loyal');
     if (save.tally.breeds.length >= 10) give('allsorts');
     if (save.tally.hours >= 10) give('after');
-    if (save.tally.minis.length >= 8) give('three3');
+    if (save.tally.minis.length >= 9) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');
     // the shelves, counted off what is actually on them rather than a number
     const bought = STOCK.filter(i => i.price > 0);

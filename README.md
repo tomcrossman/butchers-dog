@@ -996,6 +996,17 @@ YEAR instead, in brighter gold, with a star either end of it where the diamond
 was. The week's receipt carries the same line under the same name, so it says
 it too.
 
+**And so does the game.** The string hangs down the middle of a tall window,
+which is a phone; given a desktop browser it took the whole of one, and a
+six-foot sausage over a dog the size of a door is not the same game. The play
+area is capped at exactly the width the shopfront is capped at and centred,
+with the day plate, the till and the count-in moved onto it - a rail is a
+fitting on a wall and it has no business running the width of a laptop. The
+tiled wall carries straight on either side of it, the same way the counter
+panelling carries on behind the shopfront, with a soft edge down each side so
+what you are looking at reads as the window rather than as a game that has
+been shrunk. On a phone the cap never bites and nothing moves at all.
+
 **The shopfront keeps its shape on a window wider than it is tall.** It was a
 width of a hundred per cent with a cap on the height, which is two different
 scales, one per axis - and on a laptop that is a butcher a foot and a half
@@ -1112,7 +1123,7 @@ reason, it is saved with everything else, and while it is on the version label
 in the corner says so.
 
 With it on there is one more button under the shelves: **a mini-game**, with the
-eight of them to pick from, because the honest way to see the barbecue is to play
+nine of them to pick from, because the honest way to see the barbecue is to play
 a perfect week and the honest way to see it twice is to play two. It puts you
 back on the shopfront when it is done rather than opening a week - it is not
 Saturday night, it is a man in the back room with the lights on.
@@ -1534,6 +1545,36 @@ twenty-two pounds, about a third on top of a perfect week.
   buzzer going off with somebody stood at the counter holding his money is not
   a butcher's, it is a quiz. The dots along the front of the scales are who is
   left.
+- **Butcher's wedding.** The dog is getting married. To a sausage. The butcher
+  is taking the service, because there is nobody else in this game to take it.
+
+  It is the only one of the nine that is a scene before it is a game: the
+  chapel, the aisle, the candles, a swag of links over the altar and a window
+  with the light coming through it, and the two of them stood at the front -
+  him in a topper and tails, her in a veil with a bouquet. He reads the words,
+  the camera backs off and then pushes past where it started, and the screen
+  says **KISS THE BRIDE**. **You get one tap.**
+
+  His head swings in and out on one clock and she bobs on another, so the
+  moment the two line up comes round on the beat between them rather than on
+  a count you could learn. The horizontal is forgiving - he dwells near her at
+  the top of his swing - and the vertical is the game: she crosses the mouth
+  line in under a tenth of a second and that is the whole of what you are
+  waiting for. Land it and it is forty pounds, the biggest skill shot in here.
+  Get it only roughly and it is a peck and twelve.
+
+  **And the kiss is two edges, not two middles.** Lined up on their centres,
+  the perfect kiss is one head standing exactly where the other one is: it is
+  the end of his nose against the side of her face, and everything either side
+  of them is drawn back from those two points.
+
+  **The top of his swing is past her, not on her.** The kiss lands at seven
+  eighths of the lean, so holding out for the slowest, easiest-looking moment
+  is the one thing that gets her eaten - and she is a sausage and he is a dog,
+  so that is exactly what happens: a chomp, a veil coming down on its own, and
+  a scattering of what is left of her. Short of her and he kisses the air in
+  front of a church full of people and goes over with it. Three times round
+  without going for it at all and that is its own answer.
 - **After the cats.** The shop after dark, and something is in it that should
   not be. **Drag anywhere and the dog goes where your finger is** - not where it
   is, where it is heading, because he is a dog and not a cursor: he builds up
