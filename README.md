@@ -418,9 +418,7 @@ six-day receipt came to more than a short phone is tall and the torn bottom
 edge of the paper went off the screen, which is exactly the part that makes it
 paper. He gives up the room rather than the receipt does - he is the
 illustration and it is the thing being read - and the whole card is measured at
-320, 390 and 430 wide with nothing to scroll on any of them. **And he has the
-robot head on when the robot is on**, the same as he does in the window: it was
-Reg holding the takings up on a receipt that said *served by AI Reg*.
+320, 390 and 430 wide with nothing to scroll on any of them.
 
 **A day's pictures stay on one line.** A day with links, a pudding and two
 steaks on it wrapped to a second row and shoved its money out of line with the
@@ -593,11 +591,18 @@ reaches for each one it sends through rather than for a twist on your
 string. It is built the
 way the small blue ones on a bench are: a bare steel tube for the bone of each
 segment with a moulded shell over the end of it, black hubs at the joints and a
-two-finger gripper on the wrist. And with it switched on, the man on the
-shopfront has its head: a visor, two green lamps, an aerial and a grille,
-standing there in his apron holding his knife, which is the joke of the upgrade
-said in one picture. The name under him changes with it - Reg is **AI Reg** for
-as long as it is switched on, and so is the line about who is working this week.
+two-finger gripper on the wrist. **And it is its own thing now.** It used to be a head on the man - a visor,
+two green lamps, an aerial and a grille, stood there in his apron holding his
+knife - which was one picture and a good one, but it said the machine had
+replaced him. It has not. It works out the back and he is still the butcher,
+so the head came off him and the machine got a body of its own: it leans
+round the right-hand jamb of the window on its own eleven-second clock the
+way the lad leans round the left, and it leans into the day every time it
+sends one through. It wears the shop's apron like everybody else and not the
+shop's colour - the stripe is the same grey the head is pressed out of,
+because a steel head over Reg's blue is Reg in a mask. He is Reg on the
+receipt again, too.
+
 It does not catch steaks either, and the shelf says so.
 
 **Its head is ninety across and a hundred and eight down.** The man whose head
@@ -678,9 +683,13 @@ expression it has for an empty room.
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
 and **it is dead centre, every time**. He leans into the window at the
-moment he makes it - head first and shoulder after, which is what leaning
-round a doorway looks like, and never more than half of him into the room,
-with the knife still up. He has always done that on the shopfront between
+moment he makes it, and the cut says **APPRENTICE** under the PERFECT it has
+just earned - one link a day out of eleven, and without a word on it you are
+left wondering which of them you did not do.
+
+It is his head and no more of him, clipped off at the collar, up where the
+string is. The whole of him down by the floor was a second man in the window
+and a long way from the cut he had come to look at. He has always done that on the shopfront between
 weeks, every nine seconds, out of boredom; on a day he does it once and for
 a reason. One link a day is his whole contribution and it used to happen
 off-screen, so a sausage you had not cut simply fell off the string.

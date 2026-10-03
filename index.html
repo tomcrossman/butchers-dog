@@ -2011,7 +2011,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.3.0';
+const APP_VERSION = 'v1.3.1';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2671,6 +2671,11 @@ function ladCut() {
         if (p && p.from <= k && p.to > k) {
             splitAt(p, k, LAD_Q);
             ladPeek = now();            // and he leans in to see what he did
+            /* And his name on it, under the PERFECT the cut has just earned.
+               One link a day out of eleven: without a word on it you are
+               left wondering which of them you did not do. */
+            const [lx, ly] = at(string.twists[k]);
+            shouts.push({ text: 'APPRENTICE', x: lx, y: ly + 16, t0: now(), small: true });
             /* A cut through the last twist frees both halves, so the lad can
                be the one who empties the string - and nothing was watching
                for it. The day ran on with nothing on the rail until the dog
@@ -2695,6 +2700,14 @@ const botRun = () => Math.max(3, Math.round(string.n * BOT_SHARE));
    off-screen - a sausage you did not cut simply fell off the string. */
 const LAD_PEEK = 1250;
 let ladPeek = 0;
+/* And the machine, on the other side of the window. It used to be a head on
+   the man - he had a visor and two green lamps and stood there in his apron
+   holding his knife, which was one picture and a good one, but it said the
+   machine had replaced him. It has not: it works out the back and he is
+   still the butcher. So it is its own thing now, and it leans in at the
+   right-hand jamb the way the lad leans in at the left - the two of them
+   either side of him, one of them real. */
+let botPeek = 0;
 let botArm = null, botSold = 0;
 const BOT_MS = 300;
 /* One off the machine's own rail, already cut. It is not on your string and
@@ -2708,6 +2721,7 @@ function botSend() {
     botSold++;
     showHud();
     botArm = { t0: now(), x: W - 30, y: RAIL + 62 };
+    botPeek = now();
     servo();
     const slot = saved + botSold - 1;
     // the ones on the floor are drawn plain whatever they were, so this is
@@ -3756,7 +3770,7 @@ function endWeek() {
         `<span class="sh">${esc(save.shop)}</span>` +
         `<span class="fb">${won('best') ? 'Butcher of the Year' : 'Family Butcher'}</span>` +
         `<span class="wk"><span>Week ${save.weeks}</span>` +
-        `<span>Served by ${running('robot') ? 'AI ' : ''}${cast.butcher.name}</span></span>`;
+        `<span>Served by ${cast.butcher.name}</span></span>`;
     const stamp = save.bank * 3 + save.weeks * 131 + money;
     document.getElementById('barcode').innerHTML = barcode(stamp);
     document.getElementById('tillno').textContent = tillNo(stamp);
@@ -3789,7 +3803,7 @@ function endWeek() {
     const bg = sharp(document.getElementById('butcher'), 330, 300);
     bg.clearRect(0, 0, 330, 300);
     // and it is not Reg holding the takings up with that head on, it is AI Reg
-    drawButcher(bg, good, { cx: 112, cy: 202, bot: running('robot') });
+    drawButcher(bg, good, { cx: 112, cy: 202 });
     drawDog(bg, 258, 218, .66 / cast.dog.k,
             { open: good ? 0 : .72, mood: good ? 'glum' : 'chuffed' }, 0, cast.dog);
     settleT = setTimeout(() => {
@@ -6721,7 +6735,6 @@ function drawMini(ms) {
            knife over his head, whatever else he does all week. */
         drawButcher(g, married, { cx: W / 2, cy: ay - 108, k: .54,
                                             holds: 'none', arms: 'down',
-                                            bot: running('robot'),
                                             winded: bust && ot > .3 });
         /* The lectern, with the words on it. A book held in mid-air by a
            man whose arms are at his sides is a book floating in front of
@@ -9498,6 +9511,10 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
        new lad's apron against one that has been through the wash a hundred
        times. */
     if (young) B = { ...B, face: 'none', apron: paler(B.apron) };
+    /* The machine wears the shop's apron like everybody else, but not the
+       shop's colour: a steel head over Reg's blue stripe is Reg in a mask.
+       Grey, the same grey the head is pressed out of. */
+    if (bot) B = { ...B, apron: '#8d949a' };
     ctx.save();
     ctx.translate(cx, cy);
     ctx.scale(k, k);
@@ -9804,17 +9821,40 @@ function draw() {
        looks like, and never more than half of him into the room. In front
        of the floor and behind the rail: he is stood at the jamb, and the
        string hangs in the room between him and you. */
+    /* Just his head, up where the string is. The whole of him down by the
+       floor was a second man in the window and a long way from the cut he
+       had come to look at: he is clipped off at the collar, which is the
+       line a head round a door frame is seen to. */
     if (ladPeek) {
         const pk = (ms - ladPeek) / LAD_PEEK;
         if (pk >= 1) ladPeek = 0;
         else {
             const e = pk < .18 ? pk / .18 : pk > .68 ? (1 - pk) / .32 : 1;
             const out = e * e * (3 - 2 * e);
+            const base = H * .40;
             ctx.save();
-            ctx.translate(-74 + out * 74, H * .74);
-            ctx.rotate(out * .15);
-            drawButcher(ctx, true, { cx: 0, cy: 0, k: .6, holds: 'knife',
-                                     young: true });
+            ctx.beginPath(); ctx.rect(0, 0, W, base + 16); ctx.clip();
+            ctx.translate(-66 + out * 66, base);
+            ctx.rotate(out * .16);
+            drawButcher(ctx, true, { cx: 0, cy: 0, k: .58, holds: 'none',
+                                     arms: 'down', young: true });
+            ctx.restore();
+        }
+    }
+    // and the machine at the other jamb, each time it sends one through
+    if (botPeek) {
+        const pk = (ms - botPeek) / LAD_PEEK;
+        if (pk >= 1) botPeek = 0;
+        else {
+            const e = pk < .18 ? pk / .18 : pk > .68 ? (1 - pk) / .32 : 1;
+            const out = e * e * (3 - 2 * e);
+            const base = H * .40;
+            ctx.save();
+            ctx.beginPath(); ctx.rect(0, 0, W, base + 16); ctx.clip();
+            ctx.translate(W + 66 - out * 66, base);
+            ctx.rotate(-out * .16);
+            drawButcher(ctx, true, { cx: 0, cy: 0, k: .58, holds: 'none',
+                                     arms: 'down', bot: true });
             ctx.restore();
         }
     }
@@ -12114,6 +12154,27 @@ function drawShopfront() {
             g.restore();
         }
     }
+    /* And the machine at the other jamb, on its own clock so the two of them
+       are not on a see-saw. It used to be a head on the man - a visor, two
+       green lamps and an aerial, stood there in his apron holding his knife
+       - which was one picture and a good one, but it said the machine had
+       replaced him. It has not. It works out the back and he is still the
+       butcher, so it is its own thing now, leaning in at the right the way
+       the lad leans in at the left. */
+    if (running('robot') && !byeT0) {
+        const pk = ((it + 4200) % 11000) / 2600;
+        if (pk < 1) {
+            const s = pk < .26 ? pk / .26 : pk > .74 ? (1 - pk) / .26 : 1;
+            const out = s * s * (3 - 2 * s);
+            const K = .74;
+            g.save();
+            g.translate(340 + 66 - out * 66, BUT_AT[1] + 96 * .88 - 96 * K);
+            g.rotate(-out * .14);
+            drawButcher(g, true, { cx: 0, cy: 0, k: K, holds: 'none', arms: 'down',
+                                   bot: true });
+            g.restore();
+        }
+    }
     /* There were ninety-odd dead pixels between the awning and his hat, so
        both of them have grown into it. They stand on the same line at the
        bottom of the canvas and the gap between them is what is left. */
@@ -12141,7 +12202,7 @@ function drawShopfront() {
            man holding a knife over his head for an hour does not hold it
            still - and it goes up with the bounce. */
         drawButcher(g, true, { cx: BUT_AT[0] + lean * 5, cy: BUT_AT[1] + br * 5 - heft * 11,
-                               k: .88, holds: 'knife', bot: running('robot'),
+                               k: .88, holds: 'knife',
                                wave: bye ? Math.sin((it - byeT0) / 105) * .72 * (1 - bye * bye)
                                          : Math.sin(it / 1700) * .085 + heft * .13 });
         g.restore();
@@ -12181,7 +12242,7 @@ function drawShopfront() {
            for a second - which is the one moment the joke needs it most. A
            robot has no face to screw up, so it folds and gets the stars and
            that is all the reaction it has. */
-        drawButcher(g, !sore, { cx: 0, cy: -96 * .88, k: .88, bot: running('robot'),
+        drawButcher(g, !sore, { cx: 0, cy: -96 * .88, k: .88,
                                 holds: e2 < .85 ? 'none' : 'knife', winded: sore });
         g.restore();
         if (e2 < .85) {                             // the one in the air
@@ -12237,7 +12298,7 @@ function drawShopfront() {
     // the knife is in hand and the dog is stood alongside, so the line
     // only has to introduce the two of them
     // and it is not Reg standing there with that head on, it is AI Reg
-    const who = `${running('robot') ? 'AI ' : ''}${cast.butcher.name} and ` +
+    const who = `${cast.butcher.name} and ` +
                 `${cast.dog.dog} the ${cast.dog.name}`;
     const line = document.getElementById('cast-line');
     // only when it has actually changed: this runs on every frame of the idle
@@ -12335,7 +12396,7 @@ function creditPic(c, ms) {
     const paw = Math.sin(t * 6.1 + .8) * .46;
     const lean = Math.sin(t * 6.1 + .8) * .05;
     drawButcher(g, true, { cx: w * .31, cy: h + 4, k: .78, holds: 'none',
-                           bot: running('robot'), wave: hand });
+                           wave: hand });
     const dx = w * .74, dy = h - 72, dk = .82 / B.k;
     g.save();
     g.translate(dx, dy); g.rotate(lean); g.translate(-dx, -dy);
