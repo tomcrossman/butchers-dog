@@ -258,6 +258,16 @@ it counts; a run of chinks and the drawer twice; and **the figure that was
 added** riding up over the top of it in green, because a number that climbs
 from one total to another never says how far it climbed.
 
+**And it goes to the sides of a phone.** The window is capped so that it
+cannot take the whole of a short screen - a shopfront that fills a laptop in
+landscape is a butcher a foot and a half across - and the cap was tight enough
+that a tall phone still had a strip of counter panelling showing down each
+side of the sign. The cap is the canvas's own shape converted back into a
+width, and it is loose enough now that every phone in use fills the window
+edge to edge; it only bites on a screen short enough that the form and the
+buttons would otherwise be squeezed, measured at twelve sizes from 320 by 568
+up, with nothing scrolling on any of them.
+
 **The shopfront goes to the edges and to the top.** There is no gutter round
 it: a shopfront with a strip of tiled wall either side of it is a photograph of
 a shopfront rather than one, and the sign is the first thing on the screen, so
@@ -670,6 +680,20 @@ hairlines went the same way the ones on the setup screen did - fencing each
 line off from the next one turns a list into a table - and the gap went up when
 they did, because a certificate wants some wall round it.
 
+**A collar is shown by its collar.** Everything on the wardrobe shelves is
+drawn against a pale disc standing in for the skull, so a hat sits on top of
+it and a pair of glasses across it - but a collar hangs off the chin, which is
+the bottom of that disc, so the thing being sold was on the bottom edge of the
+tray and a cape was off the tray altogether. The collar shelf measures what it
+has drawn and fits it: disc and collar together, scaled to the tray and put in
+the middle, so what is in the middle of the picture is the collar with a jaw
+above it. It is measured on a scratch twice the size of the tray, because the
+whole point is that some of it is outside the tray at the size it starts at,
+and ink that falls off the edge of a canvas measures as ink that was never
+there. And it is measured twice: a drop shadow is not scaled by the transform,
+so a box measured small and multiplied up is a box with the shadow counted at
+the wrong size.
+
 The ones you have got are **boxed in gold** with a wash of it behind them. The
 name going gold is the difference when you are reading a row; a box round it is
 the difference when you are looking at the whole shelf from the top of the
@@ -864,6 +888,16 @@ on a wall. They are drawn larger than the first pass had them: the canvas they
 are on is a fixed shape, so the only thing a bigger pair costs is the headroom
 over the hat, and there was a third of the panel going spare up there.
 
+**And they are centred on what they are drawn on, not on where they are
+placed.** A third of the way across and four fifths of the way across centres
+the two origins; his apron is wider on the left than his hand is on the right,
+so the ink of the pair sat eighteen pixels right of the middle of the form
+under them - and on a screen that is a sign, two figures and a form, a thing
+eighteen pixels off the centre line is the thing you see. It is measured now:
+the ink of the pair lands on the middle of the canvas, and what moves either
+side of it after that is the dog, because a St Bernard is wider than a
+chihuahua.
+
 You pick the man behind the counter, the dog at the door, its name and the name
 over the window - four lines of one form under the sign, with a die to roll if
 you cannot think of one, and **Start your shop** under them, which is what the
@@ -1015,16 +1049,22 @@ the one room that is; then it was match-boarding, which made the back room a
 different building from the shop. It is the same wall as the setup screen, one
 tile, round the back and not painted since.
 
-And **Meat**, which has no off. Both arrows move it on because there is nowhere
-to move it back to: every answer is yes, and the only thing being chosen is how
-much you mean it - Yes, Hell yes, Of course, Damn right, Too right, Go on then,
-Aye, If you insist, and a dozen more. It changes nothing whatsoever. It is
-saved with everything else, because a man should not have to say how much he
-means it twice.
+And **Meat**, which has no off: every answer is yes, and the only thing being
+chosen is how much you mean it - Yes, Hell yes, Of course, Damn right, Too
+right, Go on then, Aye, If you insist, and a dozen more. It changes nothing
+whatsoever. It is saved with everything else, because a man should not have to
+say how much he means it twice.
 
-The last answer on that list is not a yes. You are not shown anything for
-touching it: you have to pick **No**, and then walk out of the back room with
-it picked - and there it is. Everything drains out of the game, no brick, no
+**Its arrows go both ways.** Sound and debug have two states each, so on those
+rows the left arrow and the right arrow do the same thing and it does not
+matter; meat has twenty-one, and on that row the left one went forwards too -
+twenty-one answers you could only ever walk one way round, and an arrow
+pointing the wrong way.
+
+The last answer on that list is not a yes, and it is the one directly behind
+the first: go left from Yes and there it is. You are not shown anything for
+touching it, either - you have to pick **No**, and then walk out of the back
+room with it picked. Everything drains out of the game, no brick, no
 gold, no green, no shadow worth the name, and there is a **vegan sausage** on
 it, grey-green, extruded, with a face that knows. Nothing written under it -
 the picture says it, and a line explaining what the picture says is the one
@@ -1651,3 +1691,9 @@ means the first touch is spent before the game begins.
 `APP_VERSION` in `index.html` and `CACHE` in `sw.js` have to match, or the
 service worker serves the old game forever. `./check-version.sh` says so before
 you push, and it is worth running every time.
+
+**It is v1.0.0 from here**, and the last number goes up by one a release:
+v1.0.1, v1.0.2. The first hundred and thirty-four were a counter rather than a
+version - they counted how many times the thing had been changed, which is the
+right number while it is being built and the wrong one once it is a game
+somebody has on their phone.

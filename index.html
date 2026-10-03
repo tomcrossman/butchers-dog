@@ -149,7 +149,7 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
    different scales, one for each axis, and on a window wider than it is tall
    that is a butcher a foot and a half across. The cap is the height it is
    allowed, converted back into the width that gives it: 340 over 400. */
-#shopfront { width: min(100%, 45.9vh); height: auto;
+#shopfront { width: min(100%, 51vh); height: auto;
              animation: butcherIn .6s cubic-bezier(.2, 1.5, .4, 1) both; }
 /* the week's takings, day by day */
 #ledger { width: 100%; border-collapse: collapse; margin: 2px 0 8px;
@@ -1680,9 +1680,9 @@ body.leaving #hud { display: none; }
                 <b id="set-sound">On</b>
                 <button class="nudge" data-flip="sound"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
             <div class="row"><span class="lab">Meat</span>
-                <button class="nudge" data-flip="meat"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
+                <button class="nudge" data-flip="meat" data-step="-1"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
                 <b id="set-meat">Yes</b>
-                <button class="nudge" data-flip="meat"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
+                <button class="nudge" data-flip="meat" data-step="1"><svg viewBox="0 0 14 14"><use href="#i-next"/></svg></button></div>
             <div class="row"><span class="lab">Debug</span>
                 <button class="nudge" data-flip="debug"><svg viewBox="0 0 14 14"><use href="#i-prev"/></svg></button>
                 <b id="set-debug">Off</b>
@@ -1759,7 +1759,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v134';
+const APP_VERSION = 'v1.0.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -8527,9 +8527,15 @@ function drawPreview(id, w, h, withMan) {
         /* Stood there with his hands at his sides. He is being introduced,
            not demonstrating anything, and a knife over the head on the one
            screen before the game has started is a man about to do something. */
-        drawButcher(g, true, { cx: w * .33, cy: h * .86, k: .70,
+        /* Measured rather than placed by eye. The pair of them were a third
+           and four fifths of the way across, which centres the two origins
+           and not the two of them: his apron is wider on the left than the
+           hand is on the right, so the ink sat eighteen pixels right of the
+           middle of the form underneath it - which on a screen with a form
+           and a button under it is the one thing you see. */
+        drawButcher(g, true, { cx: w * .2765, cy: h * .86, k: .70,
                                holds: 'none', arms: 'down' });
-        drawDog(g, w * .78, h * .82, .74 / cast.dog.k, { open: 0 }, 0, cast.dog, cast.kit);
+        drawDog(g, w * .7265, h * .82, .74 / cast.dog.k, { open: 0 }, 0, cast.dog, cast.kit);
     } else {
         drawDog(g, w / 2, h * .66, .66 / cast.dog.k, { open: 0 }, 0, cast.dog, previewKit());
         /* Stood beside the dog rather than laid across it: the blade reaches
@@ -8953,9 +8959,9 @@ function drawWorn(g, item, circle, k0 = .46) {
     const mid = (-B.skullH + B.chin) / 2, r = (B.chin + B.skullH) * .46;
     /* Tall enough for a top hat above the circle and long enough for a cape
        below it, since both are drawn from the same skull. */
-    const paint = (c, k) => {
+    const paint = (c, k, px = TILE_W / 2, py = TILE_H / 2 + 4) => {
         c.save();
-        c.translate(TILE_W / 2, TILE_H / 2 + 4);
+        c.translate(px, py);
         c.scale(k, k);
         c.translate(0, -mid);
         c.lineJoin = 'round'; c.lineCap = 'round';
@@ -8981,33 +8987,58 @@ function drawWorn(g, item, circle, k0 = .46) {
        top of one because that is where a hat goes. Take the circle away and
        there is nothing under it, so the thing hangs high in an empty box.
        Without it the item is measured and put in the middle on its own. */
-    if (circle) { paint(g, k0); return; }
-    scratch.width = TILE_W; scratch.height = TILE_H;
+    /* A collar hangs off the chin, which is the bottom of the skull - so a
+       tray centred on the skull hangs the thing you are buying off its bottom
+       edge, and a cape off the tray altogether. Collars get measured and
+       fitted instead: the disc and the collar together, scaled to the tray
+       and put in the middle of it, so what is in the middle is the collar
+       with a jaw above it rather than a head with a strap under the frame.
+       It costs two draws and it is the one shelf where the thing being sold
+       was not the thing in the picture. */
+    if (circle && item.kind !== 'collar') { paint(g, k0); return; }
+    /* Measured on a scratch twice the size of the tray, because the whole
+       point is that some of this is outside the tray at the scale it is
+       measured at, and ink that falls off the edge of the canvas measures as
+       ink that was never there. */
+    const SW = TILE_W * 2, SH = TILE_H * 2;
+    scratch.width = SW; scratch.height = SH;
     const t = scratch.getContext('2d');
     const box = k => {
-        t.clearRect(0, 0, TILE_W, TILE_H);
-        paint(t, k);
-        const d = t.getImageData(0, 0, TILE_W, TILE_H).data;
-        let x0 = TILE_W, y0 = TILE_H, x1 = -1, y1 = -1;
-        for (let y = 0; y < TILE_H; y++) for (let x = 0; x < TILE_W; x++)
-            if (d[(y * TILE_W + x) * 4 + 3] > 8) {
+        t.clearRect(0, 0, SW, SH);
+        paint(t, k, SW / 2, SH / 2);
+        const d = t.getImageData(0, 0, SW, SH).data;
+        let x0 = SW, y0 = SH, x1 = -1, y1 = -1;
+        for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++)
+            if (d[(y * SW + x) * 4 + 3] > 8) {
                 if (x < x0) x0 = x; if (x > x1) x1 = x;
                 if (y < y0) y0 = y; if (y > y1) y1 = y;
             }
         return x1 < 0 ? null : [x0, y0, x1, y1];
     };
-    let b = box(.62);
-    if (!b) return;                                      // nothing on it at all
     /* A pair of round glasses measures twenty pixels across and was being
        shown at twenty pixels across, on a counter the width of a thumb - two
        grey dots, and the one thing you are being asked to look at before you
-       spend the money. Whatever it is, it is the only thing down there, so it
-       is drawn at whatever scale fills the space: measured, scaled to fit,
-       measured again, and put in the middle. */
-    const grow = Math.min(TILE_W * .8 / (b[2] - b[0] + 1),
-                          TILE_H * .8 / (b[3] - b[1] + 1), 2.4);
-    if (grow > 1.05) { const big = box(.62 * grow); if (big) b = big; }
-    g.drawImage(scratch, TILE_W / 2 - (b[0] + b[2]) / 2, TILE_H / 2 - (b[1] + b[3]) / 2);
+       spend the money. Whatever it is, it is drawn at whatever scale fills
+       the space: measured once, scaled to fit, and drawn straight into the
+       tray at the new scale rather than blitted, so it is as sharp as
+       everything else on a phone with three pixels to the point. */
+    let k = k0, b = box(k);
+    if (!b) { paint(g, k0); return; }                    // nothing on it at all
+    /* Measured again at the size it was scaled to, because a drop shadow is
+       not scaled by the transform: it is the same seven pixels down however
+       big the thing casting it is, so a box measured small and multiplied up
+       is a box with the shadow counted at the wrong size. Twice is enough -
+       the second pass moves it by a pixel or two. */
+    for (let i = 0; i < 2; i++) {
+        const f = Math.min(TILE_W * .86 / (b[2] - b[0] + 1),
+                           TILE_H * .86 / (b[3] - b[1] + 1), k0 * 2.4 / k);
+        if (Math.abs(f - 1) < .03) break;
+        const nb = box(k * f);
+        if (!nb) break;
+        k *= f; b = nb;
+    }
+    paint(g, k, TILE_W / 2 - ((b[0] + b[2]) / 2 - SW / 2),
+                TILE_H / 2 - ((b[1] + b[3]) / 2 - SH / 2));
 }
 /* The one thing on this screen that is worth an animation: you have just
    spent money on it. */
@@ -9349,15 +9380,19 @@ document.getElementById('set-done').addEventListener('click', () => {
     drawShopfront();
     showBank();
 });
-/* Two states each, so both arrows do the same thing - they are there because
-   this is the row the setup screen already taught, not because there is a
-   third option off to the right. */
+/* Sound and debug have two states each, so both arrows do the same thing on
+   those - they are there because this is the row the setup screen already
+   taught, not because there is a third option off to the right. Meat has
+   twenty-one, so on that one an arrow has to mean what an arrow means: the
+   left one went forwards too, which made a list of twenty-one answers a list
+   you could only ever walk one way round. */
 document.querySelectorAll('.nudge[data-flip]').forEach(btn =>
-    btn.addEventListener('click', () => flip(btn.dataset.flip)));
-function flip(what) {
+    btn.addEventListener('click', () => flip(btn.dataset.flip, +btn.dataset.step || 1)));
+function flip(what, step = 1) {
     if (what === 'sound') { toggleSound(); paintSettings(); return; }
     if (what === 'meat') {
-        save.meat = ((save.meat || 0) + 1) % AYE.length;
+        const n = AYE.length;
+        save.meat = (((save.meat || 0) + step) % n + n) % n;
         putSave(); paintSettings(); plop(2);
         return;
     }

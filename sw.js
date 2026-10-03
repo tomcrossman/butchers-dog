@@ -1,5 +1,5 @@
 /* Cache the game so it keeps working with no signal. Bump CACHE on release. */
-const CACHE = 'butchers-dog-v134';
+const CACHE = 'butchers-dog-v1.0.0';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png',
                 './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'];
 
