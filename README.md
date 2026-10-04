@@ -572,10 +572,17 @@ pounds was the one that stopped you playing. Every perfect cut in the week
 went with it, and every steak, and what a player does with an upgrade like
 that is switch it off.
 
-It runs its own rail out the back now and sends them through already cut:
-they come in at the right-hand jamb while you work and go straight on a hook
-in the tray, a bit over half what is on your string and never fewer than
-three, so Monday is three and Saturday is seven and having one is felt on a
+It runs its own rail out the back now and sends them through already cut.
+**They are on the hooks before the count**, which is the other half of the
+same lesson: they used to come in one at a time at the right-hand jamb while
+you worked, a link crossing the window on its own clock, over and over, next
+to the one thing you are trying to watch. The machine is out the back - it
+does not need a day to do its work in, it needs to have *done* it. So the
+tray has its share on it when the shutter goes up, you can see what it got
+through before the dog is off the leash, and nothing of the machine's moves
+while you are working. The tray slot is counted off both of you now, or your
+first cut lands on top of its first link. It is a bit over half what is on
+your string and never fewer than three, so Monday is three and Saturday is seven and having one is felt on a
 quiet day as well as a busy one. Your string is exactly the string you would
 have had without it. Every perfect on it is still yours, the steaks are still
 yours, and the machine is money on top rather than money instead.
@@ -788,11 +795,20 @@ with too much eye showing, and it used to stand there with exactly the same
 expression it has for an empty room.
 
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
-twenty: one link off the bottom of the string, about halfway through the day,
-and **it is dead centre, every time**. He leans into the window at the
-moment he makes it with his knife in the air, and that is the whole of the
-telling. His name under the PERFECT as well was a second thing to read in
-the one second there is nothing spare to read in.
+twenty: one link off the bottom of the string, and **it is dead centre, every
+time**. He leans into the window at the moment he makes it with his knife in
+the air, and that is the whole of the telling. His name under the PERFECT as
+well was a second thing to read in the one second there is nothing spare to
+read in.
+
+**He does it before the count is out.** He used to cut about halfway down
+the string, which arrives in the middle of a swipe you are already making:
+a link gone from under your knife and a PERFECT over the top of it, neither
+of them yours, at the one moment there is nothing spare to read. He takes
+his on *two* now, while you are still waiting for GO - up at the left with
+the knife in the air, done and gone before the dog is off the leash - so
+the string you are handed is the string he has already been at. The help is
+the same help. It just stopped happening in the middle of your go.
 
 **And you see him do it.** Both of them. Leaning half a body in past the
 jamb was a thing that happened at you, and getting it to read as a head
@@ -1645,8 +1661,12 @@ nearly twice Monday's speed, which Monday's four is not. Six perfect cuts in a
 day. Fifty steaks taken out of the air - three a week off a plain slab and
 twelve off a stocked one, and only the ones you get the blade to before the
 floor or the dog does. A week without halving one yourself. Ten weeks with the
-same dog, and ten different breeds stood in that window - there are eighteen,
-and the usual way you get to ten of them is not a happy one. The
+same dog. **Three weeks that stopped for butcher time** - that one was *ten
+different breeds stood in that window*, and there are eighteen of them, so
+the usual way you get to ten is nine funerals. The wall was quietly offering
+a rosette for killing nine dogs. A game can have a fail state in it without
+paying you for visiting it nine times, so it is the hardest thing in the shop
+instead, done three times. The
 bone, the cat and the lad all at once. Watching the dog find out what is in a
 black pudding. And **two** nobody would go looking for, which sit on the board
 as `? ? ?` with a line of their own apiece - *Nobody has bothered the butcher
@@ -1729,6 +1749,19 @@ was dead centre, and it wants to go on meaning exactly that. So a week can
 come up five stars and still stop for butcher time, which is the right way
 round: the receipt is a record and the bonus is a reward, and they are not
 obliged to agree.
+
+**And it does not look like the samurai.** The sword game is a night, a moon
+and blossom coming off a tree in Kyoto, which is a joke about a film; this is
+the reward for six days of your own work and it happens in your own shop, so
+it is the shop at the end of the best week it has had. The same bottle green
+and the same tiles - forty-eight down and sixty across, off the numbers the
+wall is actually built from - turned right down, with a gold rosette the size
+of the window turning slowly behind the lot of it, and gold going *up* the
+screen rather than blossom coming down, because every single thing about this
+week went the right way. Still dark, for the reason the samurai's night is
+dark: a red sausage has to read, and red reads against green. That is the
+game's one colour decision and there is no sense in abandoning it for the
+nine seconds that matter most.
 
 It is the samurai's physics at **a quarter of the rate**, which is slow motion
 and not a different game: the same gravity, the same arcs, the sausages

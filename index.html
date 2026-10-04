@@ -2035,7 +2035,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.6.0';
+const APP_VERSION = 'v1.7.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2706,7 +2706,7 @@ function drawToy(ms) {
    link off the bottom of the string, halfway through the day, at the quality
    of somebody who has done it a hundred times and is not trying to impress. */
 function ladCut() {
-    if (!live || !armed) return;
+    if (!live) return;                 // armed or not: his is before the GO
     for (let k = string.n - 2; k >= 0; k--) {
         const p = pieceAt(string.twists[k]);
         if (p && p.from <= k && p.to > k) {
@@ -2905,8 +2905,8 @@ const BOT_MS = 300;
 /* One off the machine's own rail, already cut. It is not on your string and
    never was, so the dog cannot have it, it cannot be halved, and it is not
    one of the ones a perfect day is counted against. */
-function botSend() {
-    if (!live || !armed) return;
+function botSend(settled) {
+    if (!live) return;
     const posh = running('blankets') && Math.random() < BLANKET_SHARE;
     const p = gold(priceOf(BOT_Q) * (posh ? BLANKET_PAY : 1));
     money += p; roundMoney += p;
@@ -2915,12 +2915,20 @@ function botSend() {
     /* No arm and no head on an ordinary day. The machine is out the back:
        what you see of it is the link arriving, and the week is busy enough
        at the edges without a second pair of hands reaching into it. */
-    servo();
     const slot = saved + botSold - 1;
+    const tx = 48 + (slot % 7) * ((W - 96) / 6), ty = RAIL + 48;
+    /* Settled: already on the hook before the count, which is what the
+       machine's share is now. One that is placed rather than flown has no
+       flight to animate, so it is given a start time far enough back that
+       the ease is over on the frame it first appears. */
+    if (settled) {
+        loose.push({ x: tx, y: ty, pot: MEAT, t0: now() - 900, tx, ty });
+        return;
+    }
+    servo();
     // the ones on the floor are drawn plain whatever they were, so this is
     // the same pot every time; the rasher is only ever on the rail
-    loose.push({ x: W + 34, y: RAIL + 62, pot: MEAT, t0: now(),
-                 tx: 48 + (slot % 7) * ((W - 96) / 6), ty: RAIL + 48 });
+    loose.push({ x: W + 34, y: RAIL + 62, pot: MEAT, t0: now(), tx, ty });
     plop(slot + 1);
 }
 function botCut() {
@@ -3430,8 +3438,11 @@ function free(bit, q) {
        already counting it, and the day's total lands twenty seconds later with
        nothing else on the screen. Only the things that are not simply money
        still shout: PERFECT, a double, a greedy one, a prime cut. */
+    /* The machine's share is already on the tray before the count, so the
+       slot is counted off both of them or your first cut lands on top of
+       the machine's first link. */
     loose.push({ x, y, from: bit.from, t0: now(), q,
-                 tx: 48 + ((saved - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
+                 tx: 48 + ((saved + botSold - 1) % 7) * ((W - 96) / 6), ty: RAIL + 48 });
     plop(saved);
 }
 function ruin(p, k, x, y) {
@@ -3721,6 +3732,25 @@ function beginCount() {
 function countdown(n) {
     countT.forEach(clearTimeout); countT = [];
     const D = DAYS[n - 1], B = breedFor(n);
+    /* The machine's share, already on the hooks before the count. They used
+       to come in one at a time at the right-hand jamb while you worked - a
+       link crossing the window on its own clock, over and over, next to the
+       one thing you are trying to watch. It is out the back: it does not
+       need a day to do its work in, it needs to have done it. So the tray
+       has the machine's share on it when the shutter goes up, you can see
+       what it got through before the dog is off the leash, and nothing of
+       the machine's moves while you are working. */
+    if (running('robot')) {
+        const want = botRun();
+        for (let c = 0; c < want; c++) botSend(true);
+        showHud();
+    }
+    /* And the lad gets his in before the count is out. He used to cut one
+       about halfway down the string, which arrives in the middle of a swipe
+       you are already making: a link gone from under your knife and a PERFECT
+       over the top of it, neither of them yours. He takes the first one off
+       the bottom while you are still waiting for GO, so the string you are
+       given is the string he has already been at. */
     const say = (big, cls) => {
         bannerEl.innerHTML = `<span class="r ${cls || ''}">${big}</span>`;
         bannerEl.classList.remove('go', 'sun', 'sun-off');
@@ -3729,27 +3759,31 @@ function countdown(n) {
     };
     /* Said once, on the Monday, before the three. The rail coming up gold
        says it louder than any word does, but a thing that doubles the week
-       should be named out loud the once. */
-    if (goldWeek && n === 1) {
+       should be named out loud the once - and the whole count moves back
+       behind it rather than running over the top of it. The GO used to be
+       nailed to 1860 whichever branch ran, so on a golden Monday the dog
+       went at 1860 and the count said ONE at 2340, half a second after
+       you had started playing. */
+    const lead = goldWeek && n === 1 ? 1100 : 0;
+    if (lead) {
         say('A GOLDEN WEEK', 'gold-word');
-        countT.push(setTimeout(() => { if (round === n && live) { say('3'); beep(0); } }, 1100));
-        countT.push(setTimeout(() => { if (round === n && live) { say('2'); beep(1); } }, 1720));
-        countT.push(setTimeout(() => { if (round === n && live) { say('1'); beep(2); } }, 2340));
-    } else {
-    say('3');
-    beep(0);
-    countT.push(setTimeout(() => { if (round === n && live) { say('2'); beep(1); } }, 620));
-    countT.push(setTimeout(() => { if (round === n && live) { say('1'); beep(2); } }, 1240));
-    }
+        countT.push(setTimeout(() => { if (round === n && live) { say('3'); beep(0); } }, lead));
+    } else { say('3'); beep(0); }
+    countT.push(setTimeout(() => { if (round === n && live) { say('2'); beep(1); } }, lead + 620));
+    countT.push(setTimeout(() => { if (round === n && live) { say('1'); beep(2); } }, lead + 1240));
+    /* And the lad gets his in before the count is out. He used to cut one
+       about halfway down the string, which arrives in the middle of a swipe
+       you are already making: a link gone from under your knife and a
+       PERFECT over the top of it, neither of them yours. He takes the first
+       one off the bottom while you are still waiting for GO, so the string
+       you are handed is the string he has already been at. */
+    if (running('apprentice')) countT.push(setTimeout(ladCut, lead + 760));
     countT.push(setTimeout(() => {
         if (round !== n || !live) return;
         say(pick(GO_WORDS), 'go-word');
         armed = true;
         dog.going = true;
         bark(2);
-        // the lad gets to it about halfway down the string
-        if (running('apprentice')) countT.push(setTimeout(ladCut,
-            string.len / dog.speed * 450));
         /* And the machine works out the back. It used to take your string
            off you - the whole thing at an even pace, finishing a comfortable
            margin before the dog could have reached the top of it - which
@@ -3764,12 +3798,6 @@ function countdown(n) {
            you carry on. Your string is exactly the string you would have
            had without it, every perfect on it is still yours, and the
            machine is money on top rather than money instead. */
-        if (running('robot')) {
-            const n = botRun();
-            const every = string.len / dog.speed * 1000 * .82 / (n + 1);
-            for (let c = 1; c <= n; c++)
-                countT.push(setTimeout(botSend, 420 + every * c));
-        }
         // and on one day of the week the bone comes in, somewhere in the middle
         if (n === toyDay) countT.push(setTimeout(throwToy,
             string.len / dog.speed * (250 + Math.random() * 400)));
@@ -3799,7 +3827,7 @@ function countdown(n) {
             countT.push(setTimeout(() => {
                 if (round === n && live && !steak) dropSteak();
             }, (wag ? 3400 : 700) + Math.random() * 1400 + d * 2800));
-    }, 1860));
+    }, lead + 1860));
 }
 const beep = i => safely(t => {
     tone(t, { freq: 440 + i * 70, dur: .09, type: 'square', vol: .13 });
@@ -6126,6 +6154,74 @@ function miniBack(ms) {
         vg.addColorStop(0, 'rgba(48,32,16,0)');
         vg.addColorStop(.5, 'rgba(48,32,16,.26)');
         vg.addColorStop(1, 'rgba(34,22,10,.72)');
+        g.fillStyle = vg; g.fillRect(0, 0, W, H);
+
+    } else if (mini.id === 'ninja' && mini.bonus) {
+        /* Butcher time is not the samurai and should not look like it. The
+           sword game is a night, a moon and blossom coming off a tree in
+           Kyoto, which is a joke about a film; this is the reward for six
+           days of your own work and it happens in your own shop - so it is
+           the shop, at the end of the best week it has had. The same tiles
+           and the same bottle green, turned right down, with the light
+           coming up off the floor behind everything.
+
+           Dark for the same reason the samurai's night is dark: a red
+           sausage has to read, and red reads against green. That is the
+           whole game's one colour decision and there is no sense in
+           abandoning it for the nine seconds that matter most. */
+        const sky = g.createLinearGradient(0, 0, 0, H);
+        sky.addColorStop(0, '#0c2a20'); sky.addColorStop(.44, '#0a2118');
+        sky.addColorStop(1, '#061710');
+        g.fillStyle = sky; g.fillRect(0, 0, W, H);
+
+        /* The shop's own tiles, off the same two numbers the wall is built
+           from - forty-eight down and sixty across - so it is this room and
+           not a room. */
+        g.fillStyle = 'rgba(6,32,24,.8)';
+        for (let y = 0; y < H + 48; y += 48) g.fillRect(0, y, W, 2.5);
+        for (let x = 0; x < W + 60; x += 60) g.fillRect(x, 0, 2.5, H);
+
+        /* And a rosette the size of the window behind it. Not a sun: it is
+           turning, it is gold, and it is the thing on the wall you have
+           just earned, blown up until it is the room. */
+        const bx = W / 2, by = H * .44;
+        g.save();
+        g.translate(bx, by); g.rotate(ms / 21000);
+        g.fillStyle = 'rgba(255,199,96,.068)';
+        for (let i = 0; i < 18; i++) {
+            const a2 = i * Math.PI * 2 / 18;
+            g.beginPath(); g.moveTo(0, 0);
+            g.arc(0, 0, Math.max(W, H) * 1.25, a2, a2 + .105);
+            g.closePath(); g.fill();
+        }
+        g.restore();
+        const br = Math.min(W, H) * .17;
+        for (let i = 18; i > 0; i--) {                       // the glow in the middle
+            g.fillStyle = 'rgba(255,214,120,' + (.011 * (19 - i) / 18) + ')';
+            g.beginPath(); g.arc(bx, by, br + i * 9, 0, Math.PI * 2); g.fill();
+        }
+
+        /* Gold going up rather than blossom coming down, because every
+           single thing about this week went the right way. */
+        for (let i = 0; i < 22; i++) {
+            const t = ((ms / 6200) + rnd(i, 1)) % 1;
+            const px = (rnd(i, 2) * 1.2 - .1) * W + Math.sin(t * 5 + i) * 22;
+            const py = H + 24 - t * (H + 48);
+            g.globalAlpha = (t < .12 ? t / .12 : t > .78 ? (1 - t) / .22 : 1) *
+                            (.62 + .34 * rnd(i, 3));
+            /* With the light on them. Gold at a low alpha over bottle green
+               is olive, which is a speck of dirt going up the window. */
+            g.fillStyle = '#ffe6a4';
+            g.shadowColor = 'rgba(255,205,105,.85)'; g.shadowBlur = 9;
+            g.beginPath();
+            g.ellipse(px, py, 2.4 + rnd(i, 4) * 2.2, 2.4 + rnd(i, 4) * 2.2, 0, 0, Math.PI * 2);
+            g.fill();
+        }
+        g.globalAlpha = 1; g.shadowColor = 'transparent'; g.shadowBlur = 0;
+
+        const vg = g.createRadialGradient(W / 2, H * .48, H * .1, W / 2, H * .48, H * .72);
+        vg.addColorStop(0, 'rgba(0,0,0,0)');
+        vg.addColorStop(1, 'rgba(0,0,0,.46)');
         g.fillStyle = vg; g.fillRect(0, 0, W, H);
 
     } else if (mini.id === 'ninja') {
@@ -8829,10 +8925,15 @@ const ROSETTES = [
     { id: 'nowt',    silk: 'green',  name: 'Nothing Wasted',  why: 'A week without halving a single one yourself.' },
     { id: 'year',    silk: 'gold',   name: 'A Full Year',     why: 'Fifty-two weeks in the same shop.' },
     { id: 'loyal',   silk: 'pink',   name: 'Old Friends',     why: 'Ten weeks with the same dog.' },
-    /* Eighteen breeds exist. Ten of them is most of a career, and the usual
-       way you get there is not a happy one. */
-    { id: 'allsorts',silk: 'purple', name: 'All Sorts',
-      why: 'Ten different breeds stood in that window.' },
+    /* This was All Sorts: ten different breeds stood in that window.
+       Eighteen breeds exist and the usual way you get through ten of them
+       is not a happy one - a new dog arrives because the last one went
+       under your knife, so the wall was quietly offering a rosette for
+       killing nine dogs. A game can have a fail state in it without
+       paying you for visiting it nine times. It is this instead: do the
+       hardest thing in the shop, and then do it twice more. */
+    { id: 'btimes', silk: 'purple', name: 'A Regular Thing',
+      why: 'Three weeks that stopped for butcher time.' },
     { id: 'crew',    silk: 'purple', name: 'A Full Crew',     why: 'The bone, the cat and the lad, all at once.' },
     { id: 'pudding', silk: 'slate',  name: 'It Won’t Touch It', why: 'Watch the dog spit out a black pudding.' },
 
@@ -8865,11 +8966,12 @@ const WALL = [
        cuts, which is the hardest thing on this wall, and a shelf reads
        easiest to hardest. */
     { h: 'On the knife', ids: ['fifty', 'fivehun', 'two', 'three', 'four',
-                               'six', 'steaks', 'nowt', 'saturday', 'dead'] },
+                               'six', 'steaks', 'nowt', 'saturday', 'dead',
+                               'btimes'] },
     { h: 'After hours',  ids: ['clean', 'clean5', 'after', 'three3', 'noburn'] },
     { h: 'In the till',  ids: ['hundred', 'grand', 'tenk', 'bigweek'] },
     { h: 'The shopping', ids: ['buy', 'block', 'rail', 'lot', 'dressed', 'crew'] },
-    { h: 'The dog',      ids: ['vet', 'grave', 'pats', 'pudding', 'allsorts'] },
+    { h: 'The dog',      ids: ['vet', 'grave', 'pats', 'pudding'] },
     { h: 'Time served',  ids: ['week', 'year', 'loyal'] },
     { h: 'Nobody\u2019s business', ids: ['oof', 'sausage'] },
     { h: 'The lot',      ids: ['best'] },
@@ -8929,8 +9031,7 @@ function seenBreed() {
     const b = cast && cast.dog && cast.dog.name;
     if (!b || save.tally.breeds.includes(b)) return;
     save.tally.breeds.push(b);
-    putSave();
-    if (save.tally.breeds.length >= 10) award('allsorts');
+    putSave();        // kept as a record; nothing on the wall is paid for it
 }
 function sweep(quiet) {
     const give = id => award(id, quiet);
@@ -8940,6 +9041,7 @@ function sweep(quiet) {
        not have holes in it that cannot be gone back and filled. */
     if (save.weeks >= 5) give('week');
     if (save.tally.perfweek) give('dead');
+    if (save.tally.perfweek >= 3) give('btimes');
     if (save.tally.perfect >= 500) give('fivehun');
     // trebles is what the old count was kept under; ten of those is plainly
     // ten doubles as well, so a wall swept in from before does not lose it
@@ -8955,7 +9057,6 @@ function sweep(quiet) {
     if (save.tally.clean >= 10) give('clean5');
     if (save.tally.pats >= 50) give('pats');
     if (save.tally.loyal >= 10) give('loyal');
-    if (save.tally.breeds.length >= 10) give('allsorts');
     if (save.tally.hours >= 10) give('after');
     if (save.tally.minis.length >= 10) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');
