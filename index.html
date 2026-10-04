@@ -2028,7 +2028,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.5.3';
+const APP_VERSION = 'v1.5.4';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2774,8 +2774,22 @@ function drawStaff(ms) {
         ctx.restore();
     };
     /* On a Sunday it is the only one in the shop, so it stands in the
-       middle of the window rather than off at an edge, and it stays up. */
-    if (sunday) { one(W / 2, -1e9, { bot: true }, 132); drawDozers(ms); return; }
+       middle of the window rather than off at an edge, and it stays up.
+       Then the shop goes behind glass - a thin dark wash over the whole
+       window, the machine with it - and the two of them are drawn on top
+       of it. It is the one day the rail is not your business, and a day
+       you are not playing should not look like a day you are: this way the
+       part you are meant to be watching is the two of them having the
+       morning off, and the work going on behind is work going on behind.
+       The HUD and the word across the middle are not on this canvas, so
+       they stay where they are and the plate still says which day it is. */
+    if (sunday) {
+        one(W / 2, -1e9, { bot: true }, 132);
+        ctx.fillStyle = SUN_SCRIM;
+        ctx.fillRect(0, 0, W, H);
+        drawDozers(ms);
+        return;
+    }
     if (running('apprentice') && ladPeek) {
         /* With his knife up. He has just made the one cut he makes all day
            and he is pleased with it, and from behind an arm in the air is
@@ -2791,7 +2805,7 @@ function drawStaff(ms) {
    because they are not stood up, they have gone down. A z goes up off each
    of them on its own clock, which is the one word for asleep and the same
    one the dream uses. */
-const DOZE_K = .62;
+const DOZE_K = .62, SUN_SCRIM = 'rgba(9, 24, 18, .42)';
 function zees(ms, x, y, phase) {
     ctx.save();
     ctx.fillStyle = 'rgba(255,245,220,.92)';

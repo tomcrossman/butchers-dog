@@ -616,6 +616,15 @@ its back to you, facing the rack, breathing on a slow clock while the arm works
 over its shoulder - a third again the size of the peek, because it is not
 peeking, it is standing there.
 
+**And the shop goes behind glass.** A thin dark wash over the whole window
+once everything else is drawn - the rail, the links, the steaks, the arm, the
+PERFECTs and the machine with them - and then the two of them on top of it, at
+full strength. A day you are not playing should not look like a day you are:
+this way the thing you are meant to be watching is the pair of them having the
+morning off, and the work going on behind is work going on behind. The HUD and
+the word across the middle are not on that canvas, so they stay bright and the
+plate in the corner still says which day it is.
+
 **And the other two are asleep either side of it.** Him propped against one
 jamb with his hat still on, eyes shut, mouth open; the dog lolled over on the
 other side with its head down and its eyes shut too, and a z going up off each
