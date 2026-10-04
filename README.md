@@ -581,13 +581,32 @@ is a thing the game tells you happened rather than a thing that happens, and
 a seventh day you never see is a seventh day you have to take on trust.
 Saturday ends and the shutter does not come down: the plate reads SUNDAY, a
 string of thirteen goes up on the rail, and the arm comes in at the right-hand
-jamb and works down it, one link every four tenths of a second, every single
-cut dead centre. Two steaks come off the slab in the middle of it and both get
-sliced. It is the machine doing it the way the machine would do it if nothing
-was in its way, which on a Sunday nothing is: **there is no dog**, there is no
-knife of yours on the screen and nothing you can touch does anything. Forty
-pounds or so goes on the week's card as its own line, and Monday's count comes
-up after it.
+jamb and works down it, **one link every twenty-fourth of a minute**, every
+single cut dead centre. Two steaks come off the slab in the middle of it and
+both get sliced. It is the machine doing it the way the machine would do it if
+nothing was in its way, which on a Sunday nothing is: **there is no dog**,
+there is no knife of yours on the screen and nothing you can touch does
+anything. Forty pounds or so goes on the week's card as its own line, and
+Monday's count comes up after it.
+
+**It goes at the speed a machine goes at.** It was four tenths of a second a
+cut, which is a machine taking its time, and the one thing a machine is for is
+not doing that. It is well under a quarter of a second now - the whole day is
+five and a half seconds end to end rather than eight - and the arm cannot
+finish reaching before the next one is due, so it never quite comes back out,
+which is exactly what a thing working flat out looks like. The PERFECTs stack
+up three deep down the window because they are arriving faster than one can
+fade.
+
+**The word across the middle says MEANWHILE…** and under it, in the small
+type, *nothing for you to do*. Every other time that spot has had a word in
+it - a day's name, GO, the count - the word was the start of something you
+have to do, and a player who has just finished Saturday reads a banner and
+reaches for the screen. This one is the opposite, so it says so in as many
+words, and it is the only banner in here with a second line. It holds for two
+and a bit seconds rather than six tenths, because it is a thing to be read
+rather than a thing to be beaten. The day's name is still on the plate in the
+corner, so you know which day you are not working.
 
 **The back of its head is at the bottom of the window, in the middle.** Every
 other day the shop floor has the lad at the left jamb and the machine at the
@@ -611,6 +630,12 @@ mini-game is deliberately left on the screen after it ends, because the week's
 card lands over the top of it half a second later and clearing it first puts an
 empty shop floor in the gap. Sunday *is* the shop floor, so it came up behind
 the barbecue.
+
+**And the second steak waits its turn.** Two on the slab at once is not a
+thing this game can draw, and at the new speed the second one arrived while
+the first was still coming apart and simply did not happen - a steak short
+and three pounds thirty off the day, for no reason you could see. It queues
+now, and the day will not end while one is still in the air.
 
 **None of it counts.** Not a perfect on the tally, not a steak, not a day on
 the ledger, and **never the wagyu** - the one hundred-pound steak in a week is
