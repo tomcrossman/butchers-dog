@@ -935,7 +935,10 @@ body.leaving #hud { display: none; }
 /* And a rosette hung off the corner of a shop with the whole wall filled,
    the way the red flash hangs off the corner of the week's ticket. On the
    left, because the right of the ticket has the two of them on it now. */
-.slot .ros { position: absolute; left: -7px; top: -13px;
+/* Over the keyline. A pseudo-element with no z-index of its own paints
+   after everything in the box, so the rule round the ticket was being drawn
+   straight across the ribbon of it. */
+.slot .ros { position: absolute; left: -7px; top: -13px; z-index: 2;
              width: 44px; height: 60px; pointer-events: none;
              transform: rotate(-14deg); }
 .slot.full { padding-left: 34px; }
@@ -2014,7 +2017,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.4.0';
+const APP_VERSION = 'v1.4.1';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2689,12 +2692,11 @@ function ladCut() {
         const p = pieceAt(string.twists[k]);
         if (p && p.from <= k && p.to > k) {
             splitAt(p, k, LAD_Q);
-            ladPeek = now();            // and he leans in to see what he did
-            /* And his name on it, under the PERFECT the cut has just earned.
-               One link a day out of eleven: without a word on it you are
-               left wondering which of them you did not do. */
-            const [lx, ly] = at(string.twists[k]);
-            shouts.push({ text: 'APPRENTICE', x: lx, y: ly + 16, t0: now(), small: true });
+            /* He comes up at the left with his knife in the air, and that
+               is the whole of the telling. His name under the PERFECT as
+               well was a second thing to read in the one second there is
+               nothing spare to read in. */
+            ladPeek = now();
             /* A cut through the last twist frees both halves, so the lad can
                be the one who empties the string - and nothing was watching
                for it. The day ran on with nothing on the rail until the dog
@@ -2765,9 +2767,7 @@ function drawStaff(ms) {
         if (ms - ladPeek >= LAD_PEEK) ladPeek = 0;
         else one(56, ladPeek, { young: true, holds: 'knife', arms: null });
     }
-    if (running('robot') && botPeek) {
-        if (ms - botPeek >= LAD_PEEK) botPeek = 0; else one(W - 48, botPeek, { bot: true });
-    }
+
 }
 /* And the machine, on the other side of the window. It used to be a head on
    the man - he had a visor and two green lamps and stood there in his apron
@@ -2776,6 +2776,8 @@ function drawStaff(ms) {
    still the butcher. So it is its own thing now, and it leans in at the
    right-hand jamb the way the lad leans in at the left - the two of them
    either side of him, one of them real. */
+/* Kept for the Sunday the machine works on its own, which is the only
+   place it is seen on this canvas now. */
 let botPeek = 0;
 let botArm = null, botSold = 0;
 const BOT_MS = 300;
@@ -2789,8 +2791,9 @@ function botSend() {
     money += p; roundMoney += p;
     botSold++;
     showHud();
-    botArm = { t0: now(), x: W - 30, y: RAIL + 62 };
-    botPeek = now();
+    /* No arm and no head on an ordinary day. The machine is out the back:
+       what you see of it is the link arriving, and the week is busy enough
+       at the edges without a second pair of hands reaching into it. */
     servo();
     const slot = saved + botSold - 1;
     // the ones on the floor are drawn plain whatever they were, so this is
@@ -3548,7 +3551,11 @@ function startRound(n) {
     toyFly = null; cat = null; botArm = null;
     // a week picks its own day for it, and Monday is as likely as Saturday
     if (n === 1) {
-        toyDay = running('toy') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
+        /* The bone comes on an even day and the cat only ever on an odd one,
+           so the two of them are never in the window together. A bone going
+           over, a cat going across and a dog that wants to look at both is
+           three things happening in a five-second day. */
+        toyDay = running('toy') ? 2 + 2 * ((Math.random() * 3) | 0) : 0;
         wagyuDay = running('wagyu') ? 1 + ((Math.random() * DAYS.length) | 0) : 0;
         seenBreed();                                   // whoever is at the door
         fed = 0; fedCost = 0;                          // a week starts owing nothing
@@ -3639,8 +3646,9 @@ function countdown(n) {
         // and on one day of the week the bone comes in, somewhere in the middle
         if (n === toyDay) countT.push(setTimeout(throwToy,
             string.len / dog.speed * (250 + Math.random() * 400)));
-        // the cat, meanwhile, walks past every day
-        if (running('cat')) countT.push(setTimeout(sendCat,
+        // and the cat on the days the bone is not coming: Monday, Wednesday,
+        // Friday, which is three of them rather than six
+        if (running('cat') && n % 2 === 1) countT.push(setTimeout(sendCat,
             string.len / dog.speed * (200 + Math.random() * 450)));
         /* One steak a day from Thursday, or two a day from Monday if the slab
            is stocked for it: three a week against twelve. It was one a day from
@@ -8243,7 +8251,11 @@ const KNIVES = [
        butcher reaches for when the job is serious; shears are for poultry. */
     { id: 'shears',  kind: 'knife', name: 'Butcher\u2019s shears', price: 45000, ring: .8, edge: 4,
       why: 'More room again.' },
-    { id: 'cleaver', kind: 'knife', name: 'Cleaver', price: 95000, ring: .5, edge: 6,
+    /* Nine rather than six. It is the last knife on the block and the most
+       expensive thing you can put in your hand, and six points of grace was
+       not enough to feel: a perfect on it wants to be a thing the cleaver
+       does for you, not a thing you do anyway. */
+    { id: 'cleaver', kind: 'knife', name: 'Cleaver', price: 95000, ring: .5, edge: 9,
       why: 'The most room there is on a perfect cut.' },
 ];
 const KIT = [
@@ -8580,8 +8592,12 @@ const ROSETTES = [
    is the order they were written in, which is roughly the order you get them.
    Every rosette is on exactly one shelf and the test says so. */
 const WALL = [
-    { h: 'On the knife', ids: ['dead', 'fifty', 'fivehun', 'two', 'three', 'four',
-                               'six', 'steaks', 'nowt', 'saturday'] },
+    /* Dead Centre is at the bottom of the shelf now. It was twenty-five
+       perfect cuts and sat first; it is a whole week of nothing but perfect
+       cuts, which is the hardest thing on this wall, and a shelf reads
+       easiest to hardest. */
+    { h: 'On the knife', ids: ['fifty', 'fivehun', 'two', 'three', 'four',
+                               'six', 'steaks', 'nowt', 'saturday', 'dead'] },
     { h: 'After hours',  ids: ['clean', 'clean5', 'after', 'three3', 'noburn'] },
     { h: 'In the till',  ids: ['hundred', 'grand', 'tenk', 'bigweek'] },
     { h: 'The shopping', ids: ['buy', 'block', 'rail', 'lot', 'dressed', 'crew'] },
@@ -10059,7 +10075,6 @@ function draw() {
 
     drawSteak(ctx);
 
-    drawBot(ms);
     drawCat(ms);
     if (demoOn()) drawDemo(ms);
 

@@ -491,7 +491,10 @@ only to the insurance.
 
 Each one has an edge:
 how many points it takes off the bar for a perfect cut, from nothing on the
-butcher's own knife up to six on the cleaver, which is the top of the block -
+butcher's own knife up to nine on the cleaver, which is the top of the block -
+it was six, and six points of grace on the most expensive thing you can put in
+your hand is not enough to feel: a perfect on a cleaver wants to be a thing the
+cleaver does for you, not a thing you were doing anyway -
 it is what a butcher reaches for when the job is serious, and shears are for
 poultry. Same rule as the rest of the shop
 - it does not slow the dog down or make the string easier, it pays you more for
@@ -597,8 +600,10 @@ knife - which was one picture and a good one, but it said the machine had
 replaced him. It has not. It works out the back and he is still the butcher,
 so the head came off him and the machine got a body of its own: it leans
 round the right-hand jamb of the shopfront on its own eleven-second clock
-the way the lad leans round the left, and on the shop floor it stands at the
-right-hand edge all day and bobs every time it sends one through. It wears the shop's apron like everybody else and not the
+the way the lad leans round the left. **None of that is on the shop floor**:
+no arm reaching in, no head at the right-hand edge. The machine is out the
+back and what you see of it is the link arriving - the week is busy enough at
+the edges without a second pair of hands in it. It wears the shop's apron like everybody else and not the
 shop's colour - the stripe is the same grey the head is pressed out of,
 because a steel head over Reg's blue is Reg in a mask. He is Reg on the
 receipt again, too.
@@ -656,8 +661,11 @@ no new dog on Monday - the week carries on with everything taken so far. It
 does not make the dog harder to hit; it makes hitting it something you survive.
 
 **A cat**, four hundred and eighty, is the small favour to the bone's big one:
-one goes across the window every day at a moment nobody picked, and the dog
-stops dead to watch it go. **It crosses on a diagonal**, in low at one jamb
+one goes across the window on Monday, Wednesday and Friday at a moment
+nobody picked, and the dog stops dead to watch it go. **The bone comes on an
+even day and the cat only ever on an odd one**, so the two of them are never
+in the window together: a bone going over, a cat going across and a dog that
+wants to look at both is three things happening in a five-second day. **It crosses on a diagonal**, in low at one jamb
 and out high at the other with a hop through the middle and a tilt on it the
 way a thing running uphill tilts. It used to run the floor at a flat height,
 which is where the lad and the machine come up and where the knife rests -
@@ -688,9 +696,9 @@ expression it has for an empty room.
 **On the payroll** is somebody else doing it. An apprentice, three hundred and
 twenty: one link off the bottom of the string, about halfway through the day,
 and **it is dead centre, every time**. He leans into the window at the
-moment he makes it, and the cut says **APPRENTICE** under the PERFECT it has
-just earned - one link a day out of eleven, and without a word on it you are
-left wondering which of them you did not do.
+moment he makes it with his knife in the air, and that is the whole of the
+telling. His name under the PERFECT as well was a second thing to read in
+the one second there is nothing spare to read in.
 
 **And you see him do it.** Both of them. Leaning half a body in past the
 jamb was a thing that happened at you, and getting it to read as a head
