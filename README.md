@@ -1062,6 +1062,12 @@ front of thirty tiles that all say Purchased. It is still one tap to put a hat
 on or switch an upgrade over; the counter simply comes up behind it with the
 same picture and the same sentence, and the buying taken off the end.
 
+**And the two free ones say what they are for.** A counter that says
+*Nothing on its head* and then nothing else is a counter saying nothing
+twice, so the bare head and the bare face both carry one line - *as nature
+intended* - which is the only caption in the dressing-up half of the shop
+and the only two tiles that need one.
+
 What the right-hand button does instead depends on what the thing is. A hat is
 already on the dog by the time you are reading about it - tapping the shelf did
 that - so there is nothing to ask and the button just shuts the counter. A

@@ -2042,7 +2042,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.11.0';
+const APP_VERSION = 'v1.11.1';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -8663,7 +8663,12 @@ const KNIVES = [
       why: 'The most room there is on a perfect cut.' },
 ];
 const KIT = [
-    { id: 'bare',     kind: 'hat',    name: 'Nothing on its head', price: 0 },
+    /* The two free ones are the only tiles in the shop whose whole point is
+       that they are not a thing, so they are the two that most want a line
+       under the name: a counter that says Nothing on its head and nothing
+       else is a counter saying nothing twice. */
+    { id: 'bare',     kind: 'hat',    name: 'Nothing on its head', price: 0,
+      why: 'As nature intended.' },
     { id: 'cap',      kind: 'hat',    name: 'Flat cap',         price: 1800 },
     { id: 'beanie',   kind: 'hat',    name: 'Beanie',           price: 2200 },
     { id: 'party',    kind: 'hat',    name: 'Party hat',        price: 2600 },
@@ -8687,7 +8692,8 @@ const KIT = [
     { id: 'sprout',   kind: 'hat',    name: 'Sprout',           price: 17000 },
     { id: 'balloon',  kind: 'hat',    name: 'Balloon',          price: 24000 },
 
-    { id: 'plain',    kind: 'face',   name: 'Nothing on its face', price: 0 },
+    { id: 'plain',    kind: 'face',   name: 'Nothing on its face', price: 0,
+      why: 'As nature intended.' },
     { id: 'specs',    kind: 'face',   name: 'Round glasses',    price: 2400 },
     { id: 'shades',   kind: 'face',   name: 'Sunglasses',       price: 4200 },
     { id: 'patch',    kind: 'face',   name: 'Eye patch',        price: 5000 },
