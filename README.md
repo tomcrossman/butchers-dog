@@ -598,15 +598,15 @@ which is exactly what a thing working flat out looks like. The PERFECTs stack
 up three deep down the window because they are arriving faster than one can
 fade.
 
-**The word across the middle says MEANWHILE…** and under it, in the small
-type, *nothing for you to do*. Every other time that spot has had a word in
-it - a day's name, GO, the count - the word was the start of something you
-have to do, and a player who has just finished Saturday reads a banner and
-reaches for the screen. This one is the opposite, so it says so in as many
-words, and it is the only banner in here with a second line. It holds for two
-and a bit seconds rather than six tenths, because it is a thing to be read
-rather than a thing to be beaten. The day's name is still on the plate in the
-corner, so you know which day you are not working.
+**The word across the middle says HAVE A REST.** Every other time that spot
+has had a word in it - a day's name, GO, the count - the word was the start of
+something you have to do, and a player who has just finished Saturday reads a
+banner and reaches for the screen. This is the one time it is not, so it says
+so in as many words, and it holds for two and a bit seconds rather than six
+tenths: a thing to be read rather than a thing to be beaten. It was MEANWHILE…
+with *nothing for you to do* under it in small type, which is two lines to say
+one thing and the game explaining its own joke on top. The day's name is still
+on the plate in the corner, so you know which day you are not working.
 
 **The back of its head is at the bottom of the window, in the middle.** Every
 other day the shop floor has the lad at the left jamb and the machine at the
