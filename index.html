@@ -2042,7 +2042,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.11.1';
+const APP_VERSION = 'v1.12.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -11435,6 +11435,13 @@ function paintTryOn() {
        same sentence, with the buying taken off the end of it. */
     const mine = owns(tryOn.id);
     const can = save.bank >= tryOn.price;
+    /* What is left to do with one you own. A shelf upgrade is a switch
+       either way; a knife is taken up rather than worn; and anything that
+       goes on the dog is worn unless it is already on. */
+    const todo = !mine ? ''
+        : SWITCHED.includes(tryOn.kind) ? (running(tryOn.id) ? 'Switch it off' : 'Switch it on')
+        : save.worn[tryOn.kind] === tryOn.id ? ''
+        : tryOn.kind === 'knife' ? 'Use it' : 'Wear it';
     /* Anything that goes on the dog is shown on the dog. It used to be a plain
        circle standing in for the head down here and the real dog pinned to the
        top of the shop - which is the one thing you are deciding about sat at
@@ -11457,10 +11464,12 @@ function paintTryOn() {
            just shuts. A shelf upgrade is a switch, and a switch wants to be
            reachable from the thing that just told you what it does. */
         (mine
-            ? (SWITCHED.includes(tryOn.kind)
-                ? `<button class="btn no" data-try="no">Done</button>` +
-                  `<button class="btn yes" data-try="flip">` +
-                  `${running(tryOn.id) ? 'Switch it off' : 'Switch it on'}</button>`
+            ? (todo
+                ? `<button class="btn no" data-try="no">Put it back</button>` +
+                  `<button class="btn yes" data-try="flip">${todo}</button>`
+                /* The one you are already wearing has nothing left to ask:
+                   there is no taking a hat off, there is only putting the
+                   bare head on, and that is its own tile three along. */
                 : `<button class="btn yes" data-try="no">Done</button>`)
             : `<button class="btn no" data-try="no">Put it back</button>` +
               `<button class="btn yes${can ? '' : ' poor'}" data-try="yes">` +
@@ -11529,20 +11538,15 @@ document.getElementById('stock').addEventListener('click', e => {
     if (!btn) return;
     const item = itemById(btn.dataset.item);
     if (!item) return;
-    if (!owns(item.id)) {
-        // a tap on the shelf is a tap on the shelf: it goes on the dog, and
-        // tapping the same thing again takes it back off
-        tryOn = (tryOn && tryOn.id === item.id) ? null : item;
-        plop(2); paintStore(); return;
-    }
-    plop(3);
-    /* Still one tap to put it on or switch it over - and the drawer comes
-       up behind it saying what it was. */
-    tryOn = item;
-    equip(item);
-    putSave();
-    sweep();
-    paintStore();
+    /* A tap on the shelf picks a thing up, and that is all it does - one
+       you own as much as one you do not. It used to put a hat straight on
+       the dog and switch an upgrade over on the spot, which is the shelf
+       doing the deciding: two taps of the same tile and you are back where
+       you started with no idea which way round it is. Everything is picked
+       up, looked at on the counter, and done there. Tapping the same tile
+       again puts it back. */
+    tryOn = (tryOn && tryOn.id === item.id) ? null : item;
+    plop(2); paintStore();
 });
 /* A hat replaces the hat. A shop upgrade has nothing to replace - you switch
    it on, and any number of them can be on at once - so tapping one you own
@@ -11557,7 +11561,7 @@ document.getElementById('tryon').addEventListener('click', e => {
     if (!btn || !tryOn) return;
     if (btn.dataset.try === 'no') { tryOn = null; plop(1); paintStore(); return; }
     if (btn.dataset.try === 'flip') {
-        plop(3); equip(tryOn); putSave(); sweep(); paintStore(); return;
+        plop(3); equip(tryOn); tryOn = null; putSave(); sweep(); paintStore(); return;
     }
     if (save.bank < tryOn.price) { buzz(); return; }
     const item = tryOn;

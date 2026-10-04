@@ -1058,9 +1058,16 @@ will not be pressed.
 moment a thing was yours, which meant the line saying what it does was only
 ever readable in the half second before you bought it - and what a thing in
 your own shop is for is exactly the question you have a month later, stood in
-front of thirty tiles that all say Purchased. It is still one tap to put a hat
-on or switch an upgrade over; the counter simply comes up behind it with the
-same picture and the same sentence, and the buying taken off the end.
+front of thirty tiles that all say Purchased.
+
+**One rule for every tile now: a tap picks a thing up, and the counter is
+where it happens.** Tapping an owned one used to put a hat straight on the
+dog and flip an upgrade on the spot, which is the shelf doing the deciding -
+two taps of the same tile and you are back where you started with no idea
+which way round it is. Picked up, looked at, done on the counter, the same
+as buying; and tapping the same tile again puts it back. A thing you own
+gets a proper try-on out of it too, on the dog at the top of the screen and
+on the counter at the bottom, before you commit to it.
 
 **And the two free ones say what they are for.** A counter that says
 *Nothing on its head* and then nothing else is a counter saying nothing
@@ -1068,11 +1075,11 @@ twice, so the bare head and the bare face both carry one line - *as nature
 intended* - which is the only caption in the dressing-up half of the shop
 and the only two tiles that need one.
 
-What the right-hand button does instead depends on what the thing is. A hat is
-already on the dog by the time you are reading about it - tapping the shelf did
-that - so there is nothing to ask and the button just shuts the counter. A
-shelf upgrade is a switch, and a switch wants to be reachable from the thing
-that has just told you what it does, so that one says Switch it off, or on.
+The right-hand button is whatever is left to do. A hat or a collar is *Wear
+it*; a knife is *Use it*, because nobody wears a cleaver; a shelf upgrade is
+*Switch it on*, or off. The one already on the dog has nothing left to ask -
+there is no taking a hat off, there is only putting the bare head on, and
+that is its own tile three along - so that one just says Done.
 
 ## Your shop, kept
 
