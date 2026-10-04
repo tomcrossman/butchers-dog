@@ -2042,7 +2042,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.10.0';
+const APP_VERSION = 'v1.11.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -8723,7 +8723,7 @@ const KIT = [
        thing you buy when you have decided to stop pottering, and it still
        has to be caught. */
     { id: 'wagyu',     kind: 'line',  name: 'Wagyu on the slab', price: 100000,
-      why: 'One a week, and it is worth a hundred pounds.' },
+      why: 'One a week, and it’s worth a hundred pounds.' },
     { id: 'toy',       kind: 'help',  name: 'Squeaky bone',     price: 24000,
       why: 'One day a week the dog goes after the bone instead.' },
     { id: 'apprentice', kind: 'help',  name: 'An apprentice',    price: 32000,
@@ -11359,7 +11359,7 @@ function paintStore() {
                 got on says Yours, which is the truth and is not the word Wear
                 thirty times over. */
             const free = i.price === 0;
-            const tag = trying ? `<span class="tag">Trying</span>`
+            const tag = trying && !got ? `<span class="tag">Trying</span>`
                       : on ? (free ? `<span class="pr">Free</span>`
                                    : `<span class="tag">On</span>`)
                       : got ? (free ? `<span class="pr">Free</span>`
@@ -11416,11 +11416,18 @@ function paintWall() {
    on the dog, and there is a way out next to the way in. */
 function paintTryOn() {
     const bar = document.getElementById('tryon');
-    if (!tryOn || owns(tryOn.id)) {
+    if (!tryOn) {
         bar.hidden = true; bar.innerHTML = '';
         storeEl.classList.remove('trying');
         return;
     }
+    /* The drawer used to shut the moment a thing was yours, which meant the
+       line telling you what it does was only ever readable in the half
+       second before you bought it. What a thing in your own shop is for is
+       exactly the question you have a month later, stood in front of
+       thirty tiles that all say Purchased. It stays open now and says the
+       same sentence, with the buying taken off the end of it. */
+    const mine = owns(tryOn.id);
     const can = save.bank >= tryOn.price;
     /* Anything that goes on the dog is shown on the dog. It used to be a plain
        circle standing in for the head down here and the real dog pinned to the
@@ -11437,9 +11444,22 @@ function paintTryOn() {
         (tryOn.why ? `<span class="does">${tryOn.why}</span>` : '') +
         `</span>` +
         `<span class="pair">` +
-        `<button class="btn no" data-try="no">Put it back</button>` +
-        `<button class="btn yes${can ? '' : ' poor'}" data-try="yes">` +
-        `${can ? `Buy it &middot; ${money0(tryOn.price)}` : money0(tryOn.price)}</button></span>`;
+        /* One you own has nothing to buy, so the right-hand button is the
+           other thing you can do with it. A hat is already on your dog by
+           the time you are reading this - tapping the shelf does that, and
+           asking twice for a hat is a dialog box about a hat - so that one
+           just shuts. A shelf upgrade is a switch, and a switch wants to be
+           reachable from the thing that just told you what it does. */
+        (mine
+            ? (SWITCHED.includes(tryOn.kind)
+                ? `<button class="btn no" data-try="no">Done</button>` +
+                  `<button class="btn yes" data-try="flip">` +
+                  `${running(tryOn.id) ? 'Switch it off' : 'Switch it on'}</button>`
+                : `<button class="btn yes" data-try="no">Done</button>`)
+            : `<button class="btn no" data-try="no">Put it back</button>` +
+              `<button class="btn yes${can ? '' : ' poor'}" data-try="yes">` +
+              `${can ? `Buy it &middot; ${money0(tryOn.price)}` : money0(tryOn.price)}</button>`) +
+        `</span>`;
     bar.hidden = false;
     storeEl.classList.add('trying');
     const cv = bar.querySelector('canvas');
@@ -11510,7 +11530,9 @@ document.getElementById('stock').addEventListener('click', e => {
         plop(2); paintStore(); return;
     }
     plop(3);
-    tryOn = null;
+    /* Still one tap to put it on or switch it over - and the drawer comes
+       up behind it saying what it was. */
+    tryOn = item;
     equip(item);
     putSave();
     sweep();
@@ -11528,6 +11550,9 @@ document.getElementById('tryon').addEventListener('click', e => {
     const btn = e.target.closest('[data-try]');
     if (!btn || !tryOn) return;
     if (btn.dataset.try === 'no') { tryOn = null; plop(1); paintStore(); return; }
+    if (btn.dataset.try === 'flip') {
+        plop(3); equip(tryOn); putSave(); sweep(); paintStore(); return;
+    }
     if (save.bank < tryOn.price) { buzz(); return; }
     const item = tryOn;
     save.bank -= item.price;

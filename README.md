@@ -1054,6 +1054,20 @@ Buy it. Tap the same tile again and it comes off. Buy it is the only button in
 the shop that spends anything, and if the till is short it says how short and
 will not be pressed.
 
+**And the counter comes up for things you already own.** It used to shut the
+moment a thing was yours, which meant the line saying what it does was only
+ever readable in the half second before you bought it - and what a thing in
+your own shop is for is exactly the question you have a month later, stood in
+front of thirty tiles that all say Purchased. It is still one tap to put a hat
+on or switch an upgrade over; the counter simply comes up behind it with the
+same picture and the same sentence, and the buying taken off the end.
+
+What the right-hand button does instead depends on what the thing is. A hat is
+already on the dog by the time you are reading about it - tapping the shelf did
+that - so there is nothing to ask and the button just shuts the counter. A
+shelf upgrade is a switch, and a switch wants to be reachable from the thing
+that has just told you what it does, so that one says Switch it off, or on.
+
 ## Your shop, kept
 
 The button that opens the shop is a word and nothing else; a cleaver on it was
