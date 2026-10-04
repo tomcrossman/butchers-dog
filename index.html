@@ -2042,7 +2042,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.12.0';
+const APP_VERSION = 'v1.13.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2353,7 +2353,7 @@ function setPaused(on) {
     else {
         pausedFor += performance.now() - pauseAt; pauseAt = 0; lastMs = 0; tick();
         // and not over the top of something that has started since
-        if (mini && !mini.done && !tuneOn) tuneStart(mini.id);
+        if (mini && !mini.done && !tuneOn) tuneStart(tuneFor(mini));
     }
 }
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -4651,6 +4651,19 @@ const MINI_TUNES = {
               n: [[.0, 330, .2], [.42, 392, .18], [.66, 415, .3],
                   [1.3, 330, .2], [1.72, 294, .18], [1.96, 247, .34]],
               b: [[.0, 82], [.66, 110], [1.3, 82], [1.96, 73]] },
+    /* Butcher time. The samurai's five notes are a joke about a film and
+       butcher time is not that joke - it is the best week this shop has
+       had, so it gets a knees-up: D major, four to the bar, a bass note on
+       every one of them and a lick that goes up twice and lands. It runs
+       at full speed over a screen at a quarter of it, which is the whole
+       feeling of the thing - everything slowed right down for you while
+       the band carries on. */
+    btime:  { bar: 1.85, type: 'triangle', vol: 1.1,
+              n: [[.0, 880, .12], [.13, 1175, .12], [.29, 880, .1],
+                  [.46, 740, .12], [.58, 880, .12], [.69, 1175, .2],
+                  [.92, 988, .12], [1.04, 880, .12], [1.16, 740, .18],
+                  [1.39, 659, .12], [1.51, 740, .12], [1.62, 880, .22]],
+              b: [[.0, 73], [.46, 110], [.92, 98], [1.39, 110]] },
     // Somewhere east of the counter. Five notes and nothing in between.
     ninja:  { bar: 2.2, type: 'triangle', vol: .95,
               n: [[.0, 587, .14], [.22, 659, .14], [.44, 784, .14], [.66, 880, .2],
@@ -4718,6 +4731,10 @@ function tuneOut() {
     }
     return tuneBus;
 }
+/* Butcher time borrows the samurai's physics and its id, and nothing else:
+   it is the one game in here that is a reward rather than a game, so it does
+   not get the tune that goes with the joke. */
+const tuneFor = m => m && m.bonus ? 'btime' : m && m.id;
 function tuneStart(id) {
     tuneStop();
     const T = MINI_TUNES[id];
@@ -4769,7 +4786,7 @@ function startMini() {
        for it is a tune that can land on top of whatever came next - the
        credits roll, most of all, which is the one piece of music in here
        that is not allowed to be interrupted by a game you have left. */
-    setTimeout(() => { if (mini && !mini.done && !tuneOn) tuneStart(mini.id); }, 620);
+    setTimeout(() => { if (mini && !mini.done && !tuneOn) tuneStart(tuneFor(mini)); }, 620);
     tick();
 }
 function endMini() {
@@ -4851,18 +4868,20 @@ let bonusTook = 0;
    cuts and every single one of them perfect - which nobody has ever done.
    At ninety-five cuts in a hundred that is one week in five; at eighty-five,
    which is a good hand, it is one week in two hundred, so the best thing in
-   the game was a thing you heard about rather than saw. Three gives the same
-   good hand one week in nine and a middling one about one in twelve, and the
-   gate that matters is untouched: not a single sausage lost in six days, dog
-   or knife, which is still the rarest thing in here.
+   the game was a thing you heard about rather than saw. Two gives that same
+   good hand one week in nine and a ninety-per-cent one about one week in
+   three, and the gate that matters is untouched: not a single sausage lost
+   in six days, dog or knife, which is still the rarest thing in here.
 
-   Three rather than one a day, because a day is three cuts on a Wednesday
-   and ten on a Saturday and one free cut is a different favour on each of
-   them. It is one number for the week, so you can count it yourself.
+   Two for the week rather than one a day, because a day is two cuts on a
+   Wednesday and ten on a Saturday and one free cut is a different favour on
+   each of them. It is one number for the week, so you can count it
+   yourself - and two you can hold in your head while you are playing,
+   which three is already pushing.
 
    The star on the receipt does not move. That says every cut today was dead
    centre, and it wants to go on meaning exactly that. */
-const BT_GRACE = 3;
+const BT_GRACE = 2;
 const weekMissed = () => ledger.reduce((a, r) => a + ((r.cuts || 0) - (r.per || 0)), 0);
 const perfectWeek = () =>
     ledger.length >= DAYS.length && ledger.every(r => r.full) &&
@@ -4885,7 +4904,7 @@ function startBonus() {
     }
     mini.next = .18;
     jingleUp();
-    setTimeout(() => { if (mini && !mini.done && !tuneOn) tuneStart('ninja'); }, 620);
+    setTimeout(() => { if (mini && !mini.done && !tuneOn) tuneStart('btime'); }, 620);
     tick();
 }
 /* What one mouthful in the dream is worth, and what each one in an unbroken
@@ -8731,7 +8750,7 @@ const KIT = [
     { id: 'wagyu',     kind: 'line',  name: 'Wagyu on the slab', price: 100000,
       why: 'One a week, and it’s worth a hundred pounds.' },
     { id: 'toy',       kind: 'help',  name: 'Squeaky bone',     price: 24000,
-      why: 'One day a week the dog goes after the bone instead.' },
+      why: 'Once a week the dog goes after the bone instead.' },
     { id: 'apprentice', kind: 'help',  name: 'An apprentice',    price: 32000,
       why: 'Butcher in training. Cuts the first link of the day perfectly.' },
     /* The most expensive thing in the shop, and the only one that is not

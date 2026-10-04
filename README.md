@@ -1793,27 +1793,29 @@ centre. Nobody arrives at that by accident, and a rosette on a wall is a thin
 thing to hand somebody for it - so the week stops, everything in the shop
 goes up in the air at once, and the clock goes with it.
 
-**Three cuts of grace.** It used to be every day starred: thirty-three cuts
+**Two cuts of grace.** It used to be every day starred: thirty-three cuts
 in a week and every single one of them perfect, which in practice nobody has
 ever done. Thirty-three in a row is punishing in a way that is easy to
 underestimate - at ninety-five cuts in a hundred, which is a very good hand
 indeed, it is one week in five; at ninety it is one in thirty-two; at
 eighty-five, which is still a good player, it is **one week in two hundred
 and thirteen**. The best thing in the game was a thing you heard about rather
-than saw. Three off the total gives that same eighty-five-percent hand one
-week in nine, and a ninety-percent one better than one week in three.
+than saw. Two off the total gives that same eighty-five-percent hand one
+week in nine, and a ninety-percent one about one week in three.
 
-| cuts dead centre | every cut (old) | three off (now) |
+| cuts dead centre | every cut (old) | two off (now) |
 |---|---|---|
 | 80 in 100 | 1 week in 1,578 | 1 in 37 |
 | 85 in 100 | 1 in 213 | 1 in 9 |
-| 90 in 100 | 1 in 32 | 1 in 3 |
+| 90 in 100 | 1 in 32 | 1 in 2.9 |
 | 95 in 100 | 1 in 5 | 1 in 1.3 |
 
-Three for the week rather than one a day, because a day is two cuts on a
+Two for the week rather than one a day, because a day is two cuts on a
 Wednesday and ten on a Saturday, and one free cut is a different favour on
 each of them. One number for the whole week is a number you can count
-yourself.
+yourself - and two is a number you can hold in your head while you are
+playing, which three was already pushing. It was three for a version, and
+the table above was right about two the whole time.
 
 **The gate that matters is untouched.** Not a single sausage lost in six
 days, to the dog or to your own knife. That is still the rarest thing in
@@ -1825,6 +1827,15 @@ was dead centre, and it wants to go on meaning exactly that. So a week can
 come up five stars and still stop for butcher time, which is the right way
 round: the receipt is a record and the bonus is a reward, and they are not
 obliged to agree.
+
+**And it does not sound like it either.** It borrowed the samurai's physics
+and its id, and for a while it borrowed its music with them - five notes
+east of the counter, which is a joke about a film. This is not that joke: it
+is the best week this shop has had. So it gets a knees-up of its own, D
+major, four to the bar with a bass note on every one of them and a lick that
+goes up twice and lands. It plays at full speed over a screen running at a
+quarter of it, which is the whole feeling of the thing: everything slowed
+right down for you while the band carries on.
 
 **And it does not look like the samurai.** The sword game is a night, a moon
 and blossom coming off a tree in Kyoto, which is a joke about a film; this is
