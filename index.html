@@ -2035,7 +2035,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.8.1';
+const APP_VERSION = 'v1.9.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2710,7 +2710,7 @@ function ladCut() {
     for (let k = string.n - 2; k >= 0; k--) {
         const p = pieceAt(string.twists[k]);
         if (p && p.from <= k && p.to > k) {
-            splitAt(p, k, LAD_Q);
+            splitAt(p, k, LAD_Q, false);
             /* He comes up at the left with his knife in the air, and that
                is the whole of the telling. His name under the PERFECT as
                well was a second thing to read in the one second there is
@@ -2937,7 +2937,7 @@ function botCut() {
                          botArm = { t0: now(), x, y }; servo(); };
     for (let k = string.n - 2; k >= 0; k--) {
         const p = pieceAt(string.twists[k]);
-        if (p && p.from <= k && p.to > k) { reach(k); splitAt(p, k, BOT_Q); return; }
+        if (p && p.from <= k && p.to > k) { reach(k); splitAt(p, k, BOT_Q, false); return; }
     }
     // nothing joined left: the last single link comes off too
     const last = pieces.find(q => q.from === q.to);
@@ -3386,13 +3386,20 @@ const yelp = () => safely(t => {
    it is the one thing in the game you can actually get better at - so it pays
    a shilling on top and says so out loud. */
 const PERFECT = 92, PERFECT_PAY = 100;
-function splitAt(p, k, q) {
+/* `mine` is a cut you made. The lad's one a day is dead centre by
+   definition and the machine's are the machine's, so neither of them goes
+   on your count - a hundred perfect cuts wants to mean a hundred you made,
+   and a percentage with somebody else's free ones in the top of it is not a
+   percentage of anything. They still count towards the day: the star and
+   butcher time are about the shop, and the help is help you paid for. */
+function splitAt(p, k, q, mine = true) {
     const i = pieces.indexOf(p);
     const left = { from: p.from, to: k }, right = { from: k + 1, to: p.to };
     pieces.splice(i, 1, left, right);
     for (const bit of [left, right]) if (bit.from === bit.to) free(bit, q);
     cutFx.push({ k, t0: now(), q });
     cutsToday++;
+    if (mine) save.tally.cuts = (save.tally.cuts || 0) + 1;
     snick(q);
     // a better knife brings the bar down rather than doing the cut for you
     if (q >= PERFECT - (cast.knife.edge || 0)) {
@@ -3408,8 +3415,9 @@ function splitAt(p, k, q) {
            the only moment there is nothing spare to read it with. */
         shouts.push({ text: 'PERFECT', x: px, y: py - 30, t0: now(), gold: true });
         perfectToday++;
-        if (sunday) { ping(); return; }        // the machine's, not yours
+        if (!mine) { ping(); return; }         // the lad's or the machine's
         save.tally.perfect++;
+        save.tally.hits = (save.tally.hits || 0) + 1;
         if (perfectToday >= 6) award('six');
         if (save.tally.perfect >= 100) award('fifty');
         if (save.tally.perfect >= 500) award('fivehun');
@@ -4009,7 +4017,7 @@ function sunCut() {
                          botArm = { t0: now(), x, y }; servo(); };
     for (let k = string.n - 2; k >= 0; k--) {
         const p = pieceAt(string.twists[k]);
-        if (p && p.from <= k && p.to > k) { reach(k); splitAt(p, k, 100); return; }
+        if (p && p.from <= k && p.to > k) { reach(k); splitAt(p, k, 100, false); return; }
     }
     const last = pieces.find(q => q.from === q.to);
     if (last) {
@@ -8784,7 +8792,7 @@ const FRESH = () => ({
     got: [],
     tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0, trebles: 0, doubles: 0,
              hours: 0, steaks: 0, breeds: [], sold: 0, graves: 0, perfweek: 0,
-             bestWeek: 0 },
+             bestWeek: 0, cuts: 0, hits: 0 },
     /* How long the shop has been open, in milliseconds of it actually being
        in front of you. It is the one number on the credits that cannot be
        worked out from anything else. */
@@ -9037,8 +9045,20 @@ function nextGong() {
         `<span class="w">${ro.why}</span></span>`;
     const g = el.querySelector('canvas').getContext('2d');
     drawRosette(g, 38, 34, ro.grand ? 19 : 26, ro.silk, false, ro.grand);
-    el.hidden = false;
-    el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+    /* Restarting the slide by blanking the animation property and forcing
+       a reflow is the usual trick, and it is not reliable: the second card
+       in a run could arrive with its text swapped in and its transform
+       still sat on the last frame of the one before - which is a hundred
+       and ten percent above the top of the screen. You win the rosette,
+       the wall knows about it, and nothing comes down. Going out through
+       display:none and back takes the element out of the rendering tree
+       and puts it in again, which restarts a CSS animation everywhere;
+       and where the animation can be got hold of directly, it is told to
+       start again outright as well. Two ways of saying the same thing,
+       because the thing it is saying only gets said once. */
+    el.hidden = true; void el.offsetWidth;
+    el.hidden = false; void el.offsetWidth;
+    if (el.getAnimations) for (const a of el.getAnimations()) { a.cancel(); a.play(); }
     ding();
     gongT = setTimeout(nextGong, GONG_MS + 120);
 }
@@ -12879,9 +12899,18 @@ function creditStats() {
        four figures over the counter, and 1613 is a number you have to count
        the digits of. */
     const num = v => commas(String(v | 0));
+    const cut20 = (save.tally.cuts || 0) >= 20;
     return [['Time in the shop', t],
             ['Weeks traded', num(save.weeks)],
             ['Sausages over the counter', num(save.tally.sold)],
+            /* Counted off its own pair rather than off the lifetime perfect
+               count, because that one has been running since the first
+               version and this has not: a percentage wants both halves
+               measured over the same stretch or it is a number about
+               nothing. It stays off the roll until there are enough of them
+               to be a percentage of. */
+            ...(cut20 ? [['Cuts dead centre',
+                          Math.round(save.tally.hits / save.tally.cuts * 100) + '%']] : []),
             ['Hours after closing', num(save.tally.hours)],
             ['Dogs buried', num(save.tally.graves)],
             ['Rosettes on the wall', `${save.got.length} of ${ROSETTES.length}`],

@@ -1625,8 +1625,21 @@ wall**.
 One landing drops a ticket in from under the rail in the same hand as the
 week's takings, with a bell over it. It reports, it does not ask: nothing to
 press, and the day does not stop for it. Three can land on the same Saturday -
-the week, the clean week and the thousand in the till - so they queue rather
-than sit on top of each other.
+the clean week, the thousand in the till and the week that stopped for butcher
+time - so they queue rather than sit on top of each other.
+
+**And the second one in a queue used to stay up there.** Restarting the slide
+by blanking the animation property and forcing a reflow is the usual trick,
+and it is not reliable: the next card could arrive with its text swapped in
+and its transform still sat on the last frame of the one before, which is a
+hundred and ten per cent above the top of the screen. You win the rosette,
+the wall knows about it, and nothing comes down - which is a worse bug than
+not awarding it, because the one thing a rosette is for is being told. It
+goes out through `display:none` and back now, which takes the element out of
+the rendering tree and puts it in again and restarts a CSS animation
+everywhere; and where the animation can be got hold of directly it is told to
+start again outright as well. Two ways of saying the same thing, because the
+thing it is saying only gets said once.
 
 A rosette is two ribbon tails, a ring of twelve pleats and a button. Twelve,
 because eight reads as a cog and twenty reads as a circle. It is drawn like
@@ -2292,6 +2305,27 @@ window. Four different rates, because four people waving in step is one
 person waving four times. The picture is the one
 thing on the roll that moves, so it gets a frame loop of its own while the
 credits are up and nothing at all when they are not.
+
+**Cuts dead centre, as a percentage.** Time in the shop, weeks traded,
+sausages over the counter, hours after closing, dogs buried, rosettes and
+what is in the till were all counts of what happened; this is the only one
+that is a number about how good you are, and it is the one anybody who has
+played this for a month actually wants. Seventy-one per cent is a good
+shop.
+
+It is counted off its own pair of tallies rather than off the lifetime
+perfect count, because that one has been running since the first version
+and the total it would be a percentage of has not: both halves have to be
+measured over the same stretch or the figure is about nothing. So it stays
+off the roll entirely until there are twenty of them to be a percentage of.
+
+**And it is your cuts only.** The lad's one a day is dead centre by
+definition and the machine's are the machine's, so neither goes on the
+count - a hundred perfect cuts should mean a hundred you made, and a
+percentage with somebody else's free ones in the top of it is not a
+percentage of anything. One cut a day against thirty-three in a week is
+eighteen per cent of flattery. They still count towards the day: the star
+and butcher time are about the shop, and the help is help you paid for.
 
 **The numbers come off the same roll as a week's takings.** A week of
 trading gets a receipt, so a whole shop gets one too, and it is the one
