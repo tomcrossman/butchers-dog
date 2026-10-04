@@ -2035,7 +2035,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.7.0';
+const APP_VERSION = 'v1.8.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -4120,6 +4120,10 @@ function endWeek() {
     if (!fed) save.tally.clean++;
     if (!botched) award('nowt');
     if (money >= 12000) award('bigweek');
+    /* The best week this shop has ever had, so a wall swept in from an old
+       save can be given it rather than having to go and do it again. */
+    if (money > (save.tally.bestWeek || 0)) save.tally.bestWeek = money;
+    if (money >= 50000) award('bigone');
     putSave();
     sweep();
     /* Nothing here is measured against another week. What the art is allowed
@@ -4550,7 +4554,7 @@ function afterMini() {
    enough for one confident pass and not enough to inch down it.
 
    And its four and a half start when your finger lands on the bun rather than
-   when the game opens, because PERFECT WEEK is across the middle of the screen
+   when the game opens, because A GOOD WEEK is across the middle of the screen
    for the first second and a half, and a clock you spend a third of under a
    banner is not a clock, it is a tax. The other two are nine seconds of things
    coming at you and want no such grace. If nobody picks the bottle up, it
@@ -4841,7 +4845,8 @@ const perfectWeek = () =>
     ledger.length >= DAYS.length && ledger.every(r => r.full) &&
     weekMissed() <= BT_GRACE;
 function startBonus() {
-    mini = { id: 'ninja', name: 'Butcher time', say: 'Six days and nothing lost',
+    mini = { id: 'ninja', name: 'Butcher time',
+             say: 'Slow motion. Take them in handfuls',
              secs: BT_SECS, untimed: false, t0: now(), won: 0, done: false,
              bonus: true, slow: BT_SLOW };
     miniSetup('ninja');
@@ -7931,11 +7936,18 @@ function drawMini(ms) {
        across the middle first and gets out of the way: a whole week without
        the dog taking one is what bought the hour, and you want to be told that
        in the same breath as being shown the reward for it. */
-    /* Not over butcher time. That one says what it is on the two lines
-       above, and the big banner is the hour after closing's own - it turns
-       up once more a few seconds later, on the hour this week also earned,
-       and the same words twice running means neither of them. */
-    const fl = mini.bonus ? 9 : (now() - mini.t0) / 1500;
+    /* Butcher time gets it too now, and it gets the better of the two
+       names. PERFECT WEEK used to belong to the hour after closing, which
+       is bought by six days without the dog taking one - a fine week and
+       not a perfect one; there is no cut in it that had to be any good.
+       The hour says A GOOD WEEK, which is exactly what it is, and the word
+       perfect is kept for the week that earned the thing you only get for
+       cutting. They never run back to back, so nothing is said twice: a
+       week that stops for butcher time does not also get an hour. */
+    const big = mini.bonus ? 'PERFECT WEEK' : 'A GOOD WEEK';
+    const under = mini.bonus ? 'SIX DAYS AND BARELY A CUT OFF CENTRE'
+                             : 'SIX DAYS AND THE DOG GOT NOTHING';
+    const fl = (now() - mini.t0) / 1500;
     if (fl < 1) {
         ctx.globalAlpha = Math.min(1, (1 - fl) * 4, fl * 6);
         ctx.translate(W / 2, H * .36);
@@ -7944,15 +7956,20 @@ function drawMini(ms) {
         ctx.fillStyle = 'rgba(10,28,21,.78)';
         ctx.fillRect(-W, -40, W * 2, 82);
         ctx.font = '400 34px \"Alfa Slab One\", Georgia, serif';
-        const fit = Math.min(1, (W - 28) / ctx.measureText('PERFECT WEEK').width);
+        const fit = Math.min(1, (W - 28) / ctx.measureText(big).width);
         ctx.save();
         ctx.scale(fit, fit);
         ctx.fillStyle = '#f0d484';
-        ctx.fillText('PERFECT WEEK', 0, -11 / fit);
+        ctx.fillText(big, 0, -11 / fit);
         ctx.restore();
         ctx.font = '900 12px Lato, sans-serif';
+        // the long one runs to the edges of a small phone, so it is fitted too
+        const ufit = Math.min(1, (W - 28) / ctx.measureText(under).width);
+        ctx.save();
+        ctx.scale(ufit, ufit);
         ctx.fillStyle = '#9fe0b4';
-        ctx.fillText('SIX DAYS AND THE DOG GOT NOTHING', 0, 20);
+        ctx.fillText(under, 0, 20 / ufit);
+        ctx.restore();
     }
     ctx.restore();
 }
@@ -8687,7 +8704,7 @@ const KIT = [
     { id: 'toy',       kind: 'help',  name: 'Squeaky bone',     price: 24000,
       why: 'One day a week the dog goes after the bone instead.' },
     { id: 'apprentice', kind: 'help',  name: 'An apprentice',    price: 32000,
-      why: 'Cuts one link a day, about halfway through. Dead centre, every time.' },
+      why: 'Butcher in training. Cuts the first link of the day perfectly.' },
     /* The most expensive thing in the shop, and the only one that is not
        about money at all. It does not make the dog harder to hit - it makes
        hitting it something you survive. The day still stops there. */
@@ -8705,7 +8722,7 @@ const KIT = [
        joke and it is also the balance: it buys you the afternoon off, not a
        better week. */
     { id: 'robot',     kind: 'help',  name: 'AI butcher',       price: 250000,
-      why: 'Works out the back. More sausages all week, and Sundays.' },
+      why: 'Works out the back. More sausages all week, including Sundays.' },
     { id: 'spiked',   kind: 'collar', name: 'Studded collar',   price: 0 },
     { id: 'bow',      kind: 'collar', name: 'Bow tie',          price: 2000 },
     { id: 'scarf',    kind: 'collar', name: 'Neckerchief',      price: 3400 },
@@ -8766,7 +8783,8 @@ const FRESH = () => ({
        running counts that no other part of the game had a reason to keep. */
     got: [],
     tally: { perfect: 0, clean: 0, pats: 0, minis: [], loyal: 0, trebles: 0, doubles: 0,
-             hours: 0, steaks: 0, breeds: [], sold: 0, graves: 0, perfweek: 0 },
+             hours: 0, steaks: 0, breeds: [], sold: 0, graves: 0, perfweek: 0,
+             bestWeek: 0 },
     /* How long the shop has been open, in milliseconds of it actually being
        in front of you. It is the one number on the credits that cannot be
        worked out from anything else. */
@@ -8868,7 +8886,16 @@ const ROSETTES = [
        and five of those in your first six days is worth nothing at all. Every
        one of them is a count now, and the counts go up far enough that a wall
        takes a year rather than a weekend. */
-    { id: 'week',    silk: 'brass',  name: 'Five Weeks In',  why: 'Five weeks in the same shop.' },
+    /* This was five weeks in the same shop, which is a rosette for having
+       opened the game five times. Time served is the one shelf where the
+       count can only go up on its own, so the thing to ask for is the time
+       you can lose: half a year with the same dog at the bottom of the
+       rail. Twenty-six Saturdays and not one of them the one where you
+       catch it. The count goes back to nought the moment a new dog turns
+       up on the Monday, so this is the only rosette on the wall you can
+       be four months into and then not be. */
+    { id: 'stillhere', silk: 'brass', name: 'Still Here',
+      why: 'Half a year with the same dog.' },
     { id: 'buy',     silk: 'brass',  name: 'Stocked Up',     why: 'Ten things bought and paid for.' },
 
     /* It was twenty-five perfect cuts, which is a fortnight of ordinary
@@ -8898,7 +8925,22 @@ const ROSETTES = [
     { id: 'three3',  silk: 'green',  name: 'The Full Set',    why: 'Play all ten of the after-hours games.' },
     { id: 'noburn',  silk: 'red',    name: 'Nothing Burnt',  why: 'Five off the barbecue and not one black.' },
 
-    { id: 'hundred', silk: 'brass',  name: 'A Hundred Pounds', why: 'A hundred in the till.' },
+    /* This was a hundred pounds in the till, which a shop clears in its
+       third week and then has on the wall for ever - and the till is
+       already counted twice over by the two rows under it.
+
+       Five hundred in a week is the top of the game instead. Everything
+       bought, six days without losing one, the wagyu caught, the machine
+       out the back, its Sunday, and butcher time on the end of it: that
+       is five hundred, give or take. Not a day - a day cannot get near
+       it. The best day the game can deal is three hundred and seven, and
+       that wants a golden week, the wagyu on a flawless Saturday and the
+       whole shop bought; an ordinary flawless Saturday with the wagyu on
+       it is a hundred and fifty-four. Butcher time, the hour after
+       closing and Sunday are the week's own lines and belong to no day,
+       which is most of what makes five hundred a week and not a day. */
+    { id: 'bigone',  silk: 'gold',   name: 'The Big One',
+      why: 'Five hundred pounds in a single week.' },
     { id: 'grand',   silk: 'brass',  name: 'A Thousand',     why: 'A thousand in the till.' },
     { id: 'tenk',    silk: 'gold',   name: 'Five Thousand',  why: 'Five thousand in the till.' },
     /* Sixty was a middling week with two upgrades on. A shop with the rail
@@ -8969,10 +9011,10 @@ const WALL = [
                                'six', 'steaks', 'nowt', 'saturday', 'dead',
                                'btimes'] },
     { h: 'After hours',  ids: ['clean', 'clean5', 'after', 'three3', 'noburn'] },
-    { h: 'In the till',  ids: ['hundred', 'grand', 'tenk', 'bigweek'] },
+    { h: 'In the till',  ids: ['bigweek', 'bigone', 'grand', 'tenk'] },
     { h: 'The shopping', ids: ['buy', 'block', 'rail', 'lot', 'dressed', 'crew'] },
     { h: 'The dog',      ids: ['vet', 'grave', 'pats', 'pudding'] },
-    { h: 'Time served',  ids: ['week', 'year', 'loyal'] },
+    { h: 'Time served',  ids: ['loyal', 'stillhere', 'year'] },
     { h: 'Nobody\u2019s business', ids: ['oof', 'sausage'] },
     { h: 'The lot',      ids: ['best'] },
 ];
@@ -9039,9 +9081,9 @@ function sweep(quiet) {
        that has done sixty weeks plainly got through a Monday. The counts imply
        the rosettes underneath them, so a wall swept in from an old save does
        not have holes in it that cannot be gone back and filled. */
-    if (save.weeks >= 5) give('week');
     if (save.tally.perfweek) give('dead');
     if (save.tally.perfweek >= 3) give('btimes');
+    if ((save.tally.bestWeek || 0) >= 50000) give('bigone');
     if (save.tally.perfect >= 500) give('fivehun');
     // trebles is what the old count was kept under; ten of those is plainly
     // ten doubles as well, so a wall swept in from before does not lose it
@@ -9049,7 +9091,6 @@ function sweep(quiet) {
     if (save.tally.trebles >= 1) give('three');
     if (save.tally.steaks >= 50) give('steaks');
     if (save.weeks >= 52) give('year');
-    if (save.bank >= 10000) give('hundred');
     if (save.bank >= 100000) give('grand');
     if (save.bank >= 500000) give('tenk');
     if (save.tally.perfect >= 100) give('fifty');
@@ -9057,6 +9098,7 @@ function sweep(quiet) {
     if (save.tally.clean >= 10) give('clean5');
     if (save.tally.pats >= 50) give('pats');
     if (save.tally.loyal >= 10) give('loyal');
+    if (save.tally.loyal >= 26) give('stillhere');
     if (save.tally.hours >= 10) give('after');
     if (save.tally.minis.length >= 10) give('three3');
     if (['toy', 'cat', 'apprentice'].every(id => running(id))) give('crew');

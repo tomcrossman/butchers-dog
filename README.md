@@ -1642,7 +1642,14 @@ of them is a count now, and the counts go far enough that a wall takes a year
 rather than a weekend. An ordinary first week gives nothing at all. A flawless
 one gives three, and all three are hard.
 
-What they are for: five weeks in the shop and fifty-two. Ten things bought and
+What they are for: fifty-two weeks in the shop, and **half a year with the
+same dog**. That second one was *five weeks in the same shop*, which is a
+rosette for having opened the game five times. Time served is the one shelf
+where the count can only ever go up on its own, so the thing worth asking for
+is the time you can lose: twenty-six Saturdays and not one of them the one
+where you catch it. The count goes back to nought the moment a new dog turns
+up on the Monday, which makes it the only rosette on the wall you can be four
+months into and then not be. Ten things bought and
 paid for. Twenty-five perfect cuts, a hundred, and five hundred. Two twists in
 one swipe ten times, because two is a thing you will do by accident on a wavy
 Friday; three in one swipe once, because three is a line you have to go and
@@ -1651,9 +1658,24 @@ Saturday, because a straight line through two twists tops out at
 three anywhere from Monday to Friday and at five on a Saturday, measured over a
 hundred and twenty deals of each. A week the dog got nothing, ten of those, ten
 hours after closing, all seven of its games, and a barbecue with nothing black
-on it. A hundred pounds, a thousand, five thousand, and a hundred and twenty in one week - a shop with the rail stocked,
-the slab stocked and an hour after closing clears a hundred and thirty, and
-sixty was a middling Tuesday-to-Saturday. The
+on it. A thousand in the till and five thousand in the till, a hundred and twenty in
+one week - a shop with the rail stocked, the slab stocked and an hour after
+closing clears a hundred and thirty, and sixty was a middling
+Tuesday-to-Saturday - and **five hundred pounds in a single week**. That one
+was *a hundred pounds in the till*, which a shop clears in its third week and
+then has on the wall for ever, and the till is already counted twice over by
+the two rows under it. Five hundred is the top of the whole game instead:
+everything bought, six days without losing one, the wagyu caught, the machine
+out the back, its Sunday, and butcher time on the end of it comes to about
+four hundred and ninety-five; a golden week on top of all that is nine
+hundred and thirty-eight, which is the ceiling.
+
+**It has to be a week and not a day.** The best single day the game can deal
+is three hundred and seven - a flawless Saturday, the rail and the slab both
+stocked, the wagyu falling on that day and the week come up gold - and an
+ordinary flawless Saturday with the wagyu on it is a hundred and fifty-four.
+Butcher time, the hour after closing and Sunday are the week's own lines and
+belong to no day at all, which is most of the difference. The
 vet's bill paid, a dog buried, fifty pats, and a dog in a bought hat, face and
 collar at once. Every knife, everything on the rail, and every single thing in
 the shop. Selling every link on a Saturday - eleven of them against a dog at
@@ -1661,7 +1683,7 @@ nearly twice Monday's speed, which Monday's four is not. Six perfect cuts in a
 day. Fifty steaks taken out of the air - three a week off a plain slab and
 twelve off a stocked one, and only the ones you get the blade to before the
 floor or the dog does. A week without halving one yourself. Ten weeks with the
-same dog. **Three weeks that stopped for butcher time** - that one was *ten
+same dog, and twenty-six. **Three weeks that stopped for butcher time** - that one was *ten
 different breeds stood in that window*, and there are eighteen of them, so
 the usual way you get to ten is nine funerals. The wall was quietly offering
 a rosette for killing nine dogs. A game can have a fail state in it without
@@ -1777,10 +1799,17 @@ because the whole week that bought it was about one stroke doing more than
 one thing. **Two hundred and fifty pounds is the lid.** It is a bonus, not a
 living, and only a machine gets near the top of it.
 
-The big **PERFECT WEEK** banner does not land on it. That one belongs to the
-hour after closing, which turns up a few seconds later on the hour this week
-also earned, and the same words twice running means neither of them - butcher
-time says what it is on the two lines above the window.
+**And PERFECT WEEK is its banner now.** Those two words used to land on the
+hour after closing, which is bought by six days without the dog taking one -
+a fine week, and not a perfect one: there is no cut in it that had to be any
+good. The hour says **A GOOD WEEK** instead, which is exactly what it is, and
+the word *perfect* is kept for the week that earned the thing you only get
+for cutting. Butcher time's banner reads PERFECT WEEK over SIX DAYS AND
+BARELY A CUT OFF CENTRE, and the two lines above the window say what to do
+with the nine seconds rather than repeating why you are getting them: *slow
+motion, take them in handfuls*. They never run back to back, so nothing is
+ever said twice - a week that stops for butcher time does not also get an
+hour.
 
 It is not an hour after closing: it does not count towards the hours and it
 is not one of the ten. **And it takes the hour's place** - the week would
@@ -1858,7 +1887,7 @@ it cannot be fluked. One good Wednesday does not buy it.
 Six of them, one picked at random, nine seconds each, and it runs before the
 week is counted so whatever it makes is part of that week's takings.
 
-It says why it is happening. PERFECT WEEK lands across the middle of the screen
+It says why it is happening. A GOOD WEEK lands across the middle of the screen
 for a second and a half as the thing opens, with SIX DAYS AND THE DOG GOT
 NOTHING under it, because a reward that turns up once in a very long while with
 no explanation attached reads as a glitch rather than a prize.
@@ -1903,7 +1932,7 @@ twenty-two pounds, about a third on top of a perfect week.
   because the question was still *how neat a line can you draw*, asked once. Now
   it is *how good a line can you commit to in a second and a half*, asked six
   times, and that is a game. The clock starts when your finger first lands
-  rather than when the thing opens - PERFECT WEEK is across the middle of the
+  rather than when the thing opens - A GOOD WEEK is across the middle of the
   screen for the first second and a half, and a clock you spend a third of
   under a banner is not a clock, it is a tax - and if nobody picks the bottle
   up it starts without them.
