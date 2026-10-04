@@ -531,6 +531,14 @@ sells.
   with is a different game. A spat-out link does not count against the week
   either, which is the one place this shelf touches the hour after closing.
 
+  **DROPPED and SPAT IT OUT are drawn on top of the dog**, with the rest of
+  the shouts. They are fired at the dog's mouth, because that is where the
+  sausage was - which is precisely where its head is, so they went up behind
+  its ears every time, and the one shout you most want to read was the one
+  you could not. The whole layer moved: every shout is drawn after the dog
+  and after whatever is in its mouth now, so a PERFECT off a cut made just
+  above its nose is readable too.
+
 **Once a week** is the shelf the butcher uses himself. A squeaky bone, two
 hundred and forty: on one day of the week - the week picks it, and Monday is as
 likely as Saturday - somebody lobs the bone in at a moment nobody was waiting
@@ -602,8 +610,10 @@ fade.
 has had a word in it - a day's name, GO, the count - the word was the start of
 something you have to do, and a player who has just finished Saturday reads a
 banner and reaches for the screen. This is the one time it is not, so it says
-so in as many words, and it holds for two and a bit seconds rather than six
-tenths: a thing to be read rather than a thing to be beaten. It was MEANWHILE…
+so in as many words, and **it stays up for the whole of the day** rather than
+landing and going: it is taken off by hand when the machine finishes, not by
+a number somebody typed into an animation, because the day is thirteen links
+and two steaks long and that is not a fixed number of milliseconds. It was MEANWHILE…
 with *nothing for you to do* under it in small type, which is two lines to say
 one thing and the game explaining its own joke on top. The day's name is still
 on the plate in the corner, so you know which day you are not working.
@@ -624,6 +634,14 @@ this way the thing you are meant to be watching is the pair of them having the
 morning off, and the work going on behind is work going on behind. The HUD and
 the word across the middle are not on that canvas, so they stay bright and the
 plate in the corner still says which day it is.
+
+**And none of it comes off until the card is over the top of it.** The wash
+and the pair used to go the moment the machine finished, which put a bright
+empty shop floor on the screen for the second and a quarter between the last
+cut and the takings landing - the one hard cut in the whole day, and the only
+one you could see. The flag that holds them on is let go inside the callback
+that unhides the card, so the last Sunday frame and the first card frame are
+the same frame.
 
 **And the other two are asleep either side of it.** Him propped against one
 jamb with his hat still on, eyes shut, mouth open; the dog lolled over on the
@@ -1674,10 +1692,43 @@ first one.
 
 ## Butcher time
 
-Six days where every cut made in the shop was dead centre and every sausage
-came off the rail. Nobody arrives at that by accident, and a rosette on a
-wall is a thin thing to hand somebody for it - so the week stops, everything
-in the shop goes up in the air at once, and the clock goes with it.
+Six days where every sausage came off the rail and barely a cut was off
+centre. Nobody arrives at that by accident, and a rosette on a wall is a thin
+thing to hand somebody for it - so the week stops, everything in the shop
+goes up in the air at once, and the clock goes with it.
+
+**Three cuts of grace.** It used to be every day starred: thirty-three cuts
+in a week and every single one of them perfect, which in practice nobody has
+ever done. Thirty-three in a row is punishing in a way that is easy to
+underestimate - at ninety-five cuts in a hundred, which is a very good hand
+indeed, it is one week in five; at ninety it is one in thirty-two; at
+eighty-five, which is still a good player, it is **one week in two hundred
+and thirteen**. The best thing in the game was a thing you heard about rather
+than saw. Three off the total gives that same eighty-five-percent hand one
+week in nine, and a ninety-percent one better than one week in three.
+
+| cuts dead centre | every cut (old) | three off (now) |
+|---|---|---|
+| 80 in 100 | 1 week in 1,578 | 1 in 37 |
+| 85 in 100 | 1 in 213 | 1 in 9 |
+| 90 in 100 | 1 in 32 | 1 in 3 |
+| 95 in 100 | 1 in 5 | 1 in 1.3 |
+
+Three for the week rather than one a day, because a day is two cuts on a
+Wednesday and ten on a Saturday, and one free cut is a different favour on
+each of them. One number for the whole week is a number you can count
+yourself.
+
+**The gate that matters is untouched.** Not a single sausage lost in six
+days, to the dog or to your own knife. That is still the rarest thing in
+here, it is still what the hour after closing is for, and butcher time is
+what you get for doing it beautifully rather than merely doing it.
+
+**And the star on the receipt does not move.** A star says every cut that day
+was dead centre, and it wants to go on meaning exactly that. So a week can
+come up five stars and still stop for butcher time, which is the right way
+round: the receipt is a record and the bonus is a reward, and they are not
+obliged to agree.
 
 It is the samurai's physics at **a quarter of the rate**, which is slow motion
 and not a different game: the same gravity, the same arcs, the sausages
@@ -1707,7 +1758,10 @@ the reward for not losing one. It gets
 its own line on the receipt above Sunday and the hour, because it is the
 week's own doing.
 
-**Dead Centre is that week.** It used to be twenty-five perfect cuts, which
+**Dead Centre is that week**, and its ticket says *a week with every sausage
+sold and barely a cut off centre* rather than every single one, because a
+rosette that overstates what you did for it is worth less than one that does
+not. It used to be twenty-five perfect cuts, which
 is a fortnight of ordinary play and lands on a Tuesday without being aimed
 at. It is read straight off the receipt - six days, six stars - so the thing
 that pays it is the thing that is printed.

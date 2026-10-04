@@ -335,12 +335,19 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
    landing and going the way a day's name does. */
 #banner .r.sun-word { font-size: clamp(34px, 11.5vw, 56px); color: #ffe08a; }
 #banner.go { animation: bannerGo .62s ease-out both; }
-#banner.sun { animation: bannerSun 2.3s ease-out both; }
-@keyframes bannerSun {
-    0%   { transform: translateY(-50%) scale(1.3); opacity: 0; }
-    7%   { transform: translateY(-50%) scale(1); opacity: 1; }
-    82%  { transform: translateY(-50%) scale(1); opacity: 1; }
-    100% { transform: translateY(-50%) scale(.95); opacity: 0; }
+/* It lands and it stays, for as long as the machine is working, and it is
+   taken off by hand when the day is done rather than by a clock - the day's
+   length is thirteen links and two steaks, not a number anybody typed into
+   an animation. */
+#banner.sun { animation: bannerSunIn .46s ease-out both; }
+@keyframes bannerSunIn {
+    from { transform: translateY(-50%) scale(1.3); opacity: 0; }
+    to   { transform: translateY(-50%) scale(1); opacity: 1; }
+}
+#banner.sun-off { animation: bannerSunOut .42s ease-in both; }
+@keyframes bannerSunOut {
+    from { transform: translateY(-50%) scale(1); opacity: 1; }
+    to   { transform: translateY(-50%) scale(.95); opacity: 0; }
 }
 @keyframes bannerGo {
     0%   { transform: translateY(-50%) scale(1.4); opacity: 0; }
@@ -2028,7 +2035,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.5.4';
+const APP_VERSION = 'v1.6.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2758,6 +2765,47 @@ const botRun = () => Math.max(3, Math.round(string.n * BOT_SHARE));
    in a strip of window a sausage deep. */
 const LAD_PEEK = 1150, SIDE_K = .72;
 let ladPeek = 0;
+/* What that swipe was worth, said out loud. It is drawn after the dog and
+   after whatever is in its mouth, because the one shout you most need to
+   read - DROPPED, off a sausage the dog has just had out of its jaws - is
+   fired at the dog's mouth, which is precisely where its head is. It went
+   up behind the ears every time. */
+function drawShouts(ms) {
+    for (let i = shouts.length - 1; i >= 0; i--) {
+        const sh = shouts[i], e = (now() - sh.t0) / (sh.life || 980);
+        if (e >= 1) { shouts.splice(i, 1); continue; }
+        if (sh.wagyu) { wagyuShout(sh, e); continue; }
+        const rise = 1 - Math.pow(1 - Math.min(1, e * 2.2), 3);
+        const pop = e < .16 ? .6 + .4 * (e / .16) * (2 - e / .16) : 1;
+        ctx.save();
+        ctx.globalAlpha = e > .6 ? 1 - (e - .6) / .4 : 1;
+        ctx.translate(clamp(sh.x, 76, W - 76), sh.y - 34 * rise);
+        ctx.scale(pop, pop);
+        ctx.font = (sh.small ? '700 19px' : sh.gold ? '700 26px' : '700 27px') +
+                   ' "Alfa Slab One", Georgia, serif';
+        if (sh.gold) {
+            ctx.save();                                   // a flash of it going off
+            ctx.globalAlpha *= Math.max(0, 1 - e * 3);
+            ctx.strokeStyle = '#fff6dd'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+            for (let r = 0; r < 8; r++) {
+                const a2 = r / 8 * Math.PI * 2 + e * 2;
+                ctx.beginPath();
+                ctx.moveTo(Math.cos(a2) * (26 + e * 60), Math.sin(a2) * (18 + e * 40));
+                ctx.lineTo(Math.cos(a2) * (40 + e * 80), Math.sin(a2) * (28 + e * 54));
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = 'rgba(12,32,24,.92)'; ctx.lineWidth = sh.small ? 5 : 7;
+        ctx.strokeText(sh.text, 0, 0);
+        ctx.fillStyle = sh.bad ? '#d8462f' : sh.rich ? '#ffd873' : sh.small ? '#bdf0cc'
+                      : sh.gold ? '#ffe9a8' : '#f0d484';
+        ctx.fillText(sh.text, 0, 0);
+        ctx.restore();
+    }
+}
 function drawStaff(ms) {
     const one = (x, at, opts, rise = 88) => {
         if (!at) return;
@@ -3675,7 +3723,7 @@ function countdown(n) {
     const D = DAYS[n - 1], B = breedFor(n);
     const say = (big, cls) => {
         bannerEl.innerHTML = `<span class="r ${cls || ''}">${big}</span>`;
-        bannerEl.classList.remove('go');
+        bannerEl.classList.remove('go', 'sun', 'sun-off');
         void bannerEl.offsetWidth;
         bannerEl.classList.add('go');
     };
@@ -3778,9 +3826,14 @@ function endRound() {
        of it: every cut made today was dead centre, and every sausage on the
        rail came off it. Two perfect cuts on a day the dog had the other nine
        is not a perfect day by any reading anybody would recognise. */
-    const star = cutsToday > 0 && perfectToday === cutsToday && saved === string.n;
+    const full = saved === string.n;
+    const star = cutsToday > 0 && perfectToday === cutsToday && full;
+    /* The cuts go down as well as the star, because butcher time is counted
+       off them and a star is a yes-or-no. A week can miss a star and still
+       be a week worth stopping for. */
     ledger.push({ day: DAYS[round - 1], took: roundMoney, sold: saved, lost, ate,
-                  steaks, puds, star, wag: wagToday, bot: botSold });
+                  steaks, puds, star, full, cuts: cutsToday, per: perfectToday,
+                  wag: wagToday, bot: botSold });
     /* For the credits, and nothing else - and written down there and then.
        Nothing else in a week calls putSave, so a count kept only in memory
        is a count that is nought every time you come back. */
@@ -3881,9 +3934,9 @@ function bonusLine() {
    can finish reaching - so it never quite comes back out, which is exactly
    what a thing working flat out looks like. */
 const SUN_N = 13, SUN_WIGGLE = 1.5, SUN_GAP = 240;
-let sunday = false, sunRan = false, sunSteaks = 0;
+let sunday = false, sunRan = false, sunOver = false, sunSteaks = 0;
 function runSunday() {
-    sunday = true; sunRan = true;
+    sunday = true; sunRan = true; sunOver = false;
     /* The hour after closing is still on the screen when this starts. On
        every other Saturday it is left there on purpose, because the week's
        card lands over the top of it half a second later and clearing it
@@ -3910,7 +3963,7 @@ function runSunday() {
        the word was the start of something you have to do; this one is the
        one time it is not, and it says so in as many words. */
     bannerEl.innerHTML = `<span class="r sun-word">HAVE A REST</span>`;
-    bannerEl.classList.remove('go', 'sun'); void bannerEl.offsetWidth;
+    bannerEl.classList.remove('go', 'sun', 'sun-off'); void bannerEl.offsetWidth;
     bannerEl.classList.add('sun');
     for (let c = 1; c <= SUN_N + 1; c++)
         countT.push(setTimeout(sunCut, 520 + SUN_GAP * c));
@@ -3954,17 +4007,24 @@ function sunSteak(wagyu) {
     }, 760));
 }
 function endSunday(tries = 0) {
-    if (!sunday) return;
+    if (!sunday || sunOver) return;
     /* The rail can run out while a steak is still in the air. It waits for
        it - but on a count, because a day that cannot end is worse than a
        steak that got away. */
     if ((sunSteaks > 0 || steak) && tries < 16) {
         countT.push(setTimeout(() => endSunday(tries + 1), 160)); return;
     }
-    sunday = false; live = false; armed = false;
+    sunOver = true; live = false; armed = false;
     countT.forEach(clearTimeout); countT = [];
     sunTook = roundMoney;              // already in the till; this is the line
-    setTimeout(() => { if (!sunday) endWeek(); }, 820);
+    bannerEl.classList.remove('sun'); bannerEl.classList.add('sun-off');
+    /* `sunday` stays true through this. It is what puts the wash over the
+       window and the two of them in front of it, and dropping it here put a
+       bright empty shop floor on the screen for the second and a quarter
+       between the machine finishing and the takings landing - which is the
+       one cut in the whole day you can see. It comes off in endWeek, on the
+       frame the card goes over the top of it. */
+    setTimeout(endWeek, 820);
 }
 function sundayLine() {
     if (!sunTook) return '';
@@ -4026,7 +4086,6 @@ function endWeek() {
     /* The week's takings go in the till and stay there. There is no best week
        any more - what you did with the money is the score, and that is kept in
        the shop rather than on a card. */
-    sunday = false;
     tillFrom = save.bank;             // what the till had before this week went in
     save.bank += money; save.weeks++;
     save.tally.loyal++;
@@ -4089,6 +4148,7 @@ function endWeek() {
             { open: good ? 0 : .72, mood: good ? 'glum' : 'chuffed' }, 0, cast.dog);
     settleT = setTimeout(() => {
         mini = null;                     // whatever was under the card, it is gone
+        sunday = sunOver = false;        // and the wash with it, under the card
         card.hidden = false;
         drawerShut();
         holdT = setTimeout(showShop, HOLD_MS);
@@ -4731,13 +4791,29 @@ const KATANA = 150, KATANA_RUN = 110;
 const BT_SECS = 9, BT_SLOW = .26, BT_CAP = 25000;
 const BT_PAY = 320, BT_RUN = 240;
 let bonusTook = 0;
-/* Every day of the week starred: every cut dead centre and the whole rail
-   sold, six times over. It is read off the receipt rather than counted
-   separately, so the thing that pays it is the thing that is printed. */
+/* Six days, the whole rail off it every one of them, and three cuts all week
+   that were not dead centre. It used to be every day starred - thirty-three
+   cuts and every single one of them perfect - which nobody has ever done.
+   At ninety-five cuts in a hundred that is one week in five; at eighty-five,
+   which is a good hand, it is one week in two hundred, so the best thing in
+   the game was a thing you heard about rather than saw. Three gives the same
+   good hand one week in nine and a middling one about one in twelve, and the
+   gate that matters is untouched: not a single sausage lost in six days, dog
+   or knife, which is still the rarest thing in here.
+
+   Three rather than one a day, because a day is three cuts on a Wednesday
+   and ten on a Saturday and one free cut is a different favour on each of
+   them. It is one number for the week, so you can count it yourself.
+
+   The star on the receipt does not move. That says every cut today was dead
+   centre, and it wants to go on meaning exactly that. */
+const BT_GRACE = 3;
+const weekMissed = () => ledger.reduce((a, r) => a + ((r.cuts || 0) - (r.per || 0)), 0);
 const perfectWeek = () =>
-    ledger.length >= DAYS.length && ledger.every(r => r.star);
+    ledger.length >= DAYS.length && ledger.every(r => r.full) &&
+    weekMissed() <= BT_GRACE;
 function startBonus() {
-    mini = { id: 'ninja', name: 'Butcher time', say: 'Every cut dead centre',
+    mini = { id: 'ninja', name: 'Butcher time', say: 'Six days and nothing lost',
              secs: BT_SECS, untimed: false, t0: now(), won: 0, done: false,
              bonus: true, slow: BT_SLOW };
     miniSetup('ninja');
@@ -8704,7 +8780,7 @@ const ROSETTES = [
        gone after: six days, every cut made in the shop dead centre, and
        every sausage off the rail. */
     { id: 'dead',    silk: 'gold',   name: 'Dead Centre',
-      why: 'A whole week where every single cut was perfect.' },
+      why: 'A week with every sausage sold and barely a cut off centre.' },
     { id: 'fifty',   silk: 'gold',   name: 'A Hundred of Them', why: 'A hundred perfect cuts, all told.' },
     { id: 'fivehun', silk: 'gold',   name: 'Five Hundred',   why: 'Five hundred perfect cuts. Keep going.' },
     /* Two in a swipe is a thing you will do by accident on a wavy Friday, so
@@ -10280,42 +10356,6 @@ function draw() {
     drawCat(ms);
     if (demoOn()) drawDemo(ms);
 
-    // what that swipe was worth, said out loud
-    for (let i = shouts.length - 1; i >= 0; i--) {
-        const sh = shouts[i], e = (now() - sh.t0) / (sh.life || 980);
-        if (e >= 1) { shouts.splice(i, 1); continue; }
-        if (sh.wagyu) { wagyuShout(sh, e); continue; }
-        const rise = 1 - Math.pow(1 - Math.min(1, e * 2.2), 3);
-        const pop = e < .16 ? .6 + .4 * (e / .16) * (2 - e / .16) : 1;
-        ctx.save();
-        ctx.globalAlpha = e > .6 ? 1 - (e - .6) / .4 : 1;
-        ctx.translate(clamp(sh.x, 76, W - 76), sh.y - 34 * rise);
-        ctx.scale(pop, pop);
-        ctx.font = (sh.small ? '700 19px' : sh.gold ? '700 26px' : '700 27px') +
-                   ' "Alfa Slab One", Georgia, serif';
-        if (sh.gold) {
-            ctx.save();                                   // a flash of it going off
-            ctx.globalAlpha *= Math.max(0, 1 - e * 3);
-            ctx.strokeStyle = '#fff6dd'; ctx.lineWidth = 3; ctx.lineCap = 'round';
-            for (let r = 0; r < 8; r++) {
-                const a2 = r / 8 * Math.PI * 2 + e * 2;
-                ctx.beginPath();
-                ctx.moveTo(Math.cos(a2) * (26 + e * 60), Math.sin(a2) * (18 + e * 40));
-                ctx.lineTo(Math.cos(a2) * (40 + e * 80), Math.sin(a2) * (28 + e * 54));
-                ctx.stroke();
-            }
-            ctx.restore();
-        }
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.lineJoin = 'round';
-        ctx.strokeStyle = 'rgba(12,32,24,.92)'; ctx.lineWidth = sh.small ? 5 : 7;
-        ctx.strokeText(sh.text, 0, 0);
-        ctx.fillStyle = sh.bad ? '#d8462f' : sh.rich ? '#ffd873' : sh.small ? '#bdf0cc'
-                      : sh.gold ? '#ffe9a8' : '#f0d484';
-        ctx.fillText(sh.text, 0, 0);
-        ctx.restore();
-    }
-
     if (hit) {
         // it holds the pose it ended in rather than vanishing: the card lands
         // on the same frame, and the branch below would put the dog back on
@@ -10371,6 +10411,7 @@ function draw() {
         drawDog(ctx, x, y, 1.02, pose, ms, breedFor());
     }
     drawToy(ms);                      // over the dog, because it is in its mouth
+    drawShouts(ms);                   // and over the lot of it
     /* Last of the lot. They are at the near edge of the counter and the dog
        is behind it, so the lad's knife went up behind the dog's ear when he
        was drawn with the floor - and an arm in the air is the only thing
@@ -11910,6 +11951,12 @@ function throughTheDoor() {
 }
 function beginWeek() {
     startSession(); audioNow();
+    /* Belt and braces. The wash and the pair are held on by `sunday` until
+       the week's card lands on top of them, so anything that opens a week
+       without going through that - the back-room door, a reload - lets go
+       of it here instead. */
+    sunday = sunOver = false;
+    bannerEl.classList.remove('sun', 'sun-off');
     theme(TILE);
     showingIntro = false;
     document.getElementById('intro').hidden = true;
