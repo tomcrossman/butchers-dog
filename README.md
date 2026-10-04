@@ -2346,6 +2346,17 @@ short to hold the lot, the top wins. He whistles under it every
 eleven seconds, which is the shopfront's own tune and the only music in the
 game.
 
+**And it takes the music off whatever had it.** Starting a tune stops the
+one before it, so the roll interrupts a mini-game's theme on the way in -
+but a tune can also be *scheduled*: the hour after closing and butcher time
+both announce themselves with three notes and then start their theme six
+tenths of a second later, so the jingle is not played over. A roll that
+began inside that window had the game it had just left come up underneath
+it. Those deferred starts check the music is still going spare before they
+take it now, which is the right rule anywhere: a tune that begins later than
+the thing that asked for it has no business landing on top of whatever came
+next.
+
 **The numbers are whatever is true now**, triggered or not: time in the shop,
 weeks traded, sausages over the counter, hours after closing, dogs buried,
 rosettes, and what is in the till. Three of those were already counted for
