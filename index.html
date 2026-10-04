@@ -2017,7 +2017,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.5.0';
+const APP_VERSION = 'v1.5.1';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2764,7 +2764,7 @@ function drawStaff(ms) {
     };
     /* On a Sunday it is the only one in the shop, so it stands in the
        middle of the window rather than off at an edge, and it stays up. */
-    if (sunday) { one(W / 2, -1e9, { bot: true }, 132); return; }
+    if (sunday) { one(W / 2, -1e9, { bot: true }, 132); drawDozers(ms); return; }
     if (running('apprentice') && ladPeek) {
         /* With his knife up. He has just made the one cut he makes all day
            and he is pleased with it, and from behind an arm in the air is
@@ -2773,6 +2773,49 @@ function drawStaff(ms) {
         else one(56, ladPeek, { young: true, holds: 'knife', arms: null });
     }
 
+}
+/* Sunday, and the two of them are not working - so they are asleep at the
+   bottom of the window with the machine stood between them: him propped
+   against one jamb and the dog curled against the other, lower than it is
+   because they are not stood up, they have gone down. A z goes up off each
+   of them on its own clock, which is the one word for asleep and the same
+   one the dream uses. */
+const DOZE_K = .62;
+function zees(ms, x, y, phase) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,245,220,.92)';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    for (let i = 0; i < 2; i++) {
+        const t = ((ms / 2600) + phase + i * .5) % 1;
+        ctx.globalAlpha = Math.min(1, (1 - t) * 2.4) * .85;
+        ctx.font = '400 ' + (10 + t * 14) + 'px "Alfa Slab One", Georgia, serif';
+        ctx.fillText('z', x + t * 18, y - t * 52);
+    }
+    ctx.restore();
+}
+function drawDozers(ms) {
+    /* Breathing, both of them, and out of step - two things rising and
+       falling together is one thing drawn twice. */
+    const him = Math.sin(ms / 2100) * 2.6, her = Math.sin(ms / 1700 + 2) * 2.2;
+    const hx = 78, hy = H + 18 + him, dx = W - 78, dy = H - 12 + her;
+    ctx.save();                                   // him, head tipped on to the jamb
+    ctx.translate(hx, hy);
+    ctx.rotate(-.19);
+    drawButcher(ctx, false, { cx: 0, cy: 0, k: DOZE_K, holds: 'none',
+                              arms: 'down', asleep: true });
+    ctx.restore();
+    zees(ms, hx + 42, hy - 128, 0);
+    /* The dog is drawn from the mouth down, because every other day it is
+       drawn where its mouth is on the string. Lolled over on to one side
+       and only as far up as the head, which is the whole of a dog asleep
+       behind a counter. */
+    ctx.save();
+    ctx.translate(dx, dy);
+    ctx.rotate(-.34);
+    drawDog(ctx, 0, 0, .70 / cast.dog.k, { open: 0, shut: 1 }, ms,
+            cast.dog, cast.kit);
+    ctx.restore();
+    zees(ms, dx + 8, dy - 66, .35);
 }
 /* And the machine, on the other side of the window. It used to be a head on
    the man - he had a visor and two green lamps and stood there in his apron
@@ -3811,6 +3854,12 @@ const SUN_N = 13, SUN_WIGGLE = 1.5, SUN_GAP = 400;
 let sunday = false, sunRan = false;
 function runSunday() {
     sunday = true; sunRan = true;
+    /* The hour after closing is still on the screen when this starts. On
+       every other Saturday it is left there on purpose, because the week's
+       card lands over the top of it half a second later and clearing it
+       first puts an empty shop floor in between. Sunday is the shop floor,
+       so it has to go. */
+    mini = null;
     live = true; armed = true; tallying = false; teaching = false;
     clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT);
     countT.forEach(clearTimeout); countT = [];
@@ -4676,8 +4725,19 @@ const DREAM_UP = 1550, DREAM_DOWN = 1150, DREAM_VMAX = 540;
 /* What one of them is worth on its way out of the door, and what each one in
    an unbroken run adds - the rail's rule again. A cat that gets past him and
    out of the window breaks it, but only one that saw him coming: the ones that
-   wander in and out again without ever noticing him were never a chase. */
-const CAT_PAY = 220, CAT_PAY_RUN = 32, CAT_PAY_CAP = 4;
+   wander in and out again without ever noticing him were never a chase.
+
+   It was two pounds twenty a cat, and a cat is the hardest thing in any of
+   these games to lay a hand on: it is the only one that sees the dog coming
+   and does something about it, and a dog with weight in it does not turn the
+   way a finger does. Three or four is a good nine seconds, and three or four
+   at two pounds twenty is seven quid for the hardest hour in the shop, when
+   the barbecue pays twenty-two for standing still and taking five off a
+   grill. So it is four pounds eighty now: three is fifteen and a half, four
+   is twenty-one and a half, which is the band the rest of them are priced in.
+   The run is nudged rather than doubled, because the run is what a machine
+   collects and the cat on its own is what a player does. */
+const CAT_PAY = 480, CAT_PAY_RUN = 40, CAT_PAY_CAP = 4;
 const DOG_ACC = 2700, DOG_MAX = 580, CAT_WALK = 210, CAT_BOLT = 340, CAT_SEES = 155;
 /* He is a dog, not a cursor: he goes where your finger is rather than being
    where it is, which is the whole of the game. Letting go lets him coast. */
@@ -9716,7 +9776,7 @@ const paler = (hex, k = .4) => {
 };
 function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B = null,
                                    winded = false, bot = false, young = false,
-                                   back = false, buzz = false,
+                                   back = false, buzz = false, asleep = false,
                                    wave = 0, arms = null } = {}) {
     B = B || (cast ? cast.butcher : BUTCHERS[0]);
     /* The apprentice is the lad. Whoever is behind the counter this week has a
@@ -9845,6 +9905,13 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
                 ctx.moveTo(sx * 8, -119); ctx.lineTo(sx * 22, -114); ctx.lineTo(sx * 8, -109);
                 ctx.lineTo(sx * 13, -114);
             });
+            /* A lid rather than a line through it. Winded is screwed shut and
+               the dog's crosses mean something worse again; this one is just
+               shut, so it is the curve an eye makes when it closes. */
+            else if (asleep) blob('#2a201a', () => {
+                ctx.moveTo(sx * 8, -117); ctx.quadraticCurveTo(sx * 15, -108, sx * 22, -117);
+                ctx.quadraticCurveTo(sx * 15, -113, sx * 8, -117);
+            });
             else blob('#2a201a', () => ctx.ellipse(sx * 15, -114, 4.4, happy ? 3.4 : 4.8, 0, 0, Math.PI * 2));
             blob(B.hair, () => {
                 /* Wide apart either way. Brows that nearly meet read as one V
@@ -9863,6 +9930,8 @@ function drawButcher(ctx, happy, { cx = 130, cy = 186, k = 1, holds = 'notes', B
         // the mouth first, because whatever is on the lip sits over the top of it
         if (winded) {                                    // the noise a man makes: oof
             blob('#7a3628', () => ctx.ellipse(0, -72, 11, 13, 0, 0, Math.PI * 2));
+        } else if (asleep) {                             // open, and nobody is home
+            blob('#7a3628', () => ctx.ellipse(0, -70, 9, 7, 0, 0, Math.PI * 2));
         } else if (happy) {
             blob('#7a3628', () => ctx.ellipse(0, -74, 18, 13, 0, 0, Math.PI * 2));
             ctx.save();

@@ -597,6 +597,21 @@ its back to you, facing the rack, breathing on a slow clock while the arm works
 over its shoulder - a third again the size of the peek, because it is not
 peeking, it is standing there.
 
+**And the other two are asleep either side of it.** Him propped against one
+jamb with his hat still on, eyes shut, mouth open; the dog lolled over on the
+other side with its head down and its eyes shut too, and a z going up off each
+of them on its own clock - the same z the dream uses, because there is one
+word for asleep and that is it. They are not working: that is the whole point
+of the day, and a machine getting on with it over an empty shop is only funny
+if you can see who is not in. The two of them breathe out of step, because two
+things rising and falling together is one thing drawn twice.
+
+**And the hour after closing has to go first.** On every other Saturday the
+mini-game is deliberately left on the screen after it ends, because the week's
+card lands over the top of it half a second later and clearing it first puts an
+empty shop floor in the gap. Sunday *is* the shop floor, so it came up behind
+the barbecue.
+
 **None of it counts.** Not a perfect on the tally, not a steak, not a day on
 the ledger, and **never the wagyu** - the one hundred-pound steak in a week is
 a thing you catch with your own hand in front of you, and a machine finding a
@@ -2000,6 +2015,18 @@ twenty-two pounds, about a third on top of a perfect week.
   ever noticing him was never a chase and does not count against you. A run pays
   more and more the longer you hold it, which is the rail's rule about taking two
   at once, carried through the back door one last time.
+
+  **A cat is four pounds eighty**, which is more than twice what it used to be.
+  This is the hardest hour in the shop and it was paying the least: a cat is the
+  only thing in any of these games that sees the dog coming and does something
+  about it, and a dog with weight in him does not turn the way a finger does.
+  Three or four in nine seconds is a good run, and three or four at two pounds
+  twenty was seven quid - for the hour where you have to work for every single
+  one, next to a barbecue that pays twenty-two for standing still. Three is
+  fifteen and a half now and four is twenty-one and a half, which is the band
+  every other hour is priced in. What a run adds on top was only nudged: the
+  run is the thing a machine collects by never missing, and the cat on its own
+  is the thing a player goes and gets.
 
   It is your own dog, in whatever you have bought him, with his mouth open
   because he is having the time of his life - and there are three coats of cat,
