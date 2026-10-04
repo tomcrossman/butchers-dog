@@ -2306,7 +2306,7 @@ person waving four times. The picture is the one
 thing on the roll that moves, so it gets a frame loop of its own while the
 credits are up and nothing at all when they are not.
 
-**Cuts dead centre, as a percentage.** Time in the shop, weeks traded,
+**Perfect cuts, as a percentage.** Time in the shop, weeks traded,
 sausages over the counter, hours after closing, dogs buried, rosettes and
 what is in the till were all counts of what happened; this is the only one
 that is a number about how good you are, and it is the one anybody who has
