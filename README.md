@@ -434,6 +434,13 @@ spike rather than faded up - it arrives off-square, overshoots and settles -
 and on a day you get the whole string off, the red flash off the same window
 lands on the corner of it saying *the lot*.
 
+**And gold with a star in it on a perfect day.** Red is the shop's colour for
+a good day; the star is the receipt's own mark for a day where every cut was
+dead centre as well, and a perfect day is a whole string by definition - so
+rather than hang two badges in one corner, the one badge becomes the better
+of them. You find out at the end of the day instead of at the end of the
+week, which is where you want to find out.
+
 The week's card says one number and one word under it: the takings, and
 `banked`. The till's running total used to be squeezed into that caption beside
 it, which is two different numbers in one line - and it is on the shopfront you
@@ -1356,12 +1363,19 @@ meat.
 
 On the ticket: the name over the window, who is behind the counter and what
 the dog is (*Reg and Nipper the Bulldog*), and along the foot, under a rule,
-when it was last saved - *yesterday*, *two days ago*, *3 weeks ago*, and a
-date once it is further back than that - with how far through it is on the
-right as a percentage. That is the lot. The week count, the hours played,
+**how long it has been open** - *32m played*, *2h 34m played* - with how far
+through it is on the right as a percentage. That is the lot. The week count,
 the rosette tally and a numbered heading over each one were all on it at a
 point, which is the wall and the credits said again on a ticket that is
-neither of them. A twenty-six character name with no spaces in it - which
+neither of them.
+
+The foot used to say when it was last saved - *yesterday*, *3 weeks ago*, a
+date further back than that. On three slots you are playing in rotation that
+is three lines all saying today, and the thing you actually want to know
+about a shop you have not opened in a fortnight is how much of your life is
+in it. The clock is the same one the credits print at the end, and it is
+wound on before the screen draws so the shop you are stood in reads to the
+minute rather than to the last time it saved. A twenty-six character name with no spaces in it - which
 somebody will type - breaks rather than running off the side.
 
 **The pair are measured onto it rather than placed.** A mastiff and a
@@ -2307,7 +2321,7 @@ thing on the roll that moves, so it gets a frame loop of its own while the
 credits are up and nothing at all when they are not.
 
 **Perfect cuts, as a percentage.** Time in the shop, weeks traded,
-sausages over the counter, hours after closing, dogs buried, rosettes and
+sausages cut, hours after closing, dogs buried, rosettes and
 what is in the till were all counts of what happened; this is the only one
 that is a number about how good you are, and it is the one anybody who has
 played this for a month actually wants. Seventy-one per cent is a good
@@ -2358,7 +2372,7 @@ the thing that asked for it has no business landing on top of whatever came
 next.
 
 **The numbers are whatever is true now**, triggered or not: time in the shop,
-weeks traded, sausages over the counter, hours after closing, dogs buried,
+weeks traded, sausages cut, hours after closing, dogs buried,
 rosettes, and what is in the till. Three of those were already counted for
 other reasons; the sausages, the graves and the time had to be added - and
 the sausages are written down the moment the day ends, because nothing else

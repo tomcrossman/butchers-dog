@@ -433,6 +433,13 @@ body { margin: 0; overflow: hidden; font-family: var(--font); color: var(--cream
     letter-spacing: .05em; text-transform: uppercase;
     animation: flashOn .38s cubic-bezier(.2,1.8,.4,1) .22s both;
 }
+/* And gold with a star in it for a day where every cut was dead centre as
+   well, which is the whole string and then some. Red is the shop's colour
+   for a good day; the star is the receipt's own mark for a perfect one, so
+   the day it is earned the badge becomes it rather than saying two things
+   in one corner. */
+#tally .flash.star { background: linear-gradient(180deg, #f8dd84, #d9a62b); padding: 0; }
+#tally .flash .st { width: 30px; height: 30px; fill: #33240c; }
 @keyframes flashOn { from { transform: rotate(-15deg) scale(0); }
                      to   { transform: rotate(-15deg) scale(1); } }
 
@@ -2035,7 +2042,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.9.2';
+const APP_VERSION = 'v1.10.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -3892,8 +3899,10 @@ function endRound() {
         `<span class="b">${saved + botSold} sold` +
         `${ate ? ` &middot; dog got ${ate}` : ''}` +
         `${stole ? ' &middot; steak gone' : ''}</span>` +
-        (saved === string.n && saved > 1 ? '<span class="flash">The lot</span>' : '');
-    tallyEl.classList.toggle('lot', saved === string.n && saved > 1);
+        (star ? '<span class="flash star"><svg class="st" viewBox="0 0 16 16">' +
+                `<use href="#i-star"/></svg></span>`
+              : full && saved > 1 ? '<span class="flash">The lot</span>' : '');
+    tallyEl.classList.toggle('lot', star || (full && saved > 1));
     tallyEl.classList.add('on');
     jingleUp();
     tallyT = setTimeout(nextRound, 1500);
@@ -11711,22 +11720,6 @@ document.getElementById('store-done').addEventListener('click', () => {
 const confirmEl = document.getElementById('confirm');
 const slotsEl = document.getElementById('slots');
 let slotPick = 0, overSlot = 0, newSlot = 0;
-/* How long ago it was shut, rounded hard: nobody wants a save slot read out
-   to the second. */
-function ago(t) {
-    const d = Date.now() - (t || 0);
-    if (!t || d < 0) return 'a while back';
-    const m = Math.floor(d / 60000);
-    if (m < 2) return 'just now';
-    if (m < 60) return `${m} minutes ago`;
-    const h = Math.floor(m / 60);
-    if (h < 24) return h === 1 ? 'an hour ago' : `${h} hours ago`;
-    const dy = Math.floor(h / 24);
-    if (dy === 1) return 'yesterday';
-    if (dy < 14) return `${dy} days ago`;
-    const w = Math.floor(dy / 7);
-    return w < 9 ? `${w} weeks ago` : new Date(t).toLocaleDateString();
-}
 /* Whose shop it is, in the one line the plate has room for. It is read off a
    save that some older version of the game wrote, so every index is clamped
    on the way out rather than trusted. */
@@ -11792,6 +11785,17 @@ function slotPair(c, s) {
     paint(g, k, PAIR_W / 2 - ((b[0] + b[2]) / 2 - SW / 2),
                 PAIR_H / 2 - ((b[1] + b[3]) / 2 - SH / 2));
 }
+/* How long this shop has been open, in the hand. It said when it was last
+   saved, which on three slots you are playing in rotation is three lines
+   all saying today - and the thing you actually want to know about a shop
+   you have not opened in a fortnight is how much of your life is in it.
+   The credits print the same number at the end. */
+const playedFor = ms => {
+    const m = Math.round((ms || 0) / 60000);
+    if (m < 1) return 'Just opened';
+    const h = Math.floor(m / 60);
+    return (h ? `${h}h ${m % 60}m` : `${m}m`) + ' played';
+};
 function slotCard(i) {
     const s = slotRead(i), on = i === slotPick ? ' on' : '';
     /* An empty plate says the one thing it is for and nothing else. It was
@@ -11812,7 +11816,7 @@ function slotCard(i) {
     return `<button class="slot${full ? ' full' : ''}${on}" data-slot="${i}">` +
         `<span class="txt"><b>${esc(s.shop)}</b>` +
         `<span class="who">${esc(slotWho(s))}</span>` +
-        `<span class="when">Saved ${ago(s.saved)}` +
+        `<span class="when">${playedFor(s.played)}` +
         `<i>${Math.round(got / ROSETTES.length * 100)}%</i></span></span>` +
         `<canvas class="cast" data-pair="${i}"></canvas>` +
         (full ? `<canvas class="ros" width="88" height="120"></canvas>` : '') +
@@ -11851,6 +11855,7 @@ function openSlots() {
     /* Whichever one you are stood in, already picked - so the street on boot
        is one tap back to where you were. */
     slotPick = started ? slot : 0;
+    clockOn();         // so the one you are stood in reads to the minute
     /* And the corner only closes on something. With no shop open there is
        nothing behind this screen to go back to, so there is no way off it
        but to pick one, which is the honest state of affairs. */
@@ -12908,7 +12913,7 @@ function creditStats() {
     const cut20 = (save.tally.cuts || 0) >= 20;
     return [['Time in the shop', t],
             ['Weeks traded', num(save.weeks)],
-            ['Sausages over the counter', num(save.tally.sold)],
+            ['Sausages cut', num(save.tally.sold)],
             /* Counted off its own pair rather than off the lifetime perfect
                count, because that one has been running since the first
                version and this has not: a percentage wants both halves
