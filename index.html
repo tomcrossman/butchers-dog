@@ -2017,7 +2017,7 @@ body.leaving #hud { display: none; }
 </div>
 
 <script>
-const APP_VERSION = 'v1.4.1';
+const APP_VERSION = 'v1.5.0';
 /* It used to sit in the corner of every screen. It lives out the back now,
    which is where you go when you want to know it. */
 
@@ -2378,9 +2378,10 @@ function layout() {
     Object.assign(string, makePath(n, wiggle, phase));
 }
 // the day decides how much is on the string and how much sway is in it
-function makeString(day) {
+function makeString(day, over) {
     const i = Math.min(DAYS.length, Math.max(1, day)) - 1, D = DAYS[i];
-    const n = cast.days[i], wiggle = D.wiggle;
+    // Sunday asks for its own, because there is no seventh row in DAYS
+    const n = over ? over.n : cast.days[i], wiggle = over ? over.wiggle : D.wiggle;
     string = { n, wiggle, phase: Math.random() * Math.PI * 2 };
     layout();
     // one piece holding the lot, and the twists evenly spaced down it
@@ -2747,19 +2748,23 @@ const botRun = () => Math.max(3, Math.round(string.n * BOT_SHARE));
 const LAD_PEEK = 1150, SIDE_K = .72;
 let ladPeek = 0;
 function drawStaff(ms) {
-    const one = (x, at, opts) => {
+    const one = (x, at, opts, rise = 88) => {
         if (!at) return;
-        const pk = (ms - at) / LAD_PEEK;
+        const pk = at < 0 ? .5 : (ms - at) / LAD_PEEK;
         if (pk >= 1) return 0;
         const e = pk < .2 ? pk / .2 : pk > .68 ? (1 - pk) / .32 : 1;
         const up = e * e * (3 - 2 * e);
         ctx.save();
-        ctx.translate(x, H + 150 - up * 88);
+        // and on the Sunday it stands there all day, so it breathes
+        ctx.translate(x, H + 150 - up * rise + (at < 0 ? Math.sin(ms / 1150) * 3 : 0));
         ctx.scale(1, 1 + (1 - up) * .04);
         drawButcher(ctx, true, { cx: 0, cy: 0, k: SIDE_K, holds: 'none',
                                  arms: 'down', back: true, ...opts });
         ctx.restore();
     };
+    /* On a Sunday it is the only one in the shop, so it stands in the
+       middle of the window rather than off at an edge, and it stays up. */
+    if (sunday) { one(W / 2, -1e9, { bot: true }, 132); return; }
     if (running('apprentice') && ladPeek) {
         /* With his knife up. He has just made the one cut he makes all day
            and he is pleased with it, and from behind an arm in the air is
@@ -3030,8 +3035,10 @@ function sliceSteak() {
     const worth = gold(steak.wagyu ? WAGYU_PAY : STEAK_PAY);
     money += worth; roundMoney += worth; steaks++;
     if (steak.wagyu) wagToday = true;
-    save.tally.steaks++;
-    if (save.tally.steaks >= 50) award('steaks');
+    if (!sunday) {                             // the machine's, not yours
+        save.tally.steaks++;
+        if (save.tally.steaks >= 50) award('steaks');
+    }
     showHud();
     // and the same rule as PERFECT: what you did, not what it paid
     shouts.push(steak.wagyu
@@ -3276,7 +3283,9 @@ function splitAt(p, k, q) {
            while the dog is halfway up the string is one more thing to read at
            the only moment there is nothing spare to read it with. */
         shouts.push({ text: 'PERFECT', x: px, y: py - 30, t0: now(), gold: true });
-        save.tally.perfect++; perfectToday++;
+        perfectToday++;
+        if (sunday) { ping(); return; }        // the machine's, not yours
+        save.tally.perfect++;
         if (perfectToday >= 6) award('six');
         if (save.tally.perfect >= 100) award('fifty');
         if (save.tally.perfect >= 500) award('fivehun');
@@ -3519,7 +3528,8 @@ const card = document.getElementById('card');
 const moneyEl = document.getElementById('money');
 
 function showHud() {
-    document.getElementById('round-val').textContent = DAYS[Math.min(5, round - 1)].name;
+    document.getElementById('round-val').textContent =
+        sunday ? 'Sunday' : DAYS[Math.min(5, round - 1)].name;
     // weeks completed plus the one you are standing in
     document.getElementById('weekno').textContent = `Week ${save.weeks + 1}`;
     document.getElementById('weekno').classList.toggle('gold', goldWeek);
@@ -3562,6 +3572,7 @@ function startRound(n) {
         goldWeek = Math.random() < GOLD_ODDS;          // one in a hundred
         botched = 0; stoleWeek = 0;                    // and having spoiled nothing
         miniTook = null; sunTook = 0; bonusTook = 0;   // last week's is spent
+        sunRan = false;
     }
     roundT0 = now();
     armed = false;
@@ -3784,6 +3795,81 @@ function bonusLine() {
            `<i>Every one</i></td>` +
            `<td class="m">+ ${money2(bonusTook)}</td></tr>`;
 }
+/* ---- Sunday ------------------------------------------------------------
+   The shop is shut, you are not in it, and the machine is. It used to be a
+   number on the card and nothing to look at; now you watch it: a seventh
+   string, no dog anywhere near the place, the back of a steel head at the
+   bottom of the window and an arm coming in for every twist in turn.
+
+   Every cut is dead centre, which is the one thing a machine can do that
+   you cannot do all day, and it takes the steaks out of the air as well -
+   on a Sunday there is nothing to race and nothing to spoil, so the whole
+   of it goes in the till. None of it counts towards anything of yours: the
+   perfects are the machine's and so are the steaks, or a week off would be
+   the fastest way to fill the wall. */
+const SUN_N = 13, SUN_WIGGLE = 1.5, SUN_GAP = 400;
+let sunday = false, sunRan = false;
+function runSunday() {
+    sunday = true; sunRan = true;
+    live = true; armed = true; tallying = false; teaching = false;
+    clearTimeout(tallyT); clearTimeout(settleT); clearTimeout(holdT);
+    countT.forEach(clearTimeout); countT = [];
+    tallyEl.classList.remove('on');
+    card.hidden = true; card.className = '';
+    cutFx = []; mess = []; shouts = []; chewing = null; steak = null; hit = null;
+    floor = []; loose = []; swipe = null; blade = null; cat = null; toyFly = null;
+    saved = 0; lost = 0; ate = 0; stole = 0; puds = 0; botSold = 0;
+    perfectToday = 0; cutsToday = 0; wagToday = false;
+    roundMoney = 0; steaks = 0; pendingEnd = false;
+    botArm = null;
+    /* Nowhere near it. The dog is not in the shop on a Sunday and the one
+       thing that would end the day early is it reaching the top. */
+    dog.going = false; dog.s = 1e9; dog.chomp = 0; dog.toy = 0; dog.stare = 0;
+    makeString(DAYS.length, { n: SUN_N, wiggle: SUN_WIGGLE });
+    showHud();
+    bannerEl.innerHTML = `<span class="r gold-word">SUNDAY</span>`;
+    bannerEl.classList.remove('go'); void bannerEl.offsetWidth;
+    bannerEl.classList.add('go');
+    for (let c = 1; c <= SUN_N + 1; c++)
+        countT.push(setTimeout(sunCut, 900 + SUN_GAP * c));
+    /* Two off the slab, and never the wagyu: there is one of those a week
+       and it comes down in front of you. A machine finding a second one on
+       its day off is a hundred pounds a week nobody earned. */
+    countT.push(setTimeout(() => sunSteak(false), 1700));
+    countT.push(setTimeout(() => sunSteak(false), 1700 + SUN_GAP * 6));
+    tick();
+}
+function sunCut() {
+    if (!sunday) return;
+    const reach = k => { const [x, y] = at(string.twists[clamp(k, 0, string.n - 2)]);
+                         botArm = { t0: now(), x, y }; servo(); };
+    for (let k = string.n - 2; k >= 0; k--) {
+        const p = pieceAt(string.twists[k]);
+        if (p && p.from <= k && p.to > k) { reach(k); splitAt(p, k, 100); return; }
+    }
+    const last = pieces.find(q => q.from === q.to);
+    if (last) {
+        reach(last.from - 1);
+        free(last, 100); pieces.splice(pieces.indexOf(last), 1);
+    }
+    if (!pieces.length) endSunday();
+}
+function sunSteak(wagyu) {
+    if (!sunday || steak) return;
+    dropSteak(wagyu);
+    countT.push(setTimeout(() => {
+        if (!sunday || !steak || steak.bits) return;
+        botArm = { t0: now(), x: steak.x, y: steak.y }; servo();
+        sliceSteak();
+    }, 760));
+}
+function endSunday() {
+    if (!sunday) return;
+    sunday = false; live = false; armed = false;
+    countT.forEach(clearTimeout); countT = [];
+    sunTook = roundMoney;              // already in the till; this is the line
+    setTimeout(() => { if (!sunday) endWeek(); }, 1100);
+}
 function sundayLine() {
     if (!sunTook) return '';
     return `<tr class="extra won"><td class="d" colspan="2">Sunday` +
@@ -3844,11 +3930,7 @@ function endWeek() {
     /* The week's takings go in the till and stay there. There is no best week
        any more - what you did with the money is the score, and that is kept in
        the shop rather than on a card. */
-    /* The machine's Sunday, added before the week is banked so the six days,
-       the hour after closing and Sunday all add up to the figure underneath
-       them. */
-    sunTook = running('robot') ? gold(sundayRun()) : 0;
-    money += sunTook;
+    sunday = false;
     tillFrom = save.bank;             // what the till had before this week went in
     save.bank += money; save.weeks++;
     save.tally.loyal++;
@@ -4264,7 +4346,10 @@ function nextRound() {
     afterMini();
 }
 function afterMini() {
-    if (round >= DAYS.length) { endWeek(); return; }
+    if (round >= DAYS.length) {
+        if (running('robot') && !sunRan) { runSunday(); return; }
+        endWeek(); return;
+    }
     startRound(round + 1);
 }
 
@@ -7702,7 +7787,7 @@ function down(x, y) {
     if (mini) { mini.drawing = true; miniAt(x, y); return; }
     if (tallying) return nextRound();
     if (teaching) return beginCount();           // seen enough, thank you
-    if (!card.hidden || !live || !armed || showingIntro) return;
+    if (!card.hidden || !live || !armed || showingIntro || sunday) return;
     swipe = [[x, y]];
 }
 /* The steak and the dog are tested as the blade goes through them rather than
@@ -8331,7 +8416,7 @@ const KIT = [
        The dog does not give any ground back for a cat - it just stops dead and
        watches it go, which is what a dog does. */
     { id: 'cat',       kind: 'help',  name: 'A cat',            price: 48000,
-      why: 'One walks past every day. The dog stops to watch.' },
+      why: 'One goes past every few days. The dog stops to watch.' },
     { id: 'insure',    kind: 'help',  name: 'Dog insurance',    price: 120000,
       why: 'The dog is immune to your cuts. The day still ends.' },
     /* The last thing in the shop, and the only one that takes the game away
@@ -10075,6 +10160,7 @@ function draw() {
 
     drawSteak(ctx);
 
+    if (sunday) drawBot(ms);          // the arm, on the one day it is seen
     drawCat(ms);
     if (demoOn()) drawDemo(ms);
 
@@ -10177,7 +10263,9 @@ function draw() {
 
     }
 
-    if (!showingIntro) drawKnife(ctx, knife.x, knife.y, knife.ang, .86 + knife.at * .16, cast.knife);
+    // nobody's hand on a Sunday
+    if (!showingIntro && !sunday)
+        drawKnife(ctx, knife.x, knife.y, knife.ang, .86 + knife.at * .16, cast.knife);
 }
 function tick() {
     cancelAnimationFrame(raf);

@@ -574,11 +574,35 @@ yours, and the machine is money on top rather than money instead.
 
 **And it works Sundays**, which is the only reason anybody would buy it. The
 shop is shut, you are not in it, and a machine does not need a day off - so
-the one upgrade that takes the week off you works the day you cannot. Nobody
-is served: it runs the rail overnight for the trade, twenty-five to thirty-one
-links at the quality a machine cuts at with the same third of the run coming
-wrapped as any other day, and the money is on Monday's card as its own line.
-Fifty pounds or so, give or take five.
+the one upgrade that takes the week off you works the day you cannot.
+
+**And you watch it.** It was a line of money on the card for a while, which
+is a thing the game tells you happened rather than a thing that happens, and
+a seventh day you never see is a seventh day you have to take on trust.
+Saturday ends and the shutter does not come down: the plate reads SUNDAY, a
+string of thirteen goes up on the rail, and the arm comes in at the right-hand
+jamb and works down it, one link every four tenths of a second, every single
+cut dead centre. Two steaks come off the slab in the middle of it and both get
+sliced. It is the machine doing it the way the machine would do it if nothing
+was in its way, which on a Sunday nothing is: **there is no dog**, there is no
+knife of yours on the screen and nothing you can touch does anything. Forty
+pounds or so goes on the week's card as its own line, and Monday's count comes
+up after it.
+
+**The back of its head is at the bottom of the window, in the middle.** Every
+other day the shop floor has the lad at the left jamb and the machine at the
+right, popping up behind the counter when they have done something. On a Sunday
+there is nobody else in, so it stands square in the middle of its own shop with
+its back to you, facing the rack, breathing on a slow clock while the arm works
+over its shoulder - a third again the size of the peek, because it is not
+peeking, it is standing there.
+
+**None of it counts.** Not a perfect on the tally, not a steak, not a day on
+the ledger, and **never the wagyu** - the one hundred-pound steak in a week is
+a thing you catch with your own hand in front of you, and a machine finding a
+second one on its day off is the game handing you the best thing in it while
+you are not holding the controls. Thirteen links and two ordinary steaks is
+what the day is worth, and it is worth it in money only.
 
 It needs to be that big. What it gives up is every perfect cut in the week -
 thirty-odd shillings on a good one - every steak off the slab, and the wagyu,
@@ -665,7 +689,10 @@ one goes across the window on Monday, Wednesday and Friday at a moment
 nobody picked, and the dog stops dead to watch it go. **The bone comes on an
 even day and the cat only ever on an odd one**, so the two of them are never
 in the window together: a bone going over, a cat going across and a dog that
-wants to look at both is three things happening in a five-second day. **It crosses on a diagonal**, in low at one jamb
+wants to look at both is three things happening in a five-second day. **The
+ticket says every few days** rather than every day, which is what it used to
+say and what the cat used to do. The bone's still says one day a week, because
+that is still one day a week. **It crosses on a diagonal**, in low at one jamb
 and out high at the other with a hop through the middle and a tilt on it the
 way a thing running uphill tilts. It used to run the floor at a flat height,
 which is where the lad and the machine come up and where the knife rests -
